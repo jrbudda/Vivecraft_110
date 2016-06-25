@@ -1,0 +1,96 @@
+--- a/net/minecraft/world/gen/ChunkProviderHell.java
++++ b/net/minecraft/world/gen/ChunkProviderHell.java
+@@ -28,12 +28,12 @@
+ 
+ public class ChunkProviderHell implements IChunkGenerator
+ {
+-    protected static final IBlockState field_185940_a = Blocks.air.func_176223_P();
+-    protected static final IBlockState field_185941_b = Blocks.netherrack.func_176223_P();
+-    protected static final IBlockState field_185942_c = Blocks.bedrock.func_176223_P();
+-    protected static final IBlockState field_185943_d = Blocks.lava.func_176223_P();
+-    protected static final IBlockState field_185944_e = Blocks.gravel.func_176223_P();
+-    protected static final IBlockState field_185945_f = Blocks.soul_sand.func_176223_P();
++    protected static final IBlockState field_185940_a = Blocks.air.getBlockState();
++    protected static final IBlockState field_185941_b = Blocks.netherrack.getBlockState();
++    protected static final IBlockState field_185942_c = Blocks.bedrock.getBlockState();
++    protected static final IBlockState field_185943_d = Blocks.lava.getBlockState();
++    protected static final IBlockState field_185944_e = Blocks.gravel.getBlockState();
++    protected static final IBlockState field_185945_f = Blocks.soul_sand.getBlockState();
+     private final World field_185952_n;
+     private final boolean field_185953_o;
+     private final Random field_185954_p;
+@@ -61,8 +61,8 @@
+     private final WorldGenFire field_177470_t = new WorldGenFire();
+     private final WorldGenGlowStone1 field_177469_u = new WorldGenGlowStone1();
+     private final WorldGenGlowStone2 field_177468_v = new WorldGenGlowStone2();
+-    private final WorldGenerator field_177467_w = new WorldGenMinable(Blocks.quartz_ore.func_176223_P(), 14, BlockMatcher.func_177642_a(Blocks.netherrack));
+-    private final WorldGenerator field_189888_D = new WorldGenMinable(Blocks.field_189877_df.func_176223_P(), 33, BlockMatcher.func_177642_a(Blocks.netherrack));
++    private final WorldGenerator field_177467_w = new WorldGenMinable(Blocks.quartz_ore.getBlockState(), 14, BlockMatcher.func_177642_a(Blocks.netherrack));
++    private final WorldGenerator field_189888_D = new WorldGenMinable(Blocks.field_189877_df.getBlockState(), 33, BlockMatcher.func_177642_a(Blocks.netherrack));
+     private final WorldGenHellLava field_177473_x = new WorldGenHellLava(Blocks.flowing_lava, true);
+     private final WorldGenHellLava field_177472_y = new WorldGenHellLava(Blocks.flowing_lava, false);
+     private final WorldGenBush field_177471_z = new WorldGenBush(Blocks.brown_mushroom);
+@@ -87,13 +87,13 @@
+         this.netherrackExculsivityNoiseGen = new NoiseGeneratorOctaves(this.field_185954_p, 4);
+         this.field_185946_g = new NoiseGeneratorOctaves(this.field_185954_p, 10);
+         this.field_185947_h = new NoiseGeneratorOctaves(this.field_185954_p, 16);
+-        p_i45637_1_.func_181544_b(63);
++        p_i45637_1_.setSpawnLevel(63);
+     }
+ 
+     public void func_185936_a(int p_185936_1_, int p_185936_2_, ChunkPrimer p_185936_3_)
+     {
+         int i = 4;
+-        int j = this.field_185952_n.func_181545_F() / 2 + 1;
++        int j = this.field_185952_n.getSpawnLevel() / 2 + 1;
+         int k = 5;
+         int l = 17;
+         int i1 = 5;
+@@ -166,7 +166,7 @@
+ 
+     public void func_185937_b(int p_185937_1_, int p_185937_2_, ChunkPrimer p_185937_3_)
+     {
+-        int i = this.field_185952_n.func_181545_F() + 1;
++        int i = this.field_185952_n.getSpawnLevel() + 1;
+         double d0 = 0.03125D;
+         this.slowsandNoise = this.slowsandGravelNoiseGen.generateNoiseOctaves(this.slowsandNoise, p_185937_1_ * 16, p_185937_2_ * 16, 0, 16, 16, 1, 0.03125D, 0.03125D, 1.0D);
+         this.gravelNoise = this.slowsandGravelNoiseGen.generateNoiseOctaves(this.gravelNoise, p_185937_1_ * 16, 109, p_185937_2_ * 16, 16, 1, 16, 0.03125D, 1.0D, 0.03125D);
+@@ -189,9 +189,9 @@
+                     {
+                         IBlockState iblockstate2 = p_185937_3_.func_177856_a(k, j1, j);
+ 
+-                        if (iblockstate2.func_177230_c() != null && iblockstate2.func_185904_a() != Material.air)
++                        if (iblockstate2.getBlock() != null && iblockstate2.getMaterial() != Material.air)
+                         {
+-                            if (iblockstate2.func_177230_c() == Blocks.netherrack)
++                            if (iblockstate2.getBlock() == Blocks.netherrack)
+                             {
+                                 if (i1 == -1)
+                                 {
+@@ -218,7 +218,7 @@
+                                         }
+                                     }
+ 
+-                                    if (j1 < i && (iblockstate == null || iblockstate.func_185904_a() == Material.air))
++                                    if (j1 < i && (iblockstate == null || iblockstate.getMaterial() == Material.air))
+                                     {
+                                         iblockstate = field_185943_d;
+                                     }
+@@ -411,7 +411,7 @@
+             this.field_177467_w.func_180709_b(this.field_185952_n, this.field_185954_p, blockpos.func_177982_a(this.field_185954_p.nextInt(16), this.field_185954_p.nextInt(108) + 10, this.field_185954_p.nextInt(16)));
+         }
+ 
+-        int i2 = this.field_185952_n.func_181545_F() / 2 + 1;
++        int i2 = this.field_185952_n.getSpawnLevel() / 2 + 1;
+ 
+         for (int l = 0; l < 4; ++l)
+         {
+@@ -441,7 +441,7 @@
+                 return this.genNetherBridge.getSpawnList();
+             }
+ 
+-            if (this.genNetherBridge.func_175796_a(this.field_185952_n, p_177458_2_) && this.field_185952_n.func_180495_p(p_177458_2_.func_177977_b()).func_177230_c() == Blocks.nether_brick)
++            if (this.genNetherBridge.func_175796_a(this.field_185952_n, p_177458_2_) && this.field_185952_n.getBlockState(p_177458_2_.getBlockPosBelow()).getBlock() == Blocks.nether_brick)
+             {
+                 return this.genNetherBridge.getSpawnList();
+             }

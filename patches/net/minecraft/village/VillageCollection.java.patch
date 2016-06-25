@@ -1,0 +1,33 @@
+--- a/net/minecraft/village/VillageCollection.java
++++ b/net/minecraft/village/VillageCollection.java
+@@ -187,7 +187,7 @@
+     {
+         for (VillageDoorInfo villagedoorinfo : this.newDoors)
+         {
+-            if (villagedoorinfo.func_179852_d().func_177958_n() == p_176055_1_.func_177958_n() && villagedoorinfo.func_179852_d().func_177952_p() == p_176055_1_.func_177952_p() && Math.abs(villagedoorinfo.func_179852_d().func_177956_o() - p_176055_1_.func_177956_o()) <= 1)
++            if (villagedoorinfo.func_179852_d().getX() == p_176055_1_.getX() && villagedoorinfo.func_179852_d().getZ() == p_176055_1_.getZ() && Math.abs(villagedoorinfo.func_179852_d().getY() - p_176055_1_.getY()) <= 1)
+             {
+                 return villagedoorinfo;
+             }
+@@ -225,7 +225,7 @@
+ 
+         for (int j = 1; j <= 5; ++j)
+         {
+-            if (this.worldObj.func_175678_i(p_176061_1_.func_177967_a(p_176061_2_, j)))
++            if (this.worldObj.func_175678_i(p_176061_1_.getBlockPosRelative(p_176061_2_, j)))
+             {
+                 ++i;
+ 
+@@ -254,9 +254,9 @@
+ 
+     private boolean func_176058_f(BlockPos p_176058_1_)
+     {
+-        IBlockState iblockstate = this.worldObj.func_180495_p(p_176058_1_);
+-        Block block = iblockstate.func_177230_c();
+-        return block instanceof BlockDoor ? iblockstate.func_185904_a() == Material.wood : false;
++        IBlockState iblockstate = this.worldObj.getBlockState(p_176058_1_);
++        Block block = iblockstate.getBlock();
++        return block instanceof BlockDoor ? iblockstate.getMaterial() == Material.wood : false;
+     }
+ 
+     /**

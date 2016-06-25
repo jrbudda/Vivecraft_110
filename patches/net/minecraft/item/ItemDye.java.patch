@@ -1,0 +1,67 @@
+--- a/net/minecraft/item/ItemDye.java
++++ b/net/minecraft/item/ItemDye.java
+@@ -42,7 +42,7 @@
+ 
+     public EnumActionResult func_180614_a(ItemStack p_180614_1_, EntityPlayer p_180614_2_, World p_180614_3_, BlockPos p_180614_4_, EnumHand p_180614_5_, EnumFacing p_180614_6_, float p_180614_7_, float p_180614_8_, float p_180614_9_)
+     {
+-        if (!p_180614_2_.func_175151_a(p_180614_4_.func_177972_a(p_180614_6_), p_180614_6_, p_180614_1_))
++        if (!p_180614_2_.func_175151_a(p_180614_4_.getBlockPosRelative(p_180614_6_), p_180614_6_, p_180614_1_))
+         {
+             return EnumActionResult.FAIL;
+         }
+@@ -64,16 +64,16 @@
+             }
+             else if (enumdyecolor == EnumDyeColor.BROWN)
+             {
+-                IBlockState iblockstate = p_180614_3_.func_180495_p(p_180614_4_);
+-                Block block = iblockstate.func_177230_c();
++                IBlockState iblockstate = p_180614_3_.getBlockState(p_180614_4_);
++                Block block = iblockstate.getBlock();
+ 
+                 if (block == Blocks.log && iblockstate.func_177229_b(BlockOldLog.field_176301_b) == BlockPlanks.EnumType.JUNGLE)
+                 {
+                     if (p_180614_6_ != EnumFacing.DOWN && p_180614_6_ != EnumFacing.UP)
+                     {
+-                        p_180614_4_ = p_180614_4_.func_177972_a(p_180614_6_);
++                        p_180614_4_ = p_180614_4_.getBlockPosRelative(p_180614_6_);
+ 
+-                        if (p_180614_3_.func_175623_d(p_180614_4_))
++                        if (p_180614_3_.isEmpty(p_180614_4_))
+                         {
+                             IBlockState iblockstate1 = Blocks.cocoa.func_180642_a(p_180614_3_, p_180614_4_, p_180614_6_, p_180614_7_, p_180614_8_, p_180614_9_, 0, p_180614_2_);
+                             p_180614_3_.func_180501_a(p_180614_4_, iblockstate1, 10);
+@@ -99,11 +99,11 @@
+ 
+     public static boolean func_179234_a(ItemStack p_179234_0_, World p_179234_1_, BlockPos p_179234_2_)
+     {
+-        IBlockState iblockstate = p_179234_1_.func_180495_p(p_179234_2_);
++        IBlockState iblockstate = p_179234_1_.getBlockState(p_179234_2_);
+ 
+-        if (iblockstate.func_177230_c() instanceof IGrowable)
++        if (iblockstate.getBlock() instanceof IGrowable)
+         {
+-            IGrowable igrowable = (IGrowable)iblockstate.func_177230_c();
++            IGrowable igrowable = (IGrowable)iblockstate.getBlock();
+ 
+             if (igrowable.func_176473_a(p_179234_1_, p_179234_2_, iblockstate, p_179234_1_.isRemote))
+             {
+@@ -131,16 +131,16 @@
+             p_180617_2_ = 15;
+         }
+ 
+-        IBlockState iblockstate = p_180617_0_.func_180495_p(p_180617_1_);
++        IBlockState iblockstate = p_180617_0_.getBlockState(p_180617_1_);
+ 
+-        if (iblockstate.func_185904_a() != Material.air)
++        if (iblockstate.getMaterial() != Material.air)
+         {
+             for (int i = 0; i < p_180617_2_; ++i)
+             {
+                 double d0 = itemRand.nextGaussian() * 0.02D;
+                 double d1 = itemRand.nextGaussian() * 0.02D;
+                 double d2 = itemRand.nextGaussian() * 0.02D;
+-                p_180617_0_.func_175688_a(EnumParticleTypes.VILLAGER_HAPPY, (double)((float)p_180617_1_.func_177958_n() + itemRand.nextFloat()), (double)p_180617_1_.func_177956_o() + (double)itemRand.nextFloat() * iblockstate.func_185900_c(p_180617_0_, p_180617_1_).maxY, (double)((float)p_180617_1_.func_177952_p() + itemRand.nextFloat()), d0, d1, d2, new int[0]);
++                p_180617_0_.spawnParticle(EnumParticleTypes.VILLAGER_HAPPY, (double)((float)p_180617_1_.getX() + itemRand.nextFloat()), (double)p_180617_1_.getY() + (double)itemRand.nextFloat() * iblockstate.func_185900_c(p_180617_0_, p_180617_1_).maxY, (double)((float)p_180617_1_.getZ() + itemRand.nextFloat()), d0, d1, d2, new int[0]);
+             }
+         }
+     }

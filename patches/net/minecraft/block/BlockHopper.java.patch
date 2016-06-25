@@ -1,0 +1,20 @@
+--- a/net/minecraft/block/BlockHopper.java
++++ b/net/minecraft/block/BlockHopper.java
+@@ -77,7 +77,7 @@
+             enumfacing = EnumFacing.DOWN;
+         }
+ 
+-        return this.func_176223_P().func_177226_a(field_176430_a, enumfacing).func_177226_a(field_176429_b, Boolean.valueOf(true));
++        return this.getBlockState().func_177226_a(field_176430_a, enumfacing).func_177226_a(field_176429_b, Boolean.valueOf(true));
+     }
+ 
+     /**
+@@ -215,7 +215,7 @@
+ 
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        return this.func_176223_P().func_177226_a(field_176430_a, func_176428_b(p_176203_1_)).func_177226_a(field_176429_b, Boolean.valueOf(getActiveStateFromMetadata(p_176203_1_)));
++        return this.getBlockState().func_177226_a(field_176430_a, func_176428_b(p_176203_1_)).func_177226_a(field_176429_b, Boolean.valueOf(getActiveStateFromMetadata(p_176203_1_)));
+     }
+ 
+     public int func_176201_c(IBlockState p_176201_1_)

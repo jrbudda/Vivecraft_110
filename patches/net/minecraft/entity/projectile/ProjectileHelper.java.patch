@@ -1,0 +1,20 @@
+--- a/net/minecraft/entity/projectile/ProjectileHelper.java
++++ b/net/minecraft/entity/projectile/ProjectileHelper.java
+@@ -31,7 +31,7 @@
+             }
+ 
+             Entity entity = null;
+-            List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(p_188802_0_, p_188802_0_.func_174813_aQ().addCoord(d3, d4, d5).func_186662_g(1.0D));
++            List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(p_188802_0_, p_188802_0_.func_174813_aQ().addCoord(d3, d4, d5).expand(1.0D));
+             double d6 = 0.0D;
+ 
+             for (int i = 0; i < list.size(); ++i)
+@@ -40,7 +40,7 @@
+ 
+                 if (entity1.canBeCollidedWith() && (p_188802_2_ || !entity1.isEntityEqual(p_188802_3_)) && !entity1.noClip)
+                 {
+-                    AxisAlignedBB axisalignedbb = entity1.func_174813_aQ().func_186662_g(0.30000001192092896D);
++                    AxisAlignedBB axisalignedbb = entity1.func_174813_aQ().expand(0.30000001192092896D);
+                     RayTraceResult raytraceresult1 = axisalignedbb.calculateIntercept(vec3d, vec3d1);
+ 
+                     if (raytraceresult1 != null)

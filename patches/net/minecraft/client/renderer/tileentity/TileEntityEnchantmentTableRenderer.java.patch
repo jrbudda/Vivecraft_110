@@ -1,0 +1,30 @@
+--- a/net/minecraft/client/renderer/tileentity/TileEntityEnchantmentTableRenderer.java
++++ b/net/minecraft/client/renderer/tileentity/TileEntityEnchantmentTableRenderer.java
+@@ -14,7 +14,7 @@
+ 
+     public void func_180535_a(TileEntityEnchantmentTable p_180535_1_, double p_180535_2_, double p_180535_4_, double p_180535_6_, float p_180535_8_, int p_180535_9_)
+     {
+-        GlStateManager.func_179094_E();
++        GlStateManager.push();
+         GlStateManager.func_179109_b((float)p_180535_2_ + 0.5F, (float)p_180535_4_ + 0.75F, (float)p_180535_6_ + 0.5F);
+         float f = (float)p_180535_1_.tickCount + p_180535_8_;
+         GlStateManager.func_179109_b(0.0F, 0.1F + MathHelper.sin(f * 0.1F) * 0.01F, 0.0F);
+@@ -31,8 +31,8 @@
+         }
+ 
+         float f2 = p_180535_1_.bookRotationPrev + f1 * p_180535_8_;
+-        GlStateManager.func_179114_b(-f2 * (180F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
+-        GlStateManager.func_179114_b(80.0F, 0.0F, 0.0F, 1.0F);
++        GlStateManager.rotate(-f2 * (180F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
++        GlStateManager.rotate(80.0F, 0.0F, 0.0F, 1.0F);
+         this.bindTexture(field_147540_b);
+         float f3 = p_180535_1_.pageFlipPrev + (p_180535_1_.pageFlip - p_180535_1_.pageFlipPrev) * p_180535_8_ + 0.25F;
+         float f4 = p_180535_1_.pageFlipPrev + (p_180535_1_.pageFlip - p_180535_1_.pageFlipPrev) * p_180535_8_ + 0.75F;
+@@ -62,6 +62,6 @@
+         float f5 = p_180535_1_.bookSpreadPrev + (p_180535_1_.bookSpread - p_180535_1_.bookSpreadPrev) * p_180535_8_;
+         GlStateManager.func_179089_o();
+         this.field_147541_c.render((Entity)null, f, f3, f4, f5, 0.0F, 0.0625F);
+-        GlStateManager.func_179121_F();
++        GlStateManager.pop();
+     }
+ }

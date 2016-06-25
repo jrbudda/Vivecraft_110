@@ -1,0 +1,89 @@
+--- a/net/minecraft/client/renderer/tileentity/TileEntityChestRenderer.java
++++ b/net/minecraft/client/renderer/tileentity/TileEntityChestRenderer.java
+@@ -45,7 +45,7 @@
+ 
+             if (block instanceof BlockChest && i == 0)
+             {
+-                ((BlockChest)block).func_176455_e(p_180535_1_.getWorld(), p_180535_1_.func_174877_v(), p_180535_1_.getWorld().func_180495_p(p_180535_1_.func_174877_v()));
++                ((BlockChest)block).func_176455_e(p_180535_1_.getWorld(), p_180535_1_.func_174877_v(), p_180535_1_.getWorld().getBlockState(p_180535_1_.func_174877_v()));
+                 i = p_180535_1_.getBlockMetadata();
+             }
+ 
+@@ -67,11 +67,11 @@
+                 if (p_180535_9_ >= 0)
+                 {
+                     this.bindTexture(field_178460_a[p_180535_9_]);
+-                    GlStateManager.func_179128_n(5890);
+-                    GlStateManager.func_179094_E();
+-                    GlStateManager.func_179152_a(4.0F, 4.0F, 1.0F);
++                    GlStateManager.matrixMode(5890);
++                    GlStateManager.push();
++                    GlStateManager.scale(4.0F, 4.0F, 1.0F);
+                     GlStateManager.func_179109_b(0.0625F, 0.0625F, 0.0625F);
+-                    GlStateManager.func_179128_n(5888);
++                    GlStateManager.matrixMode(5888);
+                 }
+                 else if (this.isChristams)
+                 {
+@@ -93,11 +93,11 @@
+                 if (p_180535_9_ >= 0)
+                 {
+                     this.bindTexture(field_178460_a[p_180535_9_]);
+-                    GlStateManager.func_179128_n(5890);
+-                    GlStateManager.func_179094_E();
+-                    GlStateManager.func_179152_a(8.0F, 4.0F, 1.0F);
++                    GlStateManager.matrixMode(5890);
++                    GlStateManager.push();
++                    GlStateManager.scale(8.0F, 4.0F, 1.0F);
+                     GlStateManager.func_179109_b(0.0625F, 0.0625F, 0.0625F);
+-                    GlStateManager.func_179128_n(5888);
++                    GlStateManager.matrixMode(5888);
+                 }
+                 else if (this.isChristams)
+                 {
+@@ -113,7 +113,7 @@
+                 }
+             }
+ 
+-            GlStateManager.func_179094_E();
++            GlStateManager.push();
+             GlStateManager.func_179091_B();
+ 
+             if (p_180535_9_ < 0)
+@@ -122,7 +122,7 @@
+             }
+ 
+             GlStateManager.func_179109_b((float)p_180535_2_, (float)p_180535_4_ + 1.0F, (float)p_180535_6_ + 1.0F);
+-            GlStateManager.func_179152_a(1.0F, -1.0F, -1.0F);
++            GlStateManager.scale(1.0F, -1.0F, -1.0F);
+             GlStateManager.func_179109_b(0.5F, 0.5F, 0.5F);
+             int j = 0;
+ 
+@@ -156,7 +156,7 @@
+                 GlStateManager.func_179109_b(0.0F, 0.0F, -1.0F);
+             }
+ 
+-            GlStateManager.func_179114_b((float)j, 0.0F, 1.0F, 0.0F);
++            GlStateManager.rotate((float)j, 0.0F, 1.0F, 0.0F);
+             GlStateManager.func_179109_b(-0.5F, -0.5F, -0.5F);
+             float f = p_180535_1_.prevLidAngle + (p_180535_1_.lidAngle - p_180535_1_.prevLidAngle) * p_180535_8_;
+ 
+@@ -185,14 +185,14 @@
+             modelchest.chestLid.rotateAngleX = -(f * ((float)Math.PI / 2F));
+             modelchest.renderAll();
+             GlStateManager.func_179101_C();
+-            GlStateManager.func_179121_F();
++            GlStateManager.pop();
+             GlStateManager.func_179131_c(1.0F, 1.0F, 1.0F, 1.0F);
+ 
+             if (p_180535_9_ >= 0)
+             {
+-                GlStateManager.func_179128_n(5890);
+-                GlStateManager.func_179121_F();
+-                GlStateManager.func_179128_n(5888);
++                GlStateManager.matrixMode(5890);
++                GlStateManager.pop();
++                GlStateManager.matrixMode(5888);
+             }
+         }
+     }

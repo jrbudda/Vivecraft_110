@@ -1,0 +1,11 @@
+--- a/net/minecraft/network/play/INetHandlerPlayClient.java
++++ b/net/minecraft/network/play/INetHandlerPlayClient.java
+@@ -269,7 +269,7 @@
+      */
+     void handleEntityMovement(SPacketEntity packetIn);
+ 
+-    void func_184330_a(SPacketPlayerPosLook p_184330_1_);
++    void handlePlayerPosLook(SPacketPlayerPosLook p_184330_1_);
+ 
+     /**
+      * Spawns a specified number of particles at the specified location with a randomized displacement according to

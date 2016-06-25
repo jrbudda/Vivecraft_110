@@ -1,0 +1,11 @@
+--- a/net/minecraft/world/chunk/BlockStatePaletteRegistry.java
++++ b/net/minecraft/world/chunk/BlockStatePaletteRegistry.java
+@@ -16,7 +16,7 @@
+     public IBlockState func_186039_a(int p_186039_1_)
+     {
+         IBlockState iblockstate = (IBlockState)Block.field_176229_d.func_148745_a(p_186039_1_);
+-        return iblockstate == null ? Blocks.air.func_176223_P() : iblockstate;
++        return iblockstate == null ? Blocks.air.getBlockState() : iblockstate;
+     }
+ 
+     public void func_186038_a(PacketBuffer p_186038_1_)

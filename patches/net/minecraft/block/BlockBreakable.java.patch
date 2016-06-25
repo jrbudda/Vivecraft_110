@@ -1,0 +1,13 @@
+--- a/net/minecraft/block/BlockBreakable.java
++++ b/net/minecraft/block/BlockBreakable.java
+@@ -30,8 +30,8 @@
+ 
+     public boolean func_176225_a(IBlockState p_176225_1_, IBlockAccess p_176225_2_, BlockPos p_176225_3_, EnumFacing p_176225_4_)
+     {
+-        IBlockState iblockstate = p_176225_2_.func_180495_p(p_176225_3_.func_177972_a(p_176225_4_));
+-        Block block = iblockstate.func_177230_c();
++        IBlockState iblockstate = p_176225_2_.getBlockState(p_176225_3_.getBlockPosRelative(p_176225_4_));
++        Block block = iblockstate.getBlock();
+ 
+         if (this == Blocks.glass || this == Blocks.stained_glass)
+         {

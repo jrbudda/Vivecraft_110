@@ -1,0 +1,68 @@
+--- a/net/minecraft/entity/EntityLeashKnot.java
++++ b/net/minecraft/entity/EntityLeashKnot.java
+@@ -24,11 +24,11 @@
+     public EntityLeashKnot(World p_i45851_1_, BlockPos p_i45851_2_)
+     {
+         super(p_i45851_1_, p_i45851_2_);
+-        this.setPosition((double)p_i45851_2_.func_177958_n() + 0.5D, (double)p_i45851_2_.func_177956_o() + 0.5D, (double)p_i45851_2_.func_177952_p() + 0.5D);
++        this.setPosition((double)p_i45851_2_.getX() + 0.5D, (double)p_i45851_2_.getY() + 0.5D, (double)p_i45851_2_.getZ() + 0.5D);
+         float f = 0.125F;
+         float f1 = 0.1875F;
+         float f2 = 0.25F;
+-        this.func_174826_a(new AxisAlignedBB(this.posX - 0.1875D, this.posY - 0.25D + 0.125D, this.posZ - 0.1875D, this.posX + 0.1875D, this.posY + 0.25D + 0.125D, this.posZ + 0.1875D));
++        this.setBoundingBox(new AxisAlignedBB(this.posX - 0.1875D, this.posY - 0.25D + 0.125D, this.posZ - 0.1875D, this.posX + 0.1875D, this.posY + 0.25D + 0.125D, this.posZ + 0.1875D));
+     }
+ 
+     /**
+@@ -41,9 +41,9 @@
+ 
+     protected void func_174856_o()
+     {
+-        this.posX = (double)this.field_174861_a.func_177958_n() + 0.5D;
+-        this.posY = (double)this.field_174861_a.func_177956_o() + 0.5D;
+-        this.posZ = (double)this.field_174861_a.func_177952_p() + 0.5D;
++        this.posX = (double)this.field_174861_a.getX() + 0.5D;
++        this.posY = (double)this.field_174861_a.getY() + 0.5D;
++        this.posZ = (double)this.field_174861_a.getZ() + 0.5D;
+     }
+ 
+     public void func_174859_a(EnumFacing p_174859_1_)
+@@ -79,7 +79,7 @@
+      */
+     public void onBroken(@Nullable Entity p_110128_1_)
+     {
+-        this.func_184185_a(SoundEvents.field_187746_da, 1.0F, 1.0F);
++        this.playSound(SoundEvents.field_187746_da, 1.0F, 1.0F);
+     }
+ 
+     /**
+@@ -157,7 +157,7 @@
+      */
+     public boolean onValidSurface()
+     {
+-        return this.worldObj.func_180495_p(this.field_174861_a).func_177230_c() instanceof BlockFence;
++        return this.worldObj.getBlockState(this.field_174861_a).getBlock() instanceof BlockFence;
+     }
+ 
+     public static EntityLeashKnot func_174862_a(World p_174862_0_, BlockPos p_174862_1_)
+@@ -171,9 +171,9 @@
+ 
+     public static EntityLeashKnot func_174863_b(World p_174863_0_, BlockPos p_174863_1_)
+     {
+-        int i = p_174863_1_.func_177958_n();
+-        int j = p_174863_1_.func_177956_o();
+-        int k = p_174863_1_.func_177952_p();
++        int i = p_174863_1_.getX();
++        int j = p_174863_1_.getY();
++        int k = p_174863_1_.getZ();
+ 
+         for (EntityLeashKnot entityleashknot : p_174863_0_.getEntitiesWithinAABB(EntityLeashKnot.class, new AxisAlignedBB((double)i - 1.0D, (double)j - 1.0D, (double)k - 1.0D, (double)i + 1.0D, (double)j + 1.0D, (double)k + 1.0D)))
+         {
+@@ -188,6 +188,6 @@
+ 
+     public void func_184523_o()
+     {
+-        this.func_184185_a(SoundEvents.field_187748_db, 1.0F, 1.0F);
++        this.playSound(SoundEvents.field_187748_db, 1.0F, 1.0F);
+     }
+ }

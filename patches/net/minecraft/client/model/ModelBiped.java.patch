@@ -1,0 +1,34 @@
+--- a/net/minecraft/client/model/ModelBiped.java
++++ b/net/minecraft/client/model/ModelBiped.java
+@@ -66,17 +66,17 @@
+     public void render(Entity p_78088_1_, float p_78088_2_, float p_78088_3_, float p_78088_4_, float p_78088_5_, float p_78088_6_, float p_78088_7_)
+     {
+         this.setRotationAngles(p_78088_2_, p_78088_3_, p_78088_4_, p_78088_5_, p_78088_6_, p_78088_7_, p_78088_1_);
+-        GlStateManager.func_179094_E();
++        GlStateManager.push();
+ 
+         if (this.isChild)
+         {
+             float f = 2.0F;
+-            GlStateManager.func_179152_a(0.75F, 0.75F, 0.75F);
++            GlStateManager.scale(0.75F, 0.75F, 0.75F);
+             GlStateManager.func_179109_b(0.0F, 16.0F * p_78088_7_, 0.0F);
+             this.bipedHead.render(p_78088_7_);
+-            GlStateManager.func_179121_F();
+-            GlStateManager.func_179094_E();
+-            GlStateManager.func_179152_a(0.5F, 0.5F, 0.5F);
++            GlStateManager.pop();
++            GlStateManager.push();
++            GlStateManager.scale(0.5F, 0.5F, 0.5F);
+             GlStateManager.func_179109_b(0.0F, 24.0F * p_78088_7_, 0.0F);
+             this.bipedBody.render(p_78088_7_);
+             this.field_178723_h.render(p_78088_7_);
+@@ -101,7 +101,7 @@
+             this.field_178720_f.render(p_78088_7_);
+         }
+ 
+-        GlStateManager.func_179121_F();
++        GlStateManager.pop();
+     }
+ 
+     @SuppressWarnings("incomplete-switch")

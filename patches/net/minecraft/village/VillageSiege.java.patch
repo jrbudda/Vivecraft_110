@@ -1,0 +1,24 @@
+--- a/net/minecraft/village/VillageSiege.java
++++ b/net/minecraft/village/VillageSiege.java
+@@ -123,9 +123,9 @@
+                     for (int i = 0; i < 10; ++i)
+                     {
+                         float f1 = this.worldObj.rand.nextFloat() * ((float)Math.PI * 2F);
+-                        this.field_75532_g = blockpos.func_177958_n() + (int)((double)(MathHelper.cos(f1) * f) * 0.9D);
+-                        this.field_75538_h = blockpos.func_177956_o();
+-                        this.field_75539_i = blockpos.func_177952_p() + (int)((double)(MathHelper.sin(f1) * f) * 0.9D);
++                        this.field_75532_g = blockpos.getX() + (int)((double)(MathHelper.cos(f1) * f) * 0.9D);
++                        this.field_75538_h = blockpos.getY();
++                        this.field_75539_i = blockpos.getZ() + (int)((double)(MathHelper.sin(f1) * f) * 0.9D);
+                         flag = false;
+ 
+                         for (Village village : this.worldObj.func_175714_ae().getVillageList())
+@@ -204,7 +204,7 @@
+ 
+             if (this.theVillage.func_179866_a(blockpos) && WorldEntitySpawner.func_180267_a(EntityLiving.SpawnPlacementType.ON_GROUND, this.worldObj, blockpos))
+             {
+-                return new Vec3d((double)blockpos.func_177958_n(), (double)blockpos.func_177956_o(), (double)blockpos.func_177952_p());
++                return new Vec3d((double)blockpos.getX(), (double)blockpos.getY(), (double)blockpos.getZ());
+             }
+         }
+ 

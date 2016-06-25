@@ -1,0 +1,42 @@
+--- a/net/minecraft/client/gui/inventory/GuiEditSign.java
++++ b/net/minecraft/client/gui/inventory/GuiEditSign.java
+@@ -125,17 +125,17 @@
+         this.drawDefaultBackground();
+         this.drawCenteredString(this.fontRendererObj, I18n.format("sign.edit", new Object[0]), this.width / 2, 40, 16777215);
+         GlStateManager.func_179131_c(1.0F, 1.0F, 1.0F, 1.0F);
+-        GlStateManager.func_179094_E();
++        GlStateManager.push();
+         GlStateManager.func_179109_b((float)(this.width / 2), 0.0F, 50.0F);
+         float f = 93.75F;
+-        GlStateManager.func_179152_a(-93.75F, -93.75F, -93.75F);
+-        GlStateManager.func_179114_b(180.0F, 0.0F, 1.0F, 0.0F);
++        GlStateManager.scale(-93.75F, -93.75F, -93.75F);
++        GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+         Block block = this.tileSign.getBlockType();
+ 
+         if (block == Blocks.standing_sign)
+         {
+             float f1 = (float)(this.tileSign.getBlockMetadata() * 360) / 16.0F;
+-            GlStateManager.func_179114_b(f1, 0.0F, 1.0F, 0.0F);
++            GlStateManager.rotate(f1, 0.0F, 1.0F, 0.0F);
+             GlStateManager.func_179109_b(0.0F, -1.0625F, 0.0F);
+         }
+         else
+@@ -158,7 +158,7 @@
+                 f2 = -90.0F;
+             }
+ 
+-            GlStateManager.func_179114_b(f2, 0.0F, 1.0F, 0.0F);
++            GlStateManager.rotate(f2, 0.0F, 1.0F, 0.0F);
+             GlStateManager.func_179109_b(0.0F, -1.0625F, 0.0F);
+         }
+ 
+@@ -169,7 +169,7 @@
+ 
+         TileEntityRendererDispatcher.instance.renderTileEntityAt(this.tileSign, -0.5D, -0.75D, -0.5D, 0.0F);
+         this.tileSign.lineBeingEdited = -1;
+-        GlStateManager.func_179121_F();
++        GlStateManager.pop();
+         super.drawScreen(mouseX, mouseY, partialTicks);
+     }
+ }

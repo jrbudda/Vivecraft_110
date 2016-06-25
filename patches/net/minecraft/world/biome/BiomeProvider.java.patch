@@ -1,0 +1,11 @@
+--- a/net/minecraft/world/biome/BiomeProvider.java
++++ b/net/minecraft/world/biome/BiomeProvider.java
+@@ -56,7 +56,7 @@
+ 
+     public Biome func_180300_a(BlockPos p_180300_1_, Biome p_180300_2_)
+     {
+-        return this.biomeCache.func_180284_a(p_180300_1_.func_177958_n(), p_180300_1_.func_177952_p(), p_180300_2_);
++        return this.biomeCache.func_180284_a(p_180300_1_.getX(), p_180300_1_.getZ(), p_180300_2_);
+     }
+ 
+     /**

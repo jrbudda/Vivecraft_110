@@ -1,0 +1,38 @@
+--- a/net/minecraft/block/BlockBanner.java
++++ b/net/minecraft/block/BlockBanner.java
+@@ -192,7 +192,7 @@
+         {
+             EnumFacing enumfacing = (EnumFacing)p_189540_1_.func_177229_b(field_176449_a);
+ 
+-            if (!p_189540_2_.func_180495_p(p_189540_3_.func_177972_a(enumfacing.func_176734_d())).func_185904_a().isSolid())
++            if (!p_189540_2_.getBlockState(p_189540_3_.getBlockPosRelative(enumfacing.func_176734_d())).getMaterial().isSolid())
+             {
+                 this.func_176226_b(p_189540_2_, p_189540_3_, p_189540_1_, 0);
+                 p_189540_2_.func_175698_g(p_189540_3_);
+@@ -210,7 +210,7 @@
+                 enumfacing = EnumFacing.NORTH;
+             }
+ 
+-            return this.func_176223_P().func_177226_a(field_176449_a, enumfacing);
++            return this.getBlockState().func_177226_a(field_176449_a, enumfacing);
+         }
+ 
+         public int func_176201_c(IBlockState p_176201_1_)
+@@ -248,7 +248,7 @@
+ 
+         public void func_189540_a(IBlockState p_189540_1_, World p_189540_2_, BlockPos p_189540_3_, Block p_189540_4_)
+         {
+-            if (!p_189540_2_.func_180495_p(p_189540_3_.func_177977_b()).func_185904_a().isSolid())
++            if (!p_189540_2_.getBlockState(p_189540_3_.getBlockPosBelow()).getMaterial().isSolid())
+             {
+                 this.func_176226_b(p_189540_2_, p_189540_3_, p_189540_1_, 0);
+                 p_189540_2_.func_175698_g(p_189540_3_);
+@@ -259,7 +259,7 @@
+ 
+         public IBlockState func_176203_a(int p_176203_1_)
+         {
+-            return this.func_176223_P().func_177226_a(field_176448_b, Integer.valueOf(p_176203_1_));
++            return this.getBlockState().func_177226_a(field_176448_b, Integer.valueOf(p_176203_1_));
+         }
+ 
+         public int func_176201_c(IBlockState p_176201_1_)

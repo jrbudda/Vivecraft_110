@@ -1,0 +1,11 @@
+--- a/net/minecraft/init/Enchantments.java
++++ b/net/minecraft/init/Enchantments.java
+@@ -33,7 +33,7 @@
+     public static final Enchantment field_185309_u = func_185295_a("power");
+     public static final Enchantment field_185310_v = func_185295_a("punch");
+     public static final Enchantment field_185311_w = func_185295_a("flame");
+-    public static final Enchantment field_185312_x = func_185295_a("infinity");
++    public static final Enchantment infinity = func_185295_a("infinity");
+     public static final Enchantment luckOfTheSea = func_185295_a("luck_of_the_sea");
+     public static final Enchantment lure = func_185295_a("lure");
+     public static final Enchantment field_185296_A = func_185295_a("mending");

@@ -1,0 +1,29 @@
+--- a/net/minecraft/item/ItemSword.java
++++ b/net/minecraft/item/ItemSword.java
+@@ -34,7 +34,7 @@
+ 
+     public float getStrVsBlock(ItemStack p_150893_1_, IBlockState p_150893_2_)
+     {
+-        Block block = p_150893_2_.func_177230_c();
++        Block block = p_150893_2_.getBlock();
+ 
+         if (block == Blocks.web)
+         {
+@@ -42,7 +42,7 @@
+         }
+         else
+         {
+-            Material material = p_150893_2_.func_185904_a();
++            Material material = p_150893_2_.getMaterial();
+             return material != Material.plants && material != Material.vine && material != Material.coral && material != Material.leaves && material != Material.gourd ? 1.0F : 1.5F;
+         }
+     }
+@@ -80,7 +80,7 @@
+      */
+     public boolean canItemHarvestBlock(IBlockState p_150897_1_)
+     {
+-        return p_150897_1_.func_177230_c() == Blocks.web;
++        return p_150897_1_.getBlock() == Blocks.web;
+     }
+ 
+     /**

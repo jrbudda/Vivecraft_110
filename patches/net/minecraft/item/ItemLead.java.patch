@@ -1,0 +1,24 @@
+--- a/net/minecraft/item/ItemLead.java
++++ b/net/minecraft/item/ItemLead.java
+@@ -22,7 +22,7 @@
+ 
+     public EnumActionResult func_180614_a(ItemStack p_180614_1_, EntityPlayer p_180614_2_, World p_180614_3_, BlockPos p_180614_4_, EnumHand p_180614_5_, EnumFacing p_180614_6_, float p_180614_7_, float p_180614_8_, float p_180614_9_)
+     {
+-        Block block = p_180614_3_.func_180495_p(p_180614_4_).func_177230_c();
++        Block block = p_180614_3_.getBlockState(p_180614_4_).getBlock();
+ 
+         if (!(block instanceof BlockFence))
+         {
+@@ -44,9 +44,9 @@
+         EntityLeashKnot entityleashknot = EntityLeashKnot.func_174863_b(p_180618_1_, p_180618_2_);
+         boolean flag = false;
+         double d0 = 7.0D;
+-        int i = p_180618_2_.func_177958_n();
+-        int j = p_180618_2_.func_177956_o();
+-        int k = p_180618_2_.func_177952_p();
++        int i = p_180618_2_.getX();
++        int j = p_180618_2_.getY();
++        int k = p_180618_2_.getZ();
+ 
+         for (EntityLiving entityliving : p_180618_1_.getEntitiesWithinAABB(EntityLiving.class, new AxisAlignedBB((double)i - 7.0D, (double)j - 7.0D, (double)k - 7.0D, (double)i + 7.0D, (double)j + 7.0D, (double)k + 7.0D)))
+         {

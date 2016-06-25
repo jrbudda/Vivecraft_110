@@ -1,0 +1,76 @@
+--- a/net/minecraft/block/BlockRedstoneComparator.java
++++ b/net/minecraft/block/BlockRedstoneComparator.java
+@@ -74,7 +74,7 @@
+         Boolean obool = (Boolean)p_180674_1_.func_177229_b(field_176464_a);
+         BlockRedstoneComparator.Mode blockredstonecomparator$mode = (BlockRedstoneComparator.Mode)p_180674_1_.func_177229_b(field_176463_b);
+         EnumFacing enumfacing = (EnumFacing)p_180674_1_.func_177229_b(field_185512_D);
+-        return Blocks.powered_comparator.func_176223_P().func_177226_a(field_185512_D, enumfacing).func_177226_a(field_176464_a, obool).func_177226_a(field_176463_b, blockredstonecomparator$mode);
++        return Blocks.powered_comparator.getBlockState().func_177226_a(field_185512_D, enumfacing).func_177226_a(field_176464_a, obool).func_177226_a(field_176463_b, blockredstonecomparator$mode);
+     }
+ 
+     protected IBlockState func_180675_k(IBlockState p_180675_1_)
+@@ -82,7 +82,7 @@
+         Boolean obool = (Boolean)p_180675_1_.func_177229_b(field_176464_a);
+         BlockRedstoneComparator.Mode blockredstonecomparator$mode = (BlockRedstoneComparator.Mode)p_180675_1_.func_177229_b(field_176463_b);
+         EnumFacing enumfacing = (EnumFacing)p_180675_1_.func_177229_b(field_185512_D);
+-        return Blocks.unpowered_comparator.func_176223_P().func_177226_a(field_185512_D, enumfacing).func_177226_a(field_176464_a, obool).func_177226_a(field_176463_b, blockredstonecomparator$mode);
++        return Blocks.unpowered_comparator.getBlockState().func_177226_a(field_185512_D, enumfacing).func_177226_a(field_176464_a, obool).func_177226_a(field_176463_b, blockredstonecomparator$mode);
+     }
+ 
+     protected boolean func_176406_l(IBlockState p_176406_1_)
+@@ -124,8 +124,8 @@
+     {
+         int i = super.func_176397_f(p_176397_1_, p_176397_2_, p_176397_3_);
+         EnumFacing enumfacing = (EnumFacing)p_176397_3_.func_177229_b(field_185512_D);
+-        BlockPos blockpos = p_176397_2_.func_177972_a(enumfacing);
+-        IBlockState iblockstate = p_176397_1_.func_180495_p(blockpos);
++        BlockPos blockpos = p_176397_2_.getBlockPosRelative(enumfacing);
++        IBlockState iblockstate = p_176397_1_.getBlockState(blockpos);
+ 
+         if (iblockstate.func_185912_n())
+         {
+@@ -133,14 +133,14 @@
+         }
+         else if (i < 15 && iblockstate.func_185915_l())
+         {
+-            blockpos = blockpos.func_177972_a(enumfacing);
+-            iblockstate = p_176397_1_.func_180495_p(blockpos);
++            blockpos = blockpos.getBlockPosRelative(enumfacing);
++            iblockstate = p_176397_1_.getBlockState(blockpos);
+ 
+             if (iblockstate.func_185912_n())
+             {
+                 i = iblockstate.func_185888_a(p_176397_1_, blockpos);
+             }
+-            else if (iblockstate.func_185904_a() == Material.air)
++            else if (iblockstate.getMaterial() == Material.air)
+             {
+                 EntityItemFrame entityitemframe = this.func_176461_a(p_176397_1_, enumfacing, blockpos);
+ 
+@@ -157,7 +157,7 @@
+     @Nullable
+     private EntityItemFrame func_176461_a(World p_176461_1_, final EnumFacing p_176461_2_, BlockPos p_176461_3_)
+     {
+-        List<EntityItemFrame> list = p_176461_1_.<EntityItemFrame>func_175647_a(EntityItemFrame.class, new AxisAlignedBB((double)p_176461_3_.func_177958_n(), (double)p_176461_3_.func_177956_o(), (double)p_176461_3_.func_177952_p(), (double)(p_176461_3_.func_177958_n() + 1), (double)(p_176461_3_.func_177956_o() + 1), (double)(p_176461_3_.func_177952_p() + 1)), new Predicate<Entity>()
++        List<EntityItemFrame> list = p_176461_1_.<EntityItemFrame>func_175647_a(EntityItemFrame.class, new AxisAlignedBB((double)p_176461_3_.getX(), (double)p_176461_3_.getY(), (double)p_176461_3_.getZ(), (double)(p_176461_3_.getX() + 1), (double)(p_176461_3_.getY() + 1), (double)(p_176461_3_.getZ() + 1)), new Predicate<Entity>()
+         {
+             public boolean apply(@Nullable Entity p_apply_1_)
+             {
+@@ -277,7 +277,7 @@
+ 
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        return this.func_176223_P().func_177226_a(field_185512_D, EnumFacing.func_176731_b(p_176203_1_)).func_177226_a(field_176464_a, Boolean.valueOf((p_176203_1_ & 8) > 0)).func_177226_a(field_176463_b, (p_176203_1_ & 4) > 0 ? BlockRedstoneComparator.Mode.SUBTRACT : BlockRedstoneComparator.Mode.COMPARE);
++        return this.getBlockState().func_177226_a(field_185512_D, EnumFacing.func_176731_b(p_176203_1_)).func_177226_a(field_176464_a, Boolean.valueOf((p_176203_1_ & 8) > 0)).func_177226_a(field_176463_b, (p_176203_1_ & 4) > 0 ? BlockRedstoneComparator.Mode.SUBTRACT : BlockRedstoneComparator.Mode.COMPARE);
+     }
+ 
+     public int func_176201_c(IBlockState p_176201_1_)
+@@ -315,7 +315,7 @@
+ 
+     public IBlockState func_180642_a(World p_180642_1_, BlockPos p_180642_2_, EnumFacing p_180642_3_, float p_180642_4_, float p_180642_5_, float p_180642_6_, int p_180642_7_, EntityLivingBase p_180642_8_)
+     {
+-        return this.func_176223_P().func_177226_a(field_185512_D, p_180642_8_.func_174811_aO().func_176734_d()).func_177226_a(field_176464_a, Boolean.valueOf(false)).func_177226_a(field_176463_b, BlockRedstoneComparator.Mode.COMPARE);
++        return this.getBlockState().func_177226_a(field_185512_D, p_180642_8_.func_174811_aO().func_176734_d()).func_177226_a(field_176464_a, Boolean.valueOf(false)).func_177226_a(field_176463_b, BlockRedstoneComparator.Mode.COMPARE);
+     }
+ 
+     public static enum Mode implements IStringSerializable

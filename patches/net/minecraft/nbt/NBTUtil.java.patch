@@ -1,0 +1,39 @@
+--- a/net/minecraft/nbt/NBTUtil.java
++++ b/net/minecraft/nbt/NBTUtil.java
+@@ -224,9 +224,9 @@
+     public static NBTTagCompound func_186859_a(BlockPos p_186859_0_)
+     {
+         NBTTagCompound nbttagcompound = new NBTTagCompound();
+-        nbttagcompound.setInteger("X", p_186859_0_.func_177958_n());
+-        nbttagcompound.setInteger("Y", p_186859_0_.func_177956_o());
+-        nbttagcompound.setInteger("Z", p_186859_0_.func_177952_p());
++        nbttagcompound.setInteger("X", p_186859_0_.getX());
++        nbttagcompound.setInteger("Y", p_186859_0_.getY());
++        nbttagcompound.setInteger("Z", p_186859_0_.getZ());
+         return nbttagcompound;
+     }
+ 
+@@ -234,12 +234,12 @@
+     {
+         if (!p_190008_0_.hasKey("Name", 8))
+         {
+-            return Blocks.air.func_176223_P();
++            return Blocks.air.getBlockState();
+         }
+         else
+         {
+             Block block = (Block)Block.blockRegistry.getObject(new ResourceLocation(p_190008_0_.getString("Name")));
+-            IBlockState iblockstate = block.func_176223_P();
++            IBlockState iblockstate = block.getBlockState();
+ 
+             if (p_190008_0_.hasKey("Properties", 10))
+             {
+@@ -268,7 +268,7 @@
+ 
+     public static NBTTagCompound func_190009_a(NBTTagCompound p_190009_0_, IBlockState p_190009_1_)
+     {
+-        p_190009_0_.setString("Name", ((ResourceLocation)Block.blockRegistry.func_177774_c(p_190009_1_.func_177230_c())).toString());
++        p_190009_0_.setString("Name", ((ResourceLocation)Block.blockRegistry.func_177774_c(p_190009_1_.getBlock())).toString());
+ 
+         if (!p_190009_1_.func_177228_b().isEmpty())
+         {

@@ -1,0 +1,11 @@
+--- a/net/minecraft/client/model/ModelDragonHead.java
++++ b/net/minecraft/client/model/ModelDragonHead.java
+@@ -56,7 +56,7 @@
+         this.field_187070_a.rotateAngleY = p_78088_5_ * 0.017453292F;
+         this.field_187070_a.rotateAngleX = p_78088_6_ * 0.017453292F;
+         GlStateManager.func_179109_b(0.0F, -0.374375F, 0.0F);
+-        GlStateManager.func_179152_a(0.75F, 0.75F, 0.75F);
++        GlStateManager.scale(0.75F, 0.75F, 0.75F);
+         this.field_187070_a.render(p_78088_7_);
+     }
+ }

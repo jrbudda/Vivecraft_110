@@ -1,0 +1,11 @@
+--- a/net/minecraft/item/ItemFirework.java
++++ b/net/minecraft/item/ItemFirework.java
+@@ -19,7 +19,7 @@
+     {
+         if (!p_180614_3_.isRemote)
+         {
+-            EntityFireworkRocket entityfireworkrocket = new EntityFireworkRocket(p_180614_3_, (double)((float)p_180614_4_.func_177958_n() + p_180614_7_), (double)((float)p_180614_4_.func_177956_o() + p_180614_8_), (double)((float)p_180614_4_.func_177952_p() + p_180614_9_), p_180614_1_);
++            EntityFireworkRocket entityfireworkrocket = new EntityFireworkRocket(p_180614_3_, (double)((float)p_180614_4_.getX() + p_180614_7_), (double)((float)p_180614_4_.getY() + p_180614_8_), (double)((float)p_180614_4_.getZ() + p_180614_9_), p_180614_1_);
+             p_180614_3_.spawnEntityInWorld(entityfireworkrocket);
+ 
+             if (!p_180614_2_.capabilities.isCreativeMode)

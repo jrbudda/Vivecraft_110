@@ -1,0 +1,224 @@
+--- a/net/minecraft/client/renderer/GlStateManager.java
++++ b/net/minecraft/client/renderer/GlStateManager.java
+@@ -14,21 +14,21 @@
+ 
+ public class GlStateManager
+ {
+-    private static final FloatBuffer field_187450_a = BufferUtils.createFloatBuffer(16);
+-    private static final FloatBuffer field_187451_b = BufferUtils.createFloatBuffer(4);
+-    private static final GlStateManager.AlphaState field_179160_a = new GlStateManager.AlphaState();
++    private static final FloatBuffer fb16 = BufferUtils.createFloatBuffer(16);
++    private static final FloatBuffer fb4 = BufferUtils.createFloatBuffer(4);
++    private static final GlStateManager.AlphaState alpha = new GlStateManager.AlphaState();
+     private static final GlStateManager.BooleanState field_179158_b = new GlStateManager.BooleanState(2896);
+     private static final GlStateManager.BooleanState[] field_179159_c = new GlStateManager.BooleanState[8];
+     private static final GlStateManager.ColorMaterialState field_179156_d;
+-    private static final GlStateManager.BlendState field_179157_e;
+-    private static final GlStateManager.DepthState field_179154_f;
++    private static final GlStateManager.BlendState blend;
++    private static final GlStateManager.DepthState depth;
+     private static final GlStateManager.FogState field_179155_g;
+     private static final GlStateManager.CullState field_179167_h;
+     private static final GlStateManager.PolygonOffsetState field_179168_i;
+     private static final GlStateManager.ColorLogicState field_179165_j;
+     private static final GlStateManager.TexGenState field_179166_k;
+     private static final GlStateManager.ClearState field_179163_l;
+-    private static final GlStateManager.StencilState field_179164_m;
++    private static final GlStateManager.StencilState stencil;
+     private static final GlStateManager.BooleanState field_179161_n;
+     private static int field_179162_o;
+     private static final GlStateManager.TextureState[] field_179174_p;
+@@ -49,20 +49,20 @@
+ 
+     public static void func_179118_c()
+     {
+-        field_179160_a.field_179208_a.func_179198_a();
++        alpha.field_179208_a.func_179198_a();
+     }
+ 
+     public static void func_179141_d()
+     {
+-        field_179160_a.field_179208_a.func_179200_b();
++        alpha.field_179208_a.func_179200_b();
+     }
+ 
+     public static void func_179092_a(int p_179092_0_, float p_179092_1_)
+     {
+-        if (p_179092_0_ != field_179160_a.field_179206_b || p_179092_1_ != field_179160_a.field_179207_c)
++        if (p_179092_0_ != alpha.field_179206_b || p_179092_1_ != alpha.field_179207_c)
+         {
+-            field_179160_a.field_179206_b = p_179092_0_;
+-            field_179160_a.field_179207_c = p_179092_1_;
++            alpha.field_179206_b = p_179092_0_;
++            alpha.field_179207_c = p_179092_1_;
+             GL11.glAlphaFunc(p_179092_0_, p_179092_1_);
+         }
+     }
+@@ -124,40 +124,40 @@
+ 
+     public static void func_179097_i()
+     {
+-        field_179154_f.field_179052_a.func_179198_a();
++        depth.field_179052_a.func_179198_a();
+     }
+ 
+     public static void func_179126_j()
+     {
+-        field_179154_f.field_179052_a.func_179200_b();
++        depth.field_179052_a.func_179200_b();
+     }
+ 
+     public static void func_179143_c(int p_179143_0_)
+     {
+-        if (p_179143_0_ != field_179154_f.field_179051_c)
++        if (p_179143_0_ != depth.field_179051_c)
+         {
+-            field_179154_f.field_179051_c = p_179143_0_;
++            depth.field_179051_c = p_179143_0_;
+             GL11.glDepthFunc(p_179143_0_);
+         }
+     }
+ 
+     public static void func_179132_a(boolean p_179132_0_)
+     {
+-        if (p_179132_0_ != field_179154_f.field_179050_b)
++        if (p_179132_0_ != depth.field_179050_b)
+         {
+-            field_179154_f.field_179050_b = p_179132_0_;
++            depth.field_179050_b = p_179132_0_;
+             GL11.glDepthMask(p_179132_0_);
+         }
+     }
+ 
+     public static void func_179084_k()
+     {
+-        field_179157_e.field_179213_a.func_179198_a();
++        blend.field_179213_a.func_179198_a();
+     }
+ 
+     public static void func_179147_l()
+     {
+-        field_179157_e.field_179213_a.func_179200_b();
++        blend.field_179213_a.func_179200_b();
+     }
+ 
+     public static void func_187401_a(GlStateManager.SourceFactor p_187401_0_, GlStateManager.DestFactor p_187401_1_)
+@@ -167,10 +167,10 @@
+ 
+     public static void func_179112_b(int p_179112_0_, int p_179112_1_)
+     {
+-        if (p_179112_0_ != field_179157_e.field_179211_b || p_179112_1_ != field_179157_e.field_179212_c)
++        if (p_179112_0_ != blend.field_179211_b || p_179112_1_ != blend.field_179212_c)
+         {
+-            field_179157_e.field_179211_b = p_179112_0_;
+-            field_179157_e.field_179212_c = p_179112_1_;
++            blend.field_179211_b = p_179112_0_;
++            blend.field_179212_c = p_179112_1_;
+             GL11.glBlendFunc(p_179112_0_, p_179112_1_);
+         }
+     }
+@@ -182,12 +182,12 @@
+ 
+     public static void func_179120_a(int p_179120_0_, int p_179120_1_, int p_179120_2_, int p_179120_3_)
+     {
+-        if (p_179120_0_ != field_179157_e.field_179211_b || p_179120_1_ != field_179157_e.field_179212_c || p_179120_2_ != field_179157_e.field_179209_d || p_179120_3_ != field_179157_e.field_179210_e)
++        if (p_179120_0_ != blend.field_179211_b || p_179120_1_ != blend.field_179212_c || p_179120_2_ != blend.field_179209_d || p_179120_3_ != blend.field_179210_e)
+         {
+-            field_179157_e.field_179211_b = p_179120_0_;
+-            field_179157_e.field_179212_c = p_179120_1_;
+-            field_179157_e.field_179209_d = p_179120_2_;
+-            field_179157_e.field_179210_e = p_179120_3_;
++            blend.field_179211_b = p_179120_0_;
++            blend.field_179212_c = p_179120_1_;
++            blend.field_179209_d = p_179120_2_;
++            blend.field_179210_e = p_179120_3_;
+             OpenGlHelper.glBlendFunc(p_179120_0_, p_179120_1_, p_179120_2_, p_179120_3_);
+         }
+     }
+@@ -199,11 +199,11 @@
+ 
+     public static void func_187431_e(int p_187431_0_)
+     {
+-        field_187451_b.put(0, (float)(p_187431_0_ >> 16 & 255) / 255.0F);
+-        field_187451_b.put(1, (float)(p_187431_0_ >> 8 & 255) / 255.0F);
+-        field_187451_b.put(2, (float)(p_187431_0_ >> 0 & 255) / 255.0F);
+-        field_187451_b.put(3, (float)(p_187431_0_ >> 24 & 255) / 255.0F);
+-        func_187448_b(8960, 8705, field_187451_b);
++        fb4.put(0, (float)(p_187431_0_ >> 16 & 255) / 255.0F);
++        fb4.put(1, (float)(p_187431_0_ >> 8 & 255) / 255.0F);
++        fb4.put(2, (float)(p_187431_0_ >> 0 & 255) / 255.0F);
++        fb4.put(3, (float)(p_187431_0_ >> 24 & 255) / 255.0F);
++        func_187448_b(8960, 8705, fb4);
+         func_187399_a(8960, 8704, 34160);
+         func_187399_a(8960, 34161, 7681);
+         func_187399_a(8960, 34176, 34166);
+@@ -573,22 +573,22 @@
+         GL11.glClear(p_179086_0_);
+     }
+ 
+-    public static void func_179128_n(int p_179128_0_)
++    public static void matrixMode(int p_179128_0_)
+     {
+         GL11.glMatrixMode(p_179128_0_);
+     }
+ 
+-    public static void func_179096_D()
++    public static void loadIdentity()
+     {
+         GL11.glLoadIdentity();
+     }
+ 
+-    public static void func_179094_E()
++    public static void push()
+     {
+         GL11.glPushMatrix();
+     }
+ 
+-    public static void func_179121_F()
++    public static void pop()
+     {
+         GL11.glPopMatrix();
+     }
+@@ -603,12 +603,12 @@
+         GL11.glOrtho(p_179130_0_, p_179130_2_, p_179130_4_, p_179130_6_, p_179130_8_, p_179130_10_);
+     }
+ 
+-    public static void func_179114_b(float p_179114_0_, float p_179114_1_, float p_179114_2_, float p_179114_3_)
++    public static void rotate(float p_179114_0_, float p_179114_1_, float p_179114_2_, float p_179114_3_)
+     {
+         GL11.glRotatef(p_179114_0_, p_179114_1_, p_179114_2_, p_179114_3_);
+     }
+ 
+-    public static void func_179152_a(float p_179152_0_, float p_179152_1_, float p_179152_2_)
++    public static void scale(float p_179152_0_, float p_179152_1_, float p_179152_2_)
+     {
+         GL11.glScalef(p_179152_0_, p_179152_1_, p_179152_2_);
+     }
+@@ -635,7 +635,7 @@
+ 
+     public static void func_187444_a(Quaternion p_187444_0_)
+     {
+-        func_179110_a(func_187418_a(field_187450_a, p_187444_0_));
++        func_179110_a(func_187418_a(fb16, p_187444_0_));
+     }
+ 
+     public static FloatBuffer func_187418_a(FloatBuffer p_187418_0_, Quaternion p_187418_1_)
+@@ -843,15 +843,15 @@
+         }
+ 
+         field_179156_d = new GlStateManager.ColorMaterialState();
+-        field_179157_e = new GlStateManager.BlendState();
+-        field_179154_f = new GlStateManager.DepthState();
++        blend = new GlStateManager.BlendState();
++        depth = new GlStateManager.DepthState();
+         field_179155_g = new GlStateManager.FogState();
+         field_179167_h = new GlStateManager.CullState();
+         field_179168_i = new GlStateManager.PolygonOffsetState();
+         field_179165_j = new GlStateManager.ColorLogicState();
+         field_179166_k = new GlStateManager.TexGenState();
+         field_179163_l = new GlStateManager.ClearState();
+-        field_179164_m = new GlStateManager.StencilState();
++        stencil = new GlStateManager.StencilState();
+         field_179161_n = new GlStateManager.BooleanState(2977);
+         field_179174_p = new GlStateManager.TextureState[8];
+ 

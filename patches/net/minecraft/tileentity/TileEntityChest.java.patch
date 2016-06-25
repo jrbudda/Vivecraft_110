@@ -1,0 +1,78 @@
+--- a/net/minecraft/tileentity/TileEntityChest.java
++++ b/net/minecraft/tileentity/TileEntityChest.java
+@@ -228,7 +228,7 @@
+      */
+     public boolean isUseableByPlayer(EntityPlayer player)
+     {
+-        return this.worldObj.func_175625_s(this.field_174879_c) != this ? false : player.getDistanceSq((double)this.field_174879_c.func_177958_n() + 0.5D, (double)this.field_174879_c.func_177956_o() + 0.5D, (double)this.field_174879_c.func_177952_p() + 0.5D) <= 64.0D;
++        return this.worldObj.func_175625_s(this.field_174879_c) != this ? false : player.getDistanceSq((double)this.field_174879_c.getX() + 0.5D, (double)this.field_174879_c.getY() + 0.5D, (double)this.field_174879_c.getZ() + 0.5D) <= 64.0D;
+     }
+ 
+     public void updateContainingBlockInfo()
+@@ -299,7 +299,7 @@
+     @Nullable
+     protected TileEntityChest func_174911_a(EnumFacing p_174911_1_)
+     {
+-        BlockPos blockpos = this.field_174879_c.func_177972_a(p_174911_1_);
++        BlockPos blockpos = this.field_174879_c.getBlockPosRelative(p_174911_1_);
+ 
+         if (this.func_174912_b(blockpos))
+         {
+@@ -324,7 +324,7 @@
+         }
+         else
+         {
+-            Block block = this.worldObj.func_180495_p(p_174912_1_).func_177230_c();
++            Block block = this.worldObj.getBlockState(p_174912_1_).getBlock();
+             return block instanceof BlockChest && ((BlockChest)block).chestType == this.getChestType();
+         }
+     }
+@@ -335,9 +335,9 @@
+     public void update()
+     {
+         this.checkForAdjacentChests();
+-        int i = this.field_174879_c.func_177958_n();
+-        int j = this.field_174879_c.func_177956_o();
+-        int k = this.field_174879_c.func_177952_p();
++        int i = this.field_174879_c.getX();
++        int j = this.field_174879_c.getY();
++        int k = this.field_174879_c.getZ();
+         ++this.ticksSinceSync;
+ 
+         if (!this.worldObj.isRemote && this.numPlayersUsing != 0 && (this.ticksSinceSync + i + j + k) % 200 == 0)
+@@ -377,7 +377,7 @@
+                 d1 += 0.5D;
+             }
+ 
+-            this.worldObj.func_184148_a((EntityPlayer)null, d1, (double)j + 0.5D, d2, SoundEvents.field_187657_V, SoundCategory.BLOCKS, 0.5F, this.worldObj.rand.nextFloat() * 0.1F + 0.9F);
++            this.worldObj.playSound((EntityPlayer)null, d1, (double)j + 0.5D, d2, SoundEvents.field_187657_V, SoundCategory.BLOCKS, 0.5F, this.worldObj.rand.nextFloat() * 0.1F + 0.9F);
+         }
+ 
+         if (this.numPlayersUsing == 0 && this.lidAngle > 0.0F || this.numPlayersUsing > 0 && this.lidAngle < 1.0F)
+@@ -415,7 +415,7 @@
+                     d3 += 0.5D;
+                 }
+ 
+-                this.worldObj.func_184148_a((EntityPlayer)null, d3, (double)j + 0.5D, d0, SoundEvents.field_187651_T, SoundCategory.BLOCKS, 0.5F, this.worldObj.rand.nextFloat() * 0.1F + 0.9F);
++                this.worldObj.playSound((EntityPlayer)null, d3, (double)j + 0.5D, d0, SoundEvents.field_187651_T, SoundCategory.BLOCKS, 0.5F, this.worldObj.rand.nextFloat() * 0.1F + 0.9F);
+             }
+ 
+             if (this.lidAngle < 0.0F)
+@@ -450,7 +450,7 @@
+             ++this.numPlayersUsing;
+             this.worldObj.func_175641_c(this.field_174879_c, this.getBlockType(), 1, this.numPlayersUsing);
+             this.worldObj.func_175685_c(this.field_174879_c, this.getBlockType());
+-            this.worldObj.func_175685_c(this.field_174879_c.func_177977_b(), this.getBlockType());
++            this.worldObj.func_175685_c(this.field_174879_c.getBlockPosBelow(), this.getBlockType());
+         }
+     }
+ 
+@@ -461,7 +461,7 @@
+             --this.numPlayersUsing;
+             this.worldObj.func_175641_c(this.field_174879_c, this.getBlockType(), 1, this.numPlayersUsing);
+             this.worldObj.func_175685_c(this.field_174879_c, this.getBlockType());
+-            this.worldObj.func_175685_c(this.field_174879_c.func_177977_b(), this.getBlockType());
++            this.worldObj.func_175685_c(this.field_174879_c.getBlockPosBelow(), this.getBlockType());
+         }
+     }
+ 

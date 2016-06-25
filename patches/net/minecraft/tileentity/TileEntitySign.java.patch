@@ -1,0 +1,20 @@
+--- a/net/minecraft/tileentity/TileEntitySign.java
++++ b/net/minecraft/tileentity/TileEntitySign.java
+@@ -77,7 +77,7 @@
+             }
+             public Vec3d func_174791_d()
+             {
+-                return new Vec3d((double)TileEntitySign.this.field_174879_c.func_177958_n() + 0.5D, (double)TileEntitySign.this.field_174879_c.func_177956_o() + 0.5D, (double)TileEntitySign.this.field_174879_c.func_177952_p() + 0.5D);
++                return new Vec3d((double)TileEntitySign.this.field_174879_c.getX() + 0.5D, (double)TileEntitySign.this.field_174879_c.getY() + 0.5D, (double)TileEntitySign.this.field_174879_c.getZ() + 0.5D);
+             }
+             public World getEntityWorld()
+             {
+@@ -187,7 +187,7 @@
+             }
+             public Vec3d func_174791_d()
+             {
+-                return new Vec3d((double)TileEntitySign.this.field_174879_c.func_177958_n() + 0.5D, (double)TileEntitySign.this.field_174879_c.func_177956_o() + 0.5D, (double)TileEntitySign.this.field_174879_c.func_177952_p() + 0.5D);
++                return new Vec3d((double)TileEntitySign.this.field_174879_c.getX() + 0.5D, (double)TileEntitySign.this.field_174879_c.getY() + 0.5D, (double)TileEntitySign.this.field_174879_c.getZ() + 0.5D);
+             }
+             public World getEntityWorld()
+             {

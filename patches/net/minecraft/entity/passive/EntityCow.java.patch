@@ -1,0 +1,25 @@
+--- a/net/minecraft/entity/passive/EntityCow.java
++++ b/net/minecraft/entity/passive/EntityCow.java
+@@ -74,7 +74,7 @@
+ 
+     protected void func_180429_a(BlockPos p_180429_1_, Block p_180429_2_)
+     {
+-        this.func_184185_a(SoundEvents.field_187566_ao, 0.15F, 1.0F);
++        this.playSound(SoundEvents.field_187566_ao, 0.15F, 1.0F);
+     }
+ 
+     /**
+@@ -95,11 +95,11 @@
+     {
+         if (p_184645_3_ != null && p_184645_3_.getItem() == Items.bucket && !p_184645_1_.capabilities.isCreativeMode && !this.isChild())
+         {
+-            p_184645_1_.func_184185_a(SoundEvents.field_187564_an, 1.0F, 1.0F);
++            p_184645_1_.playSound(SoundEvents.field_187564_an, 1.0F, 1.0F);
+ 
+             if (--p_184645_3_.stackSize == 0)
+             {
+-                p_184645_1_.func_184611_a(p_184645_2_, new ItemStack(Items.milk_bucket));
++                p_184645_1_.equipItemInHand(p_184645_2_, new ItemStack(Items.milk_bucket));
+             }
+             else if (!p_184645_1_.inventory.addItemStackToInventory(new ItemStack(Items.milk_bucket)))
+             {

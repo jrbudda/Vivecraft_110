@@ -1,0 +1,17 @@
+--- a/net/minecraft/client/renderer/RenderHelper.java
++++ b/net/minecraft/client/renderer/RenderHelper.java
+@@ -69,10 +69,10 @@
+      */
+     public static void enableGUIStandardItemLighting()
+     {
+-        GlStateManager.func_179094_E();
+-        GlStateManager.func_179114_b(-30.0F, 0.0F, 1.0F, 0.0F);
+-        GlStateManager.func_179114_b(165.0F, 1.0F, 0.0F, 0.0F);
++        GlStateManager.push();
++        GlStateManager.rotate(-30.0F, 0.0F, 1.0F, 0.0F);
++        GlStateManager.rotate(165.0F, 1.0F, 0.0F, 0.0F);
+         enableStandardItemLighting();
+-        GlStateManager.func_179121_F();
++        GlStateManager.pop();
+     }
+ }

@@ -1,0 +1,20 @@
+--- a/net/minecraft/client/gui/GuiWinGame.java
++++ b/net/minecraft/client/gui/GuiWinGame.java
+@@ -197,7 +197,7 @@
+         int j = this.width / 2 - 137;
+         int k = this.height + 50;
+         float f = -((float)this.field_146581_h + partialTicks) * 0.5F;
+-        GlStateManager.func_179094_E();
++        GlStateManager.push();
+         GlStateManager.func_179109_b(0.0F, f, 0.0F);
+         this.mc.getTextureManager().bindTexture(field_146576_f);
+         GlStateManager.func_179131_c(1.0F, 1.0F, 1.0F, 1.0F);
+@@ -235,7 +235,7 @@
+             l += 12;
+         }
+ 
+-        GlStateManager.func_179121_F();
++        GlStateManager.pop();
+         this.mc.getTextureManager().bindTexture(field_146577_g);
+         GlStateManager.func_179147_l();
+         GlStateManager.func_187401_a(GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR);

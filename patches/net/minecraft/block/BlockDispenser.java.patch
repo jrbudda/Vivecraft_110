@@ -1,0 +1,51 @@
+--- a/net/minecraft/block/BlockDispenser.java
++++ b/net/minecraft/block/BlockDispenser.java
+@@ -66,8 +66,8 @@
+         if (!p_176438_1_.isRemote)
+         {
+             EnumFacing enumfacing = (EnumFacing)p_176438_3_.func_177229_b(field_176441_a);
+-            boolean flag = p_176438_1_.func_180495_p(p_176438_2_.func_177978_c()).func_185913_b();
+-            boolean flag1 = p_176438_1_.func_180495_p(p_176438_2_.func_177968_d()).func_185913_b();
++            boolean flag = p_176438_1_.getBlockState(p_176438_2_.getBlockPosNorth()).func_185913_b();
++            boolean flag1 = p_176438_1_.getBlockState(p_176438_2_.getBlockPosSouth()).func_185913_b();
+ 
+             if (enumfacing == EnumFacing.NORTH && flag && !flag1)
+             {
+@@ -79,8 +79,8 @@
+             }
+             else
+             {
+-                boolean flag2 = p_176438_1_.func_180495_p(p_176438_2_.func_177976_e()).func_185913_b();
+-                boolean flag3 = p_176438_1_.func_180495_p(p_176438_2_.func_177974_f()).func_185913_b();
++                boolean flag2 = p_176438_1_.getBlockState(p_176438_2_.getBlockPosWest()).func_185913_b();
++                boolean flag3 = p_176438_1_.getBlockState(p_176438_2_.getBlockPosEast()).func_185913_b();
+ 
+                 if (enumfacing == EnumFacing.WEST && flag2 && !flag3)
+                 {
+@@ -158,7 +158,7 @@
+ 
+     public void func_189540_a(IBlockState p_189540_1_, World p_189540_2_, BlockPos p_189540_3_, Block p_189540_4_)
+     {
+-        boolean flag = p_189540_2_.func_175640_z(p_189540_3_) || p_189540_2_.func_175640_z(p_189540_3_.func_177984_a());
++        boolean flag = p_189540_2_.func_175640_z(p_189540_3_) || p_189540_2_.func_175640_z(p_189540_3_.getBlockPosAbove());
+         boolean flag1 = ((Boolean)p_189540_1_.func_177229_b(field_176440_b)).booleanValue();
+ 
+         if (flag && !flag1)
+@@ -190,7 +190,7 @@
+ 
+     public IBlockState func_180642_a(World p_180642_1_, BlockPos p_180642_2_, EnumFacing p_180642_3_, float p_180642_4_, float p_180642_5_, float p_180642_6_, int p_180642_7_, EntityLivingBase p_180642_8_)
+     {
+-        return this.func_176223_P().func_177226_a(field_176441_a, BlockPistonBase.func_185647_a(p_180642_2_, p_180642_8_)).func_177226_a(field_176440_b, Boolean.valueOf(false));
++        return this.getBlockState().func_177226_a(field_176441_a, BlockPistonBase.func_185647_a(p_180642_2_, p_180642_8_)).func_177226_a(field_176440_b, Boolean.valueOf(false));
+     }
+ 
+     public void func_180633_a(World p_180633_1_, BlockPos p_180633_2_, IBlockState p_180633_3_, EntityLivingBase p_180633_4_, ItemStack p_180633_5_)
+@@ -253,7 +253,7 @@
+ 
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        return this.func_176223_P().func_177226_a(field_176441_a, EnumFacing.getFront(p_176203_1_ & 7)).func_177226_a(field_176440_b, Boolean.valueOf((p_176203_1_ & 8) > 0));
++        return this.getBlockState().func_177226_a(field_176441_a, EnumFacing.getFront(p_176203_1_ & 7)).func_177226_a(field_176440_b, Boolean.valueOf((p_176203_1_ & 8) > 0));
+     }
+ 
+     public int func_176201_c(IBlockState p_176201_1_)

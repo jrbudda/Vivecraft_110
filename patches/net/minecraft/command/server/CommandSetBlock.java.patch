@@ -1,0 +1,39 @@
+--- a/net/minecraft/command/server/CommandSetBlock.java
++++ b/net/minecraft/command/server/CommandSetBlock.java
+@@ -96,7 +96,7 @@
+                             return;
+                         }
+                     }
+-                    else if ("keep".equals(p_184881_3_[5]) && !world.func_175623_d(blockpos))
++                    else if ("keep".equals(p_184881_3_[5]) && !world.isEmpty(blockpos))
+                     {
+                         throw new CommandException("commands.setblock.noChange", new Object[0]);
+                     }
+@@ -111,7 +111,7 @@
+                         ((IInventory)tileentity1).func_174888_l();
+                     }
+ 
+-                    world.func_180501_a(blockpos, Blocks.air.func_176223_P(), block == Blocks.air ? 2 : 4);
++                    world.func_180501_a(blockpos, Blocks.air.getBlockState(), block == Blocks.air ? 2 : 4);
+                 }
+ 
+                 IBlockState iblockstate = block.func_176203_a(i);
+@@ -128,14 +128,14 @@
+ 
+                         if (tileentity != null)
+                         {
+-                            nbttagcompound.setInteger("x", blockpos.func_177958_n());
+-                            nbttagcompound.setInteger("y", blockpos.func_177956_o());
+-                            nbttagcompound.setInteger("z", blockpos.func_177952_p());
++                            nbttagcompound.setInteger("x", blockpos.getX());
++                            nbttagcompound.setInteger("y", blockpos.getY());
++                            nbttagcompound.setInteger("z", blockpos.getZ());
+                             tileentity.readFromNBT(nbttagcompound);
+                         }
+                     }
+ 
+-                    world.func_175722_b(blockpos, iblockstate.func_177230_c());
++                    world.func_175722_b(blockpos, iblockstate.getBlock());
+                     p_184881_2_.func_174794_a(CommandResultStats.Type.AFFECTED_BLOCKS, 1);
+                     notifyOperators(p_184881_2_, this, "commands.setblock.success", new Object[0]);
+                 }

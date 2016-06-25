@@ -1,0 +1,20 @@
+--- a/net/minecraft/block/BlockEnchantmentTable.java
++++ b/net/minecraft/block/BlockEnchantmentTable.java
+@@ -61,14 +61,14 @@
+                     {
+                         BlockPos blockpos = p_180655_3_.func_177982_a(i, k, j);
+ 
+-                        if (p_180655_2_.func_180495_p(blockpos).func_177230_c() == Blocks.bookshelf)
++                        if (p_180655_2_.getBlockState(blockpos).getBlock() == Blocks.bookshelf)
+                         {
+-                            if (!p_180655_2_.func_175623_d(p_180655_3_.func_177982_a(i / 2, 0, j / 2)))
++                            if (!p_180655_2_.isEmpty(p_180655_3_.func_177982_a(i / 2, 0, j / 2)))
+                             {
+                                 break;
+                             }
+ 
+-                            p_180655_2_.func_175688_a(EnumParticleTypes.ENCHANTMENT_TABLE, (double)p_180655_3_.func_177958_n() + 0.5D, (double)p_180655_3_.func_177956_o() + 2.0D, (double)p_180655_3_.func_177952_p() + 0.5D, (double)((float)i + p_180655_4_.nextFloat()) - 0.5D, (double)((float)k - p_180655_4_.nextFloat() - 1.0F), (double)((float)j + p_180655_4_.nextFloat()) - 0.5D, new int[0]);
++                            p_180655_2_.spawnParticle(EnumParticleTypes.ENCHANTMENT_TABLE, (double)p_180655_3_.getX() + 0.5D, (double)p_180655_3_.getY() + 2.0D, (double)p_180655_3_.getZ() + 0.5D, (double)((float)i + p_180655_4_.nextFloat()) - 0.5D, (double)((float)k - p_180655_4_.nextFloat() - 1.0F), (double)((float)j + p_180655_4_.nextFloat()) - 0.5D, new int[0]);
+                         }
+                     }
+                 }

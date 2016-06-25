@@ -1,0 +1,504 @@
+--- a/net/minecraft/entity/EntityLivingBase.java
++++ b/net/minecraft/entity/EntityLivingBase.java
+@@ -253,7 +253,7 @@
+         {
+             float f = (float)MathHelper.ceiling_float_int(this.fallDistance - 3.0F);
+ 
+-            if (p_184231_4_.func_185904_a() != Material.air)
++            if (p_184231_4_.getMaterial() != Material.air)
+             {
+                 double d0 = Math.min((double)(0.2F + f / 15.0F), 2.5D);
+                 int i = (int)(150.0D * d0);
+@@ -329,16 +329,16 @@
+                             float f2 = this.rand.nextFloat() - this.rand.nextFloat();
+                             float f = this.rand.nextFloat() - this.rand.nextFloat();
+                             float f1 = this.rand.nextFloat() - this.rand.nextFloat();
+-                            this.worldObj.func_175688_a(EnumParticleTypes.WATER_BUBBLE, this.posX + (double)f2, this.posY + (double)f, this.posZ + (double)f1, this.motionX, this.motionY, this.motionZ, new int[0]);
++                            this.worldObj.spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.posX + (double)f2, this.posY + (double)f, this.posZ + (double)f1, this.motionX, this.motionY, this.motionZ, new int[0]);
+                         }
+ 
+                         this.attackEntityFrom(DamageSource.drown, 2.0F);
+                     }
+                 }
+ 
+-                if (!this.worldObj.isRemote && this.func_184218_aH() && this.func_184187_bx() instanceof EntityLivingBase)
++                if (!this.worldObj.isRemote && this.isRiding() && this.getRidingEntity() instanceof EntityLivingBase)
+                 {
+-                    this.func_184210_p();
++                    this.dismount();
+                 }
+             }
+ 
+@@ -457,7 +457,7 @@
+                 double d2 = this.rand.nextGaussian() * 0.02D;
+                 double d0 = this.rand.nextGaussian() * 0.02D;
+                 double d1 = this.rand.nextGaussian() * 0.02D;
+-                this.worldObj.func_175688_a(EnumParticleTypes.EXPLOSION_NORMAL, this.posX + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, this.posY + (double)(this.rand.nextFloat() * this.height), this.posZ + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, d2, d0, d1, new int[0]);
++                this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, this.posX + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, this.posY + (double)(this.rand.nextFloat() * this.height), this.posZ + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, d2, d0, d1, new int[0]);
+             }
+         }
+     }
+@@ -558,7 +558,7 @@
+                 soundevent = SoundEvents.field_187728_s;
+             }
+ 
+-            this.func_184185_a(soundevent, 1.0F, 1.0F);
++            this.playSound(soundevent, 1.0F, 1.0F);
+         }
+     }
+ 
+@@ -575,7 +575,7 @@
+ 
+         for (EntityEquipmentSlot entityequipmentslot : EntityEquipmentSlot.values())
+         {
+-            ItemStack itemstack = this.func_184582_a(entityequipmentslot);
++            ItemStack itemstack = this.getEquippedItemStack(entityequipmentslot);
+ 
+             if (itemstack != null)
+             {
+@@ -587,7 +587,7 @@
+ 
+         for (EntityEquipmentSlot entityequipmentslot1 : EntityEquipmentSlot.values())
+         {
+-            ItemStack itemstack1 = this.func_184582_a(entityequipmentslot1);
++            ItemStack itemstack1 = this.getEquippedItemStack(entityequipmentslot1);
+ 
+             if (itemstack1 != null)
+             {
+@@ -718,7 +718,7 @@
+                 double d0 = (double)(i >> 16 & 255) / 255.0D;
+                 double d1 = (double)(i >> 8 & 255) / 255.0D;
+                 double d2 = (double)(i >> 0 & 255) / 255.0D;
+-                this.worldObj.func_175688_a(flag1 ? EnumParticleTypes.SPELL_MOB_AMBIENT : EnumParticleTypes.SPELL_MOB, this.posX + (this.rand.nextDouble() - 0.5D) * (double)this.width, this.posY + this.rand.nextDouble() * (double)this.height, this.posZ + (this.rand.nextDouble() - 0.5D) * (double)this.width, d0, d1, d2, new int[0]);
++                this.worldObj.spawnParticle(flag1 ? EnumParticleTypes.SPELL_MOB_AMBIENT : EnumParticleTypes.SPELL_MOB, this.posX + (this.rand.nextDouble() - 0.5D) * (double)this.width, this.posY + this.rand.nextDouble() * (double)this.height, this.posZ + (this.rand.nextDouble() - 0.5D) * (double)this.width, d0, d1, d2, new int[0]);
+             }
+         }
+     }
+@@ -935,9 +935,9 @@
+             }
+             else
+             {
+-                if ((source == DamageSource.anvil || source == DamageSource.fallingBlock) && this.func_184582_a(EntityEquipmentSlot.HEAD) != null)
++                if ((source == DamageSource.anvil || source == DamageSource.fallingBlock) && this.getEquippedItemStack(EntityEquipmentSlot.HEAD) != null)
+                 {
+-                    this.func_184582_a(EntityEquipmentSlot.HEAD).damageItem((int)(amount * 4.0F + this.rand.nextFloat() * amount * 2.0F), this);
++                    this.getEquippedItemStack(EntityEquipmentSlot.HEAD).damageItem((int)(amount * 4.0F + this.rand.nextFloat() * amount * 2.0F), this);
+                     amount *= 0.75F;
+                 }
+ 
+@@ -1059,7 +1059,7 @@
+ 
+                     if (flag1 && soundevent != null)
+                     {
+-                        this.func_184185_a(soundevent, this.getSoundVolume(), this.getSoundPitch());
++                        this.playSound(soundevent, this.getSoundVolume(), this.getSoundPitch());
+                     }
+ 
+                     this.onDeath(source);
+@@ -1097,7 +1097,7 @@
+ 
+         if (soundevent != null)
+         {
+-            this.func_184185_a(soundevent, this.getSoundVolume(), this.getSoundPitch());
++            this.playSound(soundevent, this.getSoundVolume(), this.getSoundPitch());
+         }
+     }
+ 
+@@ -1128,19 +1128,19 @@
+      */
+     public void renderBrokenItemStack(ItemStack p_70669_1_)
+     {
+-        this.func_184185_a(SoundEvents.field_187635_cQ, 0.8F, 0.8F + this.worldObj.rand.nextFloat() * 0.4F);
++        this.playSound(SoundEvents.field_187635_cQ, 0.8F, 0.8F + this.worldObj.rand.nextFloat() * 0.4F);
+ 
+         for (int i = 0; i < 5; ++i)
+         {
+             Vec3d vec3d = new Vec3d(((double)this.rand.nextFloat() - 0.5D) * 0.1D, Math.random() * 0.1D + 0.1D, 0.0D);
+-            vec3d = vec3d.func_178789_a(-this.rotationPitch * 0.017453292F);
+-            vec3d = vec3d.func_178785_b(-this.rotationYaw * 0.017453292F);
++            vec3d = vec3d.rotateX(-this.rotationPitch * 0.017453292F);
++            vec3d = vec3d.rotateY(-this.rotationYaw * 0.017453292F);
+             double d0 = (double)(-this.rand.nextFloat()) * 0.6D - 0.3D;
+             Vec3d vec3d1 = new Vec3d(((double)this.rand.nextFloat() - 0.5D) * 0.3D, d0, 0.6D);
+-            vec3d1 = vec3d1.func_178789_a(-this.rotationPitch * 0.017453292F);
+-            vec3d1 = vec3d1.func_178785_b(-this.rotationYaw * 0.017453292F);
++            vec3d1 = vec3d1.rotateX(-this.rotationPitch * 0.017453292F);
++            vec3d1 = vec3d1.rotateY(-this.rotationYaw * 0.017453292F);
+             vec3d1 = vec3d1.addVector(this.posX, this.posY + (double)this.getEyeHeight(), this.posZ);
+-            this.worldObj.func_175688_a(EnumParticleTypes.ITEM_CRACK, vec3d1.xCoord, vec3d1.yCoord, vec3d1.zCoord, vec3d.xCoord, vec3d.yCoord + 0.05D, vec3d.zCoord, new int[] {Item.getIdFromItem(p_70669_1_.getItem())});
++            this.worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, vec3d1.xCoord, vec3d1.yCoord, vec3d1.zCoord, vec3d.xCoord, vec3d.yCoord + 0.05D, vec3d.zCoord, new int[] {Item.getIdFromItem(p_70669_1_.getItem())});
+         }
+     }
+ 
+@@ -1267,8 +1267,8 @@
+         else
+         {
+             BlockPos blockpos = new BlockPos(i, j, k);
+-            IBlockState iblockstate = this.worldObj.func_180495_p(blockpos);
+-            Block block = iblockstate.func_177230_c();
++            IBlockState iblockstate = this.worldObj.getBlockState(blockpos);
++            Block block = iblockstate.getBlock();
+             return block != Blocks.ladder && block != Blocks.vine ? block instanceof BlockTrapDoor && this.func_184604_a(blockpos, iblockstate) : true;
+         }
+     }
+@@ -1277,9 +1277,9 @@
+     {
+         if (((Boolean)p_184604_2_.func_177229_b(BlockTrapDoor.field_176283_b)).booleanValue())
+         {
+-            IBlockState iblockstate = this.worldObj.func_180495_p(p_184604_1_.func_177977_b());
++            IBlockState iblockstate = this.worldObj.getBlockState(p_184604_1_.getBlockPosBelow());
+ 
+-            if (iblockstate.func_177230_c() == Blocks.ladder && iblockstate.func_177229_b(BlockLadder.field_176382_a) == p_184604_2_.func_177229_b(BlockTrapDoor.field_176284_a))
++            if (iblockstate.getBlock() == Blocks.ladder && iblockstate.func_177229_b(BlockLadder.field_176382_a) == p_184604_2_.func_177229_b(BlockTrapDoor.field_176284_a))
+             {
+                 return true;
+             }
+@@ -1305,17 +1305,17 @@
+ 
+         if (i > 0)
+         {
+-            this.func_184185_a(this.func_184588_d(i), 1.0F, 1.0F);
++            this.playSound(this.func_184588_d(i), 1.0F, 1.0F);
+             this.attackEntityFrom(DamageSource.fall, (float)i);
+             int j = MathHelper.floor_double(this.posX);
+             int k = MathHelper.floor_double(this.posY - 0.20000000298023224D);
+             int l = MathHelper.floor_double(this.posZ);
+-            IBlockState iblockstate = this.worldObj.func_180495_p(new BlockPos(j, k, l));
++            IBlockState iblockstate = this.worldObj.getBlockState(new BlockPos(j, k, l));
+ 
+-            if (iblockstate.func_185904_a() != Material.air)
++            if (iblockstate.getMaterial() != Material.air)
+             {
+-                SoundType soundtype = iblockstate.func_177230_c().func_185467_w();
+-                this.func_184185_a(soundtype.func_185842_g(), soundtype.func_185843_a() * 0.5F, soundtype.func_185847_b() * 0.75F);
++                SoundType soundtype = iblockstate.getBlock().func_185467_w();
++                this.playSound(soundtype.func_185842_g(), soundtype.func_185843_a() * 0.5F, soundtype.func_185847_b() * 0.75F);
+             }
+         }
+     }
+@@ -1490,7 +1490,7 @@
+ 
+                 if (soundevent1 != null)
+                 {
+-                    this.func_184185_a(soundevent1, this.getSoundVolume(), (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
++                    this.playSound(soundevent1, this.getSoundVolume(), (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
+                 }
+ 
+                 this.setHealth(0.0F);
+@@ -1498,11 +1498,11 @@
+             }
+             else if (p_70103_1_ == 30)
+             {
+-                this.func_184185_a(SoundEvents.field_187769_eM, 0.8F, 0.8F + this.worldObj.rand.nextFloat() * 0.4F);
++                this.playSound(SoundEvents.field_187769_eM, 0.8F, 0.8F + this.worldObj.rand.nextFloat() * 0.4F);
+             }
+             else if (p_70103_1_ == 29)
+             {
+-                this.func_184185_a(SoundEvents.field_187767_eL, 1.0F, 0.8F + this.worldObj.rand.nextFloat() * 0.4F);
++                this.playSound(SoundEvents.field_187767_eL, 1.0F, 0.8F + this.worldObj.rand.nextFloat() * 0.4F);
+             }
+             else
+             {
+@@ -1519,14 +1519,14 @@
+ 
+             if (flag)
+             {
+-                this.func_184185_a(SoundEvents.field_187903_gc, this.getSoundVolume(), (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
++                this.playSound(SoundEvents.field_187903_gc, this.getSoundVolume(), (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
+             }
+ 
+             SoundEvent soundevent = this.func_184601_bQ();
+ 
+             if (soundevent != null)
+             {
+-                this.func_184185_a(soundevent, this.getSoundVolume(), (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
++                this.playSound(soundevent, this.getSoundVolume(), (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
+             }
+ 
+             this.attackEntityFrom(DamageSource.generic, 0.0F);
+@@ -1590,27 +1590,27 @@
+     }
+ 
+     @Nullable
+-    public ItemStack func_184614_ca()
++    public ItemStack getMainHandItem()
+     {
+-        return this.func_184582_a(EntityEquipmentSlot.MAINHAND);
++        return this.getEquippedItemStack(EntityEquipmentSlot.MAINHAND);
+     }
+ 
+     @Nullable
+-    public ItemStack func_184592_cb()
++    public ItemStack getOffhandItem()
+     {
+-        return this.func_184582_a(EntityEquipmentSlot.OFFHAND);
++        return this.getEquippedItemStack(EntityEquipmentSlot.OFFHAND);
+     }
+ 
+     @Nullable
+-    public ItemStack func_184586_b(EnumHand p_184586_1_)
++    public ItemStack getItemStackInHand(EnumHand p_184586_1_)
+     {
+         if (p_184586_1_ == EnumHand.MAIN_HAND)
+         {
+-            return this.func_184582_a(EntityEquipmentSlot.MAINHAND);
++            return this.getEquippedItemStack(EntityEquipmentSlot.MAINHAND);
+         }
+         else if (p_184586_1_ == EnumHand.OFF_HAND)
+         {
+-            return this.func_184582_a(EntityEquipmentSlot.OFFHAND);
++            return this.getEquippedItemStack(EntityEquipmentSlot.OFFHAND);
+         }
+         else
+         {
+@@ -1618,29 +1618,29 @@
+         }
+     }
+ 
+-    public void func_184611_a(EnumHand p_184611_1_, @Nullable ItemStack p_184611_2_)
++    public void equipItemInHand(EnumHand hand, @Nullable ItemStack itemstack)
+     {
+-        if (p_184611_1_ == EnumHand.MAIN_HAND)
++        if (hand == EnumHand.MAIN_HAND)
+         {
+-            this.func_184201_a(EntityEquipmentSlot.MAINHAND, p_184611_2_);
++            this.equipItemInSlot(EntityEquipmentSlot.MAINHAND, itemstack);
+         }
+         else
+         {
+-            if (p_184611_1_ != EnumHand.OFF_HAND)
++            if (hand != EnumHand.OFF_HAND)
+             {
+-                throw new IllegalArgumentException("Invalid hand " + p_184611_1_);
++                throw new IllegalArgumentException("Invalid hand " + hand);
+             }
+ 
+-            this.func_184201_a(EntityEquipmentSlot.OFFHAND, p_184611_2_);
++            this.equipItemInSlot(EntityEquipmentSlot.OFFHAND, itemstack);
+         }
+     }
+ 
+     public abstract Iterable<ItemStack> func_184193_aE();
+ 
+     @Nullable
+-    public abstract ItemStack func_184582_a(EntityEquipmentSlot p_184582_1_);
++    public abstract ItemStack getEquippedItemStack(EntityEquipmentSlot p_184582_1_);
+ 
+-    public abstract void func_184201_a(EntityEquipmentSlot p_184201_1_, ItemStack p_184201_2_);
++    public abstract void equipItemInSlot(EntityEquipmentSlot p_184201_1_, ItemStack p_184201_2_);
+ 
+     /**
+      * Set sprinting switch for Entity.
+@@ -1714,7 +1714,7 @@
+ 
+                 if (!this.worldObj.func_184143_b(axisalignedbb1))
+                 {
+-                    if (this.worldObj.func_180495_p(new BlockPos(d11, this.posY, d12)).func_185896_q())
++                    if (this.worldObj.getBlockState(new BlockPos(d11, this.posY, d12)).func_185896_q())
+                     {
+                         this.setPositionAndUpdate(d11, this.posY + 1.0D, d12);
+                         return;
+@@ -1722,14 +1722,14 @@
+ 
+                     BlockPos blockpos = new BlockPos(d11, this.posY - 1.0D, d12);
+ 
+-                    if (this.worldObj.func_180495_p(blockpos).func_185896_q() || this.worldObj.func_180495_p(blockpos).func_185904_a() == Material.water)
++                    if (this.worldObj.getBlockState(blockpos).func_185896_q() || this.worldObj.getBlockState(blockpos).getMaterial() == Material.water)
+                     {
+                         d1 = d11;
+                         d13 = this.posY + 1.0D;
+                         d14 = d12;
+                     }
+                 }
+-                else if (!this.worldObj.func_184143_b(axisalignedbb1.offset(0.0D, 1.0D, 0.0D)) && this.worldObj.func_180495_p(new BlockPos(d11, this.posY + 1.0D, d12)).func_185896_q())
++                else if (!this.worldObj.func_184143_b(axisalignedbb1.offset(0.0D, 1.0D, 0.0D)) && this.worldObj.getBlockState(new BlockPos(d11, this.posY + 1.0D, d12)).func_185896_q())
+                 {
+                     d1 = d11;
+                     d13 = this.posY + 2.0D;
+@@ -1884,7 +1884,7 @@
+ 
+                             if (f5 > 0.0F)
+                             {
+-                                this.func_184185_a(this.func_184588_d((int)f5), 1.0F, 1.0F);
++                                this.playSound(this.func_184588_d((int)f5), 1.0F, 1.0F);
+                                 this.attackEntityFrom(DamageSource.field_188406_j, f5);
+                             }
+                         }
+@@ -1901,7 +1901,7 @@
+ 
+                         if (this.onGround)
+                         {
+-                            f6 = this.worldObj.func_180495_p(blockpos$pooledmutableblockpos).func_177230_c().slipperiness * 0.91F;
++                            f6 = this.worldObj.getBlockState(blockpos$pooledmutableblockpos).getBlock().slipperiness * 0.91F;
+                         }
+ 
+                         float f7 = 0.16277136F / (f6 * f6 * f6);
+@@ -1921,7 +1921,7 @@
+ 
+                         if (this.onGround)
+                         {
+-                            f6 = this.worldObj.func_180495_p(blockpos$pooledmutableblockpos.func_189532_c(this.posX, this.func_174813_aQ().minY - 1.0D, this.posZ)).func_177230_c().slipperiness * 0.91F;
++                            f6 = this.worldObj.getBlockState(blockpos$pooledmutableblockpos.func_189532_c(this.posX, this.func_174813_aQ().minY - 1.0D, this.posZ)).getBlock().slipperiness * 0.91F;
+                         }
+ 
+                         if (this.isOnLadder())
+@@ -1959,7 +1959,7 @@
+                         {
+                             blockpos$pooledmutableblockpos.func_189532_c(this.posX, 0.0D, this.posZ);
+ 
+-                            if (!this.worldObj.isRemote || this.worldObj.func_175667_e(blockpos$pooledmutableblockpos) && this.worldObj.func_175726_f(blockpos$pooledmutableblockpos).func_177410_o())
++                            if (!this.worldObj.isRemote || this.worldObj.func_175667_e(blockpos$pooledmutableblockpos) && this.worldObj.getChunk(blockpos$pooledmutableblockpos).func_177410_o())
+                             {
+                                 if (!this.func_189652_ae())
+                                 {
+@@ -2132,7 +2132,7 @@
+                         continue;
+                 }
+ 
+-                ItemStack itemstack1 = this.func_184582_a(entityequipmentslot);
++                ItemStack itemstack1 = this.getEquippedItemStack(entityequipmentslot);
+ 
+                 if (!ItemStack.areItemStacksEqual(itemstack1, itemstack))
+                 {
+@@ -2395,9 +2395,9 @@
+     {
+         boolean flag = this.getFlag(7);
+ 
+-        if (flag && !this.onGround && !this.func_184218_aH())
++        if (flag && !this.onGround && !this.isRiding())
+         {
+-            ItemStack itemstack = this.func_184582_a(EntityEquipmentSlot.CHEST);
++            ItemStack itemstack = this.getEquippedItemStack(EntityEquipmentSlot.CHEST);
+ 
+             if (itemstack != null && itemstack.getItem() == Items.field_185160_cR && ItemElytra.func_185069_d(itemstack))
+             {
+@@ -2447,12 +2447,12 @@
+         p_82167_1_.applyEntityCollision(this);
+     }
+ 
+-    public void func_184210_p()
++    public void dismount()
+     {
+-        Entity entity = this.func_184187_bx();
+-        super.func_184210_p();
++        Entity entity = this.getRidingEntity();
++        super.dismount();
+ 
+-        if (entity != null && entity != this.func_184187_bx() && !this.worldObj.isRemote)
++        if (entity != null && entity != this.getRidingEntity() && !this.worldObj.isRemote)
+         {
+             this.dismountEntity(entity);
+         }
+@@ -2652,7 +2652,7 @@
+     {
+         if (this.func_184587_cr())
+         {
+-            ItemStack itemstack = this.func_184586_b(this.func_184600_cs());
++            ItemStack itemstack = this.getItemStackInHand(this.func_184600_cs());
+ 
+             if (itemstack == this.field_184627_bm)
+             {
+@@ -2675,7 +2675,7 @@
+ 
+     public void func_184598_c(EnumHand p_184598_1_)
+     {
+-        ItemStack itemstack = this.func_184586_b(p_184598_1_);
++        ItemStack itemstack = this.getItemStackInHand(p_184598_1_);
+ 
+         if (itemstack != null && !this.func_184587_cr())
+         {
+@@ -2704,7 +2704,7 @@
+         {
+             if (this.func_184587_cr() && this.field_184627_bm == null)
+             {
+-                this.field_184627_bm = this.func_184586_b(this.func_184600_cs());
++                this.field_184627_bm = this.getItemStackInHand(this.func_184600_cs());
+ 
+                 if (this.field_184627_bm != null)
+                 {
+@@ -2725,7 +2725,7 @@
+         {
+             if (p_184584_1_.getItemUseAction() == EnumAction.DRINK)
+             {
+-                this.func_184185_a(SoundEvents.field_187664_bz, 0.5F, this.worldObj.rand.nextFloat() * 0.1F + 0.9F);
++                this.playSound(SoundEvents.field_187664_bz, 0.5F, this.worldObj.rand.nextFloat() * 0.1F + 0.9F);
+             }
+ 
+             if (p_184584_1_.getItemUseAction() == EnumAction.EAT)
+@@ -2733,25 +2733,25 @@
+                 for (int i = 0; i < p_184584_2_; ++i)
+                 {
+                     Vec3d vec3d = new Vec3d(((double)this.rand.nextFloat() - 0.5D) * 0.1D, Math.random() * 0.1D + 0.1D, 0.0D);
+-                    vec3d = vec3d.func_178789_a(-this.rotationPitch * 0.017453292F);
+-                    vec3d = vec3d.func_178785_b(-this.rotationYaw * 0.017453292F);
++                    vec3d = vec3d.rotateX(-this.rotationPitch * 0.017453292F);
++                    vec3d = vec3d.rotateY(-this.rotationYaw * 0.017453292F);
+                     double d0 = (double)(-this.rand.nextFloat()) * 0.6D - 0.3D;
+                     Vec3d vec3d1 = new Vec3d(((double)this.rand.nextFloat() - 0.5D) * 0.3D, d0, 0.6D);
+-                    vec3d1 = vec3d1.func_178789_a(-this.rotationPitch * 0.017453292F);
+-                    vec3d1 = vec3d1.func_178785_b(-this.rotationYaw * 0.017453292F);
++                    vec3d1 = vec3d1.rotateX(-this.rotationPitch * 0.017453292F);
++                    vec3d1 = vec3d1.rotateY(-this.rotationYaw * 0.017453292F);
+                     vec3d1 = vec3d1.addVector(this.posX, this.posY + (double)this.getEyeHeight(), this.posZ);
+ 
+                     if (p_184584_1_.getHasSubtypes())
+                     {
+-                        this.worldObj.func_175688_a(EnumParticleTypes.ITEM_CRACK, vec3d1.xCoord, vec3d1.yCoord, vec3d1.zCoord, vec3d.xCoord, vec3d.yCoord + 0.05D, vec3d.zCoord, new int[] {Item.getIdFromItem(p_184584_1_.getItem()), p_184584_1_.getMetadata()});
++                        this.worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, vec3d1.xCoord, vec3d1.yCoord, vec3d1.zCoord, vec3d.xCoord, vec3d.yCoord + 0.05D, vec3d.zCoord, new int[] {Item.getIdFromItem(p_184584_1_.getItem()), p_184584_1_.getMetadata()});
+                     }
+                     else
+                     {
+-                        this.worldObj.func_175688_a(EnumParticleTypes.ITEM_CRACK, vec3d1.xCoord, vec3d1.yCoord, vec3d1.zCoord, vec3d.xCoord, vec3d.yCoord + 0.05D, vec3d.zCoord, new int[] {Item.getIdFromItem(p_184584_1_.getItem())});
++                        this.worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, vec3d1.xCoord, vec3d1.yCoord, vec3d1.zCoord, vec3d.xCoord, vec3d.yCoord + 0.05D, vec3d.zCoord, new int[] {Item.getIdFromItem(p_184584_1_.getItem())});
+                     }
+                 }
+ 
+-                this.func_184185_a(SoundEvents.field_187537_bA, 0.5F + 0.5F * (float)this.rand.nextInt(2), (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
++                this.playSound(SoundEvents.field_187537_bA, 0.5F + 0.5F * (float)this.rand.nextInt(2), (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
+             }
+         }
+     }
+@@ -2771,7 +2771,7 @@
+                 itemstack = null;
+             }
+ 
+-            this.func_184611_a(this.func_184600_cs(), itemstack);
++            this.equipItemInHand(this.func_184600_cs(), itemstack);
+             this.func_184602_cy();
+         }
+     }
+@@ -2853,12 +2853,12 @@
+         {
+             boolean flag1 = false;
+ 
+-            while (!flag1 && blockpos.func_177956_o() > 0)
++            while (!flag1 && blockpos.getY() > 0)
+             {
+-                BlockPos blockpos1 = blockpos.func_177977_b();
+-                IBlockState iblockstate = world.func_180495_p(blockpos1);
++                BlockPos blockpos1 = blockpos.getBlockPosBelow();
++                IBlockState iblockstate = world.getBlockState(blockpos1);
+ 
+-                if (iblockstate.func_185904_a().blocksMovement())
++                if (iblockstate.getMaterial().blocksMovement())
+                 {
+                     flag1 = true;
+                 }
+@@ -2873,7 +2873,7 @@
+             {
+                 this.setPositionAndUpdate(this.posX, this.posY, this.posZ);
+ 
+-                if (world.func_184144_a(this, this.func_174813_aQ()).isEmpty() && !world.isAnyLiquid(this.func_174813_aQ()))
++                if (world.getCollisionBoxes(this, this.func_174813_aQ()).isEmpty() && !world.isAnyLiquid(this.func_174813_aQ()))
+                 {
+                     flag = true;
+                 }
+@@ -2898,7 +2898,7 @@
+                 double d3 = d0 + (this.posX - d0) * d6 + (random.nextDouble() - 0.5D) * (double)this.width * 2.0D;
+                 double d4 = d1 + (this.posY - d1) * d6 + random.nextDouble() * (double)this.height;
+                 double d5 = d2 + (this.posZ - d2) * d6 + (random.nextDouble() - 0.5D) * (double)this.width * 2.0D;
+-                world.func_175688_a(EnumParticleTypes.PORTAL, d3, d4, d5, (double)f, (double)f1, (double)f2, new int[0]);
++                world.spawnParticle(EnumParticleTypes.PORTAL, d3, d4, d5, (double)f, (double)f1, (double)f2, new int[0]);
+             }
+ 
+             if (this instanceof EntityCreature)

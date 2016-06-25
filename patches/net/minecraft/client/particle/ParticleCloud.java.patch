@@ -1,0 +1,74 @@
+--- a/net/minecraft/client/particle/ParticleCloud.java
++++ b/net/minecraft/client/particle/ParticleCloud.java
+@@ -15,12 +15,12 @@
+     {
+         super(p_i1221_1_, p_i1221_2_, p_i1221_4_, p_i1221_6_, 0.0D, 0.0D, 0.0D);
+         float f = 2.5F;
+-        this.field_187129_i *= 0.10000000149011612D;
+-        this.field_187130_j *= 0.10000000149011612D;
+-        this.field_187131_k *= 0.10000000149011612D;
+-        this.field_187129_i += p_i1221_8_;
+-        this.field_187130_j += p_i1221_10_;
+-        this.field_187131_k += p_i1221_12_;
++        this.motionX *= 0.10000000149011612D;
++        this.motionY *= 0.10000000149011612D;
++        this.motionZ *= 0.10000000149011612D;
++        this.motionX += p_i1221_8_;
++        this.motionY += p_i1221_10_;
++        this.motionZ += p_i1221_12_;
+         float f1 = 1.0F - (float)(Math.random() * 0.30000001192092896D);
+         this.particleRed = f1;
+         this.particleGreen = f1;
+@@ -42,9 +42,9 @@
+ 
+     public void func_189213_a()
+     {
+-        this.field_187123_c = this.field_187126_f;
+-        this.field_187124_d = this.field_187127_g;
+-        this.field_187125_e = this.field_187128_h;
++        this.posX = this.prevPosX;
++        this.posY = this.prevPosY;
++        this.posZ = this.prevPosZ;
+ 
+         if (this.particleAge++ >= this.particleMaxAge)
+         {
+@@ -52,28 +52,28 @@
+         }
+ 
+         this.setParticleTextureIndex(7 - this.particleAge * 8 / this.particleMaxAge);
+-        this.func_187110_a(this.field_187129_i, this.field_187130_j, this.field_187131_k);
+-        this.field_187129_i *= 0.9599999785423279D;
+-        this.field_187130_j *= 0.9599999785423279D;
+-        this.field_187131_k *= 0.9599999785423279D;
+-        EntityPlayer entityplayer = this.field_187122_b.func_184137_a(this.field_187126_f, this.field_187127_g, this.field_187128_h, 2.0D, false);
++        this.func_187110_a(this.motionX, this.motionY, this.motionZ);
++        this.motionX *= 0.9599999785423279D;
++        this.motionY *= 0.9599999785423279D;
++        this.motionZ *= 0.9599999785423279D;
++        EntityPlayer entityplayer = this.field_187122_b.func_184137_a(this.prevPosX, this.prevPosY, this.prevPosZ, 2.0D, false);
+ 
+         if (entityplayer != null)
+         {
+             AxisAlignedBB axisalignedbb = entityplayer.func_174813_aQ();
+ 
+-            if (this.field_187127_g > axisalignedbb.minY)
++            if (this.prevPosY > axisalignedbb.minY)
+             {
+-                this.field_187127_g += (axisalignedbb.minY - this.field_187127_g) * 0.2D;
+-                this.field_187130_j += (entityplayer.motionY - this.field_187130_j) * 0.2D;
+-                this.func_187109_b(this.field_187126_f, this.field_187127_g, this.field_187128_h);
++                this.prevPosY += (axisalignedbb.minY - this.prevPosY) * 0.2D;
++                this.motionY += (entityplayer.motionY - this.motionY) * 0.2D;
++                this.func_187109_b(this.prevPosX, this.prevPosY, this.prevPosZ);
+             }
+         }
+ 
+         if (this.field_187132_l)
+         {
+-            this.field_187129_i *= 0.699999988079071D;
+-            this.field_187131_k *= 0.699999988079071D;
++            this.motionX *= 0.699999988079071D;
++            this.motionZ *= 0.699999988079071D;
+         }
+     }
+ 

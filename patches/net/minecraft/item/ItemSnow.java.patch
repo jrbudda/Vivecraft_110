@@ -1,0 +1,32 @@
+--- a/net/minecraft/item/ItemSnow.java
++++ b/net/minecraft/item/ItemSnow.java
+@@ -26,15 +26,15 @@
+     {
+         if (p_180614_1_.stackSize != 0 && p_180614_2_.func_175151_a(p_180614_4_, p_180614_6_, p_180614_1_))
+         {
+-            IBlockState iblockstate = p_180614_3_.func_180495_p(p_180614_4_);
+-            Block block = iblockstate.func_177230_c();
++            IBlockState iblockstate = p_180614_3_.getBlockState(p_180614_4_);
++            Block block = iblockstate.getBlock();
+             BlockPos blockpos = p_180614_4_;
+ 
+             if ((p_180614_6_ != EnumFacing.UP || block != this.blockInstance) && !block.func_176200_f(p_180614_3_, p_180614_4_))
+             {
+-                blockpos = p_180614_4_.func_177972_a(p_180614_6_);
+-                iblockstate = p_180614_3_.func_180495_p(blockpos);
+-                block = iblockstate.func_177230_c();
++                blockpos = p_180614_4_.getBlockPosRelative(p_180614_6_);
++                iblockstate = p_180614_3_.getBlockState(blockpos);
++                block = iblockstate.getBlock();
+             }
+ 
+             if (block == this.blockInstance)
+@@ -46,7 +46,7 @@
+                     IBlockState iblockstate1 = iblockstate.func_177226_a(BlockSnow.field_176315_a, Integer.valueOf(i + 1));
+                     AxisAlignedBB axisalignedbb = iblockstate1.func_185890_d(p_180614_3_, blockpos);
+ 
+-                    if (axisalignedbb != Block.field_185506_k && p_180614_3_.checkNoEntityCollision(axisalignedbb.func_186670_a(blockpos)) && p_180614_3_.func_180501_a(blockpos, iblockstate1, 10))
++                    if (axisalignedbb != Block.field_185506_k && p_180614_3_.checkNoEntityCollision(axisalignedbb.offset(blockpos)) && p_180614_3_.func_180501_a(blockpos, iblockstate1, 10))
+                     {
+                         SoundType soundtype = this.blockInstance.func_185467_w();
+                         p_180614_3_.func_184133_a(p_180614_2_, blockpos, soundtype.func_185841_e(), SoundCategory.BLOCKS, (soundtype.func_185843_a() + 1.0F) / 2.0F, soundtype.func_185847_b() * 0.8F);

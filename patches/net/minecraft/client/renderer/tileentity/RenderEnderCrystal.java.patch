@@ -1,0 +1,31 @@
+--- a/net/minecraft/client/renderer/tileentity/RenderEnderCrystal.java
++++ b/net/minecraft/client/renderer/tileentity/RenderEnderCrystal.java
+@@ -33,7 +33,7 @@
+     public void doRender(EntityEnderCrystal p_76986_1_, double p_76986_2_, double p_76986_4_, double p_76986_6_, float p_76986_8_, float p_76986_9_)
+     {
+         float f = (float)p_76986_1_.innerRotation + p_76986_9_;
+-        GlStateManager.func_179094_E();
++        GlStateManager.push();
+         GlStateManager.func_179109_b((float)p_76986_2_, (float)p_76986_4_, (float)p_76986_6_);
+         this.bindTexture(enderCrystalTextures);
+         float f1 = MathHelper.sin(f * 0.2F) / 2.0F + 0.5F;
+@@ -60,15 +60,15 @@
+             GlStateManager.func_179119_h();
+         }
+ 
+-        GlStateManager.func_179121_F();
++        GlStateManager.pop();
+         BlockPos blockpos = p_76986_1_.func_184518_j();
+ 
+         if (blockpos != null)
+         {
+             this.bindTexture(RenderDragon.enderDragonCrystalBeamTextures);
+-            float f2 = (float)blockpos.func_177958_n() + 0.5F;
+-            float f3 = (float)blockpos.func_177956_o() + 0.5F;
+-            float f4 = (float)blockpos.func_177952_p() + 0.5F;
++            float f2 = (float)blockpos.getX() + 0.5F;
++            float f3 = (float)blockpos.getY() + 0.5F;
++            float f4 = (float)blockpos.getZ() + 0.5F;
+             double d0 = (double)f2 - p_76986_1_.posX;
+             double d1 = (double)f3 - p_76986_1_.posY;
+             double d2 = (double)f4 - p_76986_1_.posZ;

@@ -1,0 +1,46 @@
+--- a/net/minecraft/command/EntitySelector.java
++++ b/net/minecraft/command/EntitySelector.java
+@@ -470,7 +470,7 @@
+                         }
+                         else
+                         {
+-                            double d6 = p_180698_1_.func_186679_c(p_apply_1_.posX, p_apply_1_.posY, p_apply_1_.posZ);
++                            double d6 = p_180698_1_.squareDistanceTo(p_apply_1_.posX, p_apply_1_.posY, p_apply_1_.posZ);
+                             return (flag || d6 >= d3) && (flag1 || d6 <= d5);
+                         }
+                     }
+@@ -549,7 +549,7 @@
+         {
+             if (l >= 0)
+             {
+-                AxisAlignedBB axisalignedbb1 = new AxisAlignedBB((double)(p_179660_5_.func_177958_n() - l), (double)(p_179660_5_.func_177956_o() - l), (double)(p_179660_5_.func_177952_p() - l), (double)(p_179660_5_.func_177958_n() + l + 1), (double)(p_179660_5_.func_177956_o() + l + 1), (double)(p_179660_5_.func_177952_p() + l + 1));
++                AxisAlignedBB axisalignedbb1 = new AxisAlignedBB((double)(p_179660_5_.getX() - l), (double)(p_179660_5_.getY() - l), (double)(p_179660_5_.getZ() - l), (double)(p_179660_5_.getX() + l + 1), (double)(p_179660_5_.getY() + l + 1), (double)(p_179660_5_.getZ() + l + 1));
+ 
+                 if (flag && flag2 && !flag1)
+                 {
+@@ -644,18 +644,18 @@
+         boolean flag = p_179661_1_ < 0;
+         boolean flag1 = p_179661_2_ < 0;
+         boolean flag2 = p_179661_3_ < 0;
+-        int i = p_179661_0_.func_177958_n() + (flag ? p_179661_1_ : 0);
+-        int j = p_179661_0_.func_177956_o() + (flag1 ? p_179661_2_ : 0);
+-        int k = p_179661_0_.func_177952_p() + (flag2 ? p_179661_3_ : 0);
+-        int l = p_179661_0_.func_177958_n() + (flag ? 0 : p_179661_1_) + 1;
+-        int i1 = p_179661_0_.func_177956_o() + (flag1 ? 0 : p_179661_2_) + 1;
+-        int j1 = p_179661_0_.func_177952_p() + (flag2 ? 0 : p_179661_3_) + 1;
++        int i = p_179661_0_.getX() + (flag ? p_179661_1_ : 0);
++        int j = p_179661_0_.getY() + (flag1 ? p_179661_2_ : 0);
++        int k = p_179661_0_.getZ() + (flag2 ? p_179661_3_ : 0);
++        int l = p_179661_0_.getX() + (flag ? 0 : p_179661_1_) + 1;
++        int i1 = p_179661_0_.getY() + (flag1 ? 0 : p_179661_2_) + 1;
++        int j1 = p_179661_0_.getZ() + (flag2 ? 0 : p_179661_3_) + 1;
+         return new AxisAlignedBB((double)i, (double)j, (double)k, (double)l, (double)i1, (double)j1);
+     }
+ 
+     private static BlockPos func_179664_b(Map<String, String> p_179664_0_, BlockPos p_179664_1_)
+     {
+-        return new BlockPos(func_179653_a(p_179664_0_, "x", p_179664_1_.func_177958_n()), func_179653_a(p_179664_0_, "y", p_179664_1_.func_177956_o()), func_179653_a(p_179664_0_, "z", p_179664_1_.func_177952_p()));
++        return new BlockPos(func_179653_a(p_179664_0_, "x", p_179664_1_.getX()), func_179653_a(p_179664_0_, "y", p_179664_1_.getY()), func_179653_a(p_179664_0_, "z", p_179664_1_.getZ()));
+     }
+ 
+     private static Vec3d func_189210_b(Map<String, String> p_189210_0_, Vec3d p_189210_1_)

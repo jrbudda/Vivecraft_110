@@ -1,0 +1,19 @@
+--- a/net/minecraft/entity/item/EntityMinecartFurnace.java
++++ b/net/minecraft/entity/item/EntityMinecartFurnace.java
+@@ -75,7 +75,7 @@
+ 
+         if (this.isMinecartPowered() && this.rand.nextInt(4) == 0)
+         {
+-            this.worldObj.func_175688_a(EnumParticleTypes.SMOKE_LARGE, this.posX, this.posY + 0.8D, this.posZ, 0.0D, 0.0D, 0.0D, new int[0]);
++            this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_LARGE, this.posX, this.posY + 0.8D, this.posZ, 0.0D, 0.0D, 0.0D, new int[0]);
+         }
+     }
+ 
+@@ -196,6 +196,6 @@
+ 
+     public IBlockState func_180457_u()
+     {
+-        return (this.isMinecartPowered() ? Blocks.lit_furnace : Blocks.furnace).func_176223_P().func_177226_a(BlockFurnace.field_176447_a, EnumFacing.NORTH);
++        return (this.isMinecartPowered() ? Blocks.lit_furnace : Blocks.furnace).getBlockState().func_177226_a(BlockFurnace.field_176447_a, EnumFacing.NORTH);
+     }
+ }

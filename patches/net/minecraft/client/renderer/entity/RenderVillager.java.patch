@@ -1,0 +1,10 @@
+--- a/net/minecraft/client/renderer/entity/RenderVillager.java
++++ b/net/minecraft/client/renderer/entity/RenderVillager.java
+@@ -71,6 +71,6 @@
+             this.shadowSize = 0.5F;
+         }
+ 
+-        GlStateManager.func_179152_a(f, f, f);
++        GlStateManager.scale(f, f, f);
+     }
+ }

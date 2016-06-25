@@ -1,0 +1,123 @@
+--- a/net/minecraft/client/gui/GuiMainMenu.java
++++ b/net/minecraft/client/gui/GuiMainMenu.java
+@@ -350,16 +350,16 @@
+     {
+         Tessellator tessellator = Tessellator.func_178181_a();
+         VertexBuffer vertexbuffer = tessellator.func_178180_c();
+-        GlStateManager.func_179128_n(5889);
+-        GlStateManager.func_179094_E();
+-        GlStateManager.func_179096_D();
++        GlStateManager.matrixMode(5889);
++        GlStateManager.push();
++        GlStateManager.loadIdentity();
+         Project.gluPerspective(120.0F, 1.0F, 0.05F, 10.0F);
+-        GlStateManager.func_179128_n(5888);
+-        GlStateManager.func_179094_E();
+-        GlStateManager.func_179096_D();
++        GlStateManager.matrixMode(5888);
++        GlStateManager.push();
++        GlStateManager.loadIdentity();
+         GlStateManager.func_179131_c(1.0F, 1.0F, 1.0F, 1.0F);
+-        GlStateManager.func_179114_b(180.0F, 1.0F, 0.0F, 0.0F);
+-        GlStateManager.func_179114_b(90.0F, 0.0F, 0.0F, 1.0F);
++        GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
++        GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
+         GlStateManager.func_179147_l();
+         GlStateManager.func_179118_c();
+         GlStateManager.func_179129_p();
+@@ -369,41 +369,41 @@
+ 
+         for (int j = 0; j < 64; ++j)
+         {
+-            GlStateManager.func_179094_E();
++            GlStateManager.push();
+             float f = ((float)(j % 8) / 8.0F - 0.5F) / 64.0F;
+             float f1 = ((float)(j / 8) / 8.0F - 0.5F) / 64.0F;
+             float f2 = 0.0F;
+             GlStateManager.func_179109_b(f, f1, 0.0F);
+-            GlStateManager.func_179114_b(MathHelper.sin(((float)this.panoramaTimer + p_73970_3_) / 400.0F) * 25.0F + 20.0F, 1.0F, 0.0F, 0.0F);
+-            GlStateManager.func_179114_b(-((float)this.panoramaTimer + p_73970_3_) * 0.1F, 0.0F, 1.0F, 0.0F);
++            GlStateManager.rotate(MathHelper.sin(((float)this.panoramaTimer + p_73970_3_) / 400.0F) * 25.0F + 20.0F, 1.0F, 0.0F, 0.0F);
++            GlStateManager.rotate(-((float)this.panoramaTimer + p_73970_3_) * 0.1F, 0.0F, 1.0F, 0.0F);
+ 
+             for (int k = 0; k < 6; ++k)
+             {
+-                GlStateManager.func_179094_E();
++                GlStateManager.push();
+ 
+                 if (k == 1)
+                 {
+-                    GlStateManager.func_179114_b(90.0F, 0.0F, 1.0F, 0.0F);
++                    GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
+                 }
+ 
+                 if (k == 2)
+                 {
+-                    GlStateManager.func_179114_b(180.0F, 0.0F, 1.0F, 0.0F);
++                    GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+                 }
+ 
+                 if (k == 3)
+                 {
+-                    GlStateManager.func_179114_b(-90.0F, 0.0F, 1.0F, 0.0F);
++                    GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
+                 }
+ 
+                 if (k == 4)
+                 {
+-                    GlStateManager.func_179114_b(90.0F, 1.0F, 0.0F, 0.0F);
++                    GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
+                 }
+ 
+                 if (k == 5)
+                 {
+-                    GlStateManager.func_179114_b(-90.0F, 1.0F, 0.0F, 0.0F);
++                    GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
+                 }
+ 
+                 this.mc.getTextureManager().bindTexture(titlePanoramaPaths[k]);
+@@ -415,19 +415,19 @@
+                 vertexbuffer.func_181662_b(1.0D, 1.0D, 1.0D).func_187315_a(1.0D, 1.0D).func_181669_b(255, 255, 255, l).func_181675_d();
+                 vertexbuffer.func_181662_b(-1.0D, 1.0D, 1.0D).func_187315_a(0.0D, 1.0D).func_181669_b(255, 255, 255, l).func_181675_d();
+                 tessellator.draw();
+-                GlStateManager.func_179121_F();
++                GlStateManager.pop();
+             }
+ 
+-            GlStateManager.func_179121_F();
++            GlStateManager.pop();
+             GlStateManager.func_179135_a(true, true, true, false);
+         }
+ 
+         vertexbuffer.func_178969_c(0.0D, 0.0D, 0.0D);
+         GlStateManager.func_179135_a(true, true, true, true);
+-        GlStateManager.func_179128_n(5889);
+-        GlStateManager.func_179121_F();
+-        GlStateManager.func_179128_n(5888);
+-        GlStateManager.func_179121_F();
++        GlStateManager.matrixMode(5889);
++        GlStateManager.pop();
++        GlStateManager.matrixMode(5888);
++        GlStateManager.pop();
+         GlStateManager.func_179132_a(true);
+         GlStateManager.func_179089_o();
+         GlStateManager.func_179126_j();
+@@ -530,14 +530,14 @@
+             this.drawTexturedModalRect(j + 155, 30, 0, 45, 155, 44);
+         }
+ 
+-        GlStateManager.func_179094_E();
++        GlStateManager.push();
+         GlStateManager.func_179109_b((float)(this.width / 2 + 90), 70.0F, 0.0F);
+-        GlStateManager.func_179114_b(-20.0F, 0.0F, 0.0F, 1.0F);
++        GlStateManager.rotate(-20.0F, 0.0F, 0.0F, 1.0F);
+         float f = 1.8F - MathHelper.abs(MathHelper.sin((float)(Minecraft.getSystemTime() % 1000L) / 1000.0F * ((float)Math.PI * 2F)) * 0.1F);
+         f = f * 100.0F / (float)(this.fontRendererObj.getStringWidth(this.splashText) + 32);
+-        GlStateManager.func_179152_a(f, f, f);
++        GlStateManager.scale(f, f, f);
+         this.drawCenteredString(this.fontRendererObj, this.splashText, 0, -8, -256);
+-        GlStateManager.func_179121_F();
++        GlStateManager.pop();
+         String s = "Minecraft 1.10";
+ 
+         if (this.mc.isDemo())

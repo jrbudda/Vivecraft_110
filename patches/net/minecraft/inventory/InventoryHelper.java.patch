@@ -1,0 +1,11 @@
+--- a/net/minecraft/inventory/InventoryHelper.java
++++ b/net/minecraft/inventory/InventoryHelper.java
+@@ -13,7 +13,7 @@
+ 
+     public static void func_180175_a(World p_180175_0_, BlockPos p_180175_1_, IInventory p_180175_2_)
+     {
+-        func_180174_a(p_180175_0_, (double)p_180175_1_.func_177958_n(), (double)p_180175_1_.func_177956_o(), (double)p_180175_1_.func_177952_p(), p_180175_2_);
++        func_180174_a(p_180175_0_, (double)p_180175_1_.getX(), (double)p_180175_1_.getY(), (double)p_180175_1_.getZ(), p_180175_2_);
+     }
+ 
+     public static void func_180176_a(World p_180176_0_, Entity p_180176_1_, IInventory p_180176_2_)

@@ -1,0 +1,29 @@
+--- a/net/minecraft/client/renderer/BlockRendererDispatcher.java
++++ b/net/minecraft/client/renderer/BlockRendererDispatcher.java
+@@ -90,7 +90,7 @@
+         {
+             CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Tesselating block in world");
+             CrashReportCategory crashreportcategory = crashreport.makeCategory("Block being tesselated");
+-            CrashReportCategory.func_180523_a(crashreportcategory, p_175018_2_, p_175018_1_.func_177230_c(), p_175018_1_.func_177230_c().func_176201_c(p_175018_1_));
++            CrashReportCategory.func_180523_a(crashreportcategory, p_175018_2_, p_175018_1_.getBlock(), p_175018_1_.getBlock().func_176201_c(p_175018_1_));
+             throw new ReportedException(crashreport);
+         }
+     }
+@@ -120,7 +120,7 @@
+                     break;
+ 
+                 case ENTITYBLOCK_ANIMATED:
+-                    this.field_175024_d.func_178175_a(p_175016_1_.func_177230_c(), p_175016_2_);
++                    this.field_175024_d.func_178175_a(p_175016_1_.getBlock(), p_175016_2_);
+ 
+                 case LIQUID:
+             }
+@@ -135,7 +135,7 @@
+         }
+         else
+         {
+-            EnumBlockRenderType enumblockrendertype = p_184388_1_.func_176223_P().func_185901_i();
++            EnumBlockRenderType enumblockrendertype = p_184388_1_.getBlockState().func_185901_i();
+             return enumblockrendertype == EnumBlockRenderType.MODEL ? false : enumblockrendertype == EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+         }
+     }

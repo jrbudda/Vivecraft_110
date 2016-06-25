@@ -1,0 +1,20 @@
+--- a/net/minecraft/item/ItemRedstone.java
++++ b/net/minecraft/item/ItemRedstone.java
+@@ -19,13 +19,13 @@
+ 
+     public EnumActionResult func_180614_a(ItemStack p_180614_1_, EntityPlayer p_180614_2_, World p_180614_3_, BlockPos p_180614_4_, EnumHand p_180614_5_, EnumFacing p_180614_6_, float p_180614_7_, float p_180614_8_, float p_180614_9_)
+     {
+-        boolean flag = p_180614_3_.func_180495_p(p_180614_4_).func_177230_c().func_176200_f(p_180614_3_, p_180614_4_);
+-        BlockPos blockpos = flag ? p_180614_4_ : p_180614_4_.func_177972_a(p_180614_6_);
++        boolean flag = p_180614_3_.getBlockState(p_180614_4_).getBlock().func_176200_f(p_180614_3_, p_180614_4_);
++        BlockPos blockpos = flag ? p_180614_4_ : p_180614_4_.getBlockPosRelative(p_180614_6_);
+ 
+-        if (p_180614_2_.func_175151_a(blockpos, p_180614_6_, p_180614_1_) && p_180614_3_.func_175716_a(p_180614_3_.func_180495_p(blockpos).func_177230_c(), blockpos, false, p_180614_6_, (Entity)null, p_180614_1_) && Blocks.redstone_wire.func_176196_c(p_180614_3_, blockpos))
++        if (p_180614_2_.func_175151_a(blockpos, p_180614_6_, p_180614_1_) && p_180614_3_.func_175716_a(p_180614_3_.getBlockState(blockpos).getBlock(), blockpos, false, p_180614_6_, (Entity)null, p_180614_1_) && Blocks.redstone_wire.func_176196_c(p_180614_3_, blockpos))
+         {
+             --p_180614_1_.stackSize;
+-            p_180614_3_.func_175656_a(blockpos, Blocks.redstone_wire.func_176223_P());
++            p_180614_3_.func_175656_a(blockpos, Blocks.redstone_wire.getBlockState());
+             return EnumActionResult.SUCCESS;
+         }
+         else

@@ -1,0 +1,14 @@
+--- a/net/minecraft/entity/player/InventoryPlayer.java
++++ b/net/minecraft/entity/player/InventoryPlayer.java
+@@ -701,9 +701,9 @@
+         return 64;
+     }
+ 
+-    public boolean func_184432_b(IBlockState p_184432_1_)
++    public boolean canHarvest(IBlockState p_184432_1_)
+     {
+-        if (p_184432_1_.func_185904_a().isToolNotRequired())
++        if (p_184432_1_.getMaterial().isToolNotRequired())
+         {
+             return true;
+         }

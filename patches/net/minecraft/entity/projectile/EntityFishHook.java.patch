@@ -1,0 +1,87 @@
+--- a/net/minecraft/entity/projectile/EntityFishHook.java
++++ b/net/minecraft/entity/projectile/EntityFishHook.java
+@@ -193,7 +193,7 @@
+         }
+         else
+         {
+-            ItemStack itemstack = this.angler.func_184614_ca();
++            ItemStack itemstack = this.angler.getMainHandItem();
+ 
+             if (this.angler.isDead || !this.angler.isEntityAlive() || itemstack == null || itemstack.getItem() != Items.fishing_rod || this.getDistanceSqToEntity(this.angler) > 1024.0D)
+             {
+@@ -233,7 +233,7 @@
+         {
+             if (this.inGround)
+             {
+-                if (this.worldObj.func_180495_p(this.field_189740_d).func_177230_c() == this.inTile)
++                if (this.worldObj.getBlockState(this.field_189740_d).getBlock() == this.inTile)
+                 {
+                     ++this.ticksInGround;
+ 
+@@ -271,7 +271,7 @@
+                 }
+ 
+                 Entity entity = null;
+-                List<Entity> list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.func_174813_aQ().addCoord(this.motionX, this.motionY, this.motionZ).func_186662_g(1.0D));
++                List<Entity> list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.func_174813_aQ().addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D));
+                 double d0 = 0.0D;
+ 
+                 for (int j = 0; j < list.size(); ++j)
+@@ -280,7 +280,7 @@
+ 
+                     if (this.func_189739_a(entity1) && (entity1 != this.angler || this.ticksInAir >= 5))
+                     {
+-                        AxisAlignedBB axisalignedbb1 = entity1.func_174813_aQ().func_186662_g(0.30000001192092896D);
++                        AxisAlignedBB axisalignedbb1 = entity1.func_174813_aQ().expand(0.30000001192092896D);
+                         RayTraceResult raytraceresult1 = axisalignedbb1.calculateIntercept(vec3d1, vec3d);
+ 
+                         if (raytraceresult1 != null)
+@@ -371,7 +371,7 @@
+                 {
+                     WorldServer worldserver = (WorldServer)this.worldObj;
+                     int i1 = 1;
+-                    BlockPos blockpos = (new BlockPos(this)).func_177984_a();
++                    BlockPos blockpos = (new BlockPos(this)).getBlockPosAbove();
+ 
+                     if (this.rand.nextFloat() < 0.25F && this.worldObj.func_175727_C(blockpos))
+                     {
+@@ -400,7 +400,7 @@
+                         if (this.ticksCatchableDelay <= 0)
+                         {
+                             this.motionY -= 0.20000000298023224D;
+-                            this.func_184185_a(SoundEvents.field_187609_F, 0.25F, 1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);
++                            this.playSound(SoundEvents.field_187609_F, 0.25F, 1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);
+                             float f6 = (float)MathHelper.floor_double(this.func_174813_aQ().minY);
+                             worldserver.func_175739_a(EnumParticleTypes.WATER_BUBBLE, this.posX, (double)(f6 + 1.0F), this.posZ, (int)(1.0F + this.width * 20.0F), (double)this.width, 0.0D, (double)this.width, 0.20000000298023224D, new int[0]);
+                             worldserver.func_175739_a(EnumParticleTypes.WATER_WAKE, this.posX, (double)(f6 + 1.0F), this.posZ, (int)(1.0F + this.width * 20.0F), (double)this.width, 0.0D, (double)this.width, 0.20000000298023224D, new int[0]);
+@@ -415,7 +415,7 @@
+                             double d13 = this.posX + (double)(f8 * (float)this.ticksCatchableDelay * 0.1F);
+                             double d15 = (double)((float)MathHelper.floor_double(this.func_174813_aQ().minY) + 1.0F);
+                             double d16 = this.posZ + (double)(f10 * (float)this.ticksCatchableDelay * 0.1F);
+-                            Block block1 = worldserver.func_180495_p(new BlockPos((int)d13, (int)d15 - 1, (int)d16)).func_177230_c();
++                            Block block1 = worldserver.getBlockState(new BlockPos((int)d13, (int)d15 - 1, (int)d16)).getBlock();
+ 
+                             if (block1 == Blocks.water || block1 == Blocks.flowing_water)
+                             {
+@@ -456,7 +456,7 @@
+                             double d12 = this.posX + (double)(MathHelper.sin(f7) * f9 * 0.1F);
+                             double d14 = (double)((float)MathHelper.floor_double(this.func_174813_aQ().minY) + 1.0F);
+                             double d2 = this.posZ + (double)(MathHelper.cos(f7) * f9 * 0.1F);
+-                            Block block = worldserver.func_180495_p(new BlockPos((int)d12, (int)d14 - 1, (int)d2)).func_177230_c();
++                            Block block = worldserver.getBlockState(new BlockPos((int)d12, (int)d14 - 1, (int)d2)).getBlock();
+ 
+                             if (block == Blocks.water || block == Blocks.flowing_water)
+                             {
+@@ -509,9 +509,9 @@
+      */
+     public void writeEntityToNBT(NBTTagCompound tagCompound)
+     {
+-        tagCompound.setInteger("xTile", this.field_189740_d.func_177958_n());
+-        tagCompound.setInteger("yTile", this.field_189740_d.func_177956_o());
+-        tagCompound.setInteger("zTile", this.field_189740_d.func_177952_p());
++        tagCompound.setInteger("xTile", this.field_189740_d.getX());
++        tagCompound.setInteger("yTile", this.field_189740_d.getY());
++        tagCompound.setInteger("zTile", this.field_189740_d.getZ());
+         ResourceLocation resourcelocation = (ResourceLocation)Block.blockRegistry.func_177774_c(this.inTile);
+         tagCompound.setString("inTile", resourcelocation == null ? "" : resourcelocation.toString());
+         tagCompound.setByte("inGround", (byte)(this.inGround ? 1 : 0));

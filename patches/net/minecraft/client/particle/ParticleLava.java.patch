@@ -1,0 +1,58 @@
+--- a/net/minecraft/client/particle/ParticleLava.java
++++ b/net/minecraft/client/particle/ParticleLava.java
+@@ -12,10 +12,10 @@
+     protected ParticleLava(World p_i1215_1_, double p_i1215_2_, double p_i1215_4_, double p_i1215_6_)
+     {
+         super(p_i1215_1_, p_i1215_2_, p_i1215_4_, p_i1215_6_, 0.0D, 0.0D, 0.0D);
+-        this.field_187129_i *= 0.800000011920929D;
+-        this.field_187130_j *= 0.800000011920929D;
+-        this.field_187131_k *= 0.800000011920929D;
+-        this.field_187130_j = (double)(this.field_187136_p.nextFloat() * 0.4F + 0.05F);
++        this.motionX *= 0.800000011920929D;
++        this.motionY *= 0.800000011920929D;
++        this.motionZ *= 0.800000011920929D;
++        this.motionY = (double)(this.field_187136_p.nextFloat() * 0.4F + 0.05F);
+         this.particleRed = 1.0F;
+         this.particleGreen = 1.0F;
+         this.particleBlue = 1.0F;
+@@ -42,9 +42,9 @@
+ 
+     public void func_189213_a()
+     {
+-        this.field_187123_c = this.field_187126_f;
+-        this.field_187124_d = this.field_187127_g;
+-        this.field_187125_e = this.field_187128_h;
++        this.posX = this.prevPosX;
++        this.posY = this.prevPosY;
++        this.posZ = this.prevPosZ;
+ 
+         if (this.particleAge++ >= this.particleMaxAge)
+         {
+@@ -55,19 +55,19 @@
+ 
+         if (this.field_187136_p.nextFloat() > f)
+         {
+-            this.field_187122_b.func_175688_a(EnumParticleTypes.SMOKE_NORMAL, this.field_187126_f, this.field_187127_g, this.field_187128_h, this.field_187129_i, this.field_187130_j, this.field_187131_k, new int[0]);
++            this.field_187122_b.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.prevPosX, this.prevPosY, this.prevPosZ, this.motionX, this.motionY, this.motionZ, new int[0]);
+         }
+ 
+-        this.field_187130_j -= 0.03D;
+-        this.func_187110_a(this.field_187129_i, this.field_187130_j, this.field_187131_k);
+-        this.field_187129_i *= 0.9990000128746033D;
+-        this.field_187130_j *= 0.9990000128746033D;
+-        this.field_187131_k *= 0.9990000128746033D;
++        this.motionY -= 0.03D;
++        this.func_187110_a(this.motionX, this.motionY, this.motionZ);
++        this.motionX *= 0.9990000128746033D;
++        this.motionY *= 0.9990000128746033D;
++        this.motionZ *= 0.9990000128746033D;
+ 
+         if (this.field_187132_l)
+         {
+-            this.field_187129_i *= 0.699999988079071D;
+-            this.field_187131_k *= 0.699999988079071D;
++            this.motionX *= 0.699999988079071D;
++            this.motionZ *= 0.699999988079071D;
+         }
+     }
+ 

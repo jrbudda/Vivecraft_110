@@ -1,0 +1,32 @@
+--- a/net/minecraft/world/gen/feature/WorldGenFossils.java
++++ b/net/minecraft/world/gen/feature/WorldGenFossils.java
+@@ -36,7 +36,7 @@
+ 
+     public boolean func_180709_b(World p_180709_1_, Random p_180709_2_, BlockPos p_180709_3_)
+     {
+-        Random random = p_180709_1_.getChunkFromChunkCoords(p_180709_3_.func_177958_n(), p_180709_3_.func_177952_p()).getRandomWithSeed(987234911L);
++        Random random = p_180709_1_.getChunkFromChunkCoords(p_180709_3_.getX(), p_180709_3_.getZ()).getRandomWithSeed(987234911L);
+         MinecraftServer minecraftserver = p_180709_1_.func_73046_m();
+         Rotation[] arotation = Rotation.values();
+         Rotation rotation = arotation[random.nextInt(arotation.length)];
+@@ -48,15 +48,15 @@
+         StructureBoundingBox structureboundingbox = new StructureBoundingBox(chunkpos.func_180334_c(), 0, chunkpos.func_180333_d(), chunkpos.func_180332_e(), 256, chunkpos.func_180330_f());
+         PlacementSettings placementsettings = (new PlacementSettings()).func_186220_a(rotation).func_186223_a(structureboundingbox).func_189950_a(random);
+         BlockPos blockpos = template.func_186257_a(rotation);
+-        int j = random.nextInt(16 - blockpos.func_177958_n());
+-        int k = random.nextInt(16 - blockpos.func_177952_p());
++        int j = random.nextInt(16 - blockpos.getX());
++        int k = random.nextInt(16 - blockpos.getZ());
+         int l = 256;
+ 
+-        for (int i1 = 0; i1 < blockpos.func_177958_n(); ++i1)
++        for (int i1 = 0; i1 < blockpos.getX(); ++i1)
+         {
+-            for (int j1 = 0; j1 < blockpos.func_177958_n(); ++j1)
++            for (int j1 = 0; j1 < blockpos.getX(); ++j1)
+             {
+-                l = Math.min(l, p_180709_1_.func_189649_b(p_180709_3_.func_177958_n() + i1 + j, p_180709_3_.func_177952_p() + j1 + k));
++                l = Math.min(l, p_180709_1_.func_189649_b(p_180709_3_.getX() + i1 + j, p_180709_3_.getZ() + j1 + k));
+             }
+         }
+ 

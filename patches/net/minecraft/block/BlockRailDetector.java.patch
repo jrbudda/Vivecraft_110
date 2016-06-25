@@ -1,0 +1,49 @@
+--- a/net/minecraft/block/BlockRailDetector.java
++++ b/net/minecraft/block/BlockRailDetector.java
+@@ -106,7 +106,7 @@
+             p_176570_1_.func_180501_a(p_176570_2_, p_176570_3_.func_177226_a(field_176574_M, Boolean.valueOf(true)), 3);
+             this.func_185592_b(p_176570_1_, p_176570_2_, p_176570_3_, true);
+             p_176570_1_.func_175685_c(p_176570_2_, this);
+-            p_176570_1_.func_175685_c(p_176570_2_.func_177977_b(), this);
++            p_176570_1_.func_175685_c(p_176570_2_.getBlockPosBelow(), this);
+             p_176570_1_.func_175704_b(p_176570_2_, p_176570_2_);
+         }
+ 
+@@ -115,7 +115,7 @@
+             p_176570_1_.func_180501_a(p_176570_2_, p_176570_3_.func_177226_a(field_176574_M, Boolean.valueOf(false)), 3);
+             this.func_185592_b(p_176570_1_, p_176570_2_, p_176570_3_, false);
+             p_176570_1_.func_175685_c(p_176570_2_, this);
+-            p_176570_1_.func_175685_c(p_176570_2_.func_177977_b(), this);
++            p_176570_1_.func_175685_c(p_176570_2_.getBlockPosBelow(), this);
+             p_176570_1_.func_175704_b(p_176570_2_, p_176570_2_);
+         }
+ 
+@@ -133,11 +133,11 @@
+ 
+         for (BlockPos blockpos : blockrailbase$rail.func_185763_a())
+         {
+-            IBlockState iblockstate = p_185592_1_.func_180495_p(blockpos);
++            IBlockState iblockstate = p_185592_1_.getBlockState(blockpos);
+ 
+             if (iblockstate != null)
+             {
+-                iblockstate.func_189546_a(p_185592_1_, blockpos, iblockstate.func_177230_c());
++                iblockstate.func_189546_a(p_185592_1_, blockpos, iblockstate.getBlock());
+             }
+         }
+     }
+@@ -189,12 +189,12 @@
+     private AxisAlignedBB func_176572_a(BlockPos p_176572_1_)
+     {
+         float f = 0.2F;
+-        return new AxisAlignedBB((double)((float)p_176572_1_.func_177958_n() + 0.2F), (double)p_176572_1_.func_177956_o(), (double)((float)p_176572_1_.func_177952_p() + 0.2F), (double)((float)(p_176572_1_.func_177958_n() + 1) - 0.2F), (double)((float)(p_176572_1_.func_177956_o() + 1) - 0.2F), (double)((float)(p_176572_1_.func_177952_p() + 1) - 0.2F));
++        return new AxisAlignedBB((double)((float)p_176572_1_.getX() + 0.2F), (double)p_176572_1_.getY(), (double)((float)p_176572_1_.getZ() + 0.2F), (double)((float)(p_176572_1_.getX() + 1) - 0.2F), (double)((float)(p_176572_1_.getY() + 1) - 0.2F), (double)((float)(p_176572_1_.getZ() + 1) - 0.2F));
+     }
+ 
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        return this.func_176223_P().func_177226_a(field_176573_b, BlockRailBase.EnumRailDirection.func_177016_a(p_176203_1_ & 7)).func_177226_a(field_176574_M, Boolean.valueOf((p_176203_1_ & 8) > 0));
++        return this.getBlockState().func_177226_a(field_176573_b, BlockRailBase.EnumRailDirection.func_177016_a(p_176203_1_ & 7)).func_177226_a(field_176574_M, Boolean.valueOf((p_176203_1_ & 8) > 0));
+     }
+ 
+     public int func_176201_c(IBlockState p_176201_1_)

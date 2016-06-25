@@ -1,0 +1,11 @@
+--- a/net/minecraft/client/audio/PositionedSoundRecord.java
++++ b/net/minecraft/client/audio/PositionedSoundRecord.java
+@@ -9,7 +9,7 @@
+ {
+     public PositionedSoundRecord(SoundEvent p_i46527_1_, SoundCategory p_i46527_2_, float p_i46527_3_, float p_i46527_4_, BlockPos p_i46527_5_)
+     {
+-        this(p_i46527_1_, p_i46527_2_, p_i46527_3_, p_i46527_4_, (float)p_i46527_5_.func_177958_n() + 0.5F, (float)p_i46527_5_.func_177956_o() + 0.5F, (float)p_i46527_5_.func_177952_p() + 0.5F);
++        this(p_i46527_1_, p_i46527_2_, p_i46527_3_, p_i46527_4_, (float)p_i46527_5_.getX() + 0.5F, (float)p_i46527_5_.getY() + 0.5F, (float)p_i46527_5_.getZ() + 0.5F);
+     }
+ 
+     public static PositionedSoundRecord func_184371_a(SoundEvent p_184371_0_, float p_184371_1_)

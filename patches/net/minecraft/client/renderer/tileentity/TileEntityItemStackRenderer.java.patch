@@ -1,0 +1,30 @@
+--- a/net/minecraft/client/renderer/tileentity/TileEntityItemStackRenderer.java
++++ b/net/minecraft/client/renderer/tileentity/TileEntityItemStackRenderer.java
+@@ -48,10 +48,10 @@
+                 Minecraft.getMinecraft().getTextureManager().bindTexture(BannerTextures.field_187486_c);
+             }
+ 
+-            GlStateManager.func_179094_E();
+-            GlStateManager.func_179152_a(1.0F, -1.0F, -1.0F);
++            GlStateManager.push();
++            GlStateManager.scale(1.0F, -1.0F, -1.0F);
+             this.field_187318_g.func_187062_a();
+-            GlStateManager.func_179121_F();
++            GlStateManager.pop();
+         }
+         else if (p_179022_1_.getItem() == Items.skull)
+         {
+@@ -76,11 +76,11 @@
+ 
+             if (TileEntitySkullRenderer.field_147536_b != null)
+             {
+-                GlStateManager.func_179094_E();
++                GlStateManager.push();
+                 GlStateManager.func_179129_p();
+                 TileEntitySkullRenderer.field_147536_b.func_188190_a(0.0F, 0.0F, 0.0F, EnumFacing.UP, 0.0F, p_179022_1_.getMetadata(), gameprofile, -1, 0.0F);
+                 GlStateManager.func_179089_o();
+-                GlStateManager.func_179121_F();
++                GlStateManager.pop();
+             }
+         }
+         else

@@ -1,0 +1,167 @@
+--- a/net/minecraft/init/Bootstrap.java
++++ b/net/minecraft/init/Bootstrap.java
+@@ -85,7 +85,7 @@
+                 return entitytippedarrow;
+             }
+         });
+-        BlockDispenser.dispenseBehaviorRegistry.putObject(Items.field_185167_i, new BehaviorProjectileDispense()
++        BlockDispenser.dispenseBehaviorRegistry.putObject(Items.tippedArrow, new BehaviorProjectileDispense()
+         {
+             protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack p_82499_3_)
+             {
+@@ -95,7 +95,7 @@
+                 return entitytippedarrow;
+             }
+         });
+-        BlockDispenser.dispenseBehaviorRegistry.putObject(Items.field_185166_h, new BehaviorProjectileDispense()
++        BlockDispenser.dispenseBehaviorRegistry.putObject(Items.spectralArrow, new BehaviorProjectileDispense()
+         {
+             protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack p_82499_3_)
+             {
+@@ -181,7 +181,7 @@
+             {
+                 EnumFacing enumfacing = (EnumFacing)source.func_189992_e().func_177229_b(BlockDispenser.field_176441_a);
+                 double d0 = source.getX() + (double)enumfacing.getFrontOffsetX();
+-                double d1 = (double)((float)source.func_180699_d().func_177956_o() + 0.2F);
++                double d1 = (double)((float)source.func_180699_d().getY() + 0.2F);
+                 double d2 = source.getZ() + (double)enumfacing.getFrontOffsetZ();
+                 Entity entity = ItemMonsterPlacer.spawnCreature(source.getWorld(), ItemMonsterPlacer.func_185080_h(stack), d0, d1, d2);
+ 
+@@ -201,7 +201,7 @@
+             {
+                 EnumFacing enumfacing = (EnumFacing)source.func_189992_e().func_177229_b(BlockDispenser.field_176441_a);
+                 double d0 = source.getX() + (double)enumfacing.getFrontOffsetX();
+-                double d1 = (double)((float)source.func_180699_d().func_177956_o() + 0.2F);
++                double d1 = (double)((float)source.func_180699_d().getY() + 0.2F);
+                 double d2 = source.getZ() + (double)enumfacing.getFrontOffsetZ();
+                 EntityFireworkRocket entityfireworkrocket = new EntityFireworkRocket(source.getWorld(), d0, d1, d2, stack);
+                 source.getWorld().spawnEntityInWorld(entityfireworkrocket);
+@@ -248,7 +248,7 @@
+             public ItemStack dispenseStack(IBlockSource source, ItemStack stack)
+             {
+                 ItemBucket itembucket = (ItemBucket)stack.getItem();
+-                BlockPos blockpos = source.func_180699_d().func_177972_a((EnumFacing)source.func_189992_e().func_177229_b(BlockDispenser.field_176441_a));
++                BlockPos blockpos = source.func_180699_d().getBlockPosRelative((EnumFacing)source.func_189992_e().func_177229_b(BlockDispenser.field_176441_a));
+ 
+                 if (itembucket.func_180616_a((EntityPlayer)null, source.getWorld(), blockpos))
+                 {
+@@ -270,10 +270,10 @@
+             public ItemStack dispenseStack(IBlockSource source, ItemStack stack)
+             {
+                 World world = source.getWorld();
+-                BlockPos blockpos = source.func_180699_d().func_177972_a((EnumFacing)source.func_189992_e().func_177229_b(BlockDispenser.field_176441_a));
+-                IBlockState iblockstate = world.func_180495_p(blockpos);
+-                Block block = iblockstate.func_177230_c();
+-                Material material = iblockstate.func_185904_a();
++                BlockPos blockpos = source.func_180699_d().getBlockPosRelative((EnumFacing)source.func_189992_e().func_177229_b(BlockDispenser.field_176441_a));
++                IBlockState iblockstate = world.getBlockState(blockpos);
++                Block block = iblockstate.getBlock();
++                Material material = iblockstate.getMaterial();
+                 Item item;
+ 
+                 if (Material.water.equals(material) && block instanceof BlockLiquid && ((Integer)iblockstate.func_177229_b(BlockLiquid.field_176367_b)).intValue() == 0)
+@@ -311,20 +311,20 @@
+             protected ItemStack dispenseStack(IBlockSource source, ItemStack stack)
+             {
+                 World world = source.getWorld();
+-                BlockPos blockpos = source.func_180699_d().func_177972_a((EnumFacing)source.func_189992_e().func_177229_b(BlockDispenser.field_176441_a));
++                BlockPos blockpos = source.func_180699_d().getBlockPosRelative((EnumFacing)source.func_189992_e().func_177229_b(BlockDispenser.field_176441_a));
+ 
+-                if (world.func_175623_d(blockpos))
++                if (world.isEmpty(blockpos))
+                 {
+-                    world.func_175656_a(blockpos, Blocks.fire.func_176223_P());
++                    world.func_175656_a(blockpos, Blocks.fire.getBlockState());
+ 
+                     if (stack.attemptDamageItem(1, world.rand))
+                     {
+                         stack.stackSize = 0;
+                     }
+                 }
+-                else if (world.func_180495_p(blockpos).func_177230_c() == Blocks.tnt)
++                else if (world.getBlockState(blockpos).getBlock() == Blocks.tnt)
+                 {
+-                    Blocks.tnt.func_176206_d(world, blockpos, Blocks.tnt.func_176223_P().func_177226_a(BlockTNT.field_176246_a, Boolean.valueOf(true)));
++                    Blocks.tnt.func_176206_d(world, blockpos, Blocks.tnt.getBlockState().func_177226_a(BlockTNT.field_176246_a, Boolean.valueOf(true)));
+                     world.func_175698_g(blockpos);
+                 }
+                 else
+@@ -354,7 +354,7 @@
+                 if (EnumDyeColor.WHITE == EnumDyeColor.func_176766_a(stack.getMetadata()))
+                 {
+                     World world = source.getWorld();
+-                    BlockPos blockpos = source.func_180699_d().func_177972_a((EnumFacing)source.func_189992_e().func_177229_b(BlockDispenser.field_176441_a));
++                    BlockPos blockpos = source.func_180699_d().getBlockPosRelative((EnumFacing)source.func_189992_e().func_177229_b(BlockDispenser.field_176441_a));
+ 
+                     if (ItemDye.func_179234_a(stack, world, blockpos))
+                     {
+@@ -392,10 +392,10 @@
+             protected ItemStack dispenseStack(IBlockSource source, ItemStack stack)
+             {
+                 World world = source.getWorld();
+-                BlockPos blockpos = source.func_180699_d().func_177972_a((EnumFacing)source.func_189992_e().func_177229_b(BlockDispenser.field_176441_a));
+-                EntityTNTPrimed entitytntprimed = new EntityTNTPrimed(world, (double)blockpos.func_177958_n() + 0.5D, (double)blockpos.func_177956_o(), (double)blockpos.func_177952_p() + 0.5D, (EntityLivingBase)null);
++                BlockPos blockpos = source.func_180699_d().getBlockPosRelative((EnumFacing)source.func_189992_e().func_177229_b(BlockDispenser.field_176441_a));
++                EntityTNTPrimed entitytntprimed = new EntityTNTPrimed(world, (double)blockpos.getX() + 0.5D, (double)blockpos.getY(), (double)blockpos.getZ() + 0.5D, (EntityLivingBase)null);
+                 world.spawnEntityInWorld(entitytntprimed);
+-                world.func_184148_a((EntityPlayer)null, entitytntprimed.posX, entitytntprimed.posY, entitytntprimed.posZ, SoundEvents.field_187904_gd, SoundCategory.BLOCKS, 1.0F, 1.0F);
++                world.playSound((EntityPlayer)null, entitytntprimed.posX, entitytntprimed.posY, entitytntprimed.posZ, SoundEvents.field_187904_gd, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                 --stack.stackSize;
+                 return stack;
+             }
+@@ -407,14 +407,14 @@
+             {
+                 World world = source.getWorld();
+                 EnumFacing enumfacing = (EnumFacing)source.func_189992_e().func_177229_b(BlockDispenser.field_176441_a);
+-                BlockPos blockpos = source.func_180699_d().func_177972_a(enumfacing);
++                BlockPos blockpos = source.func_180699_d().getBlockPosRelative(enumfacing);
+                 BlockSkull blockskull = Blocks.skull;
+ 
+-                if (world.func_175623_d(blockpos) && blockskull.func_176415_b(world, blockpos, stack))
++                if (world.isEmpty(blockpos) && blockskull.func_176415_b(world, blockpos, stack))
+                 {
+                     if (!world.isRemote)
+                     {
+-                        world.func_180501_a(blockpos, blockskull.func_176223_P().func_177226_a(BlockSkull.field_176418_a, EnumFacing.UP), 3);
++                        world.func_180501_a(blockpos, blockskull.getBlockState().func_177226_a(BlockSkull.field_176418_a, EnumFacing.UP), 3);
+                         TileEntity tileentity = world.func_175625_s(blockpos);
+ 
+                         if (tileentity instanceof TileEntitySkull)
+@@ -481,14 +481,14 @@
+             protected ItemStack dispenseStack(IBlockSource source, ItemStack stack)
+             {
+                 World world = source.getWorld();
+-                BlockPos blockpos = source.func_180699_d().func_177972_a((EnumFacing)source.func_189992_e().func_177229_b(BlockDispenser.field_176441_a));
++                BlockPos blockpos = source.func_180699_d().getBlockPosRelative((EnumFacing)source.func_189992_e().func_177229_b(BlockDispenser.field_176441_a));
+                 BlockPumpkin blockpumpkin = (BlockPumpkin)Blocks.pumpkin;
+ 
+-                if (world.func_175623_d(blockpos) && blockpumpkin.func_176390_d(world, blockpos))
++                if (world.isEmpty(blockpos) && blockpumpkin.func_176390_d(world, blockpos))
+                 {
+                     if (!world.isRemote)
+                     {
+-                        world.func_180501_a(blockpos, blockpumpkin.func_176223_P(), 3);
++                        world.func_180501_a(blockpos, blockpumpkin.getBlockState(), 3);
+                     }
+ 
+                     --stack.stackSize;
+@@ -575,8 +575,8 @@
+             double d0 = source.getX() + (double)((float)enumfacing.getFrontOffsetX() * 1.125F);
+             double d1 = source.getY() + (double)((float)enumfacing.getFrontOffsetY() * 1.125F);
+             double d2 = source.getZ() + (double)((float)enumfacing.getFrontOffsetZ() * 1.125F);
+-            BlockPos blockpos = source.func_180699_d().func_177972_a(enumfacing);
+-            Material material = world.func_180495_p(blockpos).func_185904_a();
++            BlockPos blockpos = source.func_180699_d().getBlockPosRelative(enumfacing);
++            Material material = world.getBlockState(blockpos).getMaterial();
+             double d3;
+ 
+             if (Material.water.equals(material))
+@@ -585,7 +585,7 @@
+             }
+             else
+             {
+-                if (!Material.air.equals(material) || !Material.water.equals(world.func_180495_p(blockpos.func_177977_b()).func_185904_a()))
++                if (!Material.air.equals(material) || !Material.water.equals(world.getBlockState(blockpos.getBlockPosBelow()).getMaterial()))
+                 {
+                     return this.field_185026_b.dispense(source, stack);
+                 }

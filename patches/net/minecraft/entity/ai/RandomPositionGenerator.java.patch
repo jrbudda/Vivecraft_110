@@ -1,0 +1,38 @@
+--- a/net/minecraft/entity/ai/RandomPositionGenerator.java
++++ b/net/minecraft/entity/ai/RandomPositionGenerator.java
+@@ -33,7 +33,7 @@
+      */
+     public static Vec3d findRandomTargetBlockTowards(EntityCreature p_75464_0_, int p_75464_1_, int p_75464_2_, Vec3d p_75464_3_)
+     {
+-        staticVector = p_75464_3_.func_178786_a(p_75464_0_.posX, p_75464_0_.posY, p_75464_0_.posZ);
++        staticVector = p_75464_3_.subtractVector(p_75464_0_.posX, p_75464_0_.posY, p_75464_0_.posZ);
+         return findRandomTargetBlock(p_75464_0_, p_75464_1_, p_75464_2_, staticVector);
+     }
+ 
+@@ -44,7 +44,7 @@
+      */
+     public static Vec3d findRandomTargetBlockAwayFrom(EntityCreature p_75461_0_, int p_75461_1_, int p_75461_2_, Vec3d p_75461_3_)
+     {
+-        staticVector = (new Vec3d(p_75461_0_.posX, p_75461_0_.posY, p_75461_0_.posZ)).func_178788_d(p_75461_3_);
++        staticVector = (new Vec3d(p_75461_0_.posX, p_75461_0_.posY, p_75461_0_.posZ)).subtractVector(p_75461_3_);
+         return findRandomTargetBlock(p_75461_0_, p_75461_1_, p_75461_2_, staticVector);
+     }
+ 
+@@ -88,7 +88,7 @@
+                 {
+                     BlockPos blockpos = p_75462_0_.func_180486_cf();
+ 
+-                    if (p_75462_0_.posX > (double)blockpos.func_177958_n())
++                    if (p_75462_0_.posX > (double)blockpos.getX())
+                     {
+                         l -= random.nextInt(p_75462_1_ / 2);
+                     }
+@@ -97,7 +97,7 @@
+                         l += random.nextInt(p_75462_1_ / 2);
+                     }
+ 
+-                    if (p_75462_0_.posZ > (double)blockpos.func_177952_p())
++                    if (p_75462_0_.posZ > (double)blockpos.getZ())
+                     {
+                         i1 -= random.nextInt(p_75462_1_ / 2);
+                     }

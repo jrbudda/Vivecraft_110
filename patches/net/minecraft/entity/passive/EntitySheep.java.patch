@@ -1,0 +1,20 @@
+--- a/net/minecraft/entity/passive/EntitySheep.java
++++ b/net/minecraft/entity/passive/EntitySheep.java
+@@ -239,7 +239,7 @@
+             }
+ 
+             p_184645_3_.damageItem(1, p_184645_1_);
+-            this.func_184185_a(SoundEvents.field_187763_eJ, 1.0F, 1.0F);
++            this.playSound(SoundEvents.field_187763_eJ, 1.0F, 1.0F);
+         }
+ 
+         return super.func_184645_a(p_184645_1_, p_184645_2_, p_184645_3_);
+@@ -287,7 +287,7 @@
+ 
+     protected void func_180429_a(BlockPos p_180429_1_, Block p_180429_2_)
+     {
+-        this.func_184185_a(SoundEvents.field_187765_eK, 0.15F, 1.0F);
++        this.playSound(SoundEvents.field_187765_eK, 0.15F, 1.0F);
+     }
+ 
+     public EnumDyeColor func_175509_cj()

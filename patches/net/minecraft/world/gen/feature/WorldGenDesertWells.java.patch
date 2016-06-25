@@ -1,0 +1,45 @@
+--- a/net/minecraft/world/gen/feature/WorldGenDesertWells.java
++++ b/net/minecraft/world/gen/feature/WorldGenDesertWells.java
+@@ -15,18 +15,18 @@
+ public class WorldGenDesertWells extends WorldGenerator
+ {
+     private static final BlockStateMatcher field_175913_a = BlockStateMatcher.func_177638_a(Blocks.sand).func_177637_a(BlockSand.field_176504_a, Predicates.equalTo(BlockSand.EnumType.SAND));
+-    private final IBlockState field_175911_b = Blocks.stone_slab.func_176223_P().func_177226_a(BlockStoneSlab.field_176556_M, BlockStoneSlab.EnumType.SAND).func_177226_a(BlockSlab.field_176554_a, BlockSlab.EnumBlockHalf.BOTTOM);
+-    private final IBlockState field_175912_c = Blocks.sandstone.func_176223_P();
+-    private final IBlockState field_175910_d = Blocks.flowing_water.func_176223_P();
++    private final IBlockState field_175911_b = Blocks.stone_slab.getBlockState().func_177226_a(BlockStoneSlab.field_176556_M, BlockStoneSlab.EnumType.SAND).func_177226_a(BlockSlab.field_176554_a, BlockSlab.EnumBlockHalf.BOTTOM);
++    private final IBlockState field_175912_c = Blocks.sandstone.getBlockState();
++    private final IBlockState field_175910_d = Blocks.flowing_water.getBlockState();
+ 
+     public boolean func_180709_b(World p_180709_1_, Random p_180709_2_, BlockPos p_180709_3_)
+     {
+-        while (p_180709_1_.func_175623_d(p_180709_3_) && p_180709_3_.func_177956_o() > 2)
++        while (p_180709_1_.isEmpty(p_180709_3_) && p_180709_3_.getY() > 2)
+         {
+-            p_180709_3_ = p_180709_3_.func_177977_b();
++            p_180709_3_ = p_180709_3_.getBlockPosBelow();
+         }
+ 
+-        if (!field_175913_a.apply(p_180709_1_.func_180495_p(p_180709_3_)))
++        if (!field_175913_a.apply(p_180709_1_.getBlockState(p_180709_3_)))
+         {
+             return false;
+         }
+@@ -36,7 +36,7 @@
+             {
+                 for (int j = -2; j <= 2; ++j)
+                 {
+-                    if (p_180709_1_.func_175623_d(p_180709_3_.func_177982_a(i, -1, j)) && p_180709_1_.func_175623_d(p_180709_3_.func_177982_a(i, -2, j)))
++                    if (p_180709_1_.isEmpty(p_180709_3_.func_177982_a(i, -1, j)) && p_180709_1_.isEmpty(p_180709_3_.func_177982_a(i, -2, j)))
+                     {
+                         return false;
+                     }
+@@ -58,7 +58,7 @@
+ 
+             for (EnumFacing enumfacing : EnumFacing.Plane.HORIZONTAL)
+             {
+-                p_180709_1_.func_180501_a(p_180709_3_.func_177972_a(enumfacing), this.field_175910_d, 2);
++                p_180709_1_.func_180501_a(p_180709_3_.getBlockPosRelative(enumfacing), this.field_175910_d, 2);
+             }
+ 
+             for (int i1 = -2; i1 <= 2; ++i1)

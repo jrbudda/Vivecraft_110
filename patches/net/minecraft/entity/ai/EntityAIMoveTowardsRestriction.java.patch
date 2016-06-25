@@ -1,0 +1,11 @@
+--- a/net/minecraft/entity/ai/EntityAIMoveTowardsRestriction.java
++++ b/net/minecraft/entity/ai/EntityAIMoveTowardsRestriction.java
+@@ -31,7 +31,7 @@
+         else
+         {
+             BlockPos blockpos = this.theEntity.func_180486_cf();
+-            Vec3d vec3d = RandomPositionGenerator.findRandomTargetBlockTowards(this.theEntity, 16, 7, new Vec3d((double)blockpos.func_177958_n(), (double)blockpos.func_177956_o(), (double)blockpos.func_177952_p()));
++            Vec3d vec3d = RandomPositionGenerator.findRandomTargetBlockTowards(this.theEntity, 16, 7, new Vec3d((double)blockpos.getX(), (double)blockpos.getY(), (double)blockpos.getZ()));
+ 
+             if (vec3d == null)
+             {

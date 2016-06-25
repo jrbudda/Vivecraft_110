@@ -1,0 +1,154 @@
+--- a/net/minecraft/world/biome/BiomeDecorator.java
++++ b/net/minecraft/world/biome/BiomeDecorator.java
+@@ -145,17 +145,17 @@
+         {
+             this.field_180293_d = ChunkProviderSettings.Factory.func_177865_a(p_180292_1_.getWorldInfo().getGeneratorOptions()).func_177864_b();
+             this.field_180294_c = p_180292_4_;
+-            this.dirtGen = new WorldGenMinable(Blocks.dirt.func_176223_P(), this.field_180293_d.field_177789_I);
+-            this.gravelGen = new WorldGenMinable(Blocks.gravel.func_176223_P(), this.field_180293_d.field_177785_M);
+-            this.field_180296_j = new WorldGenMinable(Blocks.stone.func_176223_P().func_177226_a(BlockStone.field_176247_a, BlockStone.EnumType.GRANITE), this.field_180293_d.field_177796_Q);
+-            this.field_180297_k = new WorldGenMinable(Blocks.stone.func_176223_P().func_177226_a(BlockStone.field_176247_a, BlockStone.EnumType.DIORITE), this.field_180293_d.field_177792_U);
+-            this.field_180295_l = new WorldGenMinable(Blocks.stone.func_176223_P().func_177226_a(BlockStone.field_176247_a, BlockStone.EnumType.ANDESITE), this.field_180293_d.field_177800_Y);
+-            this.coalGen = new WorldGenMinable(Blocks.coal_ore.func_176223_P(), this.field_180293_d.field_177844_ac);
+-            this.ironGen = new WorldGenMinable(Blocks.iron_ore.func_176223_P(), this.field_180293_d.field_177848_ag);
+-            this.goldGen = new WorldGenMinable(Blocks.gold_ore.func_176223_P(), this.field_180293_d.field_177828_ak);
+-            this.field_180299_p = new WorldGenMinable(Blocks.redstone_ore.func_176223_P(), this.field_180293_d.field_177836_ao);
+-            this.field_180298_q = new WorldGenMinable(Blocks.diamond_ore.func_176223_P(), this.field_180293_d.field_177814_as);
+-            this.lapisGen = new WorldGenMinable(Blocks.lapis_ore.func_176223_P(), this.field_180293_d.field_177822_aw);
++            this.dirtGen = new WorldGenMinable(Blocks.dirt.getBlockState(), this.field_180293_d.field_177789_I);
++            this.gravelGen = new WorldGenMinable(Blocks.gravel.getBlockState(), this.field_180293_d.field_177785_M);
++            this.field_180296_j = new WorldGenMinable(Blocks.stone.getBlockState().func_177226_a(BlockStone.field_176247_a, BlockStone.EnumType.GRANITE), this.field_180293_d.field_177796_Q);
++            this.field_180297_k = new WorldGenMinable(Blocks.stone.getBlockState().func_177226_a(BlockStone.field_176247_a, BlockStone.EnumType.DIORITE), this.field_180293_d.field_177792_U);
++            this.field_180295_l = new WorldGenMinable(Blocks.stone.getBlockState().func_177226_a(BlockStone.field_176247_a, BlockStone.EnumType.ANDESITE), this.field_180293_d.field_177800_Y);
++            this.coalGen = new WorldGenMinable(Blocks.coal_ore.getBlockState(), this.field_180293_d.field_177844_ac);
++            this.ironGen = new WorldGenMinable(Blocks.iron_ore.getBlockState(), this.field_180293_d.field_177848_ag);
++            this.goldGen = new WorldGenMinable(Blocks.gold_ore.getBlockState(), this.field_180293_d.field_177828_ak);
++            this.field_180299_p = new WorldGenMinable(Blocks.redstone_ore.getBlockState(), this.field_180293_d.field_177836_ao);
++            this.field_180298_q = new WorldGenMinable(Blocks.diamond_ore.getBlockState(), this.field_180293_d.field_177814_as);
++            this.lapisGen = new WorldGenMinable(Blocks.lapis_ore.getBlockState(), this.field_180293_d.field_177822_aw);
+             this.genDecorations(p_180292_3_, p_180292_1_, p_180292_2_);
+             this.field_185425_a = false;
+         }
+@@ -218,7 +218,7 @@
+         {
+             int i7 = p_150513_3_.nextInt(16) + 8;
+             int l10 = p_150513_3_.nextInt(16) + 8;
+-            int j14 = p_150513_2_.func_175645_m(this.field_180294_c.func_177982_a(i7, 0, l10)).func_177956_o() + 32;
++            int j14 = p_150513_2_.func_175645_m(this.field_180294_c.func_177982_a(i7, 0, l10)).getY() + 32;
+ 
+             if (j14 > 0)
+             {
+@@ -227,7 +227,7 @@
+                 BlockFlower.EnumFlowerType blockflower$enumflowertype = p_150513_1_.func_180623_a(p_150513_3_, blockpos1);
+                 BlockFlower blockflower = blockflower$enumflowertype.func_176964_a().func_180346_a();
+ 
+-                if (blockflower.func_176223_P().func_185904_a() != Material.air)
++                if (blockflower.getBlockState().getMaterial() != Material.air)
+                 {
+                     this.yellowFlowerGen.func_175914_a(blockflower, blockflower$enumflowertype);
+                     this.yellowFlowerGen.func_180709_b(p_150513_2_, p_150513_3_, blockpos1);
+@@ -239,7 +239,7 @@
+         {
+             int j7 = p_150513_3_.nextInt(16) + 8;
+             int i11 = p_150513_3_.nextInt(16) + 8;
+-            int k14 = p_150513_2_.func_175645_m(this.field_180294_c.func_177982_a(j7, 0, i11)).func_177956_o() * 2;
++            int k14 = p_150513_2_.func_175645_m(this.field_180294_c.func_177982_a(j7, 0, i11)).getY() * 2;
+ 
+             if (k14 > 0)
+             {
+@@ -252,7 +252,7 @@
+         {
+             int k7 = p_150513_3_.nextInt(16) + 8;
+             int j11 = p_150513_3_.nextInt(16) + 8;
+-            int l14 = p_150513_2_.func_175645_m(this.field_180294_c.func_177982_a(k7, 0, j11)).func_177956_o() * 2;
++            int l14 = p_150513_2_.func_175645_m(this.field_180294_c.func_177982_a(k7, 0, j11)).getY() * 2;
+ 
+             if (l14 > 0)
+             {
+@@ -265,7 +265,7 @@
+         {
+             int l7 = p_150513_3_.nextInt(16) + 8;
+             int k11 = p_150513_3_.nextInt(16) + 8;
+-            int i15 = p_150513_2_.func_175645_m(this.field_180294_c.func_177982_a(l7, 0, k11)).func_177956_o() * 2;
++            int i15 = p_150513_2_.func_175645_m(this.field_180294_c.func_177982_a(l7, 0, k11)).getY() * 2;
+ 
+             if (i15 > 0)
+             {
+@@ -273,11 +273,11 @@
+                 BlockPos blockpos4;
+                 BlockPos blockpos7;
+ 
+-                for (blockpos4 = this.field_180294_c.func_177982_a(l7, j18, k11); blockpos4.func_177956_o() > 0; blockpos4 = blockpos7)
++                for (blockpos4 = this.field_180294_c.func_177982_a(l7, j18, k11); blockpos4.getY() > 0; blockpos4 = blockpos7)
+                 {
+-                    blockpos7 = blockpos4.func_177977_b();
++                    blockpos7 = blockpos4.getBlockPosBelow();
+ 
+-                    if (!p_150513_2_.func_175623_d(blockpos7))
++                    if (!p_150513_2_.isEmpty(blockpos7))
+                     {
+                         break;
+                     }
+@@ -301,7 +301,7 @@
+             {
+                 int j8 = p_150513_3_.nextInt(16) + 8;
+                 int i12 = p_150513_3_.nextInt(16) + 8;
+-                int j15 = p_150513_2_.func_175645_m(this.field_180294_c.func_177982_a(j8, 0, i12)).func_177956_o() * 2;
++                int j15 = p_150513_2_.func_175645_m(this.field_180294_c.func_177982_a(j8, 0, i12)).getY() * 2;
+ 
+                 if (j15 > 0)
+                 {
+@@ -316,7 +316,7 @@
+         {
+             int i4 = p_150513_3_.nextInt(16) + 8;
+             int k8 = p_150513_3_.nextInt(16) + 8;
+-            int j12 = p_150513_2_.func_175645_m(this.field_180294_c.func_177982_a(i4, 0, k8)).func_177956_o() * 2;
++            int j12 = p_150513_2_.func_175645_m(this.field_180294_c.func_177982_a(i4, 0, k8)).getY() * 2;
+ 
+             if (j12 > 0)
+             {
+@@ -329,7 +329,7 @@
+         {
+             int j4 = p_150513_3_.nextInt(16) + 8;
+             int l8 = p_150513_3_.nextInt(16) + 8;
+-            int k12 = p_150513_2_.func_175645_m(this.field_180294_c.func_177982_a(j4, 0, l8)).func_177956_o() * 2;
++            int k12 = p_150513_2_.func_175645_m(this.field_180294_c.func_177982_a(j4, 0, l8)).getY() * 2;
+ 
+             if (k12 > 0)
+             {
+@@ -342,7 +342,7 @@
+         {
+             int i9 = p_150513_3_.nextInt(16) + 8;
+             int l12 = p_150513_3_.nextInt(16) + 8;
+-            int i16 = p_150513_2_.func_175645_m(this.field_180294_c.func_177982_a(i9, 0, l12)).func_177956_o() * 2;
++            int i16 = p_150513_2_.func_175645_m(this.field_180294_c.func_177982_a(i9, 0, l12)).getY() * 2;
+ 
+             if (i16 > 0)
+             {
+@@ -355,7 +355,7 @@
+         {
+             int j9 = p_150513_3_.nextInt(16) + 8;
+             int i13 = p_150513_3_.nextInt(16) + 8;
+-            int j16 = p_150513_2_.func_175645_m(this.field_180294_c.func_177982_a(j9, 0, i13)).func_177956_o() * 2;
++            int j16 = p_150513_2_.func_175645_m(this.field_180294_c.func_177982_a(j9, 0, i13)).getY() * 2;
+ 
+             if (j16 > 0)
+             {
+@@ -368,7 +368,7 @@
+         {
+             int i5 = p_150513_3_.nextInt(16) + 8;
+             int k9 = p_150513_3_.nextInt(16) + 8;
+-            int j13 = p_150513_2_.func_175645_m(this.field_180294_c.func_177982_a(i5, 0, k9)).func_177956_o() * 2;
++            int j13 = p_150513_2_.func_175645_m(this.field_180294_c.func_177982_a(i5, 0, k9)).getY() * 2;
+ 
+             if (j13 > 0)
+             {
+@@ -381,7 +381,7 @@
+         {
+             int l9 = p_150513_3_.nextInt(16) + 8;
+             int k13 = p_150513_3_.nextInt(16) + 8;
+-            int l16 = p_150513_2_.func_175645_m(this.field_180294_c.func_177982_a(l9, 0, k13)).func_177956_o() * 2;
++            int l16 = p_150513_2_.func_175645_m(this.field_180294_c.func_177982_a(l9, 0, k13)).getY() * 2;
+ 
+             if (l16 > 0)
+             {

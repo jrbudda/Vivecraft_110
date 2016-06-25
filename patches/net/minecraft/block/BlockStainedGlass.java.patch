@@ -1,0 +1,11 @@
+--- a/net/minecraft/block/BlockStainedGlass.java
++++ b/net/minecraft/block/BlockStainedGlass.java
+@@ -73,7 +73,7 @@
+ 
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        return this.func_176223_P().func_177226_a(field_176547_a, EnumDyeColor.func_176764_b(p_176203_1_));
++        return this.getBlockState().func_177226_a(field_176547_a, EnumDyeColor.func_176764_b(p_176203_1_));
+     }
+ 
+     public void func_176213_c(World p_176213_1_, BlockPos p_176213_2_, IBlockState p_176213_3_)

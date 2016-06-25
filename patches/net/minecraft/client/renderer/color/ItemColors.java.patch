@@ -1,0 +1,11 @@
+--- a/net/minecraft/client/renderer/color/ItemColors.java
++++ b/net/minecraft/client/renderer/color/ItemColors.java
+@@ -125,7 +125,7 @@
+             {
+                 return p_186726_2_ == 0 ? PotionUtils.func_185181_a(PotionUtils.func_185189_a(p_186726_1_)) : -1;
+             }
+-        }, new Item[] {Items.field_185167_i});
++        }, new Item[] {Items.tippedArrow});
+         return itemcolors;
+     }
+ 

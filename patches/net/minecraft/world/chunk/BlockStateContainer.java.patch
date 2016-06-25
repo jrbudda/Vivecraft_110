@@ -1,0 +1,11 @@
+--- a/net/minecraft/world/chunk/BlockStateContainer.java
++++ b/net/minecraft/world/chunk/BlockStateContainer.java
+@@ -11,7 +11,7 @@
+ public class BlockStateContainer implements IBlockStatePaletteResizer
+ {
+     private static final IBlockStatePalette field_186023_d = new BlockStatePaletteRegistry();
+-    protected static final IBlockState field_186020_a = Blocks.air.func_176223_P();
++    protected static final IBlockState field_186020_a = Blocks.air.getBlockState();
+     protected BitArray field_186021_b;
+     protected IBlockStatePalette field_186022_c;
+     private int field_186024_e;

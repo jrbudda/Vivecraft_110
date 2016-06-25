@@ -1,0 +1,11 @@
+--- a/net/minecraft/block/BlockStoneSlab.java
++++ b/net/minecraft/block/BlockStoneSlab.java
+@@ -89,7 +89,7 @@
+ 
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        IBlockState iblockstate = this.func_176223_P().func_177226_a(field_176556_M, BlockStoneSlab.EnumType.func_176625_a(p_176203_1_ & 7));
++        IBlockState iblockstate = this.getBlockState().func_177226_a(field_176556_M, BlockStoneSlab.EnumType.func_176625_a(p_176203_1_ & 7));
+ 
+         if (this.func_176552_j())
+         {

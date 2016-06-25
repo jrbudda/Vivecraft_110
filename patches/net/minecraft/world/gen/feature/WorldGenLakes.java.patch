@@ -1,0 +1,110 @@
+--- a/net/minecraft/world/gen/feature/WorldGenLakes.java
++++ b/net/minecraft/world/gen/feature/WorldGenLakes.java
+@@ -20,18 +20,18 @@
+ 
+     public boolean func_180709_b(World p_180709_1_, Random p_180709_2_, BlockPos p_180709_3_)
+     {
+-        for (p_180709_3_ = p_180709_3_.func_177982_a(-8, 0, -8); p_180709_3_.func_177956_o() > 5 && p_180709_1_.func_175623_d(p_180709_3_); p_180709_3_ = p_180709_3_.func_177977_b())
++        for (p_180709_3_ = p_180709_3_.func_177982_a(-8, 0, -8); p_180709_3_.getY() > 5 && p_180709_1_.isEmpty(p_180709_3_); p_180709_3_ = p_180709_3_.getBlockPosBelow())
+         {
+             ;
+         }
+ 
+-        if (p_180709_3_.func_177956_o() <= 4)
++        if (p_180709_3_.getY() <= 4)
+         {
+             return false;
+         }
+         else
+         {
+-            p_180709_3_ = p_180709_3_.func_177979_c(4);
++            p_180709_3_ = p_180709_3_.getBlockPosBelow(4);
+             boolean[] aboolean = new boolean[2048];
+             int i = p_180709_2_.nextInt(4) + 4;
+ 
+@@ -74,14 +74,14 @@
+ 
+                         if (flag)
+                         {
+-                            Material material = p_180709_1_.func_180495_p(p_180709_3_.func_177982_a(k1, k, l2)).func_185904_a();
++                            Material material = p_180709_1_.getBlockState(p_180709_3_.func_177982_a(k1, k, l2)).getMaterial();
+ 
+                             if (k >= 4 && material.isLiquid())
+                             {
+                                 return false;
+                             }
+ 
+-                            if (k < 4 && !material.isSolid() && p_180709_1_.func_180495_p(p_180709_3_.func_177982_a(k1, k, l2)).func_177230_c() != this.field_150556_a)
++                            if (k < 4 && !material.isSolid() && p_180709_1_.getBlockState(p_180709_3_.func_177982_a(k1, k, l2)).getBlock() != this.field_150556_a)
+                             {
+                                 return false;
+                             }
+@@ -98,7 +98,7 @@
+                     {
+                         if (aboolean[(l1 * 16 + i3) * 8 + i4])
+                         {
+-                            p_180709_1_.func_180501_a(p_180709_3_.func_177982_a(l1, i4, i3), i4 >= 4 ? Blocks.air.func_176223_P() : this.field_150556_a.func_176223_P(), 2);
++                            p_180709_1_.func_180501_a(p_180709_3_.func_177982_a(l1, i4, i3), i4 >= 4 ? Blocks.air.getBlockState() : this.field_150556_a.getBlockState(), 2);
+                         }
+                     }
+                 }
+@@ -114,17 +114,17 @@
+                         {
+                             BlockPos blockpos = p_180709_3_.func_177982_a(i2, j4 - 1, j3);
+ 
+-                            if (p_180709_1_.func_180495_p(blockpos).func_177230_c() == Blocks.dirt && p_180709_1_.func_175642_b(EnumSkyBlock.SKY, p_180709_3_.func_177982_a(i2, j4, j3)) > 0)
++                            if (p_180709_1_.getBlockState(blockpos).getBlock() == Blocks.dirt && p_180709_1_.func_175642_b(EnumSkyBlock.SKY, p_180709_3_.func_177982_a(i2, j4, j3)) > 0)
+                             {
+                                 Biome biome = p_180709_1_.func_180494_b(blockpos);
+ 
+-                                if (biome.topBlock.func_177230_c() == Blocks.mycelium)
++                                if (biome.topBlock.getBlock() == Blocks.mycelium)
+                                 {
+-                                    p_180709_1_.func_180501_a(blockpos, Blocks.mycelium.func_176223_P(), 2);
++                                    p_180709_1_.func_180501_a(blockpos, Blocks.mycelium.getBlockState(), 2);
+                                 }
+                                 else
+                                 {
+-                                    p_180709_1_.func_180501_a(blockpos, Blocks.grass.func_176223_P(), 2);
++                                    p_180709_1_.func_180501_a(blockpos, Blocks.grass.getBlockState(), 2);
+                                 }
+                             }
+                         }
+@@ -132,7 +132,7 @@
+                 }
+             }
+ 
+-            if (this.field_150556_a.func_176223_P().func_185904_a() == Material.lava)
++            if (this.field_150556_a.getBlockState().getMaterial() == Material.lava)
+             {
+                 for (int j2 = 0; j2 < 16; ++j2)
+                 {
+@@ -142,16 +142,16 @@
+                         {
+                             boolean flag1 = !aboolean[(j2 * 16 + k3) * 8 + k4] && (j2 < 15 && aboolean[((j2 + 1) * 16 + k3) * 8 + k4] || j2 > 0 && aboolean[((j2 - 1) * 16 + k3) * 8 + k4] || k3 < 15 && aboolean[(j2 * 16 + k3 + 1) * 8 + k4] || k3 > 0 && aboolean[(j2 * 16 + (k3 - 1)) * 8 + k4] || k4 < 7 && aboolean[(j2 * 16 + k3) * 8 + k4 + 1] || k4 > 0 && aboolean[(j2 * 16 + k3) * 8 + (k4 - 1)]);
+ 
+-                            if (flag1 && (k4 < 4 || p_180709_2_.nextInt(2) != 0) && p_180709_1_.func_180495_p(p_180709_3_.func_177982_a(j2, k4, k3)).func_185904_a().isSolid())
++                            if (flag1 && (k4 < 4 || p_180709_2_.nextInt(2) != 0) && p_180709_1_.getBlockState(p_180709_3_.func_177982_a(j2, k4, k3)).getMaterial().isSolid())
+                             {
+-                                p_180709_1_.func_180501_a(p_180709_3_.func_177982_a(j2, k4, k3), Blocks.stone.func_176223_P(), 2);
++                                p_180709_1_.func_180501_a(p_180709_3_.func_177982_a(j2, k4, k3), Blocks.stone.getBlockState(), 2);
+                             }
+                         }
+                     }
+                 }
+             }
+ 
+-            if (this.field_150556_a.func_176223_P().func_185904_a() == Material.water)
++            if (this.field_150556_a.getBlockState().getMaterial() == Material.water)
+             {
+                 for (int k2 = 0; k2 < 16; ++k2)
+                 {
+@@ -161,7 +161,7 @@
+ 
+                         if (p_180709_1_.func_175675_v(p_180709_3_.func_177982_a(k2, 4, l3)))
+                         {
+-                            p_180709_1_.func_180501_a(p_180709_3_.func_177982_a(k2, 4, l3), Blocks.ice.func_176223_P(), 2);
++                            p_180709_1_.func_180501_a(p_180709_3_.func_177982_a(k2, 4, l3), Blocks.ice.getBlockState(), 2);
+                         }
+                     }
+                 }

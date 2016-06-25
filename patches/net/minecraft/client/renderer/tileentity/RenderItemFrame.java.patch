@@ -1,0 +1,93 @@
+--- a/net/minecraft/client/renderer/tileentity/RenderItemFrame.java
++++ b/net/minecraft/client/renderer/tileentity/RenderItemFrame.java
+@@ -44,13 +44,13 @@
+      */
+     public void doRender(EntityItemFrame p_76986_1_, double p_76986_2_, double p_76986_4_, double p_76986_6_, float p_76986_8_, float p_76986_9_)
+     {
+-        GlStateManager.func_179094_E();
++        GlStateManager.push();
+         BlockPos blockpos = p_76986_1_.func_174857_n();
+-        double d0 = (double)blockpos.func_177958_n() - p_76986_1_.posX + p_76986_2_;
+-        double d1 = (double)blockpos.func_177956_o() - p_76986_1_.posY + p_76986_4_;
+-        double d2 = (double)blockpos.func_177952_p() - p_76986_1_.posZ + p_76986_6_;
++        double d0 = (double)blockpos.getX() - p_76986_1_.posX + p_76986_2_;
++        double d1 = (double)blockpos.getY() - p_76986_1_.posY + p_76986_4_;
++        double d2 = (double)blockpos.getZ() - p_76986_1_.posZ + p_76986_6_;
+         GlStateManager.func_179137_b(d0 + 0.5D, d1 + 0.5D, d2 + 0.5D);
+-        GlStateManager.func_179114_b(180.0F - p_76986_1_.rotationYaw, 0.0F, 1.0F, 0.0F);
++        GlStateManager.rotate(180.0F - p_76986_1_.rotationYaw, 0.0F, 1.0F, 0.0F);
+         this.renderManager.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+         BlockRendererDispatcher blockrendererdispatcher = this.field_147917_g.func_175602_ab();
+         ModelManager modelmanager = blockrendererdispatcher.func_175023_a().func_178126_b();
+@@ -65,7 +65,7 @@
+             ibakedmodel = modelmanager.func_174953_a(this.field_177072_f);
+         }
+ 
+-        GlStateManager.func_179094_E();
++        GlStateManager.push();
+         GlStateManager.func_179109_b(-0.5F, -0.5F, -0.5F);
+ 
+         if (this.field_188301_f)
+@@ -82,10 +82,10 @@
+             GlStateManager.func_179119_h();
+         }
+ 
+-        GlStateManager.func_179121_F();
++        GlStateManager.pop();
+         GlStateManager.func_179109_b(0.0F, 0.0F, 0.4375F);
+         this.func_82402_b(p_76986_1_);
+-        GlStateManager.func_179121_F();
++        GlStateManager.pop();
+         this.func_177067_a(p_76986_1_, p_76986_2_ + (double)((float)p_76986_1_.field_174860_b.getFrontOffsetX() * 0.3F), p_76986_4_ - 0.25D, p_76986_6_ + (double)((float)p_76986_1_.field_174860_b.getFrontOffsetZ() * 0.3F));
+     }
+ 
+@@ -107,7 +107,7 @@
+             Item item = entityitem.getEntityItem().getItem();
+             entityitem.getEntityItem().stackSize = 1;
+             entityitem.hoverStart = 0.0F;
+-            GlStateManager.func_179094_E();
++            GlStateManager.push();
+             GlStateManager.func_179140_f();
+             int i = p_82402_1_.getRotation();
+ 
+@@ -116,14 +116,14 @@
+                 i = i % 4 * 2;
+             }
+ 
+-            GlStateManager.func_179114_b((float)i * 360.0F / 8.0F, 0.0F, 0.0F, 1.0F);
++            GlStateManager.rotate((float)i * 360.0F / 8.0F, 0.0F, 0.0F, 1.0F);
+ 
+             if (item == Items.filled_map)
+             {
+                 this.renderManager.renderEngine.bindTexture(mapBackgroundTextures);
+-                GlStateManager.func_179114_b(180.0F, 0.0F, 0.0F, 1.0F);
++                GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+                 float f = 0.0078125F;
+-                GlStateManager.func_179152_a(0.0078125F, 0.0078125F, 0.0078125F);
++                GlStateManager.scale(0.0078125F, 0.0078125F, 0.0078125F);
+                 GlStateManager.func_179109_b(-64.0F, -64.0F, 0.0F);
+                 MapData mapdata = Items.filled_map.getMapData(entityitem.getEntityItem(), p_82402_1_.worldObj);
+                 GlStateManager.func_179109_b(0.0F, 0.0F, -1.0F);
+@@ -135,11 +135,11 @@
+             }
+             else
+             {
+-                GlStateManager.func_179152_a(0.5F, 0.5F, 0.5F);
++                GlStateManager.scale(0.5F, 0.5F, 0.5F);
+ 
+                 if (!this.field_177074_h.func_175050_a(entityitem.getEntityItem()) || item instanceof ItemSkull)
+                 {
+-                    GlStateManager.func_179114_b(180.0F, 0.0F, 1.0F, 0.0F);
++                    GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+                 }
+ 
+                 GlStateManager.func_179123_a();
+@@ -150,7 +150,7 @@
+             }
+ 
+             GlStateManager.func_179145_e();
+-            GlStateManager.func_179121_F();
++            GlStateManager.pop();
+         }
+     }
+ 

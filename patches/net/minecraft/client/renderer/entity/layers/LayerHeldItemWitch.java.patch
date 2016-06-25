@@ -1,0 +1,94 @@
+--- a/net/minecraft/client/renderer/entity/layers/LayerHeldItemWitch.java
++++ b/net/minecraft/client/renderer/entity/layers/LayerHeldItemWitch.java
+@@ -23,19 +23,19 @@
+ 
+     public void func_177141_a(EntityWitch p_177141_1_, float p_177141_2_, float p_177141_3_, float p_177141_4_, float p_177141_5_, float p_177141_6_, float p_177141_7_, float p_177141_8_)
+     {
+-        ItemStack itemstack = p_177141_1_.func_184614_ca();
++        ItemStack itemstack = p_177141_1_.getMainHandItem();
+ 
+         if (itemstack != null)
+         {
+             GlStateManager.func_179124_c(1.0F, 1.0F, 1.0F);
+-            GlStateManager.func_179094_E();
++            GlStateManager.push();
+ 
+             if (this.field_177144_a.func_177087_b().isChild)
+             {
+                 GlStateManager.func_179109_b(0.0F, 0.625F, 0.0F);
+-                GlStateManager.func_179114_b(-20.0F, -1.0F, 0.0F, 0.0F);
++                GlStateManager.rotate(-20.0F, -1.0F, 0.0F, 0.0F);
+                 float f = 0.5F;
+-                GlStateManager.func_179152_a(0.5F, 0.5F, 0.5F);
++                GlStateManager.scale(0.5F, 0.5F, 0.5F);
+             }
+ 
+             ((ModelWitch)this.field_177144_a.func_177087_b()).villagerNose.postRender(0.0625F);
+@@ -46,49 +46,49 @@
+             if (item instanceof ItemBlock && minecraft.func_175602_ab().func_184388_a(Block.getBlockFromItem(item)))
+             {
+                 GlStateManager.func_179109_b(0.0F, 0.0625F, -0.25F);
+-                GlStateManager.func_179114_b(30.0F, 1.0F, 0.0F, 0.0F);
+-                GlStateManager.func_179114_b(-5.0F, 0.0F, 1.0F, 0.0F);
++                GlStateManager.rotate(30.0F, 1.0F, 0.0F, 0.0F);
++                GlStateManager.rotate(-5.0F, 0.0F, 1.0F, 0.0F);
+                 float f4 = 0.375F;
+-                GlStateManager.func_179152_a(0.375F, -0.375F, 0.375F);
++                GlStateManager.scale(0.375F, -0.375F, 0.375F);
+             }
+             else if (item == Items.bow)
+             {
+                 GlStateManager.func_179109_b(0.0F, 0.125F, -0.125F);
+-                GlStateManager.func_179114_b(-45.0F, 0.0F, 1.0F, 0.0F);
++                GlStateManager.rotate(-45.0F, 0.0F, 1.0F, 0.0F);
+                 float f1 = 0.625F;
+-                GlStateManager.func_179152_a(0.625F, -0.625F, 0.625F);
+-                GlStateManager.func_179114_b(-100.0F, 1.0F, 0.0F, 0.0F);
+-                GlStateManager.func_179114_b(-20.0F, 0.0F, 1.0F, 0.0F);
++                GlStateManager.scale(0.625F, -0.625F, 0.625F);
++                GlStateManager.rotate(-100.0F, 1.0F, 0.0F, 0.0F);
++                GlStateManager.rotate(-20.0F, 0.0F, 1.0F, 0.0F);
+             }
+             else if (item.isFull3D())
+             {
+                 if (item.shouldRotateAroundWhenRendering())
+                 {
+-                    GlStateManager.func_179114_b(180.0F, 0.0F, 0.0F, 1.0F);
++                    GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+                     GlStateManager.func_179109_b(0.0F, -0.0625F, 0.0F);
+                 }
+ 
+                 this.field_177144_a.func_82422_c();
+                 GlStateManager.func_179109_b(0.0625F, -0.125F, 0.0F);
+                 float f2 = 0.625F;
+-                GlStateManager.func_179152_a(0.625F, -0.625F, 0.625F);
+-                GlStateManager.func_179114_b(0.0F, 1.0F, 0.0F, 0.0F);
+-                GlStateManager.func_179114_b(0.0F, 0.0F, 1.0F, 0.0F);
++                GlStateManager.scale(0.625F, -0.625F, 0.625F);
++                GlStateManager.rotate(0.0F, 1.0F, 0.0F, 0.0F);
++                GlStateManager.rotate(0.0F, 0.0F, 1.0F, 0.0F);
+             }
+             else
+             {
+                 GlStateManager.func_179109_b(0.1875F, 0.1875F, 0.0F);
+                 float f3 = 0.875F;
+-                GlStateManager.func_179152_a(0.875F, 0.875F, 0.875F);
+-                GlStateManager.func_179114_b(-20.0F, 0.0F, 0.0F, 1.0F);
+-                GlStateManager.func_179114_b(-60.0F, 1.0F, 0.0F, 0.0F);
+-                GlStateManager.func_179114_b(-30.0F, 0.0F, 0.0F, 1.0F);
++                GlStateManager.scale(0.875F, 0.875F, 0.875F);
++                GlStateManager.rotate(-20.0F, 0.0F, 0.0F, 1.0F);
++                GlStateManager.rotate(-60.0F, 1.0F, 0.0F, 0.0F);
++                GlStateManager.rotate(-30.0F, 0.0F, 0.0F, 1.0F);
+             }
+ 
+-            GlStateManager.func_179114_b(-15.0F, 1.0F, 0.0F, 0.0F);
+-            GlStateManager.func_179114_b(40.0F, 0.0F, 0.0F, 1.0F);
++            GlStateManager.rotate(-15.0F, 1.0F, 0.0F, 0.0F);
++            GlStateManager.rotate(40.0F, 0.0F, 0.0F, 1.0F);
+             minecraft.func_175597_ag().func_178099_a(p_177141_1_, itemstack, ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND);
+-            GlStateManager.func_179121_F();
++            GlStateManager.pop();
+         }
+     }
+ 

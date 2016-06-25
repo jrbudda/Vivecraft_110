@@ -1,0 +1,30 @@
+--- a/net/minecraft/client/model/ModelOcelot.java
++++ b/net/minecraft/client/model/ModelOcelot.java
+@@ -79,13 +79,13 @@
+         if (this.isChild)
+         {
+             float f = 2.0F;
+-            GlStateManager.func_179094_E();
+-            GlStateManager.func_179152_a(0.75F, 0.75F, 0.75F);
++            GlStateManager.push();
++            GlStateManager.scale(0.75F, 0.75F, 0.75F);
+             GlStateManager.func_179109_b(0.0F, 10.0F * p_78088_7_, 4.0F * p_78088_7_);
+             this.ocelotHead.render(p_78088_7_);
+-            GlStateManager.func_179121_F();
+-            GlStateManager.func_179094_E();
+-            GlStateManager.func_179152_a(0.5F, 0.5F, 0.5F);
++            GlStateManager.pop();
++            GlStateManager.push();
++            GlStateManager.scale(0.5F, 0.5F, 0.5F);
+             GlStateManager.func_179109_b(0.0F, 24.0F * p_78088_7_, 0.0F);
+             this.ocelotBody.render(p_78088_7_);
+             this.ocelotBackLeftLeg.render(p_78088_7_);
+@@ -94,7 +94,7 @@
+             this.ocelotFrontRightLeg.render(p_78088_7_);
+             this.ocelotTail.render(p_78088_7_);
+             this.ocelotTail2.render(p_78088_7_);
+-            GlStateManager.func_179121_F();
++            GlStateManager.pop();
+         }
+         else
+         {

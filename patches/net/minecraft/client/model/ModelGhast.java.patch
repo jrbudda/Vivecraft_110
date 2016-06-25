@@ -1,0 +1,19 @@
+--- a/net/minecraft/client/model/ModelGhast.java
++++ b/net/minecraft/client/model/ModelGhast.java
+@@ -50,7 +50,7 @@
+     public void render(Entity p_78088_1_, float p_78088_2_, float p_78088_3_, float p_78088_4_, float p_78088_5_, float p_78088_6_, float p_78088_7_)
+     {
+         this.setRotationAngles(p_78088_2_, p_78088_3_, p_78088_4_, p_78088_5_, p_78088_6_, p_78088_7_, p_78088_1_);
+-        GlStateManager.func_179094_E();
++        GlStateManager.push();
+         GlStateManager.func_179109_b(0.0F, 0.6F, 0.0F);
+         this.body.render(p_78088_7_);
+ 
+@@ -59,6 +59,6 @@
+             modelrenderer.render(p_78088_7_);
+         }
+ 
+-        GlStateManager.func_179121_F();
++        GlStateManager.pop();
+     }
+ }

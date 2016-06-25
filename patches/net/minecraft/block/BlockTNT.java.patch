@@ -1,0 +1,50 @@
+--- a/net/minecraft/block/BlockTNT.java
++++ b/net/minecraft/block/BlockTNT.java
+@@ -58,7 +58,7 @@
+     {
+         if (!p_180652_1_.isRemote)
+         {
+-            EntityTNTPrimed entitytntprimed = new EntityTNTPrimed(p_180652_1_, (double)((float)p_180652_2_.func_177958_n() + 0.5F), (double)p_180652_2_.func_177956_o(), (double)((float)p_180652_2_.func_177952_p() + 0.5F), p_180652_3_.getExplosivePlacedBy());
++            EntityTNTPrimed entitytntprimed = new EntityTNTPrimed(p_180652_1_, (double)((float)p_180652_2_.getX() + 0.5F), (double)p_180652_2_.getY(), (double)((float)p_180652_2_.getZ() + 0.5F), p_180652_3_.getExplosivePlacedBy());
+             entitytntprimed.func_184534_a((short)(p_180652_1_.rand.nextInt(entitytntprimed.func_184536_l() / 4) + entitytntprimed.func_184536_l() / 8));
+             p_180652_1_.spawnEntityInWorld(entitytntprimed);
+         }
+@@ -75,9 +75,9 @@
+         {
+             if (((Boolean)p_180692_3_.func_177229_b(field_176246_a)).booleanValue())
+             {
+-                EntityTNTPrimed entitytntprimed = new EntityTNTPrimed(p_180692_1_, (double)((float)p_180692_2_.func_177958_n() + 0.5F), (double)p_180692_2_.func_177956_o(), (double)((float)p_180692_2_.func_177952_p() + 0.5F), p_180692_4_);
++                EntityTNTPrimed entitytntprimed = new EntityTNTPrimed(p_180692_1_, (double)((float)p_180692_2_.getX() + 0.5F), (double)p_180692_2_.getY(), (double)((float)p_180692_2_.getZ() + 0.5F), p_180692_4_);
+                 p_180692_1_.spawnEntityInWorld(entitytntprimed);
+-                p_180692_1_.func_184148_a((EntityPlayer)null, entitytntprimed.posX, entitytntprimed.posY, entitytntprimed.posZ, SoundEvents.field_187904_gd, SoundCategory.BLOCKS, 1.0F, 1.0F);
++                p_180692_1_.playSound((EntityPlayer)null, entitytntprimed.posX, entitytntprimed.posY, entitytntprimed.posZ, SoundEvents.field_187904_gd, SoundCategory.BLOCKS, 1.0F, 1.0F);
+             }
+         }
+     }
+@@ -87,7 +87,7 @@
+         if (p_180639_6_ != null && (p_180639_6_.getItem() == Items.flint_and_steel || p_180639_6_.getItem() == Items.fire_charge))
+         {
+             this.func_180692_a(p_180639_1_, p_180639_2_, p_180639_3_.func_177226_a(field_176246_a, Boolean.valueOf(true)), p_180639_4_);
+-            p_180639_1_.func_180501_a(p_180639_2_, Blocks.air.func_176223_P(), 11);
++            p_180639_1_.func_180501_a(p_180639_2_, Blocks.air.getBlockState(), 11);
+ 
+             if (p_180639_6_.getItem() == Items.flint_and_steel)
+             {
+@@ -114,7 +114,7 @@
+ 
+             if (entityarrow.isBurning())
+             {
+-                this.func_180692_a(p_180634_1_, p_180634_2_, p_180634_1_.func_180495_p(p_180634_2_).func_177226_a(field_176246_a, Boolean.valueOf(true)), entityarrow.shootingEntity instanceof EntityLivingBase ? (EntityLivingBase)entityarrow.shootingEntity : null);
++                this.func_180692_a(p_180634_1_, p_180634_2_, p_180634_1_.getBlockState(p_180634_2_).func_177226_a(field_176246_a, Boolean.valueOf(true)), entityarrow.shootingEntity instanceof EntityLivingBase ? (EntityLivingBase)entityarrow.shootingEntity : null);
+                 p_180634_1_.func_175698_g(p_180634_2_);
+             }
+         }
+@@ -130,7 +130,7 @@
+ 
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        return this.func_176223_P().func_177226_a(field_176246_a, Boolean.valueOf((p_176203_1_ & 1) > 0));
++        return this.getBlockState().func_177226_a(field_176246_a, Boolean.valueOf((p_176203_1_ & 1) > 0));
+     }
+ 
+     public int func_176201_c(IBlockState p_176201_1_)

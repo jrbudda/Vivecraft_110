@@ -1,0 +1,11 @@
+--- a/net/minecraft/item/ItemHangingEntity.java
++++ b/net/minecraft/item/ItemHangingEntity.java
+@@ -24,7 +24,7 @@
+ 
+     public EnumActionResult func_180614_a(ItemStack p_180614_1_, EntityPlayer p_180614_2_, World p_180614_3_, BlockPos p_180614_4_, EnumHand p_180614_5_, EnumFacing p_180614_6_, float p_180614_7_, float p_180614_8_, float p_180614_9_)
+     {
+-        BlockPos blockpos = p_180614_4_.func_177972_a(p_180614_6_);
++        BlockPos blockpos = p_180614_4_.getBlockPosRelative(p_180614_6_);
+ 
+         if (p_180614_6_ != EnumFacing.DOWN && p_180614_6_ != EnumFacing.UP && p_180614_2_.func_175151_a(blockpos, p_180614_6_, p_180614_1_))
+         {

@@ -1,0 +1,33 @@
+--- a/net/minecraft/pathfinding/PathNavigate.java
++++ b/net/minecraft/pathfinding/PathNavigate.java
+@@ -158,7 +158,7 @@
+                 this.field_188564_r = blockpos;
+                 float f = this.getPathSearchRange();
+                 this.worldObj.theProfiler.startSection("pathfind");
+-                BlockPos blockpos1 = (new BlockPos(this.theEntity)).func_177984_a();
++                BlockPos blockpos1 = (new BlockPos(this.theEntity)).getBlockPosAbove();
+                 int i = (int)(f + 16.0F);
+                 ChunkCache chunkcache = new ChunkCache(this.worldObj, blockpos1.func_177982_a(-i, -i, -i), blockpos1.func_177982_a(i, i, i), 0);
+                 Path path = this.field_179681_j.func_186333_a(chunkcache, this.theEntity, p_75494_1_, f);
+@@ -262,9 +262,9 @@
+ 
+                 if (vec3d2 != null)
+                 {
+-                    BlockPos blockpos = (new BlockPos(vec3d2)).func_177977_b();
+-                    AxisAlignedBB axisalignedbb = this.worldObj.func_180495_p(blockpos).func_185900_c(this.worldObj, blockpos);
+-                    vec3d2 = vec3d2.func_178786_a(0.0D, 1.0D - axisalignedbb.maxY, 0.0D);
++                    BlockPos blockpos = (new BlockPos(vec3d2)).getBlockPosBelow();
++                    AxisAlignedBB axisalignedbb = this.worldObj.getBlockState(blockpos).func_185900_c(this.worldObj, blockpos);
++                    vec3d2 = vec3d2.subtractVector(0.0D, 1.0D - axisalignedbb.maxY, 0.0D);
+                     this.theEntity.getMoveHelper().setMoveTo(vec3d2.xCoord, vec3d2.yCoord, vec3d2.zCoord, this.speed);
+                 }
+             }
+@@ -395,7 +395,7 @@
+ 
+     public boolean func_188555_b(BlockPos p_188555_1_)
+     {
+-        return this.worldObj.func_180495_p(p_188555_1_.func_177977_b()).func_185913_b();
++        return this.worldObj.getBlockState(p_188555_1_.getBlockPosBelow()).func_185913_b();
+     }
+ 
+     public NodeProcessor func_189566_q()

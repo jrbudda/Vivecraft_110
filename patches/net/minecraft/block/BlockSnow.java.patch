@@ -1,0 +1,57 @@
+--- a/net/minecraft/block/BlockSnow.java
++++ b/net/minecraft/block/BlockSnow.java
+@@ -42,7 +42,7 @@
+ 
+     public boolean func_176205_b(IBlockAccess p_176205_1_, BlockPos p_176205_2_)
+     {
+-        return ((Integer)p_176205_1_.func_180495_p(p_176205_2_).func_177229_b(field_176315_a)).intValue() < 5;
++        return ((Integer)p_176205_1_.getBlockState(p_176205_2_).func_177229_b(field_176315_a)).intValue() < 5;
+     }
+ 
+     public boolean func_185481_k(IBlockState p_185481_1_)
+@@ -71,9 +71,9 @@
+ 
+     public boolean func_176196_c(World p_176196_1_, BlockPos p_176196_2_)
+     {
+-        IBlockState iblockstate = p_176196_1_.func_180495_p(p_176196_2_.func_177977_b());
+-        Block block = iblockstate.func_177230_c();
+-        return block != Blocks.ice && block != Blocks.packed_ice ? (iblockstate.func_185904_a() == Material.leaves ? true : (block == this && ((Integer)iblockstate.func_177229_b(field_176315_a)).intValue() >= 7 ? true : iblockstate.func_185914_p() && iblockstate.func_185904_a().blocksMovement())) : false;
++        IBlockState iblockstate = p_176196_1_.getBlockState(p_176196_2_.getBlockPosBelow());
++        Block block = iblockstate.getBlock();
++        return block != Blocks.ice && block != Blocks.packed_ice ? (iblockstate.getMaterial() == Material.leaves ? true : (block == this && ((Integer)iblockstate.func_177229_b(field_176315_a)).intValue() >= 7 ? true : iblockstate.func_185914_p() && iblockstate.getMaterial().blocksMovement())) : false;
+     }
+ 
+     public void func_189540_a(IBlockState p_189540_1_, World p_189540_2_, BlockPos p_189540_3_, Block p_189540_4_)
+@@ -120,7 +120,7 @@
+     {
+         if (p_180650_1_.func_175642_b(EnumSkyBlock.BLOCK, p_180650_2_) > 11)
+         {
+-            this.func_176226_b(p_180650_1_, p_180650_2_, p_180650_1_.func_180495_p(p_180650_2_), 0);
++            this.func_176226_b(p_180650_1_, p_180650_2_, p_180650_1_.getBlockState(p_180650_2_), 0);
+             p_180650_1_.func_175698_g(p_180650_2_);
+         }
+     }
+@@ -133,19 +133,19 @@
+         }
+         else
+         {
+-            IBlockState iblockstate = p_176225_2_.func_180495_p(p_176225_3_.func_177972_a(p_176225_4_));
+-            return iblockstate.func_177230_c() == this && ((Integer)iblockstate.func_177229_b(field_176315_a)).intValue() >= ((Integer)p_176225_1_.func_177229_b(field_176315_a)).intValue() ? true : super.func_176225_a(p_176225_1_, p_176225_2_, p_176225_3_, p_176225_4_);
++            IBlockState iblockstate = p_176225_2_.getBlockState(p_176225_3_.getBlockPosRelative(p_176225_4_));
++            return iblockstate.getBlock() == this && ((Integer)iblockstate.func_177229_b(field_176315_a)).intValue() >= ((Integer)p_176225_1_.func_177229_b(field_176315_a)).intValue() ? true : super.func_176225_a(p_176225_1_, p_176225_2_, p_176225_3_, p_176225_4_);
+         }
+     }
+ 
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        return this.func_176223_P().func_177226_a(field_176315_a, Integer.valueOf((p_176203_1_ & 7) + 1));
++        return this.getBlockState().func_177226_a(field_176315_a, Integer.valueOf((p_176203_1_ & 7) + 1));
+     }
+ 
+     public boolean func_176200_f(IBlockAccess p_176200_1_, BlockPos p_176200_2_)
+     {
+-        return ((Integer)p_176200_1_.func_180495_p(p_176200_2_).func_177229_b(field_176315_a)).intValue() == 1;
++        return ((Integer)p_176200_1_.getBlockState(p_176200_2_).func_177229_b(field_176315_a)).intValue() == 1;
+     }
+ 
+     public int func_176201_c(IBlockState p_176201_1_)

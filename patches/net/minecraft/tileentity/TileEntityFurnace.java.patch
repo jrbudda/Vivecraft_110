@@ -1,0 +1,20 @@
+--- a/net/minecraft/tileentity/TileEntityFurnace.java
++++ b/net/minecraft/tileentity/TileEntityFurnace.java
+@@ -368,7 +368,7 @@
+                     return 150;
+                 }
+ 
+-                if (block.func_176223_P().func_185904_a() == Material.wood)
++                if (block.getBlockState().getMaterial() == Material.wood)
+                 {
+                     return 300;
+                 }
+@@ -393,7 +393,7 @@
+      */
+     public boolean isUseableByPlayer(EntityPlayer player)
+     {
+-        return this.worldObj.func_175625_s(this.field_174879_c) != this ? false : player.getDistanceSq((double)this.field_174879_c.func_177958_n() + 0.5D, (double)this.field_174879_c.func_177956_o() + 0.5D, (double)this.field_174879_c.func_177952_p() + 0.5D) <= 64.0D;
++        return this.worldObj.func_175625_s(this.field_174879_c) != this ? false : player.getDistanceSq((double)this.field_174879_c.getX() + 0.5D, (double)this.field_174879_c.getY() + 0.5D, (double)this.field_174879_c.getZ() + 0.5D) <= 64.0D;
+     }
+ 
+     public void func_174889_b(EntityPlayer p_174889_1_)

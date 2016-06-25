@@ -1,0 +1,147 @@
+--- a/net/minecraft/world/ChunkCache.java
++++ b/net/minecraft/world/ChunkCache.java
+@@ -25,10 +25,10 @@
+     public ChunkCache(World p_i45746_1_, BlockPos p_i45746_2_, BlockPos p_i45746_3_, int p_i45746_4_)
+     {
+         this.worldObj = p_i45746_1_;
+-        this.chunkX = p_i45746_2_.func_177958_n() - p_i45746_4_ >> 4;
+-        this.chunkZ = p_i45746_2_.func_177952_p() - p_i45746_4_ >> 4;
+-        int i = p_i45746_3_.func_177958_n() + p_i45746_4_ >> 4;
+-        int j = p_i45746_3_.func_177952_p() + p_i45746_4_ >> 4;
++        this.chunkX = p_i45746_2_.getX() - p_i45746_4_ >> 4;
++        this.chunkZ = p_i45746_2_.getZ() - p_i45746_4_ >> 4;
++        int i = p_i45746_3_.getX() + p_i45746_4_ >> 4;
++        int j = p_i45746_3_.getZ() + p_i45746_4_ >> 4;
+         this.chunkArray = new Chunk[i - this.chunkX + 1][j - this.chunkZ + 1];
+         this.hasExtendedLevels = true;
+ 
+@@ -40,13 +40,13 @@
+             }
+         }
+ 
+-        for (int i1 = p_i45746_2_.func_177958_n() >> 4; i1 <= p_i45746_3_.func_177958_n() >> 4; ++i1)
++        for (int i1 = p_i45746_2_.getX() >> 4; i1 <= p_i45746_3_.getX() >> 4; ++i1)
+         {
+-            for (int j1 = p_i45746_2_.func_177952_p() >> 4; j1 <= p_i45746_3_.func_177952_p() >> 4; ++j1)
++            for (int j1 = p_i45746_2_.getZ() >> 4; j1 <= p_i45746_3_.getZ() >> 4; ++j1)
+             {
+                 Chunk chunk = this.chunkArray[i1 - this.chunkX][j1 - this.chunkZ];
+ 
+-                if (chunk != null && !chunk.getAreLevelsEmpty(p_i45746_2_.func_177956_o(), p_i45746_3_.func_177956_o()))
++                if (chunk != null && !chunk.getAreLevelsEmpty(p_i45746_2_.getY(), p_i45746_3_.getY()))
+                 {
+                     this.hasExtendedLevels = false;
+                 }
+@@ -65,8 +65,8 @@
+     @Nullable
+     public TileEntity func_175625_s(BlockPos p_175625_1_)
+     {
+-        int i = (p_175625_1_.func_177958_n() >> 4) - this.chunkX;
+-        int j = (p_175625_1_.func_177952_p() >> 4) - this.chunkZ;
++        int i = (p_175625_1_.getX() >> 4) - this.chunkX;
++        int j = (p_175625_1_.getZ() >> 4) - this.chunkZ;
+         return this.chunkArray[i][j].func_177424_a(p_175625_1_, Chunk.EnumCreateEntityType.IMMEDIATE);
+     }
+ 
+@@ -83,12 +83,12 @@
+         return i << 20 | j << 4;
+     }
+ 
+-    public IBlockState func_180495_p(BlockPos p_180495_1_)
++    public IBlockState getBlockState(BlockPos p_180495_1_)
+     {
+-        if (p_180495_1_.func_177956_o() >= 0 && p_180495_1_.func_177956_o() < 256)
++        if (p_180495_1_.getY() >= 0 && p_180495_1_.getY() < 256)
+         {
+-            int i = (p_180495_1_.func_177958_n() >> 4) - this.chunkX;
+-            int j = (p_180495_1_.func_177952_p() >> 4) - this.chunkZ;
++            int i = (p_180495_1_.getX() >> 4) - this.chunkX;
++            int j = (p_180495_1_.getZ() >> 4) - this.chunkZ;
+ 
+             if (i >= 0 && i < this.chunkArray.length && j >= 0 && j < this.chunkArray[i].length)
+             {
+@@ -96,18 +96,18 @@
+ 
+                 if (chunk != null)
+                 {
+-                    return chunk.func_177435_g(p_180495_1_);
++                    return chunk.getBlockState(p_180495_1_);
+                 }
+             }
+         }
+ 
+-        return Blocks.air.func_176223_P();
++        return Blocks.air.getBlockState();
+     }
+ 
+     public Biome func_180494_b(BlockPos p_180494_1_)
+     {
+-        int i = (p_180494_1_.func_177958_n() >> 4) - this.chunkX;
+-        int j = (p_180494_1_.func_177952_p() >> 4) - this.chunkZ;
++        int i = (p_180494_1_.getX() >> 4) - this.chunkX;
++        int j = (p_180494_1_.getZ() >> 4) - this.chunkZ;
+         return this.chunkArray[i][j].func_177411_a(p_180494_1_, this.worldObj.getWorldChunkManager());
+     }
+ 
+@@ -117,15 +117,15 @@
+         {
+             return 0;
+         }
+-        else if (p_175629_2_.func_177956_o() >= 0 && p_175629_2_.func_177956_o() < 256)
++        else if (p_175629_2_.getY() >= 0 && p_175629_2_.getY() < 256)
+         {
+-            if (this.func_180495_p(p_175629_2_).func_185916_f())
++            if (this.getBlockState(p_175629_2_).func_185916_f())
+             {
+                 int l = 0;
+ 
+                 for (EnumFacing enumfacing : EnumFacing.values())
+                 {
+-                    int k = this.func_175628_b(p_175629_1_, p_175629_2_.func_177972_a(enumfacing));
++                    int k = this.func_175628_b(p_175629_1_, p_175629_2_.getBlockPosRelative(enumfacing));
+ 
+                     if (k > l)
+                     {
+@@ -142,8 +142,8 @@
+             }
+             else
+             {
+-                int i = (p_175629_2_.func_177958_n() >> 4) - this.chunkX;
+-                int j = (p_175629_2_.func_177952_p() >> 4) - this.chunkZ;
++                int i = (p_175629_2_.getX() >> 4) - this.chunkX;
++                int j = (p_175629_2_.getZ() >> 4) - this.chunkZ;
+                 return this.chunkArray[i][j].func_177413_a(p_175629_1_, p_175629_2_);
+             }
+         }
+@@ -153,17 +153,17 @@
+         }
+     }
+ 
+-    public boolean func_175623_d(BlockPos p_175623_1_)
++    public boolean isEmpty(BlockPos p_175623_1_)
+     {
+-        return this.func_180495_p(p_175623_1_).func_185904_a() == Material.air;
++        return this.getBlockState(p_175623_1_).getMaterial() == Material.air;
+     }
+ 
+     public int func_175628_b(EnumSkyBlock p_175628_1_, BlockPos p_175628_2_)
+     {
+-        if (p_175628_2_.func_177956_o() >= 0 && p_175628_2_.func_177956_o() < 256)
++        if (p_175628_2_.getY() >= 0 && p_175628_2_.getY() < 256)
+         {
+-            int i = (p_175628_2_.func_177958_n() >> 4) - this.chunkX;
+-            int j = (p_175628_2_.func_177952_p() >> 4) - this.chunkZ;
++            int i = (p_175628_2_.getX() >> 4) - this.chunkX;
++            int j = (p_175628_2_.getZ() >> 4) - this.chunkZ;
+             return this.chunkArray[i][j].func_177413_a(p_175628_1_, p_175628_2_);
+         }
+         else
+@@ -174,7 +174,7 @@
+ 
+     public int func_175627_a(BlockPos p_175627_1_, EnumFacing p_175627_2_)
+     {
+-        return this.func_180495_p(p_175627_1_).func_185893_b(this, p_175627_1_, p_175627_2_);
++        return this.getBlockState(p_175627_1_).func_185893_b(this, p_175627_1_, p_175627_2_);
+     }
+ 
+     public WorldType func_175624_G()

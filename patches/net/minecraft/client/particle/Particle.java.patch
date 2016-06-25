@@ -1,0 +1,194 @@
+--- a/net/minecraft/client/particle/Particle.java
++++ b/net/minecraft/client/particle/Particle.java
+@@ -15,15 +15,15 @@
+ {
+     private static final AxisAlignedBB field_187121_a = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 0.0D, 0.0D, 0.0D);
+     protected World field_187122_b;
+-    protected double field_187123_c;
+-    protected double field_187124_d;
+-    protected double field_187125_e;
+-    protected double field_187126_f;
+-    protected double field_187127_g;
+-    protected double field_187128_h;
+-    protected double field_187129_i;
+-    protected double field_187130_j;
+-    protected double field_187131_k;
++    protected double posX;
++    protected double posY;
++    protected double posZ;
++    protected double prevPosX;
++    protected double prevPosY;
++    protected double prevPosZ;
++    protected double motionX;
++    protected double motionY;
++    protected double motionZ;
+     private AxisAlignedBB field_187120_G;
+     protected boolean field_187132_l;
+     protected boolean field_190017_n;
+@@ -73,9 +73,9 @@
+         this.field_187122_b = p_i46352_1_;
+         this.func_187115_a(0.2F, 0.2F);
+         this.func_187109_b(p_i46352_2_, p_i46352_4_, p_i46352_6_);
+-        this.field_187123_c = p_i46352_2_;
+-        this.field_187124_d = p_i46352_4_;
+-        this.field_187125_e = p_i46352_6_;
++        this.posX = p_i46352_2_;
++        this.posY = p_i46352_4_;
++        this.posZ = p_i46352_6_;
+         this.particleRed = 1.0F;
+         this.particleGreen = 1.0F;
+         this.particleBlue = 1.0F;
+@@ -90,21 +90,21 @@
+     public Particle(World p_i1219_1_, double p_i1219_2_, double p_i1219_4_, double p_i1219_6_, double p_i1219_8_, double p_i1219_10_, double p_i1219_12_)
+     {
+         this(p_i1219_1_, p_i1219_2_, p_i1219_4_, p_i1219_6_);
+-        this.field_187129_i = p_i1219_8_ + (Math.random() * 2.0D - 1.0D) * 0.4000000059604645D;
+-        this.field_187130_j = p_i1219_10_ + (Math.random() * 2.0D - 1.0D) * 0.4000000059604645D;
+-        this.field_187131_k = p_i1219_12_ + (Math.random() * 2.0D - 1.0D) * 0.4000000059604645D;
++        this.motionX = p_i1219_8_ + (Math.random() * 2.0D - 1.0D) * 0.4000000059604645D;
++        this.motionY = p_i1219_10_ + (Math.random() * 2.0D - 1.0D) * 0.4000000059604645D;
++        this.motionZ = p_i1219_12_ + (Math.random() * 2.0D - 1.0D) * 0.4000000059604645D;
+         float f = (float)(Math.random() + Math.random() + 1.0D) * 0.15F;
+-        float f1 = MathHelper.sqrt_double(this.field_187129_i * this.field_187129_i + this.field_187130_j * this.field_187130_j + this.field_187131_k * this.field_187131_k);
+-        this.field_187129_i = this.field_187129_i / (double)f1 * (double)f * 0.4000000059604645D;
+-        this.field_187130_j = this.field_187130_j / (double)f1 * (double)f * 0.4000000059604645D + 0.10000000149011612D;
+-        this.field_187131_k = this.field_187131_k / (double)f1 * (double)f * 0.4000000059604645D;
++        float f1 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
++        this.motionX = this.motionX / (double)f1 * (double)f * 0.4000000059604645D;
++        this.motionY = this.motionY / (double)f1 * (double)f * 0.4000000059604645D + 0.10000000149011612D;
++        this.motionZ = this.motionZ / (double)f1 * (double)f * 0.4000000059604645D;
+     }
+ 
+     public Particle multiplyVelocity(float p_70543_1_)
+     {
+-        this.field_187129_i *= (double)p_70543_1_;
+-        this.field_187130_j = (this.field_187130_j - 0.10000000149011612D) * (double)p_70543_1_ + 0.10000000149011612D;
+-        this.field_187131_k *= (double)p_70543_1_;
++        this.motionX *= (double)p_70543_1_;
++        this.motionY = (this.motionY - 0.10000000149011612D) * (double)p_70543_1_ + 0.10000000149011612D;
++        this.motionZ *= (double)p_70543_1_;
+         return this;
+     }
+ 
+@@ -157,25 +157,25 @@
+ 
+     public void func_189213_a()
+     {
+-        this.field_187123_c = this.field_187126_f;
+-        this.field_187124_d = this.field_187127_g;
+-        this.field_187125_e = this.field_187128_h;
++        this.posX = this.prevPosX;
++        this.posY = this.prevPosY;
++        this.posZ = this.prevPosZ;
+ 
+         if (this.particleAge++ >= this.particleMaxAge)
+         {
+             this.func_187112_i();
+         }
+ 
+-        this.field_187130_j -= 0.04D * (double)this.particleGravity;
+-        this.func_187110_a(this.field_187129_i, this.field_187130_j, this.field_187131_k);
+-        this.field_187129_i *= 0.9800000190734863D;
+-        this.field_187130_j *= 0.9800000190734863D;
+-        this.field_187131_k *= 0.9800000190734863D;
++        this.motionY -= 0.04D * (double)this.particleGravity;
++        this.func_187110_a(this.motionX, this.motionY, this.motionZ);
++        this.motionX *= 0.9800000190734863D;
++        this.motionY *= 0.9800000190734863D;
++        this.motionZ *= 0.9800000190734863D;
+ 
+         if (this.field_187132_l)
+         {
+-            this.field_187129_i *= 0.699999988079071D;
+-            this.field_187131_k *= 0.699999988079071D;
++            this.motionX *= 0.699999988079071D;
++            this.motionZ *= 0.699999988079071D;
+         }
+     }
+ 
+@@ -195,9 +195,9 @@
+             f3 = this.field_187119_C.getMaxV();
+         }
+ 
+-        float f5 = (float)(this.field_187123_c + (this.field_187126_f - this.field_187123_c) * (double)p_180434_3_ - interpPosX);
+-        float f6 = (float)(this.field_187124_d + (this.field_187127_g - this.field_187124_d) * (double)p_180434_3_ - interpPosY);
+-        float f7 = (float)(this.field_187125_e + (this.field_187128_h - this.field_187125_e) * (double)p_180434_3_ - interpPosZ);
++        float f5 = (float)(this.posX + (this.prevPosX - this.posX) * (double)p_180434_3_ - interpPosX);
++        float f6 = (float)(this.posY + (this.prevPosY - this.posY) * (double)p_180434_3_ - interpPosY);
++        float f7 = (float)(this.posZ + (this.prevPosZ - this.posZ) * (double)p_180434_3_ - interpPosZ);
+         int i = this.func_189214_a(p_180434_3_);
+         int j = i >> 16 & 65535;
+         int k = i & 65535;
+@@ -214,7 +214,7 @@
+ 
+             for (int l = 0; l < 4; ++l)
+             {
+-                avec3d[l] = vec3d.func_186678_a(2.0D * avec3d[l].dotProduct(vec3d)).func_178787_e(avec3d[l].func_186678_a((double)(f9 * f9) - vec3d.dotProduct(vec3d))).func_178787_e(vec3d.crossProduct(avec3d[l]).func_186678_a((double)(2.0F * f9)));
++                avec3d[l] = vec3d.multiply(2.0D * avec3d[l].dotProduct(vec3d)).addVector(avec3d[l].multiply((double)(f9 * f9) - vec3d.dotProduct(vec3d))).addVector(vec3d.crossProduct(avec3d[l]).multiply((double)(2.0F * f9)));
+             }
+         }
+ 
+@@ -266,7 +266,7 @@
+ 
+     public String toString()
+     {
+-        return this.getClass().getSimpleName() + ", Pos (" + this.field_187126_f + "," + this.field_187127_g + "," + this.field_187128_h + "), RGBA (" + this.particleRed + "," + this.particleGreen + "," + this.particleBlue + "," + this.particleAlpha + "), Age " + this.particleAge;
++        return this.getClass().getSimpleName() + ", Pos (" + this.prevPosX + "," + this.prevPosY + "," + this.prevPosZ + "), RGBA (" + this.particleRed + "," + this.particleGreen + "," + this.particleBlue + "," + this.particleAlpha + "), Age " + this.particleAge;
+     }
+ 
+     public void func_187112_i()
+@@ -287,9 +287,9 @@
+ 
+     public void func_187109_b(double p_187109_1_, double p_187109_3_, double p_187109_5_)
+     {
+-        this.field_187126_f = p_187109_1_;
+-        this.field_187127_g = p_187109_3_;
+-        this.field_187128_h = p_187109_5_;
++        this.prevPosX = p_187109_1_;
++        this.prevPosY = p_187109_3_;
++        this.prevPosZ = p_187109_5_;
+         float f = this.field_187134_n / 2.0F;
+         float f1 = this.field_187135_o;
+         this.func_187108_a(new AxisAlignedBB(p_187109_1_ - (double)f, p_187109_3_, p_187109_5_ - (double)f, p_187109_1_ + (double)f, p_187109_3_ + (double)f1, p_187109_5_ + (double)f));
+@@ -301,7 +301,7 @@
+ 
+         if (this.field_190017_n)
+         {
+-            List<AxisAlignedBB> list = this.field_187122_b.func_184144_a((Entity)null, this.func_187116_l().addCoord(p_187110_1_, p_187110_3_, p_187110_5_));
++            List<AxisAlignedBB> list = this.field_187122_b.getCollisionBoxes((Entity)null, this.func_187116_l().addCoord(p_187110_1_, p_187110_3_, p_187110_5_));
+ 
+             for (AxisAlignedBB axisalignedbb : list)
+             {
+@@ -334,26 +334,26 @@
+ 
+         if (p_187110_1_ != p_187110_1_)
+         {
+-            this.field_187129_i = 0.0D;
++            this.motionX = 0.0D;
+         }
+ 
+         if (p_187110_5_ != p_187110_5_)
+         {
+-            this.field_187131_k = 0.0D;
++            this.motionZ = 0.0D;
+         }
+     }
+ 
+     protected void func_187118_j()
+     {
+         AxisAlignedBB axisalignedbb = this.func_187116_l();
+-        this.field_187126_f = (axisalignedbb.minX + axisalignedbb.maxX) / 2.0D;
+-        this.field_187127_g = axisalignedbb.minY;
+-        this.field_187128_h = (axisalignedbb.minZ + axisalignedbb.maxZ) / 2.0D;
++        this.prevPosX = (axisalignedbb.minX + axisalignedbb.maxX) / 2.0D;
++        this.prevPosY = axisalignedbb.minY;
++        this.prevPosZ = (axisalignedbb.minZ + axisalignedbb.maxZ) / 2.0D;
+     }
+ 
+     public int func_189214_a(float p_189214_1_)
+     {
+-        BlockPos blockpos = new BlockPos(this.field_187126_f, this.field_187127_g, this.field_187128_h);
++        BlockPos blockpos = new BlockPos(this.prevPosX, this.prevPosY, this.prevPosZ);
+         return this.field_187122_b.func_175667_e(blockpos) ? this.field_187122_b.func_175626_b(blockpos, 0) : 0;
+     }
+ 

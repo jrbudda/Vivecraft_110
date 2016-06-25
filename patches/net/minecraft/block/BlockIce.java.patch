@@ -1,0 +1,36 @@
+--- a/net/minecraft/block/BlockIce.java
++++ b/net/minecraft/block/BlockIce.java
+@@ -57,11 +57,11 @@
+ 
+             int i = EnchantmentHelper.getEnchantmentLevel(Enchantments.field_185308_t, p_180657_6_);
+             this.func_176226_b(p_180657_1_, p_180657_3_, p_180657_4_, i);
+-            Material material = p_180657_1_.func_180495_p(p_180657_3_.func_177977_b()).func_185904_a();
++            Material material = p_180657_1_.getBlockState(p_180657_3_.getBlockPosBelow()).getMaterial();
+ 
+             if (material.blocksMovement() || material.isLiquid())
+             {
+-                p_180657_1_.func_175656_a(p_180657_3_, Blocks.flowing_water.func_176223_P());
++                p_180657_1_.func_175656_a(p_180657_3_, Blocks.flowing_water.getBlockState());
+             }
+         }
+     }
+@@ -76,7 +76,7 @@
+ 
+     public void func_180650_b(World p_180650_1_, BlockPos p_180650_2_, IBlockState p_180650_3_, Random p_180650_4_)
+     {
+-        if (p_180650_1_.func_175642_b(EnumSkyBlock.BLOCK, p_180650_2_) > 11 - this.func_176223_P().func_185891_c())
++        if (p_180650_1_.func_175642_b(EnumSkyBlock.BLOCK, p_180650_2_) > 11 - this.getBlockState().func_185891_c())
+         {
+             this.func_185679_b(p_180650_1_, p_180650_2_);
+         }
+@@ -90,8 +90,8 @@
+         }
+         else
+         {
+-            this.func_176226_b(p_185679_1_, p_185679_2_, p_185679_1_.func_180495_p(p_185679_2_), 0);
+-            p_185679_1_.func_175656_a(p_185679_2_, Blocks.water.func_176223_P());
++            this.func_176226_b(p_185679_1_, p_185679_2_, p_185679_1_.getBlockState(p_185679_2_), 0);
++            p_185679_1_.func_175656_a(p_185679_2_, Blocks.water.getBlockState());
+             p_185679_1_.func_180496_d(p_185679_2_, Blocks.water);
+         }
+     }

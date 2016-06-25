@@ -1,0 +1,20 @@
+--- a/net/minecraft/util/EntitySelectors.java
++++ b/net/minecraft/util/EntitySelectors.java
+@@ -26,7 +26,7 @@
+     {
+         public boolean apply(@Nullable Entity p_apply_1_)
+         {
+-            return p_apply_1_.isEntityAlive() && !p_apply_1_.func_184207_aI() && !p_apply_1_.func_184218_aH();
++            return p_apply_1_.isEntityAlive() && !p_apply_1_.func_184207_aI() && !p_apply_1_.isRiding();
+         }
+     };
+     public static final Predicate<Entity> selectInventories = new Predicate<Entity>()
+@@ -128,7 +128,7 @@
+             else
+             {
+                 EntityLivingBase entitylivingbase = (EntityLivingBase)p_apply_1_;
+-                return entitylivingbase.func_184582_a(EntityLiving.func_184640_d(this.field_96567_c)) != null ? false : (entitylivingbase instanceof EntityLiving ? ((EntityLiving)entitylivingbase).canPickUpLoot() : (entitylivingbase instanceof EntityArmorStand ? true : entitylivingbase instanceof EntityPlayer));
++                return entitylivingbase.getEquippedItemStack(EntityLiving.func_184640_d(this.field_96567_c)) != null ? false : (entitylivingbase instanceof EntityLiving ? ((EntityLiving)entitylivingbase).canPickUpLoot() : (entitylivingbase instanceof EntityArmorStand ? true : entitylivingbase instanceof EntityPlayer));
+             }
+         }
+     }

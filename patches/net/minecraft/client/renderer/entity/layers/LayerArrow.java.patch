@@ -1,0 +1,20 @@
+--- a/net/minecraft/client/renderer/entity/layers/LayerArrow.java
++++ b/net/minecraft/client/renderer/entity/layers/LayerArrow.java
+@@ -32,7 +32,7 @@
+ 
+             for (int j = 0; j < i; ++j)
+             {
+-                GlStateManager.func_179094_E();
++                GlStateManager.push();
+                 ModelRenderer modelrenderer = this.field_177168_a.func_177087_b().getRandomModelBox(random);
+                 ModelBox modelbox = (ModelBox)modelrenderer.cubeList.get(random.nextInt(modelrenderer.cubeList.size()));
+                 modelrenderer.postRender(0.0625F);
+@@ -58,7 +58,7 @@
+                 double d1 = 0.0D;
+                 double d2 = 0.0D;
+                 this.field_177168_a.func_177068_d().func_188391_a(entity, 0.0D, 0.0D, 0.0D, 0.0F, p_177141_4_, false);
+-                GlStateManager.func_179121_F();
++                GlStateManager.pop();
+             }
+ 
+             RenderHelper.enableStandardItemLighting();

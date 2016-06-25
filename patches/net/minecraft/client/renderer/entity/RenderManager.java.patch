@@ -1,0 +1,13 @@
+--- a/net/minecraft/client/renderer/entity/RenderManager.java
++++ b/net/minecraft/client/renderer/entity/RenderManager.java
+@@ -263,8 +263,8 @@
+ 
+         if (p_180597_3_ instanceof EntityLivingBase && ((EntityLivingBase)p_180597_3_).isPlayerSleeping())
+         {
+-            IBlockState iblockstate = p_180597_1_.func_180495_p(new BlockPos(p_180597_3_));
+-            Block block = iblockstate.func_177230_c();
++            IBlockState iblockstate = p_180597_1_.getBlockState(new BlockPos(p_180597_3_));
++            Block block = iblockstate.getBlock();
+ 
+             if (block == Blocks.bed)
+             {

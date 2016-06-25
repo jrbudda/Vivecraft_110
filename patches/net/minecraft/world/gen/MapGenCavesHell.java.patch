@@ -1,0 +1,29 @@
+--- a/net/minecraft/world/gen/MapGenCavesHell.java
++++ b/net/minecraft/world/gen/MapGenCavesHell.java
+@@ -9,7 +9,7 @@
+ 
+ public class MapGenCavesHell extends MapGenBase
+ {
+-    protected static final IBlockState field_186130_a = Blocks.air.func_176223_P();
++    protected static final IBlockState field_186130_a = Blocks.air.getBlockState();
+ 
+     protected void func_180705_a(long p_180705_1_, int p_180705_3_, int p_180705_4_, ChunkPrimer p_180705_5_, double p_180705_6_, double p_180705_8_, double p_180705_10_)
+     {
+@@ -136,7 +136,7 @@
+                                 {
+                                     IBlockState iblockstate = p_180704_5_.func_177856_a(j1, l1, k1);
+ 
+-                                    if (iblockstate.func_177230_c() == Blocks.flowing_lava || iblockstate.func_177230_c() == Blocks.lava)
++                                    if (iblockstate.getBlock() == Blocks.flowing_lava || iblockstate.getBlock() == Blocks.lava)
+                                     {
+                                         flag2 = true;
+                                     }
+@@ -168,7 +168,7 @@
+                                     {
+                                         IBlockState iblockstate1 = p_180704_5_.func_177856_a(i3, i2, j3);
+ 
+-                                        if (iblockstate1.func_177230_c() == Blocks.netherrack || iblockstate1.func_177230_c() == Blocks.dirt || iblockstate1.func_177230_c() == Blocks.grass)
++                                        if (iblockstate1.getBlock() == Blocks.netherrack || iblockstate1.getBlock() == Blocks.dirt || iblockstate1.getBlock() == Blocks.grass)
+                                         {
+                                             p_180704_5_.func_177855_a(i3, i2, j3, field_186130_a);
+                                         }

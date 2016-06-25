@@ -1,0 +1,50 @@
+--- a/net/minecraft/block/BlockRailPowered.java
++++ b/net/minecraft/block/BlockRailPowered.java
+@@ -38,9 +38,9 @@
+         }
+         else
+         {
+-            int i = p_176566_2_.func_177958_n();
+-            int j = p_176566_2_.func_177956_o();
+-            int k = p_176566_2_.func_177952_p();
++            int i = p_176566_2_.getX();
++            int j = p_176566_2_.getY();
++            int k = p_176566_2_.getZ();
+             boolean flag = true;
+             BlockRailBase.EnumRailDirection blockrailbase$enumraildirection = (BlockRailBase.EnumRailDirection)p_176566_3_.func_177229_b(field_176568_b);
+ 
+@@ -136,9 +136,9 @@
+ 
+     protected boolean func_176567_a(World p_176567_1_, BlockPos p_176567_2_, boolean p_176567_3_, int p_176567_4_, BlockRailBase.EnumRailDirection p_176567_5_)
+     {
+-        IBlockState iblockstate = p_176567_1_.func_180495_p(p_176567_2_);
++        IBlockState iblockstate = p_176567_1_.getBlockState(p_176567_2_);
+ 
+-        if (iblockstate.func_177230_c() != this)
++        if (iblockstate.getBlock() != this)
+         {
+             return false;
+         }
+@@ -157,11 +157,11 @@
+         if (flag1 != flag)
+         {
+             p_189541_2_.func_180501_a(p_189541_3_, p_189541_1_.func_177226_a(field_176569_M, Boolean.valueOf(flag1)), 3);
+-            p_189541_2_.func_175685_c(p_189541_3_.func_177977_b(), this);
++            p_189541_2_.func_175685_c(p_189541_3_.getBlockPosBelow(), this);
+ 
+             if (((BlockRailBase.EnumRailDirection)p_189541_1_.func_177229_b(field_176568_b)).func_177018_c())
+             {
+-                p_189541_2_.func_175685_c(p_189541_3_.func_177984_a(), this);
++                p_189541_2_.func_175685_c(p_189541_3_.getBlockPosAbove(), this);
+             }
+         }
+     }
+@@ -173,7 +173,7 @@
+ 
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        return this.func_176223_P().func_177226_a(field_176568_b, BlockRailBase.EnumRailDirection.func_177016_a(p_176203_1_ & 7)).func_177226_a(field_176569_M, Boolean.valueOf((p_176203_1_ & 8) > 0));
++        return this.getBlockState().func_177226_a(field_176568_b, BlockRailBase.EnumRailDirection.func_177016_a(p_176203_1_ & 7)).func_177226_a(field_176569_M, Boolean.valueOf((p_176203_1_ & 8) > 0));
+     }
+ 
+     public int func_176201_c(IBlockState p_176201_1_)

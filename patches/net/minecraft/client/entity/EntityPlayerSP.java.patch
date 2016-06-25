@@ -1,0 +1,411 @@
+--- a/net/minecraft/client/entity/EntityPlayerSP.java
++++ b/net/minecraft/client/entity/EntityPlayerSP.java
+@@ -1,5 +1,6 @@
+ package net.minecraft.client.entity;
+ 
++import java.lang.reflect.Field;
+ import java.util.List;
+ import javax.annotation.Nullable;
+ import net.minecraft.block.state.IBlockState;
+@@ -32,6 +33,7 @@
+ import net.minecraft.entity.item.EntityItem;
+ import net.minecraft.entity.item.EntityMinecart;
+ import net.minecraft.entity.passive.EntityHorse;
++import net.minecraft.entity.player.EntityPlayer;
+ import net.minecraft.init.Items;
+ import net.minecraft.init.MobEffects;
+ import net.minecraft.init.SoundEvents;
+@@ -99,6 +101,22 @@
+      * sprinting.
+      */
+     protected int sprintToggleTimer;
++    
++    // VIVE START - teleport movement
++    public int movementTeleportTimer;
++	public boolean initFromServer;
++	public float spEyeHeight;
++    // VIVE END - teleport movement
++
++    
++    /** MINECRIFT **/
++    public float headPitch = 0;
++    public double additionX = 0;
++    public double additionZ = 0;
++    public double additionY = 0;
++    public final float PIOVER180 = (float)Math.PI / 180.0F;
++    public Vec3d directionVec = new Vec3d(0, 0, 0);
++    /** END MINECRIFT **/
+ 
+     /** Ticks left before sprinting is disabled. */
+     public int sprintingTicksLeft;
+@@ -121,15 +139,86 @@
+     private int field_189812_cs;
+     private boolean field_189813_ct;
+ 
++
+     public EntityPlayerSP(Minecraft p_i46278_1_, World p_i46278_2_, NetHandlerPlayClient p_i46278_3_, StatisticsManager p_i46278_4_)
+     {
+         super(p_i46278_2_, p_i46278_3_.func_175105_e());
+         this.sendQueue = p_i46278_3_;
+         this.field_146108_bO = p_i46278_4_;
++        
++        //VIVECRAFT
++        hackSuperFields();
++      //END VIVECRAFT
++        
+         this.mc = p_i46278_1_;
+         this.dimension = 0;
+     }
+ 
++    
++    //TODO: Update fields.
++    //VIVECRAFT
++    Field inuse, inusedur;
++    private void hackSuperFields(){ //this will work, damnit.
++    	Class c = this.getClass();
++    	try {
++    		while (c != EntityPlayer.class){
++    			c = c.getSuperclass(); //its up there somewhere.
++    		}
++    		//vanilla
++    		inuse = c.getDeclaredField("f");
++    		inusedur = c.getDeclaredField("g");
++    	} catch (NoSuchFieldException e) {
++    		try{
++    			//forge?
++    			inuse = c.getDeclaredField("field_71074_e");
++    			inusedur = c.getDeclaredField("field_71072_f");
++    		} catch (NoSuchFieldException e1) {
++    			try {
++    				//deobf
++    				inuse = c.getDeclaredField("itemInUse");
++    				inusedur = c.getDeclaredField("itemInUseCount");
++    			} catch (NoSuchFieldException e3) {
++    				System.out.println("REPORT TO JRBUDDA " + e3.toString() + " " +c.getName());
++    				e.printStackTrace();
++    			}			
++    		}
++    	}
++    	catch (SecurityException e2) {
++
++    	}
++    	
++    	if(inuse!=null){
++			inuse.setAccessible(true);
++    		inusedur.setAccessible(true);
++    	}
++    }
++    
++    public void setItemInUseClient(ItemStack item){
++    	if(this.inuse==null){
++    		return;
++    	} 
++
++    	try {
++    		this.inuse.set(this, item);
++    	} catch (IllegalArgumentException e) {
++    	} catch (Exception e) {
++    	}
++    }
++    
++    
++    public void setItemInUseCountClient(int count){
++    	if(this.inusedur==null){
++    		return;
++    	} 
++
++    	try {
++    		this.inusedur.set(this, count);
++    	} catch (IllegalArgumentException e) {
++    	} catch (Exception e) {
++    	}
++    }
++    
++    //END VIVECRAFT
+     /**
+      * Called when the entity is attacked.
+      */
+@@ -169,9 +258,9 @@
+         }
+     }
+ 
+-    public void func_184210_p()
++    public void dismount()
+     {
+-        super.func_184210_p();
++        super.dismount();
+         this.field_184844_co = false;
+     }
+ 
+@@ -184,11 +273,11 @@
+         {
+             super.onUpdate();
+ 
+-            if (this.func_184218_aH())
++            if (this.isRiding())
+             {
+                 this.sendQueue.addToSendQueue(new CPacketPlayer.Rotation(this.rotationYaw, this.rotationPitch, this.onGround));
+                 this.sendQueue.addToSendQueue(new CPacketInput(this.moveStrafing, this.moveForward, this.movementInput.jump, this.movementInput.sneak));
+-                Entity entity = this.func_184208_bv();
++                Entity entity = this.getMovementEntity();
+ 
+                 if (entity != this && entity.func_184186_bw())
+                 {
+@@ -248,7 +337,7 @@
+             boolean flag2 = d0 * d0 + d1 * d1 + d2 * d2 > 9.0E-4D || this.field_175168_bP >= 20;
+             boolean flag3 = d3 != 0.0D || d4 != 0.0D;
+ 
+-            if (this.func_184218_aH())
++            if (this.isRiding())
+             {
+                 this.sendQueue.addToSendQueue(new CPacketPlayer.PositionRotation(this.motionX, -999.0D, this.motionZ, this.rotationYaw, this.rotationPitch, this.onGround));
+                 flag2 = false;
+@@ -297,7 +386,7 @@
+     public EntityItem dropOneItem(boolean p_71040_1_)
+     {
+         CPacketPlayerDigging.Action cpacketplayerdigging$action = p_71040_1_ ? CPacketPlayerDigging.Action.DROP_ALL_ITEMS : CPacketPlayerDigging.Action.DROP_ITEM;
+-        this.sendQueue.addToSendQueue(new CPacketPlayerDigging(cpacketplayerdigging$action, BlockPos.field_177992_a, EnumFacing.DOWN));
++        this.sendQueue.addToSendQueue(new CPacketPlayerDigging(cpacketplayerdigging$action, BlockPos.createDefault, EnumFacing.DOWN));
+         return null;
+     }
+ 
+@@ -465,33 +554,33 @@
+         else
+         {
+             BlockPos blockpos = new BlockPos(x, y, z);
+-            double d0 = x - (double)blockpos.func_177958_n();
+-            double d1 = z - (double)blockpos.func_177952_p();
++            double d0 = x - (double)blockpos.getX();
++            double d1 = z - (double)blockpos.getZ();
+ 
+             if (!this.func_175162_d(blockpos))
+             {
+                 int i = -1;
+                 double d2 = 9999.0D;
+ 
+-                if (this.func_175162_d(blockpos.func_177976_e()) && d0 < d2)
++                if (this.func_175162_d(blockpos.getBlockPosWest()) && d0 < d2)
+                 {
+                     d2 = d0;
+                     i = 0;
+                 }
+ 
+-                if (this.func_175162_d(blockpos.func_177974_f()) && 1.0D - d0 < d2)
++                if (this.func_175162_d(blockpos.getBlockPosEast()) && 1.0D - d0 < d2)
+                 {
+                     d2 = 1.0D - d0;
+                     i = 1;
+                 }
+ 
+-                if (this.func_175162_d(blockpos.func_177978_c()) && d1 < d2)
++                if (this.func_175162_d(blockpos.getBlockPosNorth()) && d1 < d2)
+                 {
+                     d2 = d1;
+                     i = 4;
+                 }
+ 
+-                if (this.func_175162_d(blockpos.func_177968_d()) && 1.0D - d1 < d2)
++                if (this.func_175162_d(blockpos.getBlockPosSouth()) && 1.0D - d1 < d2)
+                 {
+                     d2 = 1.0D - d1;
+                     i = 5;
+@@ -526,7 +615,7 @@
+ 
+     private boolean func_175162_d(BlockPos p_175162_1_)
+     {
+-        return !this.worldObj.func_180495_p(p_175162_1_).func_185915_l() && !this.worldObj.func_180495_p(p_175162_1_.func_177984_a()).func_185915_l();
++        return !this.worldObj.getBlockState(p_175162_1_).func_185915_l() && !this.worldObj.getBlockState(p_175162_1_.getBlockPosAbove()).func_185915_l();
+     }
+ 
+     /**
+@@ -584,7 +673,7 @@
+         return new BlockPos(this.posX + 0.5D, this.posY + 0.5D, this.posZ + 0.5D);
+     }
+ 
+-    public void func_184185_a(SoundEvent p_184185_1_, float p_184185_2_, float p_184185_3_)
++    public void playSound(SoundEvent p_184185_1_, float p_184185_2_, float p_184185_3_)
+     {
+         this.worldObj.func_184134_a(this.posX, this.posY, this.posZ, p_184185_1_, this.func_184176_by(), p_184185_2_, p_184185_3_, false);
+     }
+@@ -599,7 +688,7 @@
+ 
+     public void func_184598_c(EnumHand p_184598_1_)
+     {
+-        ItemStack itemstack = this.func_184586_b(p_184598_1_);
++        ItemStack itemstack = this.getItemStackInHand(p_184598_1_);
+ 
+         if (itemstack != null && !this.func_184587_cr())
+         {
+@@ -652,8 +741,8 @@
+ 
+     public boolean isRidingHorse()
+     {
+-        Entity entity = this.func_184187_bx();
+-        return this.func_184218_aH() && entity instanceof IJumpingMount && ((IJumpingMount)entity).func_184776_b();
++        Entity entity = this.getRidingEntity();
++        return this.isRiding() && entity instanceof IJumpingMount && ((IJumpingMount)entity).func_184776_b();
+     }
+ 
+     public float getHorseJumpPower()
+@@ -796,7 +885,7 @@
+ 
+     protected boolean func_175160_A()
+     {
+-        return this.mc.func_175606_aa() == this;
++        return this.mc.getRenderViewEntity() == this;
+     }
+ 
+     /**
+@@ -868,7 +957,7 @@
+         boolean flag2 = this.movementInput.moveForward >= 0.8F;
+         this.movementInput.updatePlayerMoveState();
+ 
+-        if (this.func_184587_cr() && !this.func_184218_aH())
++        if (this.func_184587_cr() && !this.isRiding())
+         {
+             this.movementInput.moveStrafe *= 0.2F;
+             this.movementInput.moveForward *= 0.2F;
+@@ -940,7 +1029,7 @@
+ 
+         if (this.movementInput.jump && !flag && !this.onGround && this.motionY < 0.0D && !this.func_184613_cA() && !this.capabilities.isFlying)
+         {
+-            ItemStack itemstack = this.func_184582_a(EntityEquipmentSlot.CHEST);
++            ItemStack itemstack = this.getEquippedItemStack(EntityEquipmentSlot.CHEST);
+ 
+             if (itemstack != null && itemstack.getItem() == Items.field_185160_cR && ItemElytra.func_185069_d(itemstack))
+             {
+@@ -967,7 +1056,7 @@
+ 
+         if (this.isRidingHorse())
+         {
+-            IJumpingMount ijumpingmount = (IJumpingMount)this.func_184187_bx();
++            IJumpingMount ijumpingmount = (IJumpingMount)this.getRidingEntity();
+ 
+             if (this.horseJumpPowerCounter < 0)
+             {
+@@ -1026,9 +1115,9 @@
+         super.updateRidden();
+         this.field_184844_co = false;
+ 
+-        if (this.func_184187_bx() instanceof EntityBoat)
++        if (this.getRidingEntity() instanceof EntityBoat)
+         {
+-            EntityBoat entityboat = (EntityBoat)this.func_184187_bx();
++            EntityBoat entityboat = (EntityBoat)this.getRidingEntity();
+             entityboat.func_184442_a(this.movementInput.field_187257_e, this.movementInput.field_187258_f, this.movementInput.field_187255_c, this.movementInput.field_187256_d);
+             this.field_184844_co |= this.movementInput.field_187257_e || this.movementInput.field_187258_f || this.movementInput.field_187255_c || this.movementInput.field_187256_d;
+         }
+@@ -1071,11 +1160,11 @@
+     {
+         if (this.func_189809_N())
+         {
+-            if (this.field_189812_cs <= 0 && this.onGround && !this.isSneaking() && !this.func_184218_aH())
++            if (this.field_189812_cs <= 0 && this.onGround && !this.isSneaking() && !this.isRiding())
+             {
+                 Vec2f vec2f = this.movementInput.func_190020_b();
+ 
+-                if (vec2f.field_189982_i != 0.0F || vec2f.field_189983_j != 0.0F)
++                if (vec2f.x != 0.0F || vec2f.y != 0.0F)
+                 {
+                     Vec3d vec3d = new Vec3d(this.posX, this.func_174813_aQ().minY, this.posZ);
+                     double d0 = this.posX + (double)p_189810_1_;
+@@ -1083,16 +1172,16 @@
+                     Vec3d vec3d1 = new Vec3d(d0, this.func_174813_aQ().minY, d1);
+                     Vec3d vec3d2 = new Vec3d((double)p_189810_1_, 0.0D, (double)p_189810_2_);
+                     float f = this.getAIMoveSpeed();
+-                    float f1 = (float)vec3d2.func_189985_c();
++                    float f1 = (float)vec3d2.lengthSquared();
+ 
+                     if (f1 <= 0.001F)
+                     {
+-                        float f2 = f * vec2f.field_189982_i;
+-                        float f3 = f * vec2f.field_189983_j;
++                        float f2 = f * vec2f.x;
++                        float f3 = f * vec2f.y;
+                         float f4 = MathHelper.sin(this.rotationYaw * 0.017453292F);
+                         float f5 = MathHelper.cos(this.rotationYaw * 0.017453292F);
+                         vec3d2 = new Vec3d((double)(f2 * f5 - f3 * f4), vec3d2.yCoord, (double)(f3 * f5 + f2 * f4));
+-                        f1 = (float)vec3d2.func_189985_c();
++                        f1 = (float)vec3d2.lengthSquared();
+ 
+                         if (f1 <= 0.001F)
+                         {
+@@ -1101,19 +1190,19 @@
+                     }
+ 
+                     float f12 = (float)MathHelper.func_181161_i((double)f1);
+-                    Vec3d vec3d12 = vec3d2.func_186678_a((double)f12);
++                    Vec3d vec3d12 = vec3d2.multiply((double)f12);
+                     Vec3d vec3d13 = this.func_189651_aD();
+                     float f13 = (float)(vec3d13.xCoord * vec3d12.xCoord + vec3d13.zCoord * vec3d12.zCoord);
+ 
+                     if (f13 >= -0.15F)
+                     {
+                         BlockPos blockpos = new BlockPos(this.posX, this.func_174813_aQ().maxY, this.posZ);
+-                        IBlockState iblockstate = this.worldObj.func_180495_p(blockpos);
++                        IBlockState iblockstate = this.worldObj.getBlockState(blockpos);
+ 
+                         if (iblockstate.func_185890_d(this.worldObj, blockpos) == null)
+                         {
+-                            blockpos = blockpos.func_177984_a();
+-                            IBlockState iblockstate1 = this.worldObj.func_180495_p(blockpos);
++                            blockpos = blockpos.getBlockPosAbove();
++                            IBlockState iblockstate1 = this.worldObj.getBlockState(blockpos);
+ 
+                             if (iblockstate1.func_185890_d(this.worldObj, blockpos) == null)
+                             {
+@@ -1126,19 +1215,19 @@
+                                 }
+ 
+                                 float f8 = Math.max(f * 7.0F, 1.0F / f12);
+-                                Vec3d vec3d4 = vec3d1.func_178787_e(vec3d12.func_186678_a((double)f8));
++                                Vec3d vec3d4 = vec3d1.addVector(vec3d12.multiply((double)f8));
+                                 float f9 = this.width;
+                                 float f10 = this.height;
+                                 AxisAlignedBB axisalignedbb = (new AxisAlignedBB(vec3d, vec3d4.addVector(0.0D, (double)f10, 0.0D))).expand((double)f9, 0.0D, (double)f9);
+                                 Vec3d lvt_19_1_ = vec3d.addVector(0.0D, 0.5099999904632568D, 0.0D);
+                                 vec3d4 = vec3d4.addVector(0.0D, 0.5099999904632568D, 0.0D);
+                                 Vec3d vec3d5 = vec3d12.crossProduct(new Vec3d(0.0D, 1.0D, 0.0D));
+-                                Vec3d vec3d6 = vec3d5.func_186678_a((double)(f9 * 0.5F));
+-                                Vec3d vec3d7 = lvt_19_1_.func_178788_d(vec3d6);
+-                                Vec3d vec3d8 = vec3d4.func_178788_d(vec3d6);
+-                                Vec3d vec3d9 = lvt_19_1_.func_178787_e(vec3d6);
+-                                Vec3d vec3d10 = vec3d4.func_178787_e(vec3d6);
+-                                List<AxisAlignedBB> list = this.worldObj.func_184144_a(this, axisalignedbb);
++                                Vec3d vec3d6 = vec3d5.multiply((double)(f9 * 0.5F));
++                                Vec3d vec3d7 = lvt_19_1_.subtractVector(vec3d6);
++                                Vec3d vec3d8 = vec3d4.subtractVector(vec3d6);
++                                Vec3d vec3d9 = lvt_19_1_.addVector(vec3d6);
++                                Vec3d vec3d10 = vec3d4.addVector(vec3d6);
++                                List<AxisAlignedBB> list = this.worldObj.getCollisionBoxes(this, axisalignedbb);
+ 
+                                 if (!list.isEmpty())
+                                 {
+@@ -1164,13 +1253,13 @@
+                                                 break label659;
+                                             }
+ 
+-                                            BlockPos blockpos2 = blockpos1.func_177981_b(i);
+-                                            IBlockState iblockstate2 = this.worldObj.func_180495_p(blockpos2);
++                                            BlockPos blockpos2 = blockpos1.getBlockPosAbove(i);
++                                            IBlockState iblockstate2 = this.worldObj.getBlockState(blockpos2);
+                                             AxisAlignedBB axisalignedbb1;
+ 
+                                             if ((axisalignedbb1 = iblockstate2.func_185890_d(this.worldObj, blockpos2)) != null)
+                                             {
+-                                                f11 = (float)axisalignedbb1.maxY + (float)blockpos2.func_177956_o();
++                                                f11 = (float)axisalignedbb1.maxY + (float)blockpos2.getY();
+ 
+                                                 if ((double)f11 - this.func_174813_aQ().minY > (double)f7)
+                                                 {
+@@ -1180,8 +1269,8 @@
+ 
+                                             if (i > 1)
+                                             {
+-                                                blockpos = blockpos.func_177984_a();
+-                                                IBlockState iblockstate3 = this.worldObj.func_180495_p(blockpos);
++                                                blockpos = blockpos.getBlockPosAbove();
++                                                IBlockState iblockstate3 = this.worldObj.getBlockState(blockpos);
+ 
+                                                 if (iblockstate3.func_185890_d(this.worldObj, blockpos) != null)
+                                                 {

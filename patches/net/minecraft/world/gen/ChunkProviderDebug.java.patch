@@ -1,0 +1,13 @@
+--- a/net/minecraft/world/gen/ChunkProviderDebug.java
++++ b/net/minecraft/world/gen/ChunkProviderDebug.java
+@@ -20,8 +20,8 @@
+     private static final List<IBlockState> field_177464_a = Lists.<IBlockState>newArrayList();
+     private static final int field_177462_b;
+     private static final int field_181039_c;
+-    protected static final IBlockState field_185934_a = Blocks.air.func_176223_P();
+-    protected static final IBlockState field_185935_b = Blocks.field_180401_cv.func_176223_P();
++    protected static final IBlockState field_185934_a = Blocks.air.getBlockState();
++    protected static final IBlockState field_185935_b = Blocks.field_180401_cv.getBlockState();
+     private final World field_177463_c;
+ 
+     public ChunkProviderDebug(World p_i45638_1_)

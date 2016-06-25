@@ -1,0 +1,15 @@
+--- a/net/minecraft/client/renderer/entity/RenderSquid.java
++++ b/net/minecraft/client/renderer/entity/RenderSquid.java
+@@ -27,9 +27,9 @@
+         float f = p_77043_1_.prevSquidPitch + (p_77043_1_.squidPitch - p_77043_1_.prevSquidPitch) * p_77043_4_;
+         float f1 = p_77043_1_.prevSquidYaw + (p_77043_1_.squidYaw - p_77043_1_.prevSquidYaw) * p_77043_4_;
+         GlStateManager.func_179109_b(0.0F, 0.5F, 0.0F);
+-        GlStateManager.func_179114_b(180.0F - p_77043_3_, 0.0F, 1.0F, 0.0F);
+-        GlStateManager.func_179114_b(f, 1.0F, 0.0F, 0.0F);
+-        GlStateManager.func_179114_b(f1, 0.0F, 1.0F, 0.0F);
++        GlStateManager.rotate(180.0F - p_77043_3_, 0.0F, 1.0F, 0.0F);
++        GlStateManager.rotate(f, 1.0F, 0.0F, 0.0F);
++        GlStateManager.rotate(f1, 0.0F, 1.0F, 0.0F);
+         GlStateManager.func_179109_b(0.0F, -1.2F, 0.0F);
+     }
+ 

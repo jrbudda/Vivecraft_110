@@ -1,0 +1,56 @@
+--- a/net/minecraft/entity/passive/EntityBat.java
++++ b/net/minecraft/entity/passive/EntityBat.java
+@@ -138,11 +138,11 @@
+     {
+         super.updateAITasks();
+         BlockPos blockpos = new BlockPos(this);
+-        BlockPos blockpos1 = blockpos.func_177984_a();
++        BlockPos blockpos1 = blockpos.getBlockPosAbove();
+ 
+         if (this.getIsBatHanging())
+         {
+-            if (this.worldObj.func_180495_p(blockpos1).func_185915_l())
++            if (this.worldObj.getBlockState(blockpos1).func_185915_l())
+             {
+                 if (this.rand.nextInt(200) == 0)
+                 {
+@@ -163,7 +163,7 @@
+         }
+         else
+         {
+-            if (this.spawnPosition != null && (!this.worldObj.func_175623_d(this.spawnPosition) || this.spawnPosition.func_177956_o() < 1))
++            if (this.spawnPosition != null && (!this.worldObj.isEmpty(this.spawnPosition) || this.spawnPosition.getY() < 1))
+             {
+                 this.spawnPosition = null;
+             }
+@@ -173,9 +173,9 @@
+                 this.spawnPosition = new BlockPos((int)this.posX + this.rand.nextInt(7) - this.rand.nextInt(7), (int)this.posY + this.rand.nextInt(6) - 2, (int)this.posZ + this.rand.nextInt(7) - this.rand.nextInt(7));
+             }
+ 
+-            double d0 = (double)this.spawnPosition.func_177958_n() + 0.5D - this.posX;
+-            double d1 = (double)this.spawnPosition.func_177956_o() + 0.1D - this.posY;
+-            double d2 = (double)this.spawnPosition.func_177952_p() + 0.5D - this.posZ;
++            double d0 = (double)this.spawnPosition.getX() + 0.5D - this.posX;
++            double d1 = (double)this.spawnPosition.getY() + 0.1D - this.posY;
++            double d2 = (double)this.spawnPosition.getZ() + 0.5D - this.posZ;
+             this.motionX += (Math.signum(d0) * 0.5D - this.motionX) * 0.10000000149011612D;
+             this.motionY += (Math.signum(d1) * 0.699999988079071D - this.motionY) * 0.10000000149011612D;
+             this.motionZ += (Math.signum(d2) * 0.5D - this.motionZ) * 0.10000000149011612D;
+@@ -184,7 +184,7 @@
+             this.moveForward = 0.5F;
+             this.rotationYaw += f1;
+ 
+-            if (this.rand.nextInt(100) == 0 && this.worldObj.func_180495_p(blockpos1).func_185915_l())
++            if (this.rand.nextInt(100) == 0 && this.worldObj.getBlockState(blockpos1).func_185915_l())
+             {
+                 this.setIsBatHanging(true);
+             }
+@@ -266,7 +266,7 @@
+     {
+         BlockPos blockpos = new BlockPos(this.posX, this.func_174813_aQ().minY, this.posZ);
+ 
+-        if (blockpos.func_177956_o() >= this.worldObj.func_181545_F())
++        if (blockpos.getY() >= this.worldObj.getSpawnLevel())
+         {
+             return false;
+         }

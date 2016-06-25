@@ -1,0 +1,51 @@
+--- a/net/minecraft/block/BlockRedstoneRepeater.java
++++ b/net/minecraft/block/BlockRedstoneRepeater.java
+@@ -79,7 +79,7 @@
+         Integer integer = (Integer)p_180674_1_.func_177229_b(field_176410_b);
+         Boolean obool = (Boolean)p_180674_1_.func_177229_b(field_176411_a);
+         EnumFacing enumfacing = (EnumFacing)p_180674_1_.func_177229_b(field_185512_D);
+-        return Blocks.powered_repeater.func_176223_P().func_177226_a(field_185512_D, enumfacing).func_177226_a(field_176410_b, integer).func_177226_a(field_176411_a, obool);
++        return Blocks.powered_repeater.getBlockState().func_177226_a(field_185512_D, enumfacing).func_177226_a(field_176410_b, integer).func_177226_a(field_176411_a, obool);
+     }
+ 
+     protected IBlockState func_180675_k(IBlockState p_180675_1_)
+@@ -87,7 +87,7 @@
+         Integer integer = (Integer)p_180675_1_.func_177229_b(field_176410_b);
+         Boolean obool = (Boolean)p_180675_1_.func_177229_b(field_176411_a);
+         EnumFacing enumfacing = (EnumFacing)p_180675_1_.func_177229_b(field_185512_D);
+-        return Blocks.unpowered_repeater.func_176223_P().func_177226_a(field_185512_D, enumfacing).func_177226_a(field_176410_b, integer).func_177226_a(field_176411_a, obool);
++        return Blocks.unpowered_repeater.getBlockState().func_177226_a(field_185512_D, enumfacing).func_177226_a(field_176410_b, integer).func_177226_a(field_176411_a, obool);
+     }
+ 
+     @Nullable
+@@ -116,9 +116,9 @@
+         if (this.isRepeaterPowered)
+         {
+             EnumFacing enumfacing = (EnumFacing)p_180655_1_.func_177229_b(field_185512_D);
+-            double d0 = (double)((float)p_180655_3_.func_177958_n() + 0.5F) + (double)(p_180655_4_.nextFloat() - 0.5F) * 0.2D;
+-            double d1 = (double)((float)p_180655_3_.func_177956_o() + 0.4F) + (double)(p_180655_4_.nextFloat() - 0.5F) * 0.2D;
+-            double d2 = (double)((float)p_180655_3_.func_177952_p() + 0.5F) + (double)(p_180655_4_.nextFloat() - 0.5F) * 0.2D;
++            double d0 = (double)((float)p_180655_3_.getX() + 0.5F) + (double)(p_180655_4_.nextFloat() - 0.5F) * 0.2D;
++            double d1 = (double)((float)p_180655_3_.getY() + 0.4F) + (double)(p_180655_4_.nextFloat() - 0.5F) * 0.2D;
++            double d2 = (double)((float)p_180655_3_.getZ() + 0.5F) + (double)(p_180655_4_.nextFloat() - 0.5F) * 0.2D;
+             float f = -5.0F;
+ 
+             if (p_180655_4_.nextBoolean())
+@@ -129,7 +129,7 @@
+             f = f / 16.0F;
+             double d3 = (double)(f * (float)enumfacing.getFrontOffsetX());
+             double d4 = (double)(f * (float)enumfacing.getFrontOffsetZ());
+-            p_180655_2_.func_175688_a(EnumParticleTypes.REDSTONE, d0 + d3, d1, d2 + d4, 0.0D, 0.0D, 0.0D, new int[0]);
++            p_180655_2_.spawnParticle(EnumParticleTypes.REDSTONE, d0 + d3, d1, d2 + d4, 0.0D, 0.0D, 0.0D, new int[0]);
+         }
+     }
+ 
+@@ -141,7 +141,7 @@
+ 
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        return this.func_176223_P().func_177226_a(field_185512_D, EnumFacing.func_176731_b(p_176203_1_)).func_177226_a(field_176411_a, Boolean.valueOf(false)).func_177226_a(field_176410_b, Integer.valueOf(1 + (p_176203_1_ >> 2)));
++        return this.getBlockState().func_177226_a(field_185512_D, EnumFacing.func_176731_b(p_176203_1_)).func_177226_a(field_176411_a, Boolean.valueOf(false)).func_177226_a(field_176410_b, Integer.valueOf(1 + (p_176203_1_ >> 2)));
+     }
+ 
+     public int func_176201_c(IBlockState p_176201_1_)

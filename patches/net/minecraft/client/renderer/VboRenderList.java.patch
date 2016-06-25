@@ -1,0 +1,18 @@
+--- a/net/minecraft/client/renderer/VboRenderList.java
++++ b/net/minecraft/client/renderer/VboRenderList.java
+@@ -12,13 +12,13 @@
+             for (RenderChunk renderchunk : this.field_178009_a)
+             {
+                 net.minecraft.client.renderer.vertex.VertexBuffer vertexbuffer = renderchunk.func_178565_b(p_178001_1_.ordinal());
+-                GlStateManager.func_179094_E();
++                GlStateManager.push();
+                 this.func_178003_a(renderchunk);
+                 renderchunk.func_178572_f();
+                 vertexbuffer.func_177359_a();
+                 this.func_178010_a();
+                 vertexbuffer.func_177358_a(7);
+-                GlStateManager.func_179121_F();
++                GlStateManager.pop();
+             }
+ 
+             OpenGlHelper.func_176072_g(OpenGlHelper.field_176089_P, 0);

@@ -1,0 +1,52 @@
+--- a/net/minecraft/world/gen/feature/WorldGenBlockBlob.java
++++ b/net/minecraft/world/gen/feature/WorldGenBlockBlob.java
+@@ -24,14 +24,14 @@
+         {
+             label0:
+             {
+-                if (p_180709_3_.func_177956_o() > 3)
++                if (p_180709_3_.getY() > 3)
+                 {
+-                    if (p_180709_1_.func_175623_d(p_180709_3_.func_177977_b()))
++                    if (p_180709_1_.isEmpty(p_180709_3_.getBlockPosBelow()))
+                     {
+                         break label0;
+                     }
+ 
+-                    Block block = p_180709_1_.func_180495_p(p_180709_3_.func_177977_b()).func_177230_c();
++                    Block block = p_180709_1_.getBlockState(p_180709_3_.getBlockPosBelow()).getBlock();
+ 
+                     if (block != Blocks.grass && block != Blocks.dirt && block != Blocks.stone)
+                     {
+@@ -39,7 +39,7 @@
+                     }
+                 }
+ 
+-                if (p_180709_3_.func_177956_o() <= 3)
++                if (p_180709_3_.getY() <= 3)
+                 {
+                     return false;
+                 }
+@@ -53,11 +53,11 @@
+                     int l = i1 + p_180709_2_.nextInt(2);
+                     float f = (float)(j + k + l) * 0.333F + 0.5F;
+ 
+-                    for (BlockPos blockpos : BlockPos.func_177980_a(p_180709_3_.func_177982_a(-j, -k, -l), p_180709_3_.func_177982_a(j, k, l)))
++                    for (BlockPos blockpos : BlockPos.getBlocksBetween(p_180709_3_.func_177982_a(-j, -k, -l), p_180709_3_.func_177982_a(j, k, l)))
+                     {
+                         if (blockpos.func_177951_i(p_180709_3_) <= (double)(f * f))
+                         {
+-                            p_180709_1_.func_180501_a(blockpos, this.field_150545_a.func_176223_P(), 4);
++                            p_180709_1_.func_180501_a(blockpos, this.field_150545_a.getBlockState(), 4);
+                         }
+                     }
+ 
+@@ -66,7 +66,7 @@
+ 
+                 return true;
+             }
+-            p_180709_3_ = p_180709_3_.func_177977_b();
++            p_180709_3_ = p_180709_3_.getBlockPosBelow();
+         }
+     }
+ }

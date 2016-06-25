@@ -1,0 +1,45 @@
+--- a/net/minecraft/command/CommandSpreadPlayers.java
++++ b/net/minecraft/command/CommandSpreadPlayers.java
+@@ -49,8 +49,8 @@
+         {
+             int i = 0;
+             BlockPos blockpos = p_184881_2_.func_180425_c();
+-            double d0 = func_175761_b((double)blockpos.func_177958_n(), p_184881_3_[i++], true);
+-            double d1 = func_175761_b((double)blockpos.func_177952_p(), p_184881_3_[i++], true);
++            double d0 = func_175761_b((double)blockpos.getX(), p_184881_3_[i++], true);
++            double d1 = func_175761_b((double)blockpos.getZ(), p_184881_3_[i++], true);
+             double d2 = func_180526_a(p_184881_3_[i++], 0.0D);
+             double d3 = func_180526_a(p_184881_3_[i++], d2 + 1.0D);
+             boolean flag = func_180527_d(p_184881_3_[i++]);
+@@ -355,13 +355,13 @@
+         {
+             BlockPos blockpos = new BlockPos(this.field_111101_a, 256.0D, this.field_111100_b);
+ 
+-            while (blockpos.func_177956_o() > 0)
++            while (blockpos.getY() > 0)
+             {
+-                blockpos = blockpos.func_177977_b();
++                blockpos = blockpos.getBlockPosBelow();
+ 
+-                if (p_111092_1_.func_180495_p(blockpos).func_185904_a() != Material.air)
++                if (p_111092_1_.getBlockState(blockpos).getMaterial() != Material.air)
+                 {
+-                    return blockpos.func_177956_o() + 1;
++                    return blockpos.getY() + 1;
+                 }
+             }
+ 
+@@ -372,10 +372,10 @@
+         {
+             BlockPos blockpos = new BlockPos(this.field_111101_a, 256.0D, this.field_111100_b);
+ 
+-            while (blockpos.func_177956_o() > 0)
++            while (blockpos.getY() > 0)
+             {
+-                blockpos = blockpos.func_177977_b();
+-                Material material = p_111098_1_.func_180495_p(blockpos).func_185904_a();
++                blockpos = blockpos.getBlockPosBelow();
++                Material material = p_111098_1_.getBlockState(blockpos).getMaterial();
+ 
+                 if (material != Material.air)
+                 {

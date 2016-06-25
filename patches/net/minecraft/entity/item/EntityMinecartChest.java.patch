@@ -1,0 +1,11 @@
+--- a/net/minecraft/entity/item/EntityMinecartChest.java
++++ b/net/minecraft/entity/item/EntityMinecartChest.java
+@@ -55,7 +55,7 @@
+ 
+     public IBlockState func_180457_u()
+     {
+-        return Blocks.chest.func_176223_P().func_177226_a(BlockChest.field_176459_a, EnumFacing.NORTH);
++        return Blocks.chest.getBlockState().func_177226_a(BlockChest.field_176459_a, EnumFacing.NORTH);
+     }
+ 
+     public int getDefaultDisplayTileOffset()

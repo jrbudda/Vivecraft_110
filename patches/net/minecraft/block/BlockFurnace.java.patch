@@ -1,0 +1,110 @@
+--- a/net/minecraft/block/BlockFurnace.java
++++ b/net/minecraft/block/BlockFurnace.java
+@@ -56,10 +56,10 @@
+     {
+         if (!p_176445_1_.isRemote)
+         {
+-            IBlockState iblockstate = p_176445_1_.func_180495_p(p_176445_2_.func_177978_c());
+-            IBlockState iblockstate1 = p_176445_1_.func_180495_p(p_176445_2_.func_177968_d());
+-            IBlockState iblockstate2 = p_176445_1_.func_180495_p(p_176445_2_.func_177976_e());
+-            IBlockState iblockstate3 = p_176445_1_.func_180495_p(p_176445_2_.func_177974_f());
++            IBlockState iblockstate = p_176445_1_.getBlockState(p_176445_2_.getBlockPosNorth());
++            IBlockState iblockstate1 = p_176445_1_.getBlockState(p_176445_2_.getBlockPosSouth());
++            IBlockState iblockstate2 = p_176445_1_.getBlockState(p_176445_2_.getBlockPosWest());
++            IBlockState iblockstate3 = p_176445_1_.getBlockState(p_176445_2_.getBlockPosEast());
+             EnumFacing enumfacing = (EnumFacing)p_176445_3_.func_177229_b(field_176447_a);
+ 
+             if (enumfacing == EnumFacing.NORTH && iblockstate.func_185913_b() && !iblockstate1.func_185913_b())
+@@ -89,37 +89,37 @@
+         if (this.isBurning)
+         {
+             EnumFacing enumfacing = (EnumFacing)p_180655_1_.func_177229_b(field_176447_a);
+-            double d0 = (double)p_180655_3_.func_177958_n() + 0.5D;
+-            double d1 = (double)p_180655_3_.func_177956_o() + p_180655_4_.nextDouble() * 6.0D / 16.0D;
+-            double d2 = (double)p_180655_3_.func_177952_p() + 0.5D;
++            double d0 = (double)p_180655_3_.getX() + 0.5D;
++            double d1 = (double)p_180655_3_.getY() + p_180655_4_.nextDouble() * 6.0D / 16.0D;
++            double d2 = (double)p_180655_3_.getZ() + 0.5D;
+             double d3 = 0.52D;
+             double d4 = p_180655_4_.nextDouble() * 0.6D - 0.3D;
+ 
+             if (p_180655_4_.nextDouble() < 0.1D)
+             {
+-                p_180655_2_.func_184134_a((double)p_180655_3_.func_177958_n() + 0.5D, (double)p_180655_3_.func_177956_o(), (double)p_180655_3_.func_177952_p() + 0.5D, SoundEvents.field_187652_bv, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
++                p_180655_2_.func_184134_a((double)p_180655_3_.getX() + 0.5D, (double)p_180655_3_.getY(), (double)p_180655_3_.getZ() + 0.5D, SoundEvents.field_187652_bv, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
+             }
+ 
+             switch (enumfacing)
+             {
+                 case WEST:
+-                    p_180655_2_.func_175688_a(EnumParticleTypes.SMOKE_NORMAL, d0 - 0.52D, d1, d2 + d4, 0.0D, 0.0D, 0.0D, new int[0]);
+-                    p_180655_2_.func_175688_a(EnumParticleTypes.FLAME, d0 - 0.52D, d1, d2 + d4, 0.0D, 0.0D, 0.0D, new int[0]);
++                    p_180655_2_.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0 - 0.52D, d1, d2 + d4, 0.0D, 0.0D, 0.0D, new int[0]);
++                    p_180655_2_.spawnParticle(EnumParticleTypes.FLAME, d0 - 0.52D, d1, d2 + d4, 0.0D, 0.0D, 0.0D, new int[0]);
+                     break;
+ 
+                 case EAST:
+-                    p_180655_2_.func_175688_a(EnumParticleTypes.SMOKE_NORMAL, d0 + 0.52D, d1, d2 + d4, 0.0D, 0.0D, 0.0D, new int[0]);
+-                    p_180655_2_.func_175688_a(EnumParticleTypes.FLAME, d0 + 0.52D, d1, d2 + d4, 0.0D, 0.0D, 0.0D, new int[0]);
++                    p_180655_2_.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0 + 0.52D, d1, d2 + d4, 0.0D, 0.0D, 0.0D, new int[0]);
++                    p_180655_2_.spawnParticle(EnumParticleTypes.FLAME, d0 + 0.52D, d1, d2 + d4, 0.0D, 0.0D, 0.0D, new int[0]);
+                     break;
+ 
+                 case NORTH:
+-                    p_180655_2_.func_175688_a(EnumParticleTypes.SMOKE_NORMAL, d0 + d4, d1, d2 - 0.52D, 0.0D, 0.0D, 0.0D, new int[0]);
+-                    p_180655_2_.func_175688_a(EnumParticleTypes.FLAME, d0 + d4, d1, d2 - 0.52D, 0.0D, 0.0D, 0.0D, new int[0]);
++                    p_180655_2_.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0 + d4, d1, d2 - 0.52D, 0.0D, 0.0D, 0.0D, new int[0]);
++                    p_180655_2_.spawnParticle(EnumParticleTypes.FLAME, d0 + d4, d1, d2 - 0.52D, 0.0D, 0.0D, 0.0D, new int[0]);
+                     break;
+ 
+                 case SOUTH:
+-                    p_180655_2_.func_175688_a(EnumParticleTypes.SMOKE_NORMAL, d0 + d4, d1, d2 + 0.52D, 0.0D, 0.0D, 0.0D, new int[0]);
+-                    p_180655_2_.func_175688_a(EnumParticleTypes.FLAME, d0 + d4, d1, d2 + 0.52D, 0.0D, 0.0D, 0.0D, new int[0]);
++                    p_180655_2_.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0 + d4, d1, d2 + 0.52D, 0.0D, 0.0D, 0.0D, new int[0]);
++                    p_180655_2_.spawnParticle(EnumParticleTypes.FLAME, d0 + d4, d1, d2 + 0.52D, 0.0D, 0.0D, 0.0D, new int[0]);
+             }
+         }
+     }
+@@ -146,19 +146,19 @@
+ 
+     public static void func_176446_a(boolean p_176446_0_, World p_176446_1_, BlockPos p_176446_2_)
+     {
+-        IBlockState iblockstate = p_176446_1_.func_180495_p(p_176446_2_);
++        IBlockState iblockstate = p_176446_1_.getBlockState(p_176446_2_);
+         TileEntity tileentity = p_176446_1_.func_175625_s(p_176446_2_);
+         field_149934_M = true;
+ 
+         if (p_176446_0_)
+         {
+-            p_176446_1_.func_180501_a(p_176446_2_, Blocks.lit_furnace.func_176223_P().func_177226_a(field_176447_a, iblockstate.func_177229_b(field_176447_a)), 3);
+-            p_176446_1_.func_180501_a(p_176446_2_, Blocks.lit_furnace.func_176223_P().func_177226_a(field_176447_a, iblockstate.func_177229_b(field_176447_a)), 3);
++            p_176446_1_.func_180501_a(p_176446_2_, Blocks.lit_furnace.getBlockState().func_177226_a(field_176447_a, iblockstate.func_177229_b(field_176447_a)), 3);
++            p_176446_1_.func_180501_a(p_176446_2_, Blocks.lit_furnace.getBlockState().func_177226_a(field_176447_a, iblockstate.func_177229_b(field_176447_a)), 3);
+         }
+         else
+         {
+-            p_176446_1_.func_180501_a(p_176446_2_, Blocks.furnace.func_176223_P().func_177226_a(field_176447_a, iblockstate.func_177229_b(field_176447_a)), 3);
+-            p_176446_1_.func_180501_a(p_176446_2_, Blocks.furnace.func_176223_P().func_177226_a(field_176447_a, iblockstate.func_177229_b(field_176447_a)), 3);
++            p_176446_1_.func_180501_a(p_176446_2_, Blocks.furnace.getBlockState().func_177226_a(field_176447_a, iblockstate.func_177229_b(field_176447_a)), 3);
++            p_176446_1_.func_180501_a(p_176446_2_, Blocks.furnace.getBlockState().func_177226_a(field_176447_a, iblockstate.func_177229_b(field_176447_a)), 3);
+         }
+ 
+         field_149934_M = false;
+@@ -180,7 +180,7 @@
+ 
+     public IBlockState func_180642_a(World p_180642_1_, BlockPos p_180642_2_, EnumFacing p_180642_3_, float p_180642_4_, float p_180642_5_, float p_180642_6_, int p_180642_7_, EntityLivingBase p_180642_8_)
+     {
+-        return this.func_176223_P().func_177226_a(field_176447_a, p_180642_8_.func_174811_aO().func_176734_d());
++        return this.getBlockState().func_177226_a(field_176447_a, p_180642_8_.func_174811_aO().func_176734_d());
+     }
+ 
+     public void func_180633_a(World p_180633_1_, BlockPos p_180633_2_, IBlockState p_180633_3_, EntityLivingBase p_180633_4_, ItemStack p_180633_5_)
+@@ -246,7 +246,7 @@
+             enumfacing = EnumFacing.NORTH;
+         }
+ 
+-        return this.func_176223_P().func_177226_a(field_176447_a, enumfacing);
++        return this.getBlockState().func_177226_a(field_176447_a, enumfacing);
+     }
+ 
+     public int func_176201_c(IBlockState p_176201_1_)

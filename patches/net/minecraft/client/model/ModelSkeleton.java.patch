@@ -1,0 +1,20 @@
+--- a/net/minecraft/client/model/ModelSkeleton.java
++++ b/net/minecraft/client/model/ModelSkeleton.java
+@@ -47,7 +47,7 @@
+     {
+         this.field_187076_m = ModelBiped.ArmPose.EMPTY;
+         this.field_187075_l = ModelBiped.ArmPose.EMPTY;
+-        ItemStack itemstack = p_78086_1_.func_184586_b(EnumHand.MAIN_HAND);
++        ItemStack itemstack = p_78086_1_.getItemStackInHand(EnumHand.MAIN_HAND);
+ 
+         if (itemstack != null && itemstack.getItem() == Items.bow && ((EntitySkeleton)p_78086_1_).func_184725_db())
+         {
+@@ -72,7 +72,7 @@
+     public void setRotationAngles(float p_78087_1_, float p_78087_2_, float p_78087_3_, float p_78087_4_, float p_78087_5_, float p_78087_6_, Entity p_78087_7_)
+     {
+         super.setRotationAngles(p_78087_1_, p_78087_2_, p_78087_3_, p_78087_4_, p_78087_5_, p_78087_6_, p_78087_7_);
+-        ItemStack itemstack = ((EntityLivingBase)p_78087_7_).func_184614_ca();
++        ItemStack itemstack = ((EntityLivingBase)p_78087_7_).getMainHandItem();
+         EntitySkeleton entityskeleton = (EntitySkeleton)p_78087_7_;
+ 
+         if (entityskeleton.func_184725_db() && (itemstack == null || itemstack.getItem() != Items.bow))

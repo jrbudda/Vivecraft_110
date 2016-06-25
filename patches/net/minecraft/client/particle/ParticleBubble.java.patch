@@ -1,0 +1,39 @@
+--- a/net/minecraft/client/particle/ParticleBubble.java
++++ b/net/minecraft/client/particle/ParticleBubble.java
+@@ -15,24 +15,24 @@
+         this.setParticleTextureIndex(32);
+         this.func_187115_a(0.02F, 0.02F);
+         this.particleScale *= this.field_187136_p.nextFloat() * 0.6F + 0.2F;
+-        this.field_187129_i = p_i1198_8_ * 0.20000000298023224D + (Math.random() * 2.0D - 1.0D) * 0.019999999552965164D;
+-        this.field_187130_j = p_i1198_10_ * 0.20000000298023224D + (Math.random() * 2.0D - 1.0D) * 0.019999999552965164D;
+-        this.field_187131_k = p_i1198_12_ * 0.20000000298023224D + (Math.random() * 2.0D - 1.0D) * 0.019999999552965164D;
++        this.motionX = p_i1198_8_ * 0.20000000298023224D + (Math.random() * 2.0D - 1.0D) * 0.019999999552965164D;
++        this.motionY = p_i1198_10_ * 0.20000000298023224D + (Math.random() * 2.0D - 1.0D) * 0.019999999552965164D;
++        this.motionZ = p_i1198_12_ * 0.20000000298023224D + (Math.random() * 2.0D - 1.0D) * 0.019999999552965164D;
+         this.particleMaxAge = (int)(8.0D / (Math.random() * 0.8D + 0.2D));
+     }
+ 
+     public void func_189213_a()
+     {
+-        this.field_187123_c = this.field_187126_f;
+-        this.field_187124_d = this.field_187127_g;
+-        this.field_187125_e = this.field_187128_h;
+-        this.field_187130_j += 0.002D;
+-        this.func_187110_a(this.field_187129_i, this.field_187130_j, this.field_187131_k);
+-        this.field_187129_i *= 0.8500000238418579D;
+-        this.field_187130_j *= 0.8500000238418579D;
+-        this.field_187131_k *= 0.8500000238418579D;
++        this.posX = this.prevPosX;
++        this.posY = this.prevPosY;
++        this.posZ = this.prevPosZ;
++        this.motionY += 0.002D;
++        this.func_187110_a(this.motionX, this.motionY, this.motionZ);
++        this.motionX *= 0.8500000238418579D;
++        this.motionY *= 0.8500000238418579D;
++        this.motionZ *= 0.8500000238418579D;
+ 
+-        if (this.field_187122_b.func_180495_p(new BlockPos(this.field_187126_f, this.field_187127_g, this.field_187128_h)).func_185904_a() != Material.water)
++        if (this.field_187122_b.getBlockState(new BlockPos(this.prevPosX, this.prevPosY, this.prevPosZ)).getMaterial() != Material.water)
+         {
+             this.func_187112_i();
+         }

@@ -1,0 +1,78 @@
+--- a/net/minecraft/world/end/DragonFightManager.java
++++ b/net/minecraft/world/end/DragonFightManager.java
+@@ -315,7 +315,7 @@
+                         {
+                             BlockPos blockpos = blockpattern$patternhelper.func_177670_a(3, 3, 4).func_177508_d();
+ 
+-                            if (this.field_186121_o == null && blockpos.func_177958_n() == 0 && blockpos.func_177952_p() == 0)
++                            if (this.field_186121_o == null && blockpos.getX() == 0 && blockpos.getZ() == 0)
+                             {
+                                 this.field_186121_o = blockpos;
+                             }
+@@ -327,11 +327,11 @@
+             }
+         }
+ 
+-        int k = this.field_186110_d.func_175645_m(WorldGenEndPodium.field_186139_a).func_177956_o();
++        int k = this.field_186110_d.func_175645_m(WorldGenEndPodium.field_186139_a).getY();
+ 
+         for (int l = k; l >= 0; --l)
+         {
+-            BlockPattern.PatternHelper blockpattern$patternhelper1 = this.field_186112_f.func_177681_a(this.field_186110_d, new BlockPos(WorldGenEndPodium.field_186139_a.func_177958_n(), l, WorldGenEndPodium.field_186139_a.func_177952_p()));
++            BlockPattern.PatternHelper blockpattern$patternhelper1 = this.field_186112_f.func_177681_a(this.field_186110_d, new BlockPos(WorldGenEndPodium.field_186139_a.getX(), l, WorldGenEndPodium.field_186139_a.getZ()));
+ 
+             if (blockpattern$patternhelper1 != null)
+             {
+@@ -401,7 +401,7 @@
+ 
+             if (!this.field_186118_l)
+             {
+-                this.field_186110_d.func_175656_a(this.field_186110_d.func_175645_m(WorldGenEndPodium.field_186139_a), Blocks.dragon_egg.func_176223_P());
++                this.field_186110_d.func_175656_a(this.field_186110_d.func_175645_m(WorldGenEndPodium.field_186139_a), Blocks.dragon_egg.getBlockState());
+             }
+ 
+             this.field_186118_l = true;
+@@ -432,7 +432,7 @@
+ 
+         if (this.field_186121_o == null)
+         {
+-            for (this.field_186121_o = this.field_186110_d.func_175672_r(WorldGenEndPodium.field_186139_a).func_177977_b(); this.field_186110_d.func_180495_p(this.field_186121_o).func_177230_c() == Blocks.bedrock && this.field_186121_o.func_177956_o() > this.field_186110_d.func_181545_F(); this.field_186121_o = this.field_186121_o.func_177977_b())
++            for (this.field_186121_o = this.field_186110_d.func_175672_r(WorldGenEndPodium.field_186139_a).getBlockPosBelow(); this.field_186110_d.getBlockState(this.field_186121_o).getBlock() == Blocks.bedrock && this.field_186121_o.getY() > this.field_186110_d.getSpawnLevel(); this.field_186121_o = this.field_186121_o.getBlockPosBelow())
+             {
+                 ;
+             }
+@@ -443,7 +443,7 @@
+ 
+     private void func_186098_m()
+     {
+-        this.field_186110_d.func_175726_f(new BlockPos(0, 128, 0));
++        this.field_186110_d.getChunk(new BlockPos(0, 128, 0));
+         EntityDragon entitydragon = new EntityDragon(this.field_186110_d);
+         entitydragon.func_184670_cT().func_188758_a(PhaseList.field_188741_a);
+         entitydragon.setLocationAndAngles(0.0D, 128.0D, 0.0D, this.field_186110_d.rand.nextFloat() * 360.0F, 0.0F);
+@@ -517,11 +517,11 @@
+             }
+ 
+             List<EntityEnderCrystal> list1 = Lists.<EntityEnderCrystal>newArrayList();
+-            BlockPos blockpos1 = blockpos.func_177981_b(1);
++            BlockPos blockpos1 = blockpos.getBlockPosAbove(1);
+ 
+             for (EnumFacing enumfacing : EnumFacing.Plane.HORIZONTAL)
+             {
+-                List<EntityEnderCrystal> list = this.field_186110_d.getEntitiesWithinAABB(EntityEnderCrystal.class, new AxisAlignedBB(blockpos1.func_177967_a(enumfacing, 2)));
++                List<EntityEnderCrystal> list = this.field_186110_d.getEntitiesWithinAABB(EntityEnderCrystal.class, new AxisAlignedBB(blockpos1.getBlockPosRelative(enumfacing, 2)));
+ 
+                 if (list.isEmpty())
+                 {
+@@ -550,9 +550,9 @@
+                         {
+                             BlockWorldState blockworldstate = blockpattern$patternhelper.func_177670_a(i, j, k);
+ 
+-                            if (blockworldstate.func_177509_a().func_177230_c() == Blocks.bedrock || blockworldstate.func_177509_a().func_177230_c() == Blocks.end_portal)
++                            if (blockworldstate.func_177509_a().getBlock() == Blocks.bedrock || blockworldstate.func_177509_a().getBlock() == Blocks.end_portal)
+                             {
+-                                this.field_186110_d.func_175656_a(blockworldstate.func_177508_d(), Blocks.end_stone.func_176223_P());
++                                this.field_186110_d.func_175656_a(blockworldstate.func_177508_d(), Blocks.end_stone.getBlockState());
+                             }
+                         }
+                     }

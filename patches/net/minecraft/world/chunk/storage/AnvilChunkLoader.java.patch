@@ -1,0 +1,15 @@
+--- a/net/minecraft/world/chunk/storage/AnvilChunkLoader.java
++++ b/net/minecraft/world/chunk/storage/AnvilChunkLoader.java
+@@ -354,9 +354,9 @@
+                 NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+                 ResourceLocation resourcelocation = (ResourceLocation)Block.blockRegistry.func_177774_c(nextticklistentry.func_151351_a());
+                 nbttagcompound1.setString("i", resourcelocation == null ? "" : resourcelocation.toString());
+-                nbttagcompound1.setInteger("x", nextticklistentry.field_180282_a.func_177958_n());
+-                nbttagcompound1.setInteger("y", nextticklistentry.field_180282_a.func_177956_o());
+-                nbttagcompound1.setInteger("z", nextticklistentry.field_180282_a.func_177952_p());
++                nbttagcompound1.setInteger("x", nextticklistentry.field_180282_a.getX());
++                nbttagcompound1.setInteger("y", nextticklistentry.field_180282_a.getY());
++                nbttagcompound1.setInteger("z", nextticklistentry.field_180282_a.getZ());
+                 nbttagcompound1.setInteger("t", (int)(nextticklistentry.scheduledTime - j));
+                 nbttagcompound1.setInteger("p", nextticklistentry.priority);
+                 nbttaglist3.appendTag(nbttagcompound1);

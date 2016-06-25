@@ -1,0 +1,63 @@
+--- a/net/minecraft/entity/ai/EntityAIDoorInteract.java
++++ b/net/minecraft/entity/ai/EntityAIDoorInteract.java
+@@ -13,7 +13,7 @@
+ public abstract class EntityAIDoorInteract extends EntityAIBase
+ {
+     protected EntityLiving theEntity;
+-    protected BlockPos field_179507_b = BlockPos.field_177992_a;
++    protected BlockPos field_179507_b = BlockPos.createDefault;
+ 
+     /** The wooden door block */
+     protected BlockDoor doorBlock;
+@@ -56,7 +56,7 @@
+                     PathPoint pathpoint = path.getPathPointFromIndex(i);
+                     this.field_179507_b = new BlockPos(pathpoint.xCoord, pathpoint.yCoord + 1, pathpoint.zCoord);
+ 
+-                    if (this.theEntity.getDistanceSq((double)this.field_179507_b.func_177958_n(), this.theEntity.posY, (double)this.field_179507_b.func_177952_p()) <= 2.25D)
++                    if (this.theEntity.getDistanceSq((double)this.field_179507_b.getX(), this.theEntity.posY, (double)this.field_179507_b.getZ()) <= 2.25D)
+                     {
+                         this.doorBlock = this.func_179506_a(this.field_179507_b);
+ 
+@@ -67,7 +67,7 @@
+                     }
+                 }
+ 
+-                this.field_179507_b = (new BlockPos(this.theEntity)).func_177984_a();
++                this.field_179507_b = (new BlockPos(this.theEntity)).getBlockPosAbove();
+                 this.doorBlock = this.func_179506_a(this.field_179507_b);
+                 return this.doorBlock != null;
+             }
+@@ -92,8 +92,8 @@
+     public void startExecuting()
+     {
+         this.hasStoppedDoorInteraction = false;
+-        this.entityPositionX = (float)((double)((float)this.field_179507_b.func_177958_n() + 0.5F) - this.theEntity.posX);
+-        this.entityPositionZ = (float)((double)((float)this.field_179507_b.func_177952_p() + 0.5F) - this.theEntity.posZ);
++        this.entityPositionX = (float)((double)((float)this.field_179507_b.getX() + 0.5F) - this.theEntity.posX);
++        this.entityPositionZ = (float)((double)((float)this.field_179507_b.getZ() + 0.5F) - this.theEntity.posZ);
+     }
+ 
+     /**
+@@ -101,8 +101,8 @@
+      */
+     public void updateTask()
+     {
+-        float f = (float)((double)((float)this.field_179507_b.func_177958_n() + 0.5F) - this.theEntity.posX);
+-        float f1 = (float)((double)((float)this.field_179507_b.func_177952_p() + 0.5F) - this.theEntity.posZ);
++        float f = (float)((double)((float)this.field_179507_b.getX() + 0.5F) - this.theEntity.posX);
++        float f1 = (float)((double)((float)this.field_179507_b.getZ() + 0.5F) - this.theEntity.posZ);
+         float f2 = this.entityPositionX * f + this.entityPositionZ * f1;
+ 
+         if (f2 < 0.0F)
+@@ -113,8 +113,8 @@
+ 
+     private BlockDoor func_179506_a(BlockPos p_179506_1_)
+     {
+-        IBlockState iblockstate = this.theEntity.worldObj.func_180495_p(p_179506_1_);
+-        Block block = iblockstate.func_177230_c();
+-        return block instanceof BlockDoor && iblockstate.func_185904_a() == Material.wood ? (BlockDoor)block : null;
++        IBlockState iblockstate = this.theEntity.worldObj.getBlockState(p_179506_1_);
++        Block block = iblockstate.getBlock();
++        return block instanceof BlockDoor && iblockstate.getMaterial() == Material.wood ? (BlockDoor)block : null;
+     }
+ }

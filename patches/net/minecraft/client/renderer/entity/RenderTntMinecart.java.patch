@@ -1,0 +1,24 @@
+--- a/net/minecraft/client/renderer/entity/RenderTntMinecart.java
++++ b/net/minecraft/client/renderer/entity/RenderTntMinecart.java
+@@ -26,7 +26,7 @@
+             f = f * f;
+             f = f * f;
+             float f1 = 1.0F + f * 0.3F;
+-            GlStateManager.func_179152_a(f1, f1, f1);
++            GlStateManager.scale(f1, f1, f1);
+         }
+ 
+         super.func_188319_a(p_188319_1_, p_188319_2_, p_188319_3_);
+@@ -39,9 +39,9 @@
+             GlStateManager.func_179147_l();
+             GlStateManager.func_187401_a(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.DST_ALPHA);
+             GlStateManager.func_179131_c(1.0F, 1.0F, 1.0F, (1.0F - ((float)i - p_188319_2_ + 1.0F) / 100.0F) * 0.8F);
+-            GlStateManager.func_179094_E();
+-            blockrendererdispatcher.func_175016_a(Blocks.tnt.func_176223_P(), 1.0F);
+-            GlStateManager.func_179121_F();
++            GlStateManager.push();
++            blockrendererdispatcher.func_175016_a(Blocks.tnt.getBlockState(), 1.0F);
++            GlStateManager.pop();
+             GlStateManager.func_179131_c(1.0F, 1.0F, 1.0F, 1.0F);
+             GlStateManager.func_179084_k();
+             GlStateManager.func_179145_e();

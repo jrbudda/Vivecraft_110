@@ -1,0 +1,14 @@
+--- a/net/minecraft/pathfinding/SwimNodeProcessor.java
++++ b/net/minecraft/pathfinding/SwimNodeProcessor.java
+@@ -65,9 +65,9 @@
+             {
+                 for (int k = p_186327_3_; k < p_186327_3_ + this.field_176166_e; ++k)
+                 {
+-                    IBlockState iblockstate = this.field_176169_a.func_180495_p(blockpos$mutableblockpos.func_181079_c(i, j, k));
++                    IBlockState iblockstate = this.field_176169_a.getBlockState(blockpos$mutableblockpos.func_181079_c(i, j, k));
+ 
+-                    if (iblockstate.func_185904_a() != Material.water)
++                    if (iblockstate.getMaterial() != Material.water)
+                     {
+                         return PathNodeType.BLOCKED;
+                     }

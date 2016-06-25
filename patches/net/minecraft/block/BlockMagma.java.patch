@@ -1,0 +1,24 @@
+--- a/net/minecraft/block/BlockMagma.java
++++ b/net/minecraft/block/BlockMagma.java
+@@ -51,17 +51,17 @@
+ 
+     public void func_180650_b(World p_180650_1_, BlockPos p_180650_2_, IBlockState p_180650_3_, Random p_180650_4_)
+     {
+-        BlockPos blockpos = p_180650_2_.func_177984_a();
+-        IBlockState iblockstate = p_180650_1_.func_180495_p(blockpos);
++        BlockPos blockpos = p_180650_2_.getBlockPosAbove();
++        IBlockState iblockstate = p_180650_1_.getBlockState(blockpos);
+ 
+-        if (iblockstate.func_177230_c() == Blocks.water || iblockstate.func_177230_c() == Blocks.flowing_water)
++        if (iblockstate.getBlock() == Blocks.water || iblockstate.getBlock() == Blocks.flowing_water)
+         {
+             p_180650_1_.func_175698_g(blockpos);
+             p_180650_1_.func_184133_a((EntityPlayer)null, p_180650_2_, SoundEvents.field_187646_bt, SoundCategory.BLOCKS, 0.5F, 2.6F + (p_180650_1_.rand.nextFloat() - p_180650_1_.rand.nextFloat()) * 0.8F);
+ 
+             if (p_180650_1_ instanceof WorldServer)
+             {
+-                ((WorldServer)p_180650_1_).func_175739_a(EnumParticleTypes.SMOKE_LARGE, (double)blockpos.func_177958_n() + 0.5D, (double)blockpos.func_177956_o() + 0.25D, (double)blockpos.func_177952_p() + 0.5D, 8, 0.5D, 0.25D, 0.5D, 0.0D, new int[0]);
++                ((WorldServer)p_180650_1_).func_175739_a(EnumParticleTypes.SMOKE_LARGE, (double)blockpos.getX() + 0.5D, (double)blockpos.getY() + 0.25D, (double)blockpos.getZ() + 0.5D, 8, 0.5D, 0.25D, 0.5D, 0.0D, new int[0]);
+             }
+         }
+     }

@@ -1,0 +1,54 @@
+--- a/net/minecraft/client/gui/GuiSubtitleOverlay.java
++++ b/net/minecraft/client/gui/GuiSubtitleOverlay.java
+@@ -37,12 +37,12 @@
+ 
+         if (this.field_184071_g && !this.field_184070_f.isEmpty())
+         {
+-            GlStateManager.func_179094_E();
++            GlStateManager.push();
+             GlStateManager.func_179147_l();
+             GlStateManager.func_187428_a(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+             Vec3d vec3d = new Vec3d(this.field_184069_a.thePlayer.posX, this.field_184069_a.thePlayer.posY + (double)this.field_184069_a.thePlayer.getEyeHeight(), this.field_184069_a.thePlayer.posZ);
+-            Vec3d vec3d1 = (new Vec3d(0.0D, 0.0D, -1.0D)).func_178789_a(-this.field_184069_a.thePlayer.rotationPitch * 0.017453292F).func_178785_b(-this.field_184069_a.thePlayer.rotationYaw * 0.017453292F);
+-            Vec3d vec3d2 = (new Vec3d(0.0D, 1.0D, 0.0D)).func_178789_a(-this.field_184069_a.thePlayer.rotationPitch * 0.017453292F).func_178785_b(-this.field_184069_a.thePlayer.rotationYaw * 0.017453292F);
++            Vec3d vec3d1 = (new Vec3d(0.0D, 0.0D, -1.0D)).rotateX(-this.field_184069_a.thePlayer.rotationPitch * 0.017453292F).rotateY(-this.field_184069_a.thePlayer.rotationYaw * 0.017453292F);
++            Vec3d vec3d2 = (new Vec3d(0.0D, 1.0D, 0.0D)).rotateX(-this.field_184069_a.thePlayer.rotationPitch * 0.017453292F).rotateY(-this.field_184069_a.thePlayer.rotationYaw * 0.017453292F);
+             Vec3d vec3d3 = vec3d1.crossProduct(vec3d2);
+             int i = 0;
+             int j = 0;
+@@ -68,7 +68,7 @@
+             {
+                 int k = 255;
+                 String s = guisubtitleoverlay$subtitle1.func_186824_a();
+-                Vec3d vec3d4 = guisubtitleoverlay$subtitle1.func_186826_c().func_178788_d(vec3d).normalize();
++                Vec3d vec3d4 = guisubtitleoverlay$subtitle1.func_186826_c().subtractVector(vec3d).normalize();
+                 double d0 = -vec3d3.dotProduct(vec3d4);
+                 double d1 = -vec3d1.dotProduct(vec3d4);
+                 boolean flag = d1 > 0.5D;
+@@ -79,9 +79,9 @@
+                 int k1 = this.field_184069_a.fontRendererObj.getStringWidth(s);
+                 int l1 = MathHelper.floor_double(MathHelper.denormalizeClamp(255.0D, 75.0D, (double)((float)(Minecraft.getSystemTime() - guisubtitleoverlay$subtitle1.func_186825_b()) / 3000.0F)));
+                 int i2 = l1 << 16 | l1 << 8 | l1;
+-                GlStateManager.func_179094_E();
++                GlStateManager.push();
+                 GlStateManager.func_179109_b((float)p_184068_1_.getScaledWidth() - (float)l * 1.0F - 2.0F, (float)(p_184068_1_.getScaledHeight() - 30) - (float)(i * (i1 + 1)) * 1.0F, 0.0F);
+-                GlStateManager.func_179152_a(1.0F, 1.0F, 1.0F);
++                GlStateManager.scale(1.0F, 1.0F, 1.0F);
+                 drawRect(-l - 1, -j1 - 1, l + 1, j1 + 1, -872415232);
+                 GlStateManager.func_179147_l();
+ 
+@@ -98,12 +98,12 @@
+                 }
+ 
+                 this.field_184069_a.fontRendererObj.drawString(s, -k1 / 2, -j1, i2 + -16777216);
+-                GlStateManager.func_179121_F();
++                GlStateManager.pop();
+                 ++i;
+             }
+ 
+             GlStateManager.func_179084_k();
+-            GlStateManager.func_179121_F();
++            GlStateManager.pop();
+         }
+     }
+ 

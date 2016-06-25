@@ -1,0 +1,18 @@
+--- a/net/minecraft/client/shader/Framebuffer.java
++++ b/net/minecraft/client/shader/Framebuffer.java
+@@ -224,11 +224,11 @@
+             GlStateManager.func_179135_a(true, true, true, false);
+             GlStateManager.func_179097_i();
+             GlStateManager.func_179132_a(false);
+-            GlStateManager.func_179128_n(5889);
+-            GlStateManager.func_179096_D();
++            GlStateManager.matrixMode(5889);
++            GlStateManager.loadIdentity();
+             GlStateManager.func_179130_a(0.0D, (double)p_178038_1_, (double)p_178038_2_, 0.0D, 1000.0D, 3000.0D);
+-            GlStateManager.func_179128_n(5888);
+-            GlStateManager.func_179096_D();
++            GlStateManager.matrixMode(5888);
++            GlStateManager.loadIdentity();
+             GlStateManager.func_179109_b(0.0F, 0.0F, -2000.0F);
+             GlStateManager.func_179083_b(0, 0, p_178038_1_, p_178038_2_);
+             GlStateManager.func_179098_w();

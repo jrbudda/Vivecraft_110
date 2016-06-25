@@ -1,0 +1,213 @@
+--- a/net/minecraft/entity/item/EntityMinecart.java
++++ b/net/minecraft/entity/item/EntityMinecart.java
+@@ -279,7 +279,7 @@
+             {
+                 if (minecraftserver.getAllowNether())
+                 {
+-                    if (!this.func_184218_aH() && this.portalCounter++ >= i)
++                    if (!this.isRiding() && this.portalCounter++ >= i)
+                     {
+                         this.portalCounter = i;
+                         this.timeUntilPortal = this.getPortalCooldown();
+@@ -362,13 +362,13 @@
+             }
+ 
+             BlockPos blockpos = new BlockPos(k, l, i1);
+-            IBlockState iblockstate = this.worldObj.func_180495_p(blockpos);
++            IBlockState iblockstate = this.worldObj.getBlockState(blockpos);
+ 
+             if (BlockRailBase.func_176563_d(iblockstate))
+             {
+                 this.func_180460_a(blockpos, iblockstate);
+ 
+-                if (iblockstate.func_177230_c() == Blocks.activator_rail)
++                if (iblockstate.getBlock() == Blocks.activator_rail)
+                 {
+                     this.onActivatorRailPass(k, l, i1, ((Boolean)iblockstate.func_177229_b(BlockRailPowered.field_176569_M)).booleanValue());
+                 }
+@@ -413,7 +413,7 @@
+                     {
+                         Entity entity1 = (Entity)list.get(j1);
+ 
+-                        if (!(entity1 instanceof EntityPlayer) && !(entity1 instanceof EntityIronGolem) && !(entity1 instanceof EntityMinecart) && !this.func_184207_aI() && !entity1.func_184218_aH())
++                        if (!(entity1 instanceof EntityPlayer) && !(entity1 instanceof EntityIronGolem) && !(entity1 instanceof EntityMinecart) && !this.func_184207_aI() && !entity1.isRiding())
+                         {
+                             entity1.func_184220_m(this);
+                         }
+@@ -479,10 +479,10 @@
+     {
+         this.fallDistance = 0.0F;
+         Vec3d vec3d = this.func_70489_a(this.posX, this.posY, this.posZ);
+-        this.posY = (double)p_180460_1_.func_177956_o();
++        this.posY = (double)p_180460_1_.getY();
+         boolean flag = false;
+         boolean flag1 = false;
+-        BlockRailBase blockrailbase = (BlockRailBase)p_180460_2_.func_177230_c();
++        BlockRailBase blockrailbase = (BlockRailBase)p_180460_2_.getBlock();
+ 
+         if (blockrailbase == Blocks.golden_rail)
+         {
+@@ -575,23 +575,23 @@
+             }
+         }
+ 
+-        double d18 = (double)p_180460_1_.func_177958_n() + 0.5D + (double)aint[0][0] * 0.5D;
+-        double d19 = (double)p_180460_1_.func_177952_p() + 0.5D + (double)aint[0][2] * 0.5D;
+-        double d20 = (double)p_180460_1_.func_177958_n() + 0.5D + (double)aint[1][0] * 0.5D;
+-        double d21 = (double)p_180460_1_.func_177952_p() + 0.5D + (double)aint[1][2] * 0.5D;
++        double d18 = (double)p_180460_1_.getX() + 0.5D + (double)aint[0][0] * 0.5D;
++        double d19 = (double)p_180460_1_.getZ() + 0.5D + (double)aint[0][2] * 0.5D;
++        double d20 = (double)p_180460_1_.getX() + 0.5D + (double)aint[1][0] * 0.5D;
++        double d21 = (double)p_180460_1_.getZ() + 0.5D + (double)aint[1][2] * 0.5D;
+         d1 = d20 - d18;
+         d2 = d21 - d19;
+         double d10;
+ 
+         if (d1 == 0.0D)
+         {
+-            this.posX = (double)p_180460_1_.func_177958_n() + 0.5D;
+-            d10 = this.posZ - (double)p_180460_1_.func_177952_p();
++            this.posX = (double)p_180460_1_.getX() + 0.5D;
++            d10 = this.posZ - (double)p_180460_1_.getZ();
+         }
+         else if (d2 == 0.0D)
+         {
+-            this.posZ = (double)p_180460_1_.func_177952_p() + 0.5D;
+-            d10 = this.posX - (double)p_180460_1_.func_177958_n();
++            this.posZ = (double)p_180460_1_.getZ() + 0.5D;
++            d10 = this.posX - (double)p_180460_1_.getX();
+         }
+         else
+         {
+@@ -617,11 +617,11 @@
+         d23 = MathHelper.clamp_double(d23, -d13, d13);
+         this.moveEntity(d22, 0.0D, d23);
+ 
+-        if (aint[0][1] != 0 && MathHelper.floor_double(this.posX) - p_180460_1_.func_177958_n() == aint[0][0] && MathHelper.floor_double(this.posZ) - p_180460_1_.func_177952_p() == aint[0][2])
++        if (aint[0][1] != 0 && MathHelper.floor_double(this.posX) - p_180460_1_.getX() == aint[0][0] && MathHelper.floor_double(this.posZ) - p_180460_1_.getZ() == aint[0][2])
+         {
+             this.setPosition(this.posX, this.posY + (double)aint[0][1], this.posZ);
+         }
+-        else if (aint[1][1] != 0 && MathHelper.floor_double(this.posX) - p_180460_1_.func_177958_n() == aint[1][0] && MathHelper.floor_double(this.posZ) - p_180460_1_.func_177952_p() == aint[1][2])
++        else if (aint[1][1] != 0 && MathHelper.floor_double(this.posX) - p_180460_1_.getX() == aint[1][0] && MathHelper.floor_double(this.posZ) - p_180460_1_.getZ() == aint[1][2])
+         {
+             this.setPosition(this.posX, this.posY + (double)aint[1][1], this.posZ);
+         }
+@@ -646,11 +646,11 @@
+         int j = MathHelper.floor_double(this.posX);
+         int i = MathHelper.floor_double(this.posZ);
+ 
+-        if (j != p_180460_1_.func_177958_n() || i != p_180460_1_.func_177952_p())
++        if (j != p_180460_1_.getX() || i != p_180460_1_.getZ())
+         {
+             d5 = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
+-            this.motionX = d5 * (double)(j - p_180460_1_.func_177958_n());
+-            this.motionZ = d5 * (double)(i - p_180460_1_.func_177952_p());
++            this.motionX = d5 * (double)(j - p_180460_1_.getX());
++            this.motionZ = d5 * (double)(i - p_180460_1_.getZ());
+         }
+ 
+         if (flag)
+@@ -665,22 +665,22 @@
+             }
+             else if (blockrailbase$enumraildirection == BlockRailBase.EnumRailDirection.EAST_WEST)
+             {
+-                if (this.worldObj.func_180495_p(p_180460_1_.func_177976_e()).func_185915_l())
++                if (this.worldObj.getBlockState(p_180460_1_.getBlockPosWest()).func_185915_l())
+                 {
+                     this.motionX = 0.02D;
+                 }
+-                else if (this.worldObj.func_180495_p(p_180460_1_.func_177974_f()).func_185915_l())
++                else if (this.worldObj.getBlockState(p_180460_1_.getBlockPosEast()).func_185915_l())
+                 {
+                     this.motionX = -0.02D;
+                 }
+             }
+             else if (blockrailbase$enumraildirection == BlockRailBase.EnumRailDirection.NORTH_SOUTH)
+             {
+-                if (this.worldObj.func_180495_p(p_180460_1_.func_177978_c()).func_185915_l())
++                if (this.worldObj.getBlockState(p_180460_1_.getBlockPosNorth()).func_185915_l())
+                 {
+                     this.motionZ = 0.02D;
+                 }
+-                else if (this.worldObj.func_180495_p(p_180460_1_.func_177968_d()).func_185915_l())
++                else if (this.worldObj.getBlockState(p_180460_1_.getBlockPosSouth()).func_185915_l())
+                 {
+                     this.motionZ = -0.02D;
+                 }
+@@ -714,7 +714,7 @@
+         this.posZ = z;
+         float f = this.width / 2.0F;
+         float f1 = this.height;
+-        this.func_174826_a(new AxisAlignedBB(x - (double)f, y, z - (double)f, x + (double)f, y + (double)f1, z + (double)f));
++        this.setBoundingBox(new AxisAlignedBB(x - (double)f, y, z - (double)f, x + (double)f, y + (double)f1, z + (double)f));
+     }
+ 
+     public Vec3d func_70495_a(double p_70495_1_, double p_70495_3_, double p_70495_5_, double p_70495_7_)
+@@ -728,11 +728,11 @@
+             --j;
+         }
+ 
+-        IBlockState iblockstate = this.worldObj.func_180495_p(new BlockPos(i, j, k));
++        IBlockState iblockstate = this.worldObj.getBlockState(new BlockPos(i, j, k));
+ 
+         if (BlockRailBase.func_176563_d(iblockstate))
+         {
+-            BlockRailBase.EnumRailDirection blockrailbase$enumraildirection = (BlockRailBase.EnumRailDirection)iblockstate.func_177229_b(((BlockRailBase)iblockstate.func_177230_c()).func_176560_l());
++            BlockRailBase.EnumRailDirection blockrailbase$enumraildirection = (BlockRailBase.EnumRailDirection)iblockstate.func_177229_b(((BlockRailBase)iblockstate.getBlock()).func_176560_l());
+             p_70495_3_ = (double)j;
+ 
+             if (blockrailbase$enumraildirection.func_177018_c())
+@@ -777,11 +777,11 @@
+             --j;
+         }
+ 
+-        IBlockState iblockstate = this.worldObj.func_180495_p(new BlockPos(i, j, k));
++        IBlockState iblockstate = this.worldObj.getBlockState(new BlockPos(i, j, k));
+ 
+         if (BlockRailBase.func_176563_d(iblockstate))
+         {
+-            BlockRailBase.EnumRailDirection blockrailbase$enumraildirection = (BlockRailBase.EnumRailDirection)iblockstate.func_177229_b(((BlockRailBase)iblockstate.func_177230_c()).func_176560_l());
++            BlockRailBase.EnumRailDirection blockrailbase$enumraildirection = (BlockRailBase.EnumRailDirection)iblockstate.func_177229_b(((BlockRailBase)iblockstate.getBlock()).func_176560_l());
+             int[][] aint = matrix[blockrailbase$enumraildirection.func_177015_a()];
+             double d0 = (double)i + 0.5D + (double)aint[0][0] * 0.5D;
+             double d1 = (double)j + 0.0625D + (double)aint[0][1] * 0.5D;
+@@ -834,7 +834,7 @@
+     public AxisAlignedBB func_184177_bl()
+     {
+         AxisAlignedBB axisalignedbb = this.func_174813_aQ();
+-        return this.hasDisplayTile() ? axisalignedbb.func_186662_g((double)Math.abs(this.getDisplayTileOffset()) / 16.0D) : axisalignedbb;
++        return this.hasDisplayTile() ? axisalignedbb.expand((double)Math.abs(this.getDisplayTileOffset()) / 16.0D) : axisalignedbb;
+     }
+ 
+     public static void func_189669_a(DataFixer p_189669_0_, String p_189669_1_)
+@@ -860,7 +860,7 @@
+             }
+ 
+             int i = tagCompund.getInteger("DisplayData");
+-            this.func_174899_a(block == null ? Blocks.air.func_176223_P() : block.func_176203_a(i));
++            this.func_174899_a(block == null ? Blocks.air.getBlockState() : block.func_176203_a(i));
+             this.setDisplayTileOffset(tagCompund.getInteger("DisplayOffset"));
+         }
+     }
+@@ -874,9 +874,9 @@
+         {
+             tagCompound.setBoolean("CustomDisplayTile", true);
+             IBlockState iblockstate = this.func_174897_t();
+-            ResourceLocation resourcelocation = (ResourceLocation)Block.blockRegistry.func_177774_c(iblockstate.func_177230_c());
++            ResourceLocation resourcelocation = (ResourceLocation)Block.blockRegistry.func_177774_c(iblockstate.getBlock());
+             tagCompound.setString("DisplayTile", resourcelocation == null ? "" : resourcelocation.toString());
+-            tagCompound.setInteger("DisplayData", iblockstate.func_177230_c().func_176201_c(iblockstate));
++            tagCompound.setInteger("DisplayData", iblockstate.getBlock().func_176201_c(iblockstate));
+             tagCompound.setInteger("DisplayOffset", this.getDisplayTileOffset());
+         }
+     }
+@@ -1057,7 +1057,7 @@
+ 
+     public IBlockState func_180457_u()
+     {
+-        return Blocks.air.func_176223_P();
++        return Blocks.air.getBlockState();
+     }
+ 
+     public int getDisplayTileOffset()

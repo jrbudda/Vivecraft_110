@@ -1,0 +1,11 @@
+--- a/net/minecraft/util/math/MathHelper.java
++++ b/net/minecraft/util/math/MathHelper.java
+@@ -409,7 +409,7 @@
+ 
+     public static long func_180186_a(Vec3i p_180186_0_)
+     {
+-        return func_180187_c(p_180186_0_.func_177958_n(), p_180186_0_.func_177956_o(), p_180186_0_.func_177952_p());
++        return func_180187_c(p_180186_0_.getX(), p_180186_0_.getY(), p_180186_0_.getZ());
+     }
+ 
+     public static long func_180187_c(int p_180187_0_, int p_180187_1_, int p_180187_2_)

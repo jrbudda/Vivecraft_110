@@ -1,0 +1,29 @@
+--- a/net/minecraft/world/gen/FlatLayerInfo.java
++++ b/net/minecraft/world/gen/FlatLayerInfo.java
+@@ -23,7 +23,7 @@
+         this.layerCount = 1;
+         this.field_175902_a = p_i45627_1_;
+         this.layerCount = p_i45627_2_;
+-        this.field_175901_b = p_i45627_3_.func_176223_P();
++        this.field_175901_b = p_i45627_3_.getBlockState();
+     }
+ 
+     public FlatLayerInfo(int p_i45628_1_, int p_i45628_2_, Block p_i45628_3_, int p_i45628_4_)
+@@ -47,7 +47,7 @@
+ 
+     private Block func_151536_b()
+     {
+-        return this.field_175901_b.func_177230_c();
++        return this.field_175901_b.getBlock();
+     }
+ 
+     /**
+@@ -55,7 +55,7 @@
+      */
+     private int getFillBlockMeta()
+     {
+-        return this.field_175901_b.func_177230_c().func_176201_c(this.field_175901_b);
++        return this.field_175901_b.getBlock().func_176201_c(this.field_175901_b);
+     }
+ 
+     /**

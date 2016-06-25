@@ -1,0 +1,51 @@
+--- a/net/minecraft/block/BlockSponge.java
++++ b/net/minecraft/block/BlockSponge.java
+@@ -79,11 +79,11 @@
+ 
+             for (EnumFacing enumfacing : EnumFacing.values())
+             {
+-                BlockPos blockpos1 = blockpos.func_177972_a(enumfacing);
++                BlockPos blockpos1 = blockpos.getBlockPosRelative(enumfacing);
+ 
+-                if (p_176312_1_.func_180495_p(blockpos1).func_185904_a() == Material.water)
++                if (p_176312_1_.getBlockState(blockpos1).getMaterial() == Material.water)
+                 {
+-                    p_176312_1_.func_180501_a(blockpos1, Blocks.air.func_176223_P(), 2);
++                    p_176312_1_.func_180501_a(blockpos1, Blocks.air.getBlockState(), 2);
+                     list.add(blockpos1);
+                     ++i;
+ 
+@@ -119,7 +119,7 @@
+ 
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        return this.func_176223_P().func_177226_a(field_176313_a, Boolean.valueOf((p_176203_1_ & 1) == 1));
++        return this.getBlockState().func_177226_a(field_176313_a, Boolean.valueOf((p_176203_1_ & 1) == 1));
+     }
+ 
+     public int func_176201_c(IBlockState p_176201_1_)
+@@ -138,11 +138,11 @@
+         {
+             EnumFacing enumfacing = EnumFacing.func_176741_a(p_180655_4_);
+ 
+-            if (enumfacing != EnumFacing.UP && !p_180655_2_.func_180495_p(p_180655_3_.func_177972_a(enumfacing)).func_185896_q())
++            if (enumfacing != EnumFacing.UP && !p_180655_2_.getBlockState(p_180655_3_.getBlockPosRelative(enumfacing)).func_185896_q())
+             {
+-                double d0 = (double)p_180655_3_.func_177958_n();
+-                double d1 = (double)p_180655_3_.func_177956_o();
+-                double d2 = (double)p_180655_3_.func_177952_p();
++                double d0 = (double)p_180655_3_.getX();
++                double d1 = (double)p_180655_3_.getY();
++                double d2 = (double)p_180655_3_.getZ();
+ 
+                 if (enumfacing == EnumFacing.DOWN)
+                 {
+@@ -182,7 +182,7 @@
+                     }
+                 }
+ 
+-                p_180655_2_.func_175688_a(EnumParticleTypes.DRIP_WATER, d0, d1, d2, 0.0D, 0.0D, 0.0D, new int[0]);
++                p_180655_2_.spawnParticle(EnumParticleTypes.DRIP_WATER, d0, d1, d2, 0.0D, 0.0D, 0.0D, new int[0]);
+             }
+         }
+     }

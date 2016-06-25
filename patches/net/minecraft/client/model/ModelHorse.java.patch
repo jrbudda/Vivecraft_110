@@ -1,0 +1,49 @@
+--- a/net/minecraft/client/model/ModelHorse.java
++++ b/net/minecraft/client/model/ModelHorse.java
+@@ -242,8 +242,8 @@
+ 
+         if (!flag)
+         {
+-            GlStateManager.func_179094_E();
+-            GlStateManager.func_179152_a(f1, 0.5F + f1 * 0.5F, f1);
++            GlStateManager.push();
++            GlStateManager.scale(f1, 0.5F + f1 * 0.5F, f1);
+             GlStateManager.func_179109_b(0.0F, 0.95F * (1.0F - f1), 0.0F);
+         }
+ 
+@@ -262,9 +262,9 @@
+ 
+         if (!flag)
+         {
+-            GlStateManager.func_179121_F();
+-            GlStateManager.func_179094_E();
+-            GlStateManager.func_179152_a(f1, f1, f1);
++            GlStateManager.pop();
++            GlStateManager.push();
++            GlStateManager.scale(f1, f1, f1);
+             GlStateManager.func_179109_b(0.0F, 1.35F * (1.0F - f1), 0.0F);
+         }
+ 
+@@ -277,10 +277,10 @@
+ 
+         if (!flag)
+         {
+-            GlStateManager.func_179121_F();
+-            GlStateManager.func_179094_E();
++            GlStateManager.pop();
++            GlStateManager.push();
+             float f2 = 0.5F + f1 * f1 * 0.5F;
+-            GlStateManager.func_179152_a(f2, f2, f2);
++            GlStateManager.scale(f2, f2, f2);
+ 
+             if (f <= 0.0F)
+             {
+@@ -307,7 +307,7 @@
+ 
+         if (!flag)
+         {
+-            GlStateManager.func_179121_F();
++            GlStateManager.pop();
+         }
+ 
+         if (flag2)

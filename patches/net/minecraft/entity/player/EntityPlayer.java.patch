@@ -1,0 +1,527 @@
+--- a/net/minecraft/entity/player/EntityPlayer.java
++++ b/net/minecraft/entity/player/EntityPlayer.java
+@@ -202,7 +202,7 @@
+         this.inventoryContainer = new ContainerPlayer(this.inventory, !p_i45324_1_.isRemote, this);
+         this.openContainer = this.inventoryContainer;
+         BlockPos blockpos = p_i45324_1_.func_175694_M();
+-        this.setLocationAndAngles((double)blockpos.func_177958_n() + 0.5D, (double)(blockpos.func_177956_o() + 1), (double)blockpos.func_177952_p() + 0.5D, 0.0F, 0.0F);
++        this.setLocationAndAngles((double)blockpos.getX() + 0.5D, (double)(blockpos.getY() + 1), (double)blockpos.getZ() + 0.5D, 0.0F, 0.0F);
+         this.field_70741_aB = 180.0F;
+         this.fireResistance = 20;
+     }
+@@ -288,7 +288,7 @@
+ 
+         this.func_184820_o();
+ 
+-        if (!this.func_184218_aH())
++        if (!this.isRiding())
+         {
+             this.startMinecartRidingCoordinate = null;
+         }
+@@ -319,7 +319,7 @@
+         }
+ 
+         ++this.field_184617_aD;
+-        ItemStack itemstack = this.func_184614_ca();
++        ItemStack itemstack = this.getMainHandItem();
+ 
+         if (!ItemStack.areItemStacksEqual(this.field_184831_bT, itemstack))
+         {
+@@ -432,12 +432,12 @@
+         return this.capabilities.disableDamage ? 1 : 80;
+     }
+ 
+-    protected SoundEvent func_184184_Z()
++    protected SoundEvent getStepSound()
+     {
+         return SoundEvents.field_187808_ef;
+     }
+ 
+-    protected SoundEvent func_184181_aa()
++    protected SoundEvent getSplashSound()
+     {
+         return SoundEvents.field_187806_ee;
+     }
+@@ -450,9 +450,9 @@
+         return 10;
+     }
+ 
+-    public void func_184185_a(SoundEvent p_184185_1_, float p_184185_2_, float p_184185_3_)
++    public void playSound(SoundEvent p_184185_1_, float p_184185_2_, float p_184185_3_)
+     {
+-        this.worldObj.func_184148_a(this, this.posX, this.posY, this.posZ, p_184185_1_, this.func_184176_by(), p_184185_2_, p_184185_3_);
++        this.worldObj.playSound(this, this.posX, this.posY, this.posZ, p_184185_1_, this.func_184176_by(), p_184185_2_, p_184185_3_);
+     }
+ 
+     public SoundCategory func_184176_by()
+@@ -501,9 +501,9 @@
+      */
+     public void updateRidden()
+     {
+-        if (!this.worldObj.isRemote && this.isSneaking() && this.func_184218_aH())
++        if (!this.worldObj.isRemote && this.isSneaking() && this.isRiding())
+         {
+-            this.func_184210_p();
++            this.dismount();
+             this.setSneaking(false);
+         }
+         else
+@@ -518,11 +518,11 @@
+             this.cameraYaw = 0.0F;
+             this.addMountedMovementStat(this.posX - d0, this.posY - d1, this.posZ - d2);
+ 
+-            if (this.func_184187_bx() instanceof EntityPig)
++            if (this.getRidingEntity() instanceof EntityPig)
+             {
+                 this.rotationPitch = f1;
+                 this.rotationYaw = f;
+-                this.renderYawOffset = ((EntityPig)this.func_184187_bx()).renderYawOffset;
++                this.renderYawOffset = ((EntityPig)this.getRidingEntity()).renderYawOffset;
+             }
+         }
+     }
+@@ -613,9 +613,9 @@
+         {
+             AxisAlignedBB axisalignedbb;
+ 
+-            if (this.func_184218_aH() && !this.func_184187_bx().isDead)
++            if (this.isRiding() && !this.getRidingEntity().isDead)
+             {
+-                axisalignedbb = this.func_174813_aQ().union(this.func_184187_bx().func_174813_aQ()).expand(1.0D, 0.0D, 1.0D);
++                axisalignedbb = this.func_174813_aQ().union(this.getRidingEntity().func_174813_aQ()).expand(1.0D, 0.0D, 1.0D);
+             }
+             else
+             {
+@@ -865,7 +865,7 @@
+         if (f > 1.0F)
+         {
+             int i = EnchantmentHelper.func_185293_e(this);
+-            ItemStack itemstack = this.func_184614_ca();
++            ItemStack itemstack = this.getMainHandItem();
+ 
+             if (i > 0 && itemstack != null)
+             {
+@@ -917,9 +917,9 @@
+         return f;
+     }
+ 
+-    public boolean func_184823_b(IBlockState p_184823_1_)
++    public boolean canHarvest(IBlockState p_184823_1_)
+     {
+-        return this.inventory.func_184432_b(p_184823_1_);
++        return this.inventory.canHarvest(p_184823_1_);
+     }
+ 
+     public static void func_189806_a(DataFixer p_189806_0_)
+@@ -1000,9 +1000,9 @@
+ 
+         if (this.spawnChunk != null)
+         {
+-            tagCompound.setInteger("SpawnX", this.spawnChunk.func_177958_n());
+-            tagCompound.setInteger("SpawnY", this.spawnChunk.func_177956_o());
+-            tagCompound.setInteger("SpawnZ", this.spawnChunk.func_177952_p());
++            tagCompound.setInteger("SpawnX", this.spawnChunk.getX());
++            tagCompound.setInteger("SpawnY", this.spawnChunk.getY());
++            tagCompound.setInteger("SpawnZ", this.spawnChunk.getZ());
+             tagCompound.setBoolean("SpawnForced", this.spawnForced);
+         }
+ 
+@@ -1087,15 +1087,15 @@
+ 
+                 if (enumhand == EnumHand.MAIN_HAND)
+                 {
+-                    this.func_184201_a(EntityEquipmentSlot.MAINHAND, (ItemStack)null);
++                    this.equipItemInSlot(EntityEquipmentSlot.MAINHAND, (ItemStack)null);
+                 }
+                 else
+                 {
+-                    this.func_184201_a(EntityEquipmentSlot.OFFHAND, (ItemStack)null);
++                    this.equipItemInSlot(EntityEquipmentSlot.OFFHAND, (ItemStack)null);
+                 }
+ 
+                 this.field_184627_bm = null;
+-                this.func_184185_a(SoundEvents.field_187769_eM, 0.8F, 0.8F + this.worldObj.rand.nextFloat() * 0.4F);
++                this.playSound(SoundEvents.field_187769_eM, 0.8F, 0.8F + this.worldObj.rand.nextFloat() * 0.4F);
+             }
+         }
+     }
+@@ -1187,7 +1187,7 @@
+     {
+     }
+ 
+-    public EnumActionResult func_184822_a(Entity p_184822_1_, @Nullable ItemStack p_184822_2_, EnumHand p_184822_3_)
++    public EnumActionResult interactWith(Entity p_184822_1_, @Nullable ItemStack p_184822_2_, EnumHand p_184822_3_)
+     {
+         if (this.func_175149_v())
+         {
+@@ -1215,7 +1215,7 @@
+                     {
+                         if (p_184822_2_.stackSize <= 0 && !this.capabilities.isCreativeMode)
+                         {
+-                            this.func_184611_a(p_184822_3_, (ItemStack)null);
++                            this.equipItemInHand(p_184822_3_, (ItemStack)null);
+                         }
+ 
+                         return EnumActionResult.SUCCESS;
+@@ -1226,11 +1226,11 @@
+             }
+             else
+             {
+-                if (p_184822_2_ != null && p_184822_2_ == this.func_184586_b(p_184822_3_))
++                if (p_184822_2_ != null && p_184822_2_ == this.getItemStackInHand(p_184822_3_))
+                 {
+                     if (p_184822_2_.stackSize <= 0 && !this.capabilities.isCreativeMode)
+                     {
+-                        this.func_184611_a(p_184822_3_, (ItemStack)null);
++                        this.equipItemInHand(p_184822_3_, (ItemStack)null);
+                     }
+                     else if (p_184822_2_.stackSize < itemstack.stackSize && this.capabilities.isCreativeMode)
+                     {
+@@ -1251,9 +1251,9 @@
+         return -0.35D;
+     }
+ 
+-    public void func_184210_p()
++    public void dismount()
+     {
+-        super.func_184210_p();
++        super.dismount();
+         this.field_184245_j = 0;
+     }
+ 
+@@ -1272,11 +1272,11 @@
+ 
+                 if (targetEntity instanceof EntityLivingBase)
+                 {
+-                    f1 = EnchantmentHelper.func_152377_a(this.func_184614_ca(), ((EntityLivingBase)targetEntity).getCreatureAttribute());
++                    f1 = EnchantmentHelper.func_152377_a(this.getMainHandItem(), ((EntityLivingBase)targetEntity).getCreatureAttribute());
+                 }
+                 else
+                 {
+-                    f1 = EnchantmentHelper.func_152377_a(this.func_184614_ca(), EnumCreatureAttribute.UNDEFINED);
++                    f1 = EnchantmentHelper.func_152377_a(this.getMainHandItem(), EnumCreatureAttribute.UNDEFINED);
+                 }
+ 
+                 float f2 = this.func_184825_o(0.5F);
+@@ -1293,12 +1293,12 @@
+ 
+                     if (this.isSprinting() && flag)
+                     {
+-                        this.worldObj.func_184148_a((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.field_187721_dT, this.func_184176_by(), 1.0F, 1.0F);
++                        this.worldObj.playSound((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.field_187721_dT, this.func_184176_by(), 1.0F, 1.0F);
+                         ++i;
+                         flag1 = true;
+                     }
+ 
+-                    boolean flag2 = flag && this.fallDistance > 0.0F && !this.onGround && !this.isOnLadder() && !this.isInWater() && !this.isPotionActive(MobEffects.blindness) && !this.func_184218_aH() && targetEntity instanceof EntityLivingBase;
++                    boolean flag2 = flag && this.fallDistance > 0.0F && !this.onGround && !this.isOnLadder() && !this.isInWater() && !this.isPotionActive(MobEffects.blindness) && !this.isRiding() && targetEntity instanceof EntityLivingBase;
+                     flag2 = flag2 && !this.isSprinting();
+ 
+                     if (flag2)
+@@ -1312,7 +1312,7 @@
+ 
+                     if (flag && !flag2 && !flag1 && this.onGround && d0 < (double)this.getAIMoveSpeed())
+                     {
+-                        ItemStack itemstack = this.func_184586_b(EnumHand.MAIN_HAND);
++                        ItemStack itemstack = this.getItemStackInHand(EnumHand.MAIN_HAND);
+ 
+                         if (itemstack != null && itemstack.getItem() instanceof ItemSword)
+                         {
+@@ -1369,7 +1369,7 @@
+                                 }
+                             }
+ 
+-                            this.worldObj.func_184148_a((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.field_187730_dW, this.func_184176_by(), 1.0F, 1.0F);
++                            this.worldObj.playSound((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.field_187730_dW, this.func_184176_by(), 1.0F, 1.0F);
+                             this.func_184810_cG();
+                         }
+ 
+@@ -1384,7 +1384,7 @@
+ 
+                         if (flag2)
+                         {
+-                            this.worldObj.func_184148_a((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.field_187718_dS, this.func_184176_by(), 1.0F, 1.0F);
++                            this.worldObj.playSound((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.field_187718_dS, this.func_184176_by(), 1.0F, 1.0F);
+                             this.onCriticalHit(targetEntity);
+                         }
+ 
+@@ -1392,11 +1392,11 @@
+                         {
+                             if (flag)
+                             {
+-                                this.worldObj.func_184148_a((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.field_187727_dV, this.func_184176_by(), 1.0F, 1.0F);
++                                this.worldObj.playSound((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.field_187727_dV, this.func_184176_by(), 1.0F, 1.0F);
+                             }
+                             else
+                             {
+-                                this.worldObj.func_184148_a((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.field_187733_dX, this.func_184176_by(), 1.0F, 1.0F);
++                                this.worldObj.playSound((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.field_187733_dX, this.func_184176_by(), 1.0F, 1.0F);
+                             }
+                         }
+ 
+@@ -1408,7 +1408,7 @@
+                         if (!this.worldObj.isRemote && targetEntity instanceof EntityPlayer)
+                         {
+                             EntityPlayer entityplayer = (EntityPlayer)targetEntity;
+-                            ItemStack itemstack2 = this.func_184614_ca();
++                            ItemStack itemstack2 = this.getMainHandItem();
+                             ItemStack itemstack3 = entityplayer.func_184587_cr() ? entityplayer.func_184607_cu() : null;
+ 
+                             if (itemstack2 != null && itemstack3 != null && itemstack2.getItem() instanceof ItemAxe && itemstack3.getItem() == Items.field_185159_cQ)
+@@ -1441,7 +1441,7 @@
+                         }
+ 
+                         EnchantmentHelper.func_151385_b(this, targetEntity);
+-                        ItemStack itemstack1 = this.func_184614_ca();
++                        ItemStack itemstack1 = this.getMainHandItem();
+                         Entity entity = targetEntity;
+ 
+                         if (targetEntity instanceof EntityDragonPart)
+@@ -1460,7 +1460,7 @@
+ 
+                             if (itemstack1.stackSize <= 0)
+                             {
+-                                this.func_184611_a(EnumHand.MAIN_HAND, (ItemStack)null);
++                                this.equipItemInHand(EnumHand.MAIN_HAND, (ItemStack)null);
+                             }
+                         }
+ 
+@@ -1485,7 +1485,7 @@
+                     }
+                     else
+                     {
+-                        this.worldObj.func_184148_a((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.field_187724_dU, this.func_184176_by(), 1.0F, 1.0F);
++                        this.worldObj.playSound((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.field_187724_dU, this.func_184176_by(), 1.0F, 1.0F);
+ 
+                         if (flag4)
+                         {
+@@ -1577,14 +1577,14 @@
+                 return EntityPlayer.SleepResult.NOT_POSSIBLE_NOW;
+             }
+ 
+-            if (Math.abs(this.posX - (double)p_180469_1_.func_177958_n()) > 3.0D || Math.abs(this.posY - (double)p_180469_1_.func_177956_o()) > 2.0D || Math.abs(this.posZ - (double)p_180469_1_.func_177952_p()) > 3.0D)
++            if (Math.abs(this.posX - (double)p_180469_1_.getX()) > 3.0D || Math.abs(this.posY - (double)p_180469_1_.getY()) > 2.0D || Math.abs(this.posZ - (double)p_180469_1_.getZ()) > 3.0D)
+             {
+                 return EntityPlayer.SleepResult.TOO_FAR_AWAY;
+             }
+ 
+             double d0 = 8.0D;
+             double d1 = 5.0D;
+-            List<EntityMob> list = this.worldObj.<EntityMob>getEntitiesWithinAABB(EntityMob.class, new AxisAlignedBB((double)p_180469_1_.func_177958_n() - 8.0D, (double)p_180469_1_.func_177956_o() - 5.0D, (double)p_180469_1_.func_177952_p() - 8.0D, (double)p_180469_1_.func_177958_n() + 8.0D, (double)p_180469_1_.func_177956_o() + 5.0D, (double)p_180469_1_.func_177952_p() + 8.0D));
++            List<EntityMob> list = this.worldObj.<EntityMob>getEntitiesWithinAABB(EntityMob.class, new AxisAlignedBB((double)p_180469_1_.getX() - 8.0D, (double)p_180469_1_.getY() - 5.0D, (double)p_180469_1_.getZ() - 8.0D, (double)p_180469_1_.getX() + 8.0D, (double)p_180469_1_.getY() + 5.0D, (double)p_180469_1_.getZ() + 8.0D));
+ 
+             if (!list.isEmpty())
+             {
+@@ -1592,16 +1592,16 @@
+             }
+         }
+ 
+-        if (this.func_184218_aH())
++        if (this.isRiding())
+         {
+-            this.func_184210_p();
++            this.dismount();
+         }
+ 
+         this.setSize(0.2F, 0.2F);
+ 
+         if (this.worldObj.func_175667_e(p_180469_1_))
+         {
+-            EnumFacing enumfacing = (EnumFacing)this.worldObj.func_180495_p(p_180469_1_).func_177229_b(BlockHorizontal.field_185512_D);
++            EnumFacing enumfacing = (EnumFacing)this.worldObj.getBlockState(p_180469_1_).func_177229_b(BlockHorizontal.field_185512_D);
+             float f = 0.5F;
+             float f1 = 0.5F;
+ 
+@@ -1624,11 +1624,11 @@
+             }
+ 
+             this.func_175139_a(enumfacing);
+-            this.setPosition((double)((float)p_180469_1_.func_177958_n() + f), (double)((float)p_180469_1_.func_177956_o() + 0.6875F), (double)((float)p_180469_1_.func_177952_p() + f1));
++            this.setPosition((double)((float)p_180469_1_.getX() + f), (double)((float)p_180469_1_.getY() + 0.6875F), (double)((float)p_180469_1_.getZ() + f1));
+         }
+         else
+         {
+-            this.setPosition((double)((float)p_180469_1_.func_177958_n() + 0.5F), (double)((float)p_180469_1_.func_177956_o() + 0.6875F), (double)((float)p_180469_1_.func_177952_p() + 0.5F));
++            this.setPosition((double)((float)p_180469_1_.getX() + 0.5F), (double)((float)p_180469_1_.getY() + 0.6875F), (double)((float)p_180469_1_.getZ() + 0.5F));
+         }
+ 
+         this.sleeping = true;
+@@ -1679,19 +1679,19 @@
+     public void wakeUpPlayer(boolean p_70999_1_, boolean updateWorldFlag, boolean setSpawn)
+     {
+         this.setSize(0.6F, 1.8F);
+-        IBlockState iblockstate = this.worldObj.func_180495_p(this.playerLocation);
++        IBlockState iblockstate = this.worldObj.getBlockState(this.playerLocation);
+ 
+-        if (this.playerLocation != null && iblockstate.func_177230_c() == Blocks.bed)
++        if (this.playerLocation != null && iblockstate.getBlock() == Blocks.bed)
+         {
+             this.worldObj.func_180501_a(this.playerLocation, iblockstate.func_177226_a(BlockBed.field_176471_b, Boolean.valueOf(false)), 4);
+             BlockPos blockpos = BlockBed.func_176468_a(this.worldObj, this.playerLocation, 0);
+ 
+             if (blockpos == null)
+             {
+-                blockpos = this.playerLocation.func_177984_a();
++                blockpos = this.playerLocation.getBlockPosAbove();
+             }
+ 
+-            this.setPosition((double)((float)blockpos.func_177958_n() + 0.5F), (double)((float)blockpos.func_177956_o() + 0.1F), (double)((float)blockpos.func_177952_p() + 0.5F));
++            this.setPosition((double)((float)blockpos.getX() + 0.5F), (double)((float)blockpos.getY() + 0.1F), (double)((float)blockpos.getZ() + 0.5F));
+         }
+ 
+         this.sleeping = false;
+@@ -1711,13 +1711,13 @@
+ 
+     private boolean func_175143_p()
+     {
+-        return this.worldObj.func_180495_p(this.playerLocation).func_177230_c() == Blocks.bed;
++        return this.worldObj.getBlockState(this.playerLocation).getBlock() == Blocks.bed;
+     }
+ 
+     @Nullable
+     public static BlockPos func_180467_a(World p_180467_0_, BlockPos p_180467_1_, boolean p_180467_2_)
+     {
+-        Block block = p_180467_0_.func_180495_p(p_180467_1_).func_177230_c();
++        Block block = p_180467_0_.getBlockState(p_180467_1_).getBlock();
+ 
+         if (block != Blocks.bed)
+         {
+@@ -1728,7 +1728,7 @@
+             else
+             {
+                 boolean flag = block.func_181623_g();
+-                boolean flag1 = p_180467_0_.func_180495_p(p_180467_1_.func_177984_a()).func_177230_c().func_181623_g();
++                boolean flag1 = p_180467_0_.getBlockState(p_180467_1_.getBlockPosAbove()).getBlock().func_181623_g();
+                 return flag && flag1 ? p_180467_1_ : null;
+             }
+         }
+@@ -1745,7 +1745,7 @@
+     {
+         if (this.playerLocation != null)
+         {
+-            EnumFacing enumfacing = (EnumFacing)this.worldObj.func_180495_p(this.playerLocation).func_177229_b(BlockHorizontal.field_185512_D);
++            EnumFacing enumfacing = (EnumFacing)this.worldObj.getBlockState(this.playerLocation).func_177229_b(BlockHorizontal.field_185512_D);
+ 
+             switch (enumfacing)
+             {
+@@ -1866,7 +1866,7 @@
+         double d1 = this.posY;
+         double d2 = this.posZ;
+ 
+-        if (this.capabilities.isFlying && !this.func_184218_aH())
++        if (this.capabilities.isFlying && !this.isRiding())
+         {
+             double d3 = this.motionY;
+             float f = this.jumpMovementFactor;
+@@ -1898,7 +1898,7 @@
+      */
+     public void addMovementStat(double p_71000_1_, double p_71000_3_, double p_71000_5_)
+     {
+-        if (!this.func_184218_aH())
++        if (!this.isRiding())
+         {
+             if (this.isInsideOfMaterial(Material.water))
+             {
+@@ -1972,13 +1972,13 @@
+      */
+     private void addMountedMovementStat(double p_71015_1_, double p_71015_3_, double p_71015_5_)
+     {
+-        if (this.func_184218_aH())
++        if (this.isRiding())
+         {
+             int i = Math.round(MathHelper.sqrt_double(p_71015_1_ * p_71015_1_ + p_71015_3_ * p_71015_3_ + p_71015_5_ * p_71015_5_) * 100.0F);
+ 
+             if (i > 0)
+             {
+-                if (this.func_184187_bx() instanceof EntityMinecart)
++                if (this.getRidingEntity() instanceof EntityMinecart)
+                 {
+                     this.addStat(StatList.field_188106_r, i);
+ 
+@@ -1991,15 +1991,15 @@
+                         this.triggerAchievement(AchievementList.field_187990_q);
+                     }
+                 }
+-                else if (this.func_184187_bx() instanceof EntityBoat)
++                else if (this.getRidingEntity() instanceof EntityBoat)
+                 {
+                     this.addStat(StatList.field_188107_s, i);
+                 }
+-                else if (this.func_184187_bx() instanceof EntityPig)
++                else if (this.getRidingEntity() instanceof EntityPig)
+                 {
+                     this.addStat(StatList.field_188108_t, i);
+                 }
+-                else if (this.func_184187_bx() instanceof EntityHorse)
++                else if (this.getRidingEntity() instanceof EntityHorse)
+                 {
+                     this.addStat(StatList.field_188109_u, i);
+                 }
+@@ -2123,7 +2123,7 @@
+         if (p_82242_1_ > 0 && this.experienceLevel % 5 == 0 && (float)this.field_82249_h < (float)this.ticksExisted - 100.0F)
+         {
+             float f = this.experienceLevel > 30 ? 1.0F : (float)this.experienceLevel / 30.0F;
+-            this.worldObj.func_184148_a((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.field_187802_ec, this.func_184176_by(), f * 0.75F, 1.0F);
++            this.worldObj.playSound((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.field_187802_ec, this.func_184176_by(), f * 0.75F, 1.0F);
+             this.field_82249_h = this.ticksExisted;
+         }
+     }
+@@ -2189,8 +2189,8 @@
+         }
+         else
+         {
+-            BlockPos blockpos = p_175151_1_.func_177972_a(p_175151_2_.func_176734_d());
+-            Block block = this.worldObj.func_180495_p(blockpos).func_177230_c();
++            BlockPos blockpos = p_175151_1_.getBlockPosRelative(p_175151_2_.func_176734_d());
++            Block block = this.worldObj.getBlockState(blockpos).getBlock();
+             return p_175151_3_.func_179547_d(block) || p_175151_3_.canEditBlocks();
+         }
+     }
+@@ -2297,12 +2297,12 @@
+     }
+ 
+     @Nullable
+-    public ItemStack func_184582_a(EntityEquipmentSlot p_184582_1_)
++    public ItemStack getEquippedItemStack(EntityEquipmentSlot p_184582_1_)
+     {
+         return p_184582_1_ == EntityEquipmentSlot.MAINHAND ? this.inventory.getCurrentItem() : (p_184582_1_ == EntityEquipmentSlot.OFFHAND ? this.inventory.field_184439_c[0] : (p_184582_1_.func_188453_a() == EntityEquipmentSlot.Type.ARMOR ? this.inventory.armorInventory[p_184582_1_.func_188454_b()] : null));
+     }
+ 
+-    public void func_184201_a(EntityEquipmentSlot p_184201_1_, @Nullable ItemStack p_184201_2_)
++    public void equipItemInSlot(EntityEquipmentSlot p_184201_1_, @Nullable ItemStack p_184201_2_)
+     {
+         if (p_184201_1_ == EntityEquipmentSlot.MAINHAND)
+         {
+@@ -2323,7 +2323,7 @@
+ 
+     public Iterable<ItemStack> func_184214_aD()
+     {
+-        return Lists.newArrayList(new ItemStack[] {this.func_184614_ca(), this.func_184592_cb()});
++        return Lists.newArrayList(new ItemStack[] {this.getMainHandItem(), this.getOffhandItem()});
+     }
+ 
+     public Iterable<ItemStack> func_184193_aE()
+@@ -2447,7 +2447,7 @@
+         }
+         else
+         {
+-            ItemStack itemstack = this.func_184614_ca();
++            ItemStack itemstack = this.getMainHandItem();
+             return itemstack != null && itemstack.hasDisplayName() ? itemstack.getDisplayName().equals(p_175146_1_.func_180159_b()) : false;
+         }
+     }
+@@ -2496,12 +2496,12 @@
+ 
+             if (p_174820_1_ == 98)
+             {
+-                this.func_184201_a(EntityEquipmentSlot.MAINHAND, p_174820_2_);
++                this.equipItemInSlot(EntityEquipmentSlot.MAINHAND, p_174820_2_);
+                 return true;
+             }
+             else if (p_174820_1_ == 99)
+             {
+-                this.func_184201_a(EntityEquipmentSlot.OFFHAND, p_174820_2_);
++                this.equipItemInSlot(EntityEquipmentSlot.OFFHAND, p_174820_2_);
+                 return true;
+             }
+             else if (entityequipmentslot == null)

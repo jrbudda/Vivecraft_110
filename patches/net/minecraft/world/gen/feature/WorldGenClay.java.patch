@@ -1,0 +1,42 @@
+--- a/net/minecraft/world/gen/feature/WorldGenClay.java
++++ b/net/minecraft/world/gen/feature/WorldGenClay.java
+@@ -21,7 +21,7 @@
+ 
+     public boolean func_180709_b(World p_180709_1_, Random p_180709_2_, BlockPos p_180709_3_)
+     {
+-        if (p_180709_1_.func_180495_p(p_180709_3_).func_185904_a() != Material.water)
++        if (p_180709_1_.getBlockState(p_180709_3_).getMaterial() != Material.water)
+         {
+             return false;
+         }
+@@ -30,23 +30,23 @@
+             int i = p_180709_2_.nextInt(this.numberOfBlocks - 2) + 2;
+             int j = 1;
+ 
+-            for (int k = p_180709_3_.func_177958_n() - i; k <= p_180709_3_.func_177958_n() + i; ++k)
++            for (int k = p_180709_3_.getX() - i; k <= p_180709_3_.getX() + i; ++k)
+             {
+-                for (int l = p_180709_3_.func_177952_p() - i; l <= p_180709_3_.func_177952_p() + i; ++l)
++                for (int l = p_180709_3_.getZ() - i; l <= p_180709_3_.getZ() + i; ++l)
+                 {
+-                    int i1 = k - p_180709_3_.func_177958_n();
+-                    int j1 = l - p_180709_3_.func_177952_p();
++                    int i1 = k - p_180709_3_.getX();
++                    int j1 = l - p_180709_3_.getZ();
+ 
+                     if (i1 * i1 + j1 * j1 <= i * i)
+                     {
+-                        for (int k1 = p_180709_3_.func_177956_o() - 1; k1 <= p_180709_3_.func_177956_o() + 1; ++k1)
++                        for (int k1 = p_180709_3_.getY() - 1; k1 <= p_180709_3_.getY() + 1; ++k1)
+                         {
+                             BlockPos blockpos = new BlockPos(k, k1, l);
+-                            Block block = p_180709_1_.func_180495_p(blockpos).func_177230_c();
++                            Block block = p_180709_1_.getBlockState(blockpos).getBlock();
+ 
+                             if (block == Blocks.dirt || block == Blocks.clay)
+                             {
+-                                p_180709_1_.func_180501_a(blockpos, this.field_150546_a.func_176223_P(), 2);
++                                p_180709_1_.func_180501_a(blockpos, this.field_150546_a.getBlockState(), 2);
+                             }
+                         }
+                     }

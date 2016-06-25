@@ -1,0 +1,46 @@
+--- a/net/minecraft/block/BlockEndGateway.java
++++ b/net/minecraft/block/BlockEndGateway.java
+@@ -34,8 +34,8 @@
+ 
+     public boolean func_176225_a(IBlockState p_176225_1_, IBlockAccess p_176225_2_, BlockPos p_176225_3_, EnumFacing p_176225_4_)
+     {
+-        IBlockState iblockstate = p_176225_2_.func_180495_p(p_176225_3_.func_177972_a(p_176225_4_));
+-        Block block = iblockstate.func_177230_c();
++        IBlockState iblockstate = p_176225_2_.getBlockState(p_176225_3_.getBlockPosRelative(p_176225_4_));
++        Block block = iblockstate.getBlock();
+         return !iblockstate.func_185914_p() && block != Blocks.field_185775_db;
+     }
+ 
+@@ -73,9 +73,9 @@
+ 
+             for (int j = 0; j < i; ++j)
+             {
+-                double d0 = (double)((float)p_180655_3_.func_177958_n() + p_180655_4_.nextFloat());
+-                double d1 = (double)((float)p_180655_3_.func_177956_o() + p_180655_4_.nextFloat());
+-                double d2 = (double)((float)p_180655_3_.func_177952_p() + p_180655_4_.nextFloat());
++                double d0 = (double)((float)p_180655_3_.getX() + p_180655_4_.nextFloat());
++                double d1 = (double)((float)p_180655_3_.getY() + p_180655_4_.nextFloat());
++                double d2 = (double)((float)p_180655_3_.getZ() + p_180655_4_.nextFloat());
+                 double d3 = ((double)p_180655_4_.nextFloat() - 0.5D) * 0.5D;
+                 double d4 = ((double)p_180655_4_.nextFloat() - 0.5D) * 0.5D;
+                 double d5 = ((double)p_180655_4_.nextFloat() - 0.5D) * 0.5D;
+@@ -83,16 +83,16 @@
+ 
+                 if (p_180655_4_.nextBoolean())
+                 {
+-                    d2 = (double)p_180655_3_.func_177952_p() + 0.5D + 0.25D * (double)k;
++                    d2 = (double)p_180655_3_.getZ() + 0.5D + 0.25D * (double)k;
+                     d5 = (double)(p_180655_4_.nextFloat() * 2.0F * (float)k);
+                 }
+                 else
+                 {
+-                    d0 = (double)p_180655_3_.func_177958_n() + 0.5D + 0.25D * (double)k;
++                    d0 = (double)p_180655_3_.getX() + 0.5D + 0.25D * (double)k;
+                     d3 = (double)(p_180655_4_.nextFloat() * 2.0F * (float)k);
+                 }
+ 
+-                p_180655_2_.func_175688_a(EnumParticleTypes.PORTAL, d0, d1, d2, d3, d4, d5, new int[0]);
++                p_180655_2_.spawnParticle(EnumParticleTypes.PORTAL, d0, d1, d2, d3, d4, d5, new int[0]);
+             }
+         }
+     }

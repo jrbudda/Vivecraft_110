@@ -1,0 +1,11 @@
+--- a/net/minecraft/world/biome/BiomeSnow.java
++++ b/net/minecraft/world/biome/BiomeSnow.java
+@@ -24,7 +24,7 @@
+ 
+         if (p_i46706_1_)
+         {
+-            this.topBlock = Blocks.snow.func_176223_P();
++            this.topBlock = Blocks.snow.getBlockState();
+         }
+ 
+         this.spawnableCreatureList.clear();

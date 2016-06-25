@@ -1,0 +1,168 @@
+--- a/net/minecraft/world/gen/structure/StructureComponent.java
++++ b/net/minecraft/world/gen/structure/StructureComponent.java
+@@ -141,12 +141,12 @@
+         {
+             for (int l1 = k; l1 <= j1; ++l1)
+             {
+-                if (p_74860_1_.func_180495_p(blockpos$mutableblockpos.func_181079_c(k1, j, l1)).func_185904_a().isLiquid())
++                if (p_74860_1_.getBlockState(blockpos$mutableblockpos.func_181079_c(k1, j, l1)).getMaterial().isLiquid())
+                 {
+                     return true;
+                 }
+ 
+-                if (p_74860_1_.func_180495_p(blockpos$mutableblockpos.func_181079_c(k1, i1, l1)).func_185904_a().isLiquid())
++                if (p_74860_1_.getBlockState(blockpos$mutableblockpos.func_181079_c(k1, i1, l1)).getMaterial().isLiquid())
+                 {
+                     return true;
+                 }
+@@ -157,12 +157,12 @@
+         {
+             for (int k2 = j; k2 <= i1; ++k2)
+             {
+-                if (p_74860_1_.func_180495_p(blockpos$mutableblockpos.func_181079_c(i2, k2, k)).func_185904_a().isLiquid())
++                if (p_74860_1_.getBlockState(blockpos$mutableblockpos.func_181079_c(i2, k2, k)).getMaterial().isLiquid())
+                 {
+                     return true;
+                 }
+ 
+-                if (p_74860_1_.func_180495_p(blockpos$mutableblockpos.func_181079_c(i2, k2, j1)).func_185904_a().isLiquid())
++                if (p_74860_1_.getBlockState(blockpos$mutableblockpos.func_181079_c(i2, k2, j1)).getMaterial().isLiquid())
+                 {
+                     return true;
+                 }
+@@ -173,12 +173,12 @@
+         {
+             for (int l2 = j; l2 <= i1; ++l2)
+             {
+-                if (p_74860_1_.func_180495_p(blockpos$mutableblockpos.func_181079_c(i, l2, j2)).func_185904_a().isLiquid())
++                if (p_74860_1_.getBlockState(blockpos$mutableblockpos.func_181079_c(i, l2, j2)).getMaterial().isLiquid())
+                 {
+                     return true;
+                 }
+ 
+-                if (p_74860_1_.func_180495_p(blockpos$mutableblockpos.func_181079_c(l, l2, j2)).func_185904_a().isLiquid())
++                if (p_74860_1_.getBlockState(blockpos$mutableblockpos.func_181079_c(l, l2, j2)).getMaterial().isLiquid())
+                 {
+                     return true;
+                 }
+@@ -275,7 +275,7 @@
+         int j = this.getYWithOffset(p_175807_3_);
+         int k = this.getZWithOffset(p_175807_2_, p_175807_4_);
+         BlockPos blockpos = new BlockPos(i, j, k);
+-        return !p_175807_5_.func_175898_b(blockpos) ? Blocks.air.func_176223_P() : p_175807_1_.func_180495_p(blockpos);
++        return !p_175807_5_.func_175898_b(blockpos) ? Blocks.air.getBlockState() : p_175807_1_.getBlockState(blockpos);
+     }
+ 
+     protected int func_189916_b(World p_189916_1_, int p_189916_2_, int p_189916_3_, int p_189916_4_, StructureBoundingBox p_189916_5_)
+@@ -299,7 +299,7 @@
+             {
+                 for (int k = p_74878_5_; k <= p_74878_8_; ++k)
+                 {
+-                    this.func_175811_a(p_74878_1_, Blocks.air.func_176223_P(), j, i, k, p_74878_2_);
++                    this.func_175811_a(p_74878_1_, Blocks.air.getBlockState(), j, i, k, p_74878_2_);
+                 }
+             }
+         }
+@@ -313,7 +313,7 @@
+             {
+                 for (int k = p_175804_5_; k <= p_175804_8_; ++k)
+                 {
+-                    if (!p_175804_11_ || this.func_175807_a(p_175804_1_, j, i, k, p_175804_2_).func_185904_a() != Material.air)
++                    if (!p_175804_11_ || this.func_175807_a(p_175804_1_, j, i, k, p_175804_2_).getMaterial() != Material.air)
+                     {
+                         if (i != p_175804_4_ && i != p_175804_7_ && j != p_175804_3_ && j != p_175804_6_ && k != p_175804_5_ && k != p_175804_8_)
+                         {
+@@ -341,7 +341,7 @@
+             {
+                 for (int k = p_74882_5_; k <= p_74882_8_; ++k)
+                 {
+-                    if (!p_74882_9_ || this.func_175807_a(p_74882_1_, j, i, k, p_74882_2_).func_185904_a() != Material.air)
++                    if (!p_74882_9_ || this.func_175807_a(p_74882_1_, j, i, k, p_74882_2_).getMaterial() != Material.air)
+                     {
+                         p_74882_11_.selectBlocks(p_74882_10_, j, i, k, i == p_74882_4_ || i == p_74882_7_ || j == p_74882_3_ || j == p_74882_6_ || k == p_74882_5_ || k == p_74882_8_);
+                         this.func_175811_a(p_74882_1_, p_74882_11_.func_180780_a(), j, i, k, p_74882_2_);
+@@ -359,7 +359,7 @@
+             {
+                 for (int k = p_189914_7_; k <= p_189914_10_; ++k)
+                 {
+-                    if (p_189914_3_.nextFloat() <= p_189914_4_ && (!p_189914_13_ || this.func_175807_a(p_189914_1_, j, i, k, p_189914_2_).func_185904_a() != Material.air) && (p_189914_14_ <= 0 || this.func_189916_b(p_189914_1_, j, i, k, p_189914_2_) < p_189914_14_))
++                    if (p_189914_3_.nextFloat() <= p_189914_4_ && (!p_189914_13_ || this.func_175807_a(p_189914_1_, j, i, k, p_189914_2_).getMaterial() != Material.air) && (p_189914_14_ <= 0 || this.func_189916_b(p_189914_1_, j, i, k, p_189914_2_) < p_189914_14_))
+                     {
+                         if (i != p_189914_6_ && i != p_189914_9_ && j != p_189914_5_ && j != p_189914_8_ && k != p_189914_7_ && k != p_189914_10_)
+                         {
+@@ -403,7 +403,7 @@
+                 {
+                     float f7 = ((float)k - f4) / (f2 * 0.5F);
+ 
+-                    if (!p_180777_10_ || this.func_175807_a(p_180777_1_, j, i, k, p_180777_2_).func_185904_a() != Material.air)
++                    if (!p_180777_10_ || this.func_175807_a(p_180777_1_, j, i, k, p_180777_2_).getMaterial() != Material.air)
+                     {
+                         float f8 = f6 * f6 + f5 * f5 + f7 * f7;
+ 
+@@ -426,10 +426,10 @@
+ 
+         if (p_74871_5_.func_175898_b(blockpos))
+         {
+-            while (!p_74871_1_.func_175623_d(blockpos) && blockpos.func_177956_o() < 255)
++            while (!p_74871_1_.isEmpty(blockpos) && blockpos.getY() < 255)
+             {
+-                p_74871_1_.func_180501_a(blockpos, Blocks.air.func_176223_P(), 2);
+-                blockpos = blockpos.func_177984_a();
++                p_74871_1_.func_180501_a(blockpos, Blocks.air.getBlockState(), 2);
++                blockpos = blockpos.getBlockPosAbove();
+             }
+         }
+     }
+@@ -442,7 +442,7 @@
+ 
+         if (p_175808_6_.func_175898_b(new BlockPos(i, j, k)))
+         {
+-            while ((p_175808_1_.func_175623_d(new BlockPos(i, j, k)) || p_175808_1_.func_180495_p(new BlockPos(i, j, k)).func_185904_a().isLiquid()) && j > 1)
++            while ((p_175808_1_.isEmpty(new BlockPos(i, j, k)) || p_175808_1_.getBlockState(new BlockPos(i, j, k)).getMaterial().isLiquid()) && j > 1)
+             {
+                 p_175808_1_.func_180501_a(new BlockPos(i, j, k), p_175808_2_, 2);
+                 --j;
+@@ -454,9 +454,9 @@
+     {
+         BlockPos blockpos = new BlockPos(this.getXWithOffset(p_186167_4_, p_186167_6_), this.getYWithOffset(p_186167_5_), this.getZWithOffset(p_186167_4_, p_186167_6_));
+ 
+-        if (p_186167_2_.func_175898_b(blockpos) && p_186167_1_.func_180495_p(blockpos).func_177230_c() != Blocks.chest)
++        if (p_186167_2_.func_175898_b(blockpos) && p_186167_1_.getBlockState(blockpos).getBlock() != Blocks.chest)
+         {
+-            IBlockState iblockstate = Blocks.chest.func_176223_P();
++            IBlockState iblockstate = Blocks.chest.getBlockState();
+             p_186167_1_.func_180501_a(blockpos, Blocks.chest.func_176458_f(p_186167_1_, blockpos, iblockstate), 2);
+             TileEntity tileentity = p_186167_1_.func_175625_s(blockpos);
+ 
+@@ -477,9 +477,9 @@
+     {
+         BlockPos blockpos = new BlockPos(this.getXWithOffset(p_189419_4_, p_189419_6_), this.getYWithOffset(p_189419_5_), this.getZWithOffset(p_189419_4_, p_189419_6_));
+ 
+-        if (p_189419_2_.func_175898_b(blockpos) && p_189419_1_.func_180495_p(blockpos).func_177230_c() != Blocks.dispenser)
++        if (p_189419_2_.func_175898_b(blockpos) && p_189419_1_.getBlockState(blockpos).getBlock() != Blocks.dispenser)
+         {
+-            this.func_175811_a(p_189419_1_, Blocks.dispenser.func_176223_P().func_177226_a(BlockDispenser.field_176441_a, p_189419_7_), p_189419_4_, p_189419_5_, p_189419_6_, p_189419_2_);
++            this.func_175811_a(p_189419_1_, Blocks.dispenser.getBlockState().func_177226_a(BlockDispenser.field_176441_a, p_189419_7_), p_189419_4_, p_189419_5_, p_189419_6_, p_189419_2_);
+             TileEntity tileentity = p_189419_1_.func_175625_s(blockpos);
+ 
+             if (tileentity instanceof TileEntityDispenser)
+@@ -497,8 +497,8 @@
+ 
+     protected void func_189915_a(World p_189915_1_, StructureBoundingBox p_189915_2_, Random p_189915_3_, int p_189915_4_, int p_189915_5_, int p_189915_6_, EnumFacing p_189915_7_, BlockDoor p_189915_8_)
+     {
+-        this.func_175811_a(p_189915_1_, p_189915_8_.func_176223_P().func_177226_a(BlockDoor.field_176520_a, p_189915_7_), p_189915_4_, p_189915_5_, p_189915_6_, p_189915_2_);
+-        this.func_175811_a(p_189915_1_, p_189915_8_.func_176223_P().func_177226_a(BlockDoor.field_176520_a, p_189915_7_).func_177226_a(BlockDoor.field_176523_O, BlockDoor.EnumDoorHalf.UPPER), p_189915_4_, p_189915_5_ + 1, p_189915_6_, p_189915_2_);
++        this.func_175811_a(p_189915_1_, p_189915_8_.getBlockState().func_177226_a(BlockDoor.field_176520_a, p_189915_7_), p_189915_4_, p_189915_5_, p_189915_6_, p_189915_2_);
++        this.func_175811_a(p_189915_1_, p_189915_8_.getBlockState().func_177226_a(BlockDoor.field_176520_a, p_189915_7_).func_177226_a(BlockDoor.field_176523_O, BlockDoor.EnumDoorHalf.UPPER), p_189915_4_, p_189915_5_ + 1, p_189915_6_, p_189915_2_);
+     }
+ 
+     public void func_181138_a(int p_181138_1_, int p_181138_2_, int p_181138_3_)
+@@ -549,7 +549,7 @@
+ 
+     public abstract static class BlockSelector
+     {
+-        protected IBlockState field_151562_a = Blocks.air.func_176223_P();
++        protected IBlockState field_151562_a = Blocks.air.getBlockState();
+ 
+         public abstract void selectBlocks(Random p_75062_1_, int p_75062_2_, int p_75062_3_, int p_75062_4_, boolean p_75062_5_);
+ 

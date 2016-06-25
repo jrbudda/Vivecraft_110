@@ -1,0 +1,48 @@
+--- a/net/minecraft/world/biome/BiomeHills.java
++++ b/net/minecraft/world/biome/BiomeHills.java
+@@ -13,7 +13,7 @@
+ 
+ public class BiomeHills extends Biome
+ {
+-    private final WorldGenerator theWorldGenerator = new WorldGenMinable(Blocks.monster_egg.func_176223_P().func_177226_a(BlockSilverfish.field_176378_a, BlockSilverfish.EnumType.STONE), 9);
++    private final WorldGenerator theWorldGenerator = new WorldGenMinable(Blocks.monster_egg.getBlockState().func_177226_a(BlockSilverfish.field_176378_a, BlockSilverfish.EnumType.STONE), 9);
+     private final WorldGenTaiga2 field_150634_aD = new WorldGenTaiga2(false);
+     private final BiomeHills.Type field_150638_aH;
+ 
+@@ -46,9 +46,9 @@
+             int i1 = p_180624_2_.nextInt(16);
+             BlockPos blockpos = p_180624_3_.func_177982_a(k, l, i1);
+ 
+-            if (p_180624_1_.func_180495_p(blockpos).func_177230_c() == Blocks.stone)
++            if (p_180624_1_.getBlockState(blockpos).getBlock() == Blocks.stone)
+             {
+-                p_180624_1_.func_180501_a(blockpos, Blocks.emerald_ore.func_176223_P(), 2);
++                p_180624_1_.func_180501_a(blockpos, Blocks.emerald_ore.getBlockState(), 2);
+             }
+         }
+ 
+@@ -63,18 +63,18 @@
+ 
+     public void func_180622_a(World p_180622_1_, Random p_180622_2_, ChunkPrimer p_180622_3_, int p_180622_4_, int p_180622_5_, double p_180622_6_)
+     {
+-        this.topBlock = Blocks.grass.func_176223_P();
+-        this.fillerBlock = Blocks.dirt.func_176223_P();
++        this.topBlock = Blocks.grass.getBlockState();
++        this.fillerBlock = Blocks.dirt.getBlockState();
+ 
+         if ((p_180622_6_ < -1.0D || p_180622_6_ > 2.0D) && this.field_150638_aH == BiomeHills.Type.MUTATED)
+         {
+-            this.topBlock = Blocks.gravel.func_176223_P();
+-            this.fillerBlock = Blocks.gravel.func_176223_P();
++            this.topBlock = Blocks.gravel.getBlockState();
++            this.fillerBlock = Blocks.gravel.getBlockState();
+         }
+         else if (p_180622_6_ > 1.0D && this.field_150638_aH != BiomeHills.Type.EXTRA_TREES)
+         {
+-            this.topBlock = Blocks.stone.func_176223_P();
+-            this.fillerBlock = Blocks.stone.func_176223_P();
++            this.topBlock = Blocks.stone.getBlockState();
++            this.fillerBlock = Blocks.stone.getBlockState();
+         }
+ 
+         this.func_180628_b(p_180622_1_, p_180622_2_, p_180622_3_, p_180622_4_, p_180622_5_, p_180622_6_);

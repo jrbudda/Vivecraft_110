@@ -1,0 +1,16 @@
+--- a/net/minecraft/world/gen/structure/MapGenStructure.java
++++ b/net/minecraft/world/gen/structure/MapGenStructure.java
+@@ -157,10 +157,10 @@
+         this.rand.setSeed(p_180706_1_.getSeed());
+         long i = this.rand.nextLong();
+         long j = this.rand.nextLong();
+-        long k = (long)(p_180706_2_.func_177958_n() >> 4) * i;
+-        long l = (long)(p_180706_2_.func_177952_p() >> 4) * j;
++        long k = (long)(p_180706_2_.getX() >> 4) * i;
++        long l = (long)(p_180706_2_.getZ() >> 4) * j;
+         this.rand.setSeed(k ^ l ^ p_180706_1_.getSeed());
+-        this.func_180701_a(p_180706_1_, p_180706_2_.func_177958_n() >> 4, p_180706_2_.func_177952_p() >> 4, 0, 0, (ChunkPrimer)null);
++        this.func_180701_a(p_180706_1_, p_180706_2_.getX() >> 4, p_180706_2_.getZ() >> 4, 0, 0, (ChunkPrimer)null);
+         double d0 = Double.MAX_VALUE;
+         BlockPos blockpos = null;
+ 

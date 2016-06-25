@@ -1,0 +1,23 @@
+--- a/net/minecraft/entity/monster/EntitySnowman.java
++++ b/net/minecraft/entity/monster/EntitySnowman.java
+@@ -103,9 +103,9 @@
+                 k = MathHelper.floor_double(this.posZ + (double)((float)(l / 2 % 2 * 2 - 1) * 0.25F));
+                 BlockPos blockpos = new BlockPos(i, j, k);
+ 
+-                if (this.worldObj.func_180495_p(blockpos).func_185904_a() == Material.air && this.worldObj.func_180494_b(new BlockPos(i, 0, k)).func_180626_a(blockpos) < 0.8F && Blocks.snow_layer.func_176196_c(this.worldObj, blockpos))
++                if (this.worldObj.getBlockState(blockpos).getMaterial() == Material.air && this.worldObj.func_180494_b(new BlockPos(i, 0, k)).func_180626_a(blockpos) < 0.8F && Blocks.snow_layer.func_176196_c(this.worldObj, blockpos))
+                 {
+-                    this.worldObj.func_175656_a(blockpos, Blocks.snow_layer.func_176223_P());
++                    this.worldObj.func_175656_a(blockpos, Blocks.snow_layer.getBlockState());
+                 }
+             }
+         }
+@@ -129,7 +129,7 @@
+         double d3 = p_82196_1_.posZ - this.posZ;
+         float f = MathHelper.sqrt_double(d1 * d1 + d3 * d3) * 0.2F;
+         entitysnowball.setThrowableHeading(d1, d2 + (double)f, d3, 1.6F, 12.0F);
+-        this.func_184185_a(SoundEvents.field_187805_fE, 1.0F, 1.0F / (this.getRNG().nextFloat() * 0.4F + 0.8F));
++        this.playSound(SoundEvents.field_187805_fE, 1.0F, 1.0F / (this.getRNG().nextFloat() * 0.4F + 0.8F));
+         this.worldObj.spawnEntityInWorld(entitysnowball);
+     }
+ 

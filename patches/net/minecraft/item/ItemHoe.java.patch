@@ -1,0 +1,42 @@
+--- a/net/minecraft/item/ItemHoe.java
++++ b/net/minecraft/item/ItemHoe.java
+@@ -37,20 +37,20 @@
+     @SuppressWarnings("incomplete-switch")
+     public EnumActionResult func_180614_a(ItemStack p_180614_1_, EntityPlayer p_180614_2_, World p_180614_3_, BlockPos p_180614_4_, EnumHand p_180614_5_, EnumFacing p_180614_6_, float p_180614_7_, float p_180614_8_, float p_180614_9_)
+     {
+-        if (!p_180614_2_.func_175151_a(p_180614_4_.func_177972_a(p_180614_6_), p_180614_6_, p_180614_1_))
++        if (!p_180614_2_.func_175151_a(p_180614_4_.getBlockPosRelative(p_180614_6_), p_180614_6_, p_180614_1_))
+         {
+             return EnumActionResult.FAIL;
+         }
+         else
+         {
+-            IBlockState iblockstate = p_180614_3_.func_180495_p(p_180614_4_);
+-            Block block = iblockstate.func_177230_c();
++            IBlockState iblockstate = p_180614_3_.getBlockState(p_180614_4_);
++            Block block = iblockstate.getBlock();
+ 
+-            if (p_180614_6_ != EnumFacing.DOWN && p_180614_3_.func_180495_p(p_180614_4_.func_177984_a()).func_185904_a() == Material.air)
++            if (p_180614_6_ != EnumFacing.DOWN && p_180614_3_.getBlockState(p_180614_4_.getBlockPosAbove()).getMaterial() == Material.air)
+             {
+                 if (block == Blocks.grass || block == Blocks.field_185774_da)
+                 {
+-                    this.func_185071_a(p_180614_1_, p_180614_2_, p_180614_3_, p_180614_4_, Blocks.farmland.func_176223_P());
++                    this.func_185071_a(p_180614_1_, p_180614_2_, p_180614_3_, p_180614_4_, Blocks.farmland.getBlockState());
+                     return EnumActionResult.SUCCESS;
+                 }
+ 
+@@ -59,11 +59,11 @@
+                     switch ((BlockDirt.DirtType)iblockstate.func_177229_b(BlockDirt.field_176386_a))
+                     {
+                         case DIRT:
+-                            this.func_185071_a(p_180614_1_, p_180614_2_, p_180614_3_, p_180614_4_, Blocks.farmland.func_176223_P());
++                            this.func_185071_a(p_180614_1_, p_180614_2_, p_180614_3_, p_180614_4_, Blocks.farmland.getBlockState());
+                             return EnumActionResult.SUCCESS;
+ 
+                         case COARSE_DIRT:
+-                            this.func_185071_a(p_180614_1_, p_180614_2_, p_180614_3_, p_180614_4_, Blocks.dirt.func_176223_P().func_177226_a(BlockDirt.field_176386_a, BlockDirt.DirtType.DIRT));
++                            this.func_185071_a(p_180614_1_, p_180614_2_, p_180614_3_, p_180614_4_, Blocks.dirt.getBlockState().func_177226_a(BlockDirt.field_176386_a, BlockDirt.DirtType.DIRT));
+                             return EnumActionResult.SUCCESS;
+                     }
+                 }

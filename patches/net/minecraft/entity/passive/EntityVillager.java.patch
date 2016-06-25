@@ -1,0 +1,34 @@
+--- a/net/minecraft/entity/passive/EntityVillager.java
++++ b/net/minecraft/entity/passive/EntityVillager.java
+@@ -529,7 +529,7 @@
+     {
+         p_70933_1_.incrementToolUses();
+         this.livingSoundTime = -this.getTalkInterval();
+-        this.func_184185_a(SoundEvents.field_187915_go, this.getSoundVolume(), this.getSoundPitch());
++        this.playSound(SoundEvents.field_187915_go, this.getSoundVolume(), this.getSoundPitch());
+         int i = 3 + this.rand.nextInt(4);
+ 
+         if (p_70933_1_.func_180321_e() == 1 || this.rand.nextInt(5) == 0)
+@@ -573,11 +573,11 @@
+ 
+             if (p_110297_1_ != null)
+             {
+-                this.func_184185_a(SoundEvents.field_187915_go, this.getSoundVolume(), this.getSoundPitch());
++                this.playSound(SoundEvents.field_187915_go, this.getSoundVolume(), this.getSoundPitch());
+             }
+             else
+             {
+-                this.func_184185_a(SoundEvents.field_187913_gm, this.getSoundVolume(), this.getSoundPitch());
++                this.playSound(SoundEvents.field_187913_gm, this.getSoundVolume(), this.getSoundPitch());
+             }
+         }
+     }
+@@ -760,7 +760,7 @@
+             double d0 = this.rand.nextGaussian() * 0.02D;
+             double d1 = this.rand.nextGaussian() * 0.02D;
+             double d2 = this.rand.nextGaussian() * 0.02D;
+-            this.worldObj.func_175688_a(p_180489_1_, this.posX + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, this.posY + 1.0D + (double)(this.rand.nextFloat() * this.height), this.posZ + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, d0, d1, d2, new int[0]);
++            this.worldObj.spawnParticle(p_180489_1_, this.posX + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, this.posY + 1.0D + (double)(this.rand.nextFloat() * this.height), this.posZ + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, d0, d1, d2, new int[0]);
+         }
+     }
+ 

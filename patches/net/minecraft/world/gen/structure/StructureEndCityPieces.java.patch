@@ -1,0 +1,31 @@
+--- a/net/minecraft/world/gen/structure/StructureEndCityPieces.java
++++ b/net/minecraft/world/gen/structure/StructureEndCityPieces.java
+@@ -208,8 +208,8 @@
+     private static StructureEndCityPieces.CityTemplate func_186189_b(StructureEndCityPieces.CityTemplate p_186189_0_, BlockPos p_186189_1_, String p_186189_2_, Rotation p_186189_3_, boolean p_186189_4_)
+     {
+         StructureEndCityPieces.CityTemplate structureendcitypieces$citytemplate = new StructureEndCityPieces.CityTemplate(p_186189_2_, p_186189_0_.field_186178_c, p_186189_3_, p_186189_4_);
+-        BlockPos blockpos = p_186189_0_.field_186176_a.func_186262_a(p_186189_0_.field_186177_b, p_186189_1_, structureendcitypieces$citytemplate.field_186177_b, BlockPos.field_177992_a);
+-        structureendcitypieces$citytemplate.func_181138_a(blockpos.func_177958_n(), blockpos.func_177956_o(), blockpos.func_177952_p());
++        BlockPos blockpos = p_186189_0_.field_186176_a.func_186262_a(p_186189_0_.field_186177_b, p_186189_1_, structureendcitypieces$citytemplate.field_186177_b, BlockPos.createDefault);
++        structureendcitypieces$citytemplate.func_181138_a(blockpos.getX(), blockpos.getY(), blockpos.getZ());
+         return structureendcitypieces$citytemplate;
+     }
+ 
+@@ -327,7 +327,7 @@
+         {
+             if (p_186175_1_.startsWith("Chest"))
+             {
+-                BlockPos blockpos = p_186175_2_.func_177977_b();
++                BlockPos blockpos = p_186175_2_.getBlockPosBelow();
+ 
+                 if (p_186175_5_.func_175898_b(blockpos))
+                 {
+@@ -342,7 +342,7 @@
+             else if (p_186175_1_.startsWith("Sentry"))
+             {
+                 EntityShulker entityshulker = new EntityShulker(p_186175_3_);
+-                entityshulker.setPosition((double)p_186175_2_.func_177958_n() + 0.5D, (double)p_186175_2_.func_177956_o() + 0.5D, (double)p_186175_2_.func_177952_p() + 0.5D);
++                entityshulker.setPosition((double)p_186175_2_.getX() + 0.5D, (double)p_186175_2_.getY() + 0.5D, (double)p_186175_2_.getZ() + 0.5D);
+                 entityshulker.func_184694_g(p_186175_2_);
+                 p_186175_3_.spawnEntityInWorld(entityshulker);
+             }

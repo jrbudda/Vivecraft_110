@@ -1,0 +1,11 @@
+--- a/net/minecraft/entity/EntityCreature.java
++++ b/net/minecraft/entity/EntityCreature.java
+@@ -14,7 +14,7 @@
+ {
+     public static final UUID field_110179_h = UUID.fromString("E199AD21-BA8A-4C53-8D13-6182D5C69D3A");
+     public static final AttributeModifier field_110181_i = (new AttributeModifier(field_110179_h, "Fleeing speed bonus", 2.0D, 2)).setSaved(false);
+-    private BlockPos homePosition = BlockPos.field_177992_a;
++    private BlockPos homePosition = BlockPos.createDefault;
+ 
+     /** If -1 there is no maximum distance */
+     private float maximumHomeDistance = -1.0F;

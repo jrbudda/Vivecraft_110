@@ -1,0 +1,11 @@
+--- a/net/minecraft/entity/monster/EntityGhast.java
++++ b/net/minecraft/entity/monster/EntityGhast.java
+@@ -395,7 +395,7 @@
+             {
+                 axisalignedbb = axisalignedbb.offset(d0, d1, d2);
+ 
+-                if (!this.field_179927_g.worldObj.func_184144_a(this.field_179927_g, axisalignedbb).isEmpty())
++                if (!this.field_179927_g.worldObj.getCollisionBoxes(this.field_179927_g, axisalignedbb).isEmpty())
+                 {
+                     return false;
+                 }

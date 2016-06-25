@@ -1,0 +1,11 @@
+--- a/net/minecraft/item/ItemTool.java
++++ b/net/minecraft/item/ItemTool.java
+@@ -44,7 +44,7 @@
+ 
+     public float getStrVsBlock(ItemStack p_150893_1_, IBlockState p_150893_2_)
+     {
+-        return this.effectiveBlocksTool.contains(p_150893_2_.func_177230_c()) ? this.efficiencyOnProperMaterial : 1.0F;
++        return this.effectiveBlocksTool.contains(p_150893_2_.getBlock()) ? this.efficiencyOnProperMaterial : 1.0F;
+     }
+ 
+     /**

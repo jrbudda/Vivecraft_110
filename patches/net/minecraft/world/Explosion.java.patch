@@ -1,0 +1,91 @@
+--- a/net/minecraft/world/Explosion.java
++++ b/net/minecraft/world/Explosion.java
+@@ -99,11 +99,11 @@
+                         for (float f1 = 0.3F; f > 0.0F; f -= 0.22500001F)
+                         {
+                             BlockPos blockpos = new BlockPos(d4, d6, d8);
+-                            IBlockState iblockstate = this.worldObj.func_180495_p(blockpos);
++                            IBlockState iblockstate = this.worldObj.getBlockState(blockpos);
+ 
+-                            if (iblockstate.func_185904_a() != Material.air)
++                            if (iblockstate.getMaterial() != Material.air)
+                             {
+-                                float f2 = this.exploder != null ? this.exploder.func_180428_a(this, this.worldObj, blockpos, iblockstate) : iblockstate.func_177230_c().getExplosionResistance((Entity)null);
++                                float f2 = this.exploder != null ? this.exploder.func_180428_a(this, this.worldObj, blockpos, iblockstate) : iblockstate.getBlock().getExplosionResistance((Entity)null);
+                                 f -= (f2 + 0.3F) * 0.3F;
+                             }
+ 
+@@ -186,29 +186,29 @@
+      */
+     public void doExplosionB(boolean p_77279_1_)
+     {
+-        this.worldObj.func_184148_a((EntityPlayer)null, this.explosionX, this.explosionY, this.explosionZ, SoundEvents.field_187539_bB, SoundCategory.BLOCKS, 4.0F, (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
++        this.worldObj.playSound((EntityPlayer)null, this.explosionX, this.explosionY, this.explosionZ, SoundEvents.field_187539_bB, SoundCategory.BLOCKS, 4.0F, (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
+ 
+         if (this.explosionSize >= 2.0F && this.isSmoking)
+         {
+-            this.worldObj.func_175688_a(EnumParticleTypes.EXPLOSION_HUGE, this.explosionX, this.explosionY, this.explosionZ, 1.0D, 0.0D, 0.0D, new int[0]);
++            this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, this.explosionX, this.explosionY, this.explosionZ, 1.0D, 0.0D, 0.0D, new int[0]);
+         }
+         else
+         {
+-            this.worldObj.func_175688_a(EnumParticleTypes.EXPLOSION_LARGE, this.explosionX, this.explosionY, this.explosionZ, 1.0D, 0.0D, 0.0D, new int[0]);
++            this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, this.explosionX, this.explosionY, this.explosionZ, 1.0D, 0.0D, 0.0D, new int[0]);
+         }
+ 
+         if (this.isSmoking)
+         {
+             for (BlockPos blockpos : this.affectedBlockPositions)
+             {
+-                IBlockState iblockstate = this.worldObj.func_180495_p(blockpos);
+-                Block block = iblockstate.func_177230_c();
++                IBlockState iblockstate = this.worldObj.getBlockState(blockpos);
++                Block block = iblockstate.getBlock();
+ 
+                 if (p_77279_1_)
+                 {
+-                    double d0 = (double)((float)blockpos.func_177958_n() + this.worldObj.rand.nextFloat());
+-                    double d1 = (double)((float)blockpos.func_177956_o() + this.worldObj.rand.nextFloat());
+-                    double d2 = (double)((float)blockpos.func_177952_p() + this.worldObj.rand.nextFloat());
++                    double d0 = (double)((float)blockpos.getX() + this.worldObj.rand.nextFloat());
++                    double d1 = (double)((float)blockpos.getY() + this.worldObj.rand.nextFloat());
++                    double d2 = (double)((float)blockpos.getZ() + this.worldObj.rand.nextFloat());
+                     double d3 = d0 - this.explosionX;
+                     double d4 = d1 - this.explosionY;
+                     double d5 = d2 - this.explosionZ;
+@@ -221,18 +221,18 @@
+                     d3 = d3 * d7;
+                     d4 = d4 * d7;
+                     d5 = d5 * d7;
+-                    this.worldObj.func_175688_a(EnumParticleTypes.EXPLOSION_NORMAL, (d0 + this.explosionX) / 2.0D, (d1 + this.explosionY) / 2.0D, (d2 + this.explosionZ) / 2.0D, d3, d4, d5, new int[0]);
+-                    this.worldObj.func_175688_a(EnumParticleTypes.SMOKE_NORMAL, d0, d1, d2, d3, d4, d5, new int[0]);
++                    this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, (d0 + this.explosionX) / 2.0D, (d1 + this.explosionY) / 2.0D, (d2 + this.explosionZ) / 2.0D, d3, d4, d5, new int[0]);
++                    this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0, d1, d2, d3, d4, d5, new int[0]);
+                 }
+ 
+-                if (iblockstate.func_185904_a() != Material.air)
++                if (iblockstate.getMaterial() != Material.air)
+                 {
+                     if (block.canDropFromExplosion(this))
+                     {
+-                        block.func_180653_a(this.worldObj, blockpos, this.worldObj.func_180495_p(blockpos), 1.0F / this.explosionSize, 0);
++                        block.func_180653_a(this.worldObj, blockpos, this.worldObj.getBlockState(blockpos), 1.0F / this.explosionSize, 0);
+                     }
+ 
+-                    this.worldObj.func_180501_a(blockpos, Blocks.air.func_176223_P(), 3);
++                    this.worldObj.func_180501_a(blockpos, Blocks.air.getBlockState(), 3);
+                     block.func_180652_a(this.worldObj, blockpos, this);
+                 }
+             }
+@@ -242,9 +242,9 @@
+         {
+             for (BlockPos blockpos1 : this.affectedBlockPositions)
+             {
+-                if (this.worldObj.func_180495_p(blockpos1).func_185904_a() == Material.air && this.worldObj.func_180495_p(blockpos1.func_177977_b()).func_185913_b() && this.explosionRNG.nextInt(3) == 0)
++                if (this.worldObj.getBlockState(blockpos1).getMaterial() == Material.air && this.worldObj.getBlockState(blockpos1.getBlockPosBelow()).func_185913_b() && this.explosionRNG.nextInt(3) == 0)
+                 {
+-                    this.worldObj.func_175656_a(blockpos1, Blocks.fire.func_176223_P());
++                    this.worldObj.func_175656_a(blockpos1, Blocks.fire.getBlockState());
+                 }
+             }
+         }

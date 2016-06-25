@@ -1,0 +1,23 @@
+--- a/net/minecraft/world/biome/BiomeForest.java
++++ b/net/minecraft/world/biome/BiomeForest.java
+@@ -55,7 +55,7 @@
+     {
+         if (this.field_150632_aF == BiomeForest.Type.FLOWER)
+         {
+-            double d0 = MathHelper.clamp_double((1.0D + field_180281_af.func_151601_a((double)p_180623_2_.func_177958_n() / 48.0D, (double)p_180623_2_.func_177952_p() / 48.0D)) / 2.0D, 0.0D, 0.9999D);
++            double d0 = MathHelper.clamp_double((1.0D + field_180281_af.func_151601_a((double)p_180623_2_.getX() / 48.0D, (double)p_180623_2_.getZ() / 48.0D)) / 2.0D, 0.0D, 0.9999D);
+             BlockFlower.EnumFlowerType blockflower$enumflowertype = BlockFlower.EnumFlowerType.values()[(int)(d0 * (double)BlockFlower.EnumFlowerType.values().length)];
+             return blockflower$enumflowertype == BlockFlower.EnumFlowerType.BLUE_ORCHID ? BlockFlower.EnumFlowerType.POPPY : blockflower$enumflowertype;
+         }
+@@ -135,9 +135,9 @@
+             {
+                 int l = p_185378_2_.nextInt(16) + 8;
+                 int i1 = p_185378_2_.nextInt(16) + 8;
+-                int j1 = p_185378_2_.nextInt(p_185378_1_.func_175645_m(p_185378_3_.func_177982_a(l, 0, i1)).func_177956_o() + 32);
++                int j1 = p_185378_2_.nextInt(p_185378_1_.func_175645_m(p_185378_3_.func_177982_a(l, 0, i1)).getY() + 32);
+ 
+-                if (field_180280_ag.func_180709_b(p_185378_1_, p_185378_2_, new BlockPos(p_185378_3_.func_177958_n() + l, j1, p_185378_3_.func_177952_p() + i1)))
++                if (field_180280_ag.func_180709_b(p_185378_1_, p_185378_2_, new BlockPos(p_185378_3_.getX() + l, j1, p_185378_3_.getZ() + i1)))
+                 {
+                     break;
+                 }

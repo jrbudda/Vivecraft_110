@@ -1,0 +1,55 @@
+--- a/net/minecraft/client/renderer/entity/RenderTNTPrimed.java
++++ b/net/minecraft/client/renderer/entity/RenderTNTPrimed.java
+@@ -26,7 +26,7 @@
+     public void doRender(EntityTNTPrimed p_76986_1_, double p_76986_2_, double p_76986_4_, double p_76986_6_, float p_76986_8_, float p_76986_9_)
+     {
+         BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().func_175602_ab();
+-        GlStateManager.func_179094_E();
++        GlStateManager.push();
+         GlStateManager.func_179109_b((float)p_76986_2_, (float)p_76986_4_ + 0.5F, (float)p_76986_6_);
+ 
+         if ((float)p_76986_1_.func_184536_l() - p_76986_9_ + 1.0F < 10.0F)
+@@ -36,21 +36,21 @@
+             f = f * f;
+             f = f * f;
+             float f1 = 1.0F + f * 0.3F;
+-            GlStateManager.func_179152_a(f1, f1, f1);
++            GlStateManager.scale(f1, f1, f1);
+         }
+ 
+         float f2 = (1.0F - ((float)p_76986_1_.func_184536_l() - p_76986_9_ + 1.0F) / 100.0F) * 0.8F;
+         this.func_180548_c(p_76986_1_);
+-        GlStateManager.func_179114_b(-90.0F, 0.0F, 1.0F, 0.0F);
++        GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
+         GlStateManager.func_179109_b(-0.5F, -0.5F, 0.5F);
+-        blockrendererdispatcher.func_175016_a(Blocks.tnt.func_176223_P(), p_76986_1_.getBrightness(p_76986_9_));
++        blockrendererdispatcher.func_175016_a(Blocks.tnt.getBlockState(), p_76986_1_.getBrightness(p_76986_9_));
+         GlStateManager.func_179109_b(0.0F, 0.0F, 1.0F);
+ 
+         if (this.field_188301_f)
+         {
+             GlStateManager.func_179142_g();
+             GlStateManager.func_187431_e(this.func_188298_c(p_76986_1_));
+-            blockrendererdispatcher.func_175016_a(Blocks.tnt.func_176223_P(), 1.0F);
++            blockrendererdispatcher.func_175016_a(Blocks.tnt.getBlockState(), 1.0F);
+             GlStateManager.func_187417_n();
+             GlStateManager.func_179119_h();
+         }
+@@ -63,7 +63,7 @@
+             GlStateManager.func_179131_c(1.0F, 1.0F, 1.0F, f2);
+             GlStateManager.func_179136_a(-3.0F, -3.0F);
+             GlStateManager.func_179088_q();
+-            blockrendererdispatcher.func_175016_a(Blocks.tnt.func_176223_P(), 1.0F);
++            blockrendererdispatcher.func_175016_a(Blocks.tnt.getBlockState(), 1.0F);
+             GlStateManager.func_179136_a(0.0F, 0.0F);
+             GlStateManager.func_179113_r();
+             GlStateManager.func_179131_c(1.0F, 1.0F, 1.0F, 1.0F);
+@@ -72,7 +72,7 @@
+             GlStateManager.func_179098_w();
+         }
+ 
+-        GlStateManager.func_179121_F();
++        GlStateManager.pop();
+         super.doRender(p_76986_1_, p_76986_2_, p_76986_4_, p_76986_6_, p_76986_8_, p_76986_9_);
+     }
+ 

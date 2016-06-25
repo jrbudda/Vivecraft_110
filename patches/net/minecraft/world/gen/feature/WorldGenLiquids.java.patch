@@ -1,0 +1,87 @@
+--- a/net/minecraft/world/gen/feature/WorldGenLiquids.java
++++ b/net/minecraft/world/gen/feature/WorldGenLiquids.java
+@@ -19,19 +19,19 @@
+ 
+     public boolean func_180709_b(World p_180709_1_, Random p_180709_2_, BlockPos p_180709_3_)
+     {
+-        if (p_180709_1_.func_180495_p(p_180709_3_.func_177984_a()).func_177230_c() != Blocks.stone)
++        if (p_180709_1_.getBlockState(p_180709_3_.getBlockPosAbove()).getBlock() != Blocks.stone)
+         {
+             return false;
+         }
+-        else if (p_180709_1_.func_180495_p(p_180709_3_.func_177977_b()).func_177230_c() != Blocks.stone)
++        else if (p_180709_1_.getBlockState(p_180709_3_.getBlockPosBelow()).getBlock() != Blocks.stone)
+         {
+             return false;
+         }
+         else
+         {
+-            IBlockState iblockstate = p_180709_1_.func_180495_p(p_180709_3_);
++            IBlockState iblockstate = p_180709_1_.getBlockState(p_180709_3_);
+ 
+-            if (iblockstate.func_185904_a() != Material.air && iblockstate.func_177230_c() != Blocks.stone)
++            if (iblockstate.getMaterial() != Material.air && iblockstate.getBlock() != Blocks.stone)
+             {
+                 return false;
+             }
+@@ -39,51 +39,51 @@
+             {
+                 int i = 0;
+ 
+-                if (p_180709_1_.func_180495_p(p_180709_3_.func_177976_e()).func_177230_c() == Blocks.stone)
++                if (p_180709_1_.getBlockState(p_180709_3_.getBlockPosWest()).getBlock() == Blocks.stone)
+                 {
+                     ++i;
+                 }
+ 
+-                if (p_180709_1_.func_180495_p(p_180709_3_.func_177974_f()).func_177230_c() == Blocks.stone)
++                if (p_180709_1_.getBlockState(p_180709_3_.getBlockPosEast()).getBlock() == Blocks.stone)
+                 {
+                     ++i;
+                 }
+ 
+-                if (p_180709_1_.func_180495_p(p_180709_3_.func_177978_c()).func_177230_c() == Blocks.stone)
++                if (p_180709_1_.getBlockState(p_180709_3_.getBlockPosNorth()).getBlock() == Blocks.stone)
+                 {
+                     ++i;
+                 }
+ 
+-                if (p_180709_1_.func_180495_p(p_180709_3_.func_177968_d()).func_177230_c() == Blocks.stone)
++                if (p_180709_1_.getBlockState(p_180709_3_.getBlockPosSouth()).getBlock() == Blocks.stone)
+                 {
+                     ++i;
+                 }
+ 
+                 int j = 0;
+ 
+-                if (p_180709_1_.func_175623_d(p_180709_3_.func_177976_e()))
++                if (p_180709_1_.isEmpty(p_180709_3_.getBlockPosWest()))
+                 {
+                     ++j;
+                 }
+ 
+-                if (p_180709_1_.func_175623_d(p_180709_3_.func_177974_f()))
++                if (p_180709_1_.isEmpty(p_180709_3_.getBlockPosEast()))
+                 {
+                     ++j;
+                 }
+ 
+-                if (p_180709_1_.func_175623_d(p_180709_3_.func_177978_c()))
++                if (p_180709_1_.isEmpty(p_180709_3_.getBlockPosNorth()))
+                 {
+                     ++j;
+                 }
+ 
+-                if (p_180709_1_.func_175623_d(p_180709_3_.func_177968_d()))
++                if (p_180709_1_.isEmpty(p_180709_3_.getBlockPosSouth()))
+                 {
+                     ++j;
+                 }
+ 
+                 if (i == 3 && j == 1)
+                 {
+-                    IBlockState iblockstate1 = this.field_150521_a.func_176223_P();
++                    IBlockState iblockstate1 = this.field_150521_a.getBlockState();
+                     p_180709_1_.func_180501_a(p_180709_3_, iblockstate1, 2);
+                     p_180709_1_.func_189507_a(p_180709_3_, iblockstate1, p_180709_2_);
+                 }

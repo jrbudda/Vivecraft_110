@@ -1,0 +1,80 @@
+--- a/net/minecraft/client/renderer/entity/RenderLivingBase.java
++++ b/net/minecraft/client/renderer/entity/RenderLivingBase.java
+@@ -85,10 +85,10 @@
+      */
+     public void doRender(T p_76986_1_, double p_76986_2_, double p_76986_4_, double p_76986_6_, float p_76986_8_, float p_76986_9_)
+     {
+-        GlStateManager.func_179094_E();
++        GlStateManager.push();
+         GlStateManager.func_179129_p();
+         this.mainModel.swingProgress = this.getSwingProgress(p_76986_1_, p_76986_9_);
+-        this.mainModel.isRiding = p_76986_1_.func_184218_aH();
++        this.mainModel.isRiding = p_76986_1_.isRiding();
+         this.mainModel.isChild = p_76986_1_.isChild();
+ 
+         try
+@@ -97,9 +97,9 @@
+             float f1 = this.interpolateRotation(p_76986_1_.prevRotationYawHead, p_76986_1_.rotationYawHead, p_76986_9_);
+             float f2 = f1 - f;
+ 
+-            if (p_76986_1_.func_184218_aH() && p_76986_1_.func_184187_bx() instanceof EntityLivingBase)
++            if (p_76986_1_.isRiding() && p_76986_1_.getRidingEntity() instanceof EntityLivingBase)
+             {
+-                EntityLivingBase entitylivingbase = (EntityLivingBase)p_76986_1_.func_184187_bx();
++                EntityLivingBase entitylivingbase = (EntityLivingBase)p_76986_1_.getRidingEntity();
+                 f = this.interpolateRotation(entitylivingbase.prevRenderYawOffset, entitylivingbase.renderYawOffset, p_76986_9_);
+                 f2 = f1 - f;
+                 float f3 = MathHelper.wrapAngleTo180_float(f2);
+@@ -130,7 +130,7 @@
+             float f5 = 0.0F;
+             float f6 = 0.0F;
+ 
+-            if (!p_76986_1_.func_184218_aH())
++            if (!p_76986_1_.isRiding())
+             {
+                 f5 = p_76986_1_.field_184618_aE + (p_76986_1_.limbSwingAmount - p_76986_1_.field_184618_aE) * p_76986_9_;
+                 f6 = p_76986_1_.field_184619_aG - p_76986_1_.limbSwingAmount * (1.0F - p_76986_9_);
+@@ -203,14 +203,14 @@
+         GlStateManager.func_179098_w();
+         GlStateManager.func_179138_g(OpenGlHelper.defaultTexUnit);
+         GlStateManager.func_179089_o();
+-        GlStateManager.func_179121_F();
++        GlStateManager.pop();
+         super.doRender(p_76986_1_, p_76986_2_, p_76986_4_, p_76986_6_, p_76986_8_, p_76986_9_);
+     }
+ 
+     public float func_188322_c(T p_188322_1_, float p_188322_2_)
+     {
+         GlStateManager.func_179091_B();
+-        GlStateManager.func_179152_a(-1.0F, -1.0F, 1.0F);
++        GlStateManager.scale(-1.0F, -1.0F, 1.0F);
+         this.preRenderCallback(p_188322_1_, p_188322_2_);
+         float f = 0.0625F;
+         GlStateManager.func_179109_b(0.0F, -1.501F, 0.0F);
+@@ -400,7 +400,7 @@
+ 
+     protected void rotateCorpse(T p_77043_1_, float p_77043_2_, float p_77043_3_, float p_77043_4_)
+     {
+-        GlStateManager.func_179114_b(180.0F - p_77043_3_, 0.0F, 1.0F, 0.0F);
++        GlStateManager.rotate(180.0F - p_77043_3_, 0.0F, 1.0F, 0.0F);
+ 
+         if (p_77043_1_.deathTime > 0)
+         {
+@@ -412,7 +412,7 @@
+                 f = 1.0F;
+             }
+ 
+-            GlStateManager.func_179114_b(f * this.getDeathMaxRotation(p_77043_1_), 0.0F, 0.0F, 1.0F);
++            GlStateManager.rotate(f * this.getDeathMaxRotation(p_77043_1_), 0.0F, 0.0F, 1.0F);
+         }
+         else
+         {
+@@ -421,7 +421,7 @@
+             if (s != null && ("Dinnerbone".equals(s) || "Grumm".equals(s)) && (!(p_77043_1_ instanceof EntityPlayer) || ((EntityPlayer)p_77043_1_).func_175148_a(EnumPlayerModelParts.CAPE)))
+             {
+                 GlStateManager.func_179109_b(0.0F, p_77043_1_.height + 0.1F, 0.0F);
+-                GlStateManager.func_179114_b(180.0F, 0.0F, 0.0F, 1.0F);
++                GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+             }
+         }
+     }

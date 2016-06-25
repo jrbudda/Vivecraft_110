@@ -1,0 +1,29 @@
+--- a/net/minecraft/client/renderer/entity/RenderPainting.java
++++ b/net/minecraft/client/renderer/entity/RenderPainting.java
+@@ -28,14 +28,14 @@
+      */
+     public void doRender(EntityPainting p_76986_1_, double p_76986_2_, double p_76986_4_, double p_76986_6_, float p_76986_8_, float p_76986_9_)
+     {
+-        GlStateManager.func_179094_E();
++        GlStateManager.push();
+         GlStateManager.func_179137_b(p_76986_2_, p_76986_4_, p_76986_6_);
+-        GlStateManager.func_179114_b(180.0F - p_76986_8_, 0.0F, 1.0F, 0.0F);
++        GlStateManager.rotate(180.0F - p_76986_8_, 0.0F, 1.0F, 0.0F);
+         GlStateManager.func_179091_B();
+         this.func_180548_c(p_76986_1_);
+         EntityPainting.EnumArt entitypainting$enumart = p_76986_1_.art;
+         float f = 0.0625F;
+-        GlStateManager.func_179152_a(0.0625F, 0.0625F, 0.0625F);
++        GlStateManager.scale(0.0625F, 0.0625F, 0.0625F);
+ 
+         if (this.field_188301_f)
+         {
+@@ -52,7 +52,7 @@
+         }
+ 
+         GlStateManager.func_179101_C();
+-        GlStateManager.func_179121_F();
++        GlStateManager.pop();
+         super.doRender(p_76986_1_, p_76986_2_, p_76986_4_, p_76986_6_, p_76986_8_, p_76986_9_);
+     }
+ 

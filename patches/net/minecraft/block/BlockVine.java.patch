@@ -1,0 +1,169 @@
+--- a/net/minecraft/block/BlockVine.java
++++ b/net/minecraft/block/BlockVine.java
+@@ -94,7 +94,7 @@
+ 
+     public IBlockState func_176221_a(IBlockState p_176221_1_, IBlockAccess p_176221_2_, BlockPos p_176221_3_)
+     {
+-        return p_176221_1_.func_177226_a(field_176277_a, Boolean.valueOf(p_176221_2_.func_180495_p(p_176221_3_.func_177984_a()).func_185898_k()));
++        return p_176221_1_.func_177226_a(field_176277_a, Boolean.valueOf(p_176221_2_.getBlockState(p_176221_3_.getBlockPosAbove()).func_185898_k()));
+     }
+ 
+     public boolean isOpaqueCube(IBlockState p_149662_1_)
+@@ -117,13 +117,13 @@
+         switch (p_176198_3_)
+         {
+             case UP:
+-                return this.func_185752_x(p_176198_1_.func_180495_p(p_176198_2_.func_177984_a()));
++                return this.func_185752_x(p_176198_1_.getBlockState(p_176198_2_.getBlockPosAbove()));
+ 
+             case NORTH:
+             case SOUTH:
+             case EAST:
+             case WEST:
+-                return this.func_185752_x(p_176198_1_.func_180495_p(p_176198_2_.func_177972_a(p_176198_3_.func_176734_d())));
++                return this.func_185752_x(p_176198_1_.getBlockState(p_176198_2_.getBlockPosRelative(p_176198_3_.func_176734_d())));
+ 
+             default:
+                 return false;
+@@ -132,7 +132,7 @@
+ 
+     private boolean func_185752_x(IBlockState p_185752_1_)
+     {
+-        return p_185752_1_.func_185917_h() && p_185752_1_.func_185904_a().blocksMovement();
++        return p_185752_1_.func_185917_h() && p_185752_1_.getMaterial().blocksMovement();
+     }
+ 
+     private boolean func_176269_e(World p_176269_1_, BlockPos p_176269_2_, IBlockState p_176269_3_)
+@@ -143,11 +143,11 @@
+         {
+             PropertyBool propertybool = func_176267_a(enumfacing);
+ 
+-            if (((Boolean)p_176269_3_.func_177229_b(propertybool)).booleanValue() && !this.func_185752_x(p_176269_1_.func_180495_p(p_176269_2_.func_177972_a(enumfacing))))
++            if (((Boolean)p_176269_3_.func_177229_b(propertybool)).booleanValue() && !this.func_185752_x(p_176269_1_.getBlockState(p_176269_2_.getBlockPosRelative(enumfacing))))
+             {
+-                IBlockState iblockstate1 = p_176269_1_.func_180495_p(p_176269_2_.func_177984_a());
++                IBlockState iblockstate1 = p_176269_1_.getBlockState(p_176269_2_.getBlockPosAbove());
+ 
+-                if (iblockstate1.func_177230_c() != this || !((Boolean)iblockstate1.func_177229_b(propertybool)).booleanValue())
++                if (iblockstate1.getBlock() != this || !((Boolean)iblockstate1.func_177229_b(propertybool)).booleanValue())
+                 {
+                     p_176269_3_ = p_176269_3_.func_177226_a(propertybool, Boolean.valueOf(false));
+                 }
+@@ -195,7 +195,7 @@
+                     {
+                         for (int i1 = -1; i1 <= 1; ++i1)
+                         {
+-                            if (p_180650_1_.func_180495_p(p_180650_2_.func_177982_a(k, i1, l)).func_177230_c() == this)
++                            if (p_180650_1_.getBlockState(p_180650_2_.func_177982_a(k, i1, l)).getBlock() == this)
+                             {
+                                 --j;
+ 
+@@ -210,9 +210,9 @@
+                 }
+ 
+                 EnumFacing enumfacing1 = EnumFacing.func_176741_a(p_180650_4_);
+-                BlockPos blockpos2 = p_180650_2_.func_177984_a();
++                BlockPos blockpos2 = p_180650_2_.getBlockPosAbove();
+ 
+-                if (enumfacing1 == EnumFacing.UP && p_180650_2_.func_177956_o() < 255 && p_180650_1_.func_175623_d(blockpos2))
++                if (enumfacing1 == EnumFacing.UP && p_180650_2_.getY() < 255 && p_180650_1_.isEmpty(blockpos2))
+                 {
+                     if (!flag)
+                     {
+@@ -220,7 +220,7 @@
+ 
+                         for (EnumFacing enumfacing2 : EnumFacing.Plane.HORIZONTAL)
+                         {
+-                            if (p_180650_4_.nextBoolean() || !this.func_185752_x(p_180650_1_.func_180495_p(blockpos2.func_177972_a(enumfacing2))))
++                            if (p_180650_4_.nextBoolean() || !this.func_185752_x(p_180650_1_.getBlockState(blockpos2.getBlockPosRelative(enumfacing2))))
+                             {
+                                 iblockstate2 = iblockstate2.func_177226_a(func_176267_a(enumfacing2), Boolean.valueOf(false));
+                             }
+@@ -236,9 +236,9 @@
+                 {
+                     if (!flag)
+                     {
+-                        BlockPos blockpos4 = p_180650_2_.func_177972_a(enumfacing1);
+-                        IBlockState iblockstate3 = p_180650_1_.func_180495_p(blockpos4);
+-                        Block block1 = iblockstate3.func_177230_c();
++                        BlockPos blockpos4 = p_180650_2_.getBlockPosRelative(enumfacing1);
++                        IBlockState iblockstate3 = p_180650_1_.getBlockState(blockpos4);
++                        Block block1 = iblockstate3.getBlock();
+ 
+                         if (block1.blockMaterial == Material.air)
+                         {
+@@ -246,28 +246,28 @@
+                             EnumFacing enumfacing4 = enumfacing1.func_176735_f();
+                             boolean flag1 = ((Boolean)p_180650_3_.func_177229_b(func_176267_a(enumfacing3))).booleanValue();
+                             boolean flag2 = ((Boolean)p_180650_3_.func_177229_b(func_176267_a(enumfacing4))).booleanValue();
+-                            BlockPos blockpos = blockpos4.func_177972_a(enumfacing3);
+-                            BlockPos blockpos1 = blockpos4.func_177972_a(enumfacing4);
++                            BlockPos blockpos = blockpos4.getBlockPosRelative(enumfacing3);
++                            BlockPos blockpos1 = blockpos4.getBlockPosRelative(enumfacing4);
+ 
+-                            if (flag1 && this.func_185752_x(p_180650_1_.func_180495_p(blockpos)))
++                            if (flag1 && this.func_185752_x(p_180650_1_.getBlockState(blockpos)))
+                             {
+-                                p_180650_1_.func_180501_a(blockpos4, this.func_176223_P().func_177226_a(func_176267_a(enumfacing3), Boolean.valueOf(true)), 2);
++                                p_180650_1_.func_180501_a(blockpos4, this.getBlockState().func_177226_a(func_176267_a(enumfacing3), Boolean.valueOf(true)), 2);
+                             }
+-                            else if (flag2 && this.func_185752_x(p_180650_1_.func_180495_p(blockpos1)))
++                            else if (flag2 && this.func_185752_x(p_180650_1_.getBlockState(blockpos1)))
+                             {
+-                                p_180650_1_.func_180501_a(blockpos4, this.func_176223_P().func_177226_a(func_176267_a(enumfacing4), Boolean.valueOf(true)), 2);
++                                p_180650_1_.func_180501_a(blockpos4, this.getBlockState().func_177226_a(func_176267_a(enumfacing4), Boolean.valueOf(true)), 2);
+                             }
+-                            else if (flag1 && p_180650_1_.func_175623_d(blockpos) && this.func_185752_x(p_180650_1_.func_180495_p(p_180650_2_.func_177972_a(enumfacing3))))
++                            else if (flag1 && p_180650_1_.isEmpty(blockpos) && this.func_185752_x(p_180650_1_.getBlockState(p_180650_2_.getBlockPosRelative(enumfacing3))))
+                             {
+-                                p_180650_1_.func_180501_a(blockpos, this.func_176223_P().func_177226_a(func_176267_a(enumfacing1.func_176734_d()), Boolean.valueOf(true)), 2);
++                                p_180650_1_.func_180501_a(blockpos, this.getBlockState().func_177226_a(func_176267_a(enumfacing1.func_176734_d()), Boolean.valueOf(true)), 2);
+                             }
+-                            else if (flag2 && p_180650_1_.func_175623_d(blockpos1) && this.func_185752_x(p_180650_1_.func_180495_p(p_180650_2_.func_177972_a(enumfacing4))))
++                            else if (flag2 && p_180650_1_.isEmpty(blockpos1) && this.func_185752_x(p_180650_1_.getBlockState(p_180650_2_.getBlockPosRelative(enumfacing4))))
+                             {
+-                                p_180650_1_.func_180501_a(blockpos1, this.func_176223_P().func_177226_a(func_176267_a(enumfacing1.func_176734_d()), Boolean.valueOf(true)), 2);
++                                p_180650_1_.func_180501_a(blockpos1, this.getBlockState().func_177226_a(func_176267_a(enumfacing1.func_176734_d()), Boolean.valueOf(true)), 2);
+                             }
+-                            else if (this.func_185752_x(p_180650_1_.func_180495_p(blockpos4.func_177984_a())))
++                            else if (this.func_185752_x(p_180650_1_.getBlockState(blockpos4.getBlockPosAbove())))
+                             {
+-                                p_180650_1_.func_180501_a(blockpos4, this.func_176223_P(), 2);
++                                p_180650_1_.func_180501_a(blockpos4, this.getBlockState(), 2);
+                             }
+                         }
+                         else if (block1.blockMaterial.isOpaque() && iblockstate3.func_185917_h())
+@@ -278,11 +278,11 @@
+                 }
+                 else
+                 {
+-                    if (p_180650_2_.func_177956_o() > 1)
++                    if (p_180650_2_.getY() > 1)
+                     {
+-                        BlockPos blockpos3 = p_180650_2_.func_177977_b();
+-                        IBlockState iblockstate = p_180650_1_.func_180495_p(blockpos3);
+-                        Block block = iblockstate.func_177230_c();
++                        BlockPos blockpos3 = p_180650_2_.getBlockPosBelow();
++                        IBlockState iblockstate = p_180650_1_.getBlockState(blockpos3);
++                        Block block = iblockstate.getBlock();
+ 
+                         if (block.blockMaterial == Material.air)
+                         {
+@@ -328,7 +328,7 @@
+ 
+     public IBlockState func_180642_a(World p_180642_1_, BlockPos p_180642_2_, EnumFacing p_180642_3_, float p_180642_4_, float p_180642_5_, float p_180642_6_, int p_180642_7_, EntityLivingBase p_180642_8_)
+     {
+-        IBlockState iblockstate = this.func_176223_P().func_177226_a(field_176277_a, Boolean.valueOf(false)).func_177226_a(field_176273_b, Boolean.valueOf(false)).func_177226_a(field_176278_M, Boolean.valueOf(false)).func_177226_a(field_176279_N, Boolean.valueOf(false)).func_177226_a(field_176280_O, Boolean.valueOf(false));
++        IBlockState iblockstate = this.getBlockState().func_177226_a(field_176277_a, Boolean.valueOf(false)).func_177226_a(field_176273_b, Boolean.valueOf(false)).func_177226_a(field_176278_M, Boolean.valueOf(false)).func_177226_a(field_176279_N, Boolean.valueOf(false)).func_177226_a(field_176280_O, Boolean.valueOf(false));
+         return p_180642_3_.func_176740_k().func_176722_c() ? iblockstate.func_177226_a(func_176267_a(p_180642_3_.func_176734_d()), Boolean.valueOf(true)) : iblockstate;
+     }
+ 
+@@ -366,7 +366,7 @@
+ 
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        return this.func_176223_P().func_177226_a(field_176279_N, Boolean.valueOf((p_176203_1_ & 1) > 0)).func_177226_a(field_176280_O, Boolean.valueOf((p_176203_1_ & 2) > 0)).func_177226_a(field_176273_b, Boolean.valueOf((p_176203_1_ & 4) > 0)).func_177226_a(field_176278_M, Boolean.valueOf((p_176203_1_ & 8) > 0));
++        return this.getBlockState().func_177226_a(field_176279_N, Boolean.valueOf((p_176203_1_ & 1) > 0)).func_177226_a(field_176280_O, Boolean.valueOf((p_176203_1_ & 2) > 0)).func_177226_a(field_176273_b, Boolean.valueOf((p_176203_1_ & 4) > 0)).func_177226_a(field_176278_M, Boolean.valueOf((p_176203_1_ & 8) > 0));
+     }
+ 
+     public int func_176201_c(IBlockState p_176201_1_)

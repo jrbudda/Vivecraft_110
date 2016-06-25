@@ -1,0 +1,9 @@
+--- a/net/minecraft/block/state/IBlockState.java
++++ b/net/minecraft/block/state/IBlockState.java
+@@ -17,5 +17,5 @@
+ 
+     ImmutableMap < IProperty<?>, Comparable<? >> func_177228_b();
+ 
+-    Block func_177230_c();
++    Block getBlock();
+ }

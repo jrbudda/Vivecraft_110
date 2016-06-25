@@ -1,0 +1,17 @@
+--- a/net/minecraft/client/renderer/entity/RenderArmorStand.java
++++ b/net/minecraft/client/renderer/entity/RenderArmorStand.java
+@@ -45,12 +45,12 @@
+ 
+     protected void rotateCorpse(EntityArmorStand p_77043_1_, float p_77043_2_, float p_77043_3_, float p_77043_4_)
+     {
+-        GlStateManager.func_179114_b(180.0F - p_77043_3_, 0.0F, 1.0F, 0.0F);
++        GlStateManager.rotate(180.0F - p_77043_3_, 0.0F, 1.0F, 0.0F);
+         float f = (float)(p_77043_1_.worldObj.getTotalWorldTime() - p_77043_1_.field_175437_i) + p_77043_4_;
+ 
+         if (f < 5.0F)
+         {
+-            GlStateManager.func_179114_b(MathHelper.sin(f / 1.5F * (float)Math.PI) * 3.0F, 0.0F, 1.0F, 0.0F);
++            GlStateManager.rotate(MathHelper.sin(f / 1.5F * (float)Math.PI) * 3.0F, 0.0F, 1.0F, 0.0F);
+         }
+     }
+ 

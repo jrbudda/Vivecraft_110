@@ -1,0 +1,29 @@
+--- a/net/minecraft/entity/monster/EntityPigZombie.java
++++ b/net/minecraft/entity/monster/EntityPigZombie.java
+@@ -98,7 +98,7 @@
+ 
+         if (this.randomSoundDelay > 0 && --this.randomSoundDelay == 0)
+         {
+-            this.func_184185_a(SoundEvents.field_187936_hj, this.getSoundVolume() * 2.0F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F) * 1.8F);
++            this.playSound(SoundEvents.field_187936_hj, this.getSoundVolume() * 2.0F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F) * 1.8F);
+         }
+ 
+         if (this.angerLevel > 0 && this.field_175459_bn != null && this.getAITarget() == null)
+@@ -125,7 +125,7 @@
+      */
+     public boolean handleLavaMovement()
+     {
+-        return this.worldObj.checkNoEntityCollision(this.func_174813_aQ(), this) && this.worldObj.func_184144_a(this, this.func_174813_aQ()).isEmpty() && !this.worldObj.isAnyLiquid(this.func_174813_aQ());
++        return this.worldObj.checkNoEntityCollision(this.func_174813_aQ(), this) && this.worldObj.getCollisionBoxes(this, this.func_174813_aQ()).isEmpty() && !this.worldObj.isAnyLiquid(this.func_174813_aQ());
+     }
+ 
+     public static void func_189781_b(DataFixer p_189781_0_)
+@@ -243,7 +243,7 @@
+ 
+     protected void func_180481_a(DifficultyInstance p_180481_1_)
+     {
+-        this.func_184201_a(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.golden_sword));
++        this.equipItemInSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.golden_sword));
+     }
+ 
+     @Nullable

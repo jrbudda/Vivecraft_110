@@ -1,0 +1,24 @@
+--- a/net/minecraft/entity/boss/dragon/phase/PhaseLandingApproach.java
++++ b/net/minecraft/entity/boss/dragon/phase/PhaseLandingApproach.java
+@@ -32,7 +32,7 @@
+ 
+     public void func_188659_c()
+     {
+-        double d0 = this.field_188684_c == null ? 0.0D : this.field_188684_c.func_186679_c(this.field_188661_a.posX, this.field_188661_a.posY, this.field_188661_a.posZ);
++        double d0 = this.field_188684_c == null ? 0.0D : this.field_188684_c.squareDistanceTo(this.field_188661_a.posX, this.field_188661_a.posY, this.field_188661_a.posZ);
+ 
+         if (d0 < 100.0D || d0 > 22500.0D || this.field_188661_a.isCollidedHorizontally || this.field_188661_a.isCollidedVertically)
+         {
+@@ -62,10 +62,10 @@
+             }
+             else
+             {
+-                j = this.field_188661_a.func_184663_l(40.0D, (double)blockpos.func_177956_o(), 0.0D);
++                j = this.field_188661_a.func_184663_l(40.0D, (double)blockpos.getY(), 0.0D);
+             }
+ 
+-            PathPoint pathpoint = new PathPoint(blockpos.func_177958_n(), blockpos.func_177956_o(), blockpos.func_177952_p());
++            PathPoint pathpoint = new PathPoint(blockpos.getX(), blockpos.getY(), blockpos.getZ());
+             this.field_188683_b = this.field_188661_a.func_184666_a(i, j, pathpoint);
+ 
+             if (this.field_188683_b != null)

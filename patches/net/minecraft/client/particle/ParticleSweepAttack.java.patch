@@ -1,0 +1,28 @@
+--- a/net/minecraft/client/particle/ParticleSweepAttack.java
++++ b/net/minecraft/client/particle/ParticleSweepAttack.java
+@@ -45,9 +45,9 @@
+             float f2 = (float)(i / 2) / 2.0F;
+             float f3 = f2 + 0.4995F;
+             float f4 = 1.0F * this.field_187142_K;
+-            float f5 = (float)(this.field_187123_c + (this.field_187126_f - this.field_187123_c) * (double)p_180434_3_ - interpPosX);
+-            float f6 = (float)(this.field_187124_d + (this.field_187127_g - this.field_187124_d) * (double)p_180434_3_ - interpPosY);
+-            float f7 = (float)(this.field_187125_e + (this.field_187128_h - this.field_187125_e) * (double)p_180434_3_ - interpPosZ);
++            float f5 = (float)(this.posX + (this.prevPosX - this.posX) * (double)p_180434_3_ - interpPosX);
++            float f6 = (float)(this.posY + (this.prevPosY - this.posY) * (double)p_180434_3_ - interpPosY);
++            float f7 = (float)(this.posZ + (this.prevPosZ - this.posZ) * (double)p_180434_3_ - interpPosZ);
+             GlStateManager.func_179131_c(1.0F, 1.0F, 1.0F, 1.0F);
+             GlStateManager.func_179140_f();
+             RenderHelper.disableStandardItemLighting();
+@@ -68,9 +68,9 @@
+ 
+     public void func_189213_a()
+     {
+-        this.field_187123_c = this.field_187126_f;
+-        this.field_187124_d = this.field_187127_g;
+-        this.field_187125_e = this.field_187128_h;
++        this.posX = this.prevPosX;
++        this.posY = this.prevPosY;
++        this.posZ = this.prevPosZ;
+         ++this.field_187139_H;
+ 
+         if (this.field_187139_H == this.field_187140_I)

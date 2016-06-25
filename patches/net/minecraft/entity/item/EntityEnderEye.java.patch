@@ -1,0 +1,30 @@
+--- a/net/minecraft/entity/item/EntityEnderEye.java
++++ b/net/minecraft/entity/item/EntityEnderEye.java
+@@ -59,9 +59,9 @@
+ 
+     public void func_180465_a(BlockPos p_180465_1_)
+     {
+-        double d0 = (double)p_180465_1_.func_177958_n();
+-        int i = p_180465_1_.func_177956_o();
+-        double d1 = (double)p_180465_1_.func_177952_p();
++        double d0 = (double)p_180465_1_.getX();
++        int i = p_180465_1_.getY();
++        double d1 = (double)p_180465_1_.getZ();
+         double d2 = d0 - this.posX;
+         double d3 = d1 - this.posZ;
+         float f = MathHelper.sqrt_double(d2 * d2 + d3 * d3);
+@@ -173,12 +173,12 @@
+         {
+             for (int i = 0; i < 4; ++i)
+             {
+-                this.worldObj.func_175688_a(EnumParticleTypes.WATER_BUBBLE, this.posX - this.motionX * 0.25D, this.posY - this.motionY * 0.25D, this.posZ - this.motionZ * 0.25D, this.motionX, this.motionY, this.motionZ, new int[0]);
++                this.worldObj.spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.posX - this.motionX * 0.25D, this.posY - this.motionY * 0.25D, this.posZ - this.motionZ * 0.25D, this.motionX, this.motionY, this.motionZ, new int[0]);
+             }
+         }
+         else
+         {
+-            this.worldObj.func_175688_a(EnumParticleTypes.PORTAL, this.posX - this.motionX * 0.25D + this.rand.nextDouble() * 0.6D - 0.3D, this.posY - this.motionY * 0.25D - 0.5D, this.posZ - this.motionZ * 0.25D + this.rand.nextDouble() * 0.6D - 0.3D, this.motionX, this.motionY, this.motionZ, new int[0]);
++            this.worldObj.spawnParticle(EnumParticleTypes.PORTAL, this.posX - this.motionX * 0.25D + this.rand.nextDouble() * 0.6D - 0.3D, this.posY - this.motionY * 0.25D - 0.5D, this.posZ - this.motionZ * 0.25D + this.rand.nextDouble() * 0.6D - 0.3D, this.motionX, this.motionY, this.motionZ, new int[0]);
+         }
+ 
+         if (!this.worldObj.isRemote)

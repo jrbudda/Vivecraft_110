@@ -1,0 +1,81 @@
+--- a/net/minecraft/client/renderer/tileentity/TileEntitySignRenderer.java
++++ b/net/minecraft/client/renderer/tileentity/TileEntitySignRenderer.java
+@@ -21,14 +21,14 @@
+     public void func_180535_a(TileEntitySign p_180535_1_, double p_180535_2_, double p_180535_4_, double p_180535_6_, float p_180535_8_, int p_180535_9_)
+     {
+         Block block = p_180535_1_.getBlockType();
+-        GlStateManager.func_179094_E();
++        GlStateManager.push();
+         float f = 0.6666667F;
+ 
+         if (block == Blocks.standing_sign)
+         {
+             GlStateManager.func_179109_b((float)p_180535_2_ + 0.5F, (float)p_180535_4_ + 0.5F, (float)p_180535_6_ + 0.5F);
+             float f1 = (float)(p_180535_1_.getBlockMetadata() * 360) / 16.0F;
+-            GlStateManager.func_179114_b(-f1, 0.0F, 1.0F, 0.0F);
++            GlStateManager.rotate(-f1, 0.0F, 1.0F, 0.0F);
+             this.model.signStick.showModel = true;
+         }
+         else
+@@ -52,7 +52,7 @@
+             }
+ 
+             GlStateManager.func_179109_b((float)p_180535_2_ + 0.5F, (float)p_180535_4_ + 0.5F, (float)p_180535_6_ + 0.5F);
+-            GlStateManager.func_179114_b(-f2, 0.0F, 1.0F, 0.0F);
++            GlStateManager.rotate(-f2, 0.0F, 1.0F, 0.0F);
+             GlStateManager.func_179109_b(0.0F, -0.3125F, -0.4375F);
+             this.model.signStick.showModel = false;
+         }
+@@ -60,11 +60,11 @@
+         if (p_180535_9_ >= 0)
+         {
+             this.bindTexture(field_178460_a[p_180535_9_]);
+-            GlStateManager.func_179128_n(5890);
+-            GlStateManager.func_179094_E();
+-            GlStateManager.func_179152_a(4.0F, 2.0F, 1.0F);
++            GlStateManager.matrixMode(5890);
++            GlStateManager.push();
++            GlStateManager.scale(4.0F, 2.0F, 1.0F);
+             GlStateManager.func_179109_b(0.0625F, 0.0625F, 0.0625F);
+-            GlStateManager.func_179128_n(5888);
++            GlStateManager.matrixMode(5888);
+         }
+         else
+         {
+@@ -72,14 +72,14 @@
+         }
+ 
+         GlStateManager.func_179091_B();
+-        GlStateManager.func_179094_E();
+-        GlStateManager.func_179152_a(0.6666667F, -0.6666667F, -0.6666667F);
++        GlStateManager.push();
++        GlStateManager.scale(0.6666667F, -0.6666667F, -0.6666667F);
+         this.model.renderSign();
+-        GlStateManager.func_179121_F();
++        GlStateManager.pop();
+         FontRenderer fontrenderer = this.func_147498_b();
+         float f3 = 0.010416667F;
+         GlStateManager.func_179109_b(0.0F, 0.33333334F, 0.046666667F);
+-        GlStateManager.func_179152_a(0.010416667F, -0.010416667F, 0.010416667F);
++        GlStateManager.scale(0.010416667F, -0.010416667F, 0.010416667F);
+         GlStateManager.func_187432_a(0.0F, 0.0F, -0.010416667F);
+         GlStateManager.func_179132_a(false);
+         int i = 0;
+@@ -109,13 +109,13 @@
+ 
+         GlStateManager.func_179132_a(true);
+         GlStateManager.func_179131_c(1.0F, 1.0F, 1.0F, 1.0F);
+-        GlStateManager.func_179121_F();
++        GlStateManager.pop();
+ 
+         if (p_180535_9_ >= 0)
+         {
+-            GlStateManager.func_179128_n(5890);
+-            GlStateManager.func_179121_F();
+-            GlStateManager.func_179128_n(5888);
++            GlStateManager.matrixMode(5890);
++            GlStateManager.pop();
++            GlStateManager.matrixMode(5888);
+         }
+     }
+ }

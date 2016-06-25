@@ -1,0 +1,59 @@
+--- a/net/minecraft/client/renderer/tileentity/TileEntityEnderChestRenderer.java
++++ b/net/minecraft/client/renderer/tileentity/TileEntityEnderChestRenderer.java
+@@ -22,22 +22,22 @@
+         if (p_180535_9_ >= 0)
+         {
+             this.bindTexture(field_178460_a[p_180535_9_]);
+-            GlStateManager.func_179128_n(5890);
+-            GlStateManager.func_179094_E();
+-            GlStateManager.func_179152_a(4.0F, 4.0F, 1.0F);
++            GlStateManager.matrixMode(5890);
++            GlStateManager.push();
++            GlStateManager.scale(4.0F, 4.0F, 1.0F);
+             GlStateManager.func_179109_b(0.0625F, 0.0625F, 0.0625F);
+-            GlStateManager.func_179128_n(5888);
++            GlStateManager.matrixMode(5888);
+         }
+         else
+         {
+             this.bindTexture(field_147520_b);
+         }
+ 
+-        GlStateManager.func_179094_E();
++        GlStateManager.push();
+         GlStateManager.func_179091_B();
+         GlStateManager.func_179131_c(1.0F, 1.0F, 1.0F, 1.0F);
+         GlStateManager.func_179109_b((float)p_180535_2_, (float)p_180535_4_ + 1.0F, (float)p_180535_6_ + 1.0F);
+-        GlStateManager.func_179152_a(1.0F, -1.0F, -1.0F);
++        GlStateManager.scale(1.0F, -1.0F, -1.0F);
+         GlStateManager.func_179109_b(0.5F, 0.5F, 0.5F);
+         int j = 0;
+ 
+@@ -61,7 +61,7 @@
+             j = -90;
+         }
+ 
+-        GlStateManager.func_179114_b((float)j, 0.0F, 1.0F, 0.0F);
++        GlStateManager.rotate((float)j, 0.0F, 1.0F, 0.0F);
+         GlStateManager.func_179109_b(-0.5F, -0.5F, -0.5F);
+         float f = p_180535_1_.prevLidAngle + (p_180535_1_.field_145972_a - p_180535_1_.prevLidAngle) * p_180535_8_;
+         f = 1.0F - f;
+@@ -69,14 +69,14 @@
+         this.field_147521_c.chestLid.rotateAngleX = -(f * ((float)Math.PI / 2F));
+         this.field_147521_c.renderAll();
+         GlStateManager.func_179101_C();
+-        GlStateManager.func_179121_F();
++        GlStateManager.pop();
+         GlStateManager.func_179131_c(1.0F, 1.0F, 1.0F, 1.0F);
+ 
+         if (p_180535_9_ >= 0)
+         {
+-            GlStateManager.func_179128_n(5890);
+-            GlStateManager.func_179121_F();
+-            GlStateManager.func_179128_n(5888);
++            GlStateManager.matrixMode(5890);
++            GlStateManager.pop();
++            GlStateManager.matrixMode(5888);
+         }
+     }
+ }

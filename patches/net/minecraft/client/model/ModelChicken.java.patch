@@ -1,0 +1,29 @@
+--- a/net/minecraft/client/model/ModelChicken.java
++++ b/net/minecraft/client/model/ModelChicken.java
+@@ -54,21 +54,21 @@
+         if (this.isChild)
+         {
+             float f = 2.0F;
+-            GlStateManager.func_179094_E();
++            GlStateManager.push();
+             GlStateManager.func_179109_b(0.0F, 5.0F * p_78088_7_, 2.0F * p_78088_7_);
+             this.head.render(p_78088_7_);
+             this.bill.render(p_78088_7_);
+             this.chin.render(p_78088_7_);
+-            GlStateManager.func_179121_F();
+-            GlStateManager.func_179094_E();
+-            GlStateManager.func_179152_a(0.5F, 0.5F, 0.5F);
++            GlStateManager.pop();
++            GlStateManager.push();
++            GlStateManager.scale(0.5F, 0.5F, 0.5F);
+             GlStateManager.func_179109_b(0.0F, 24.0F * p_78088_7_, 0.0F);
+             this.body.render(p_78088_7_);
+             this.rightLeg.render(p_78088_7_);
+             this.leftLeg.render(p_78088_7_);
+             this.rightWing.render(p_78088_7_);
+             this.leftWing.render(p_78088_7_);
+-            GlStateManager.func_179121_F();
++            GlStateManager.pop();
+         }
+         else
+         {

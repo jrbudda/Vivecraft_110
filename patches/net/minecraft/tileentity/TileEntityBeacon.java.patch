@@ -1,0 +1,71 @@
+--- a/net/minecraft/tileentity/TileEntityBeacon.java
++++ b/net/minecraft/tileentity/TileEntityBeacon.java
+@@ -90,10 +90,10 @@
+             }
+ 
+             int j = (9 + this.levels * 2) * 20;
+-            int k = this.field_174879_c.func_177958_n();
+-            int l = this.field_174879_c.func_177956_o();
+-            int i1 = this.field_174879_c.func_177952_p();
+-            AxisAlignedBB axisalignedbb = (new AxisAlignedBB((double)k, (double)l, (double)i1, (double)(k + 1), (double)(l + 1), (double)(i1 + 1))).func_186662_g(d0).addCoord(0.0D, (double)this.worldObj.getHeight(), 0.0D);
++            int k = this.field_174879_c.getX();
++            int l = this.field_174879_c.getY();
++            int i1 = this.field_174879_c.getZ();
++            AxisAlignedBB axisalignedbb = (new AxisAlignedBB((double)k, (double)l, (double)i1, (double)(k + 1), (double)(l + 1), (double)(i1 + 1))).expand(d0).addCoord(0.0D, (double)this.worldObj.getHeight(), 0.0D);
+             List<EntityPlayer> list = this.worldObj.<EntityPlayer>getEntitiesWithinAABB(EntityPlayer.class, axisalignedbb);
+ 
+             for (EntityPlayer entityplayer : list)
+@@ -114,9 +114,9 @@
+     private void func_146003_y()
+     {
+         int i = this.levels;
+-        int j = this.field_174879_c.func_177958_n();
+-        int k = this.field_174879_c.func_177956_o();
+-        int l = this.field_174879_c.func_177952_p();
++        int j = this.field_174879_c.getX();
++        int k = this.field_174879_c.getY();
++        int l = this.field_174879_c.getZ();
+         this.levels = 0;
+         this.field_174909_f.clear();
+         this.isComplete = true;
+@@ -127,18 +127,18 @@
+ 
+         for (int i1 = k + 1; i1 < 256; ++i1)
+         {
+-            IBlockState iblockstate = this.worldObj.func_180495_p(blockpos$mutableblockpos.func_181079_c(j, i1, l));
++            IBlockState iblockstate = this.worldObj.getBlockState(blockpos$mutableblockpos.func_181079_c(j, i1, l));
+             float[] afloat;
+ 
+-            if (iblockstate.func_177230_c() == Blocks.stained_glass)
++            if (iblockstate.getBlock() == Blocks.stained_glass)
+             {
+                 afloat = EntitySheep.func_175513_a((EnumDyeColor)iblockstate.func_177229_b(BlockStainedGlass.field_176547_a));
+             }
+             else
+             {
+-                if (iblockstate.func_177230_c() != Blocks.stained_glass_pane)
++                if (iblockstate.getBlock() != Blocks.stained_glass_pane)
+                 {
+-                    if (iblockstate.func_185891_c() >= 15 && iblockstate.func_177230_c() != Blocks.bedrock)
++                    if (iblockstate.func_185891_c() >= 15 && iblockstate.getBlock() != Blocks.bedrock)
+                     {
+                         this.isComplete = false;
+                         this.field_174909_f.clear();
+@@ -187,7 +187,7 @@
+                 {
+                     for (int k1 = l - l1; k1 <= l + l1; ++k1)
+                     {
+-                        Block block = this.worldObj.func_180495_p(new BlockPos(j1, i2, k1)).func_177230_c();
++                        Block block = this.worldObj.getBlockState(new BlockPos(j1, i2, k1)).getBlock();
+ 
+                         if (block != Blocks.emerald_block && block != Blocks.gold_block && block != Blocks.diamond_block && block != Blocks.iron_block)
+                         {
+@@ -407,7 +407,7 @@
+      */
+     public boolean isUseableByPlayer(EntityPlayer player)
+     {
+-        return this.worldObj.func_175625_s(this.field_174879_c) != this ? false : player.getDistanceSq((double)this.field_174879_c.func_177958_n() + 0.5D, (double)this.field_174879_c.func_177956_o() + 0.5D, (double)this.field_174879_c.func_177952_p() + 0.5D) <= 64.0D;
++        return this.worldObj.func_175625_s(this.field_174879_c) != this ? false : player.getDistanceSq((double)this.field_174879_c.getX() + 0.5D, (double)this.field_174879_c.getY() + 0.5D, (double)this.field_174879_c.getZ() + 0.5D) <= 64.0D;
+     }
+ 
+     public void func_174889_b(EntityPlayer p_174889_1_)

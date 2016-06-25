@@ -1,0 +1,46 @@
+--- a/net/minecraft/client/renderer/tileentity/TileEntityEndGatewayRenderer.java
++++ b/net/minecraft/client/renderer/tileentity/TileEntityEndGatewayRenderer.java
+@@ -88,7 +88,7 @@
+ 
+         for (int k = 0; k < i; ++k)
+         {
+-            GlStateManager.func_179094_E();
++            GlStateManager.push();
+             float f5 = 2.0F / (float)(18 - k);
+ 
+             if (k == 0)
+@@ -119,16 +119,16 @@
+             GlStateManager.func_179087_a(GlStateManager.TexGen.S);
+             GlStateManager.func_179087_a(GlStateManager.TexGen.T);
+             GlStateManager.func_179087_a(GlStateManager.TexGen.R);
+-            GlStateManager.func_179121_F();
+-            GlStateManager.func_179128_n(5890);
+-            GlStateManager.func_179094_E();
+-            GlStateManager.func_179096_D();
++            GlStateManager.pop();
++            GlStateManager.matrixMode(5890);
++            GlStateManager.push();
++            GlStateManager.loadIdentity();
+             GlStateManager.func_179109_b(0.5F, 0.5F, 0.0F);
+-            GlStateManager.func_179152_a(0.5F, 0.5F, 1.0F);
++            GlStateManager.scale(0.5F, 0.5F, 1.0F);
+             float f1 = (float)(k + 1);
+             GlStateManager.func_179109_b(17.0F / f1, (2.0F + f1 / 1.5F) * ((float)Minecraft.getSystemTime() % 800000.0F / 800000.0F), 0.0F);
+-            GlStateManager.func_179114_b((f1 * f1 * 4321.0F + f1 * 9.0F) * 2.0F, 0.0F, 0.0F, 1.0F);
+-            GlStateManager.func_179152_a(4.5F - f1 / 4.0F, 4.5F - f1 / 4.0F, 1.0F);
++            GlStateManager.rotate((f1 * f1 * 4321.0F + f1 * 9.0F) * 2.0F, 0.0F, 0.0F, 1.0F);
++            GlStateManager.scale(4.5F - f1 / 4.0F, 4.5F - f1 / 4.0F, 1.0F);
+             GlStateManager.func_179110_a(field_188202_i);
+             GlStateManager.func_179110_a(field_188201_h);
+             Tessellator tessellator = Tessellator.func_178181_a();
+@@ -187,8 +187,8 @@
+             }
+ 
+             tessellator.draw();
+-            GlStateManager.func_179121_F();
+-            GlStateManager.func_179128_n(5888);
++            GlStateManager.pop();
++            GlStateManager.matrixMode(5888);
+             this.bindTexture(field_188197_d);
+         }
+ 

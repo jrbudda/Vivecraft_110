@@ -1,0 +1,156 @@
+--- a/net/minecraft/tileentity/TileEntityStructure.java
++++ b/net/minecraft/tileentity/TileEntityStructure.java
+@@ -38,7 +38,7 @@
+     private String field_184421_f = "";
+     private String field_184422_g = "";
+     private BlockPos field_184423_h = new BlockPos(0, 1, 0);
+-    private BlockPos field_184424_i = BlockPos.field_177992_a;
++    private BlockPos field_184424_i = BlockPos.createDefault;
+     private Mirror field_184425_j = Mirror.NONE;
+     private Rotation field_184426_k = Rotation.NONE;
+     private TileEntityStructure.Mode field_184427_l = TileEntityStructure.Mode.DATA;
+@@ -55,12 +55,12 @@
+         p_189515_1_.setString("name", this.field_184420_a);
+         p_189515_1_.setString("author", this.field_184421_f);
+         p_189515_1_.setString("metadata", this.field_184422_g);
+-        p_189515_1_.setInteger("posX", this.field_184423_h.func_177958_n());
+-        p_189515_1_.setInteger("posY", this.field_184423_h.func_177956_o());
+-        p_189515_1_.setInteger("posZ", this.field_184423_h.func_177952_p());
+-        p_189515_1_.setInteger("sizeX", this.field_184424_i.func_177958_n());
+-        p_189515_1_.setInteger("sizeY", this.field_184424_i.func_177956_o());
+-        p_189515_1_.setInteger("sizeZ", this.field_184424_i.func_177952_p());
++        p_189515_1_.setInteger("posX", this.field_184423_h.getX());
++        p_189515_1_.setInteger("posY", this.field_184423_h.getY());
++        p_189515_1_.setInteger("posZ", this.field_184423_h.getZ());
++        p_189515_1_.setInteger("sizeX", this.field_184424_i.getX());
++        p_189515_1_.setInteger("sizeY", this.field_184424_i.getY());
++        p_189515_1_.setInteger("sizeZ", this.field_184424_i.getZ());
+         p_189515_1_.setString("rotation", this.field_184426_k.toString());
+         p_189515_1_.setString("mirror", this.field_184425_j.toString());
+         p_189515_1_.setString("mode", this.field_184427_l.toString());
+@@ -138,9 +138,9 @@
+         if (this.worldObj != null)
+         {
+             BlockPos blockpos = this.func_174877_v();
+-            IBlockState iblockstate = this.worldObj.func_180495_p(blockpos);
++            IBlockState iblockstate = this.worldObj.getBlockState(blockpos);
+ 
+-            if (iblockstate.func_177230_c() == Blocks.field_185779_df)
++            if (iblockstate.getBlock() == Blocks.field_185779_df)
+             {
+                 this.worldObj.func_180501_a(blockpos, iblockstate.func_177226_a(BlockStructure.field_185587_a, this.field_184427_l), 2);
+             }
+@@ -258,9 +258,9 @@
+     public void func_184405_a(TileEntityStructure.Mode p_184405_1_)
+     {
+         this.field_184427_l = p_184405_1_;
+-        IBlockState iblockstate = this.worldObj.func_180495_p(this.func_174877_v());
++        IBlockState iblockstate = this.worldObj.getBlockState(this.func_174877_v());
+ 
+-        if (iblockstate.func_177230_c() == Blocks.field_185779_df)
++        if (iblockstate.getBlock() == Blocks.field_185779_df)
+         {
+             this.worldObj.func_180501_a(this.func_174877_v(), iblockstate.func_177226_a(BlockStructure.field_185587_a, p_184405_1_), 2);
+         }
+@@ -327,8 +327,8 @@
+         {
+             BlockPos blockpos = this.func_174877_v();
+             int i = 80;
+-            BlockPos blockpos1 = new BlockPos(blockpos.func_177958_n() - 80, 0, blockpos.func_177952_p() - 80);
+-            BlockPos blockpos2 = new BlockPos(blockpos.func_177958_n() + 80, 255, blockpos.func_177952_p() + 80);
++            BlockPos blockpos1 = new BlockPos(blockpos.getX() - 80, 0, blockpos.getZ() - 80);
++            BlockPos blockpos2 = new BlockPos(blockpos.getX() + 80, 255, blockpos.getZ() + 80);
+             List<TileEntityStructure> list = this.func_184418_a(blockpos1, blockpos2);
+             List<TileEntityStructure> list1 = this.func_184415_a(list);
+ 
+@@ -342,10 +342,10 @@
+ 
+                 if (structureboundingbox.maxX - structureboundingbox.minX > 1 && structureboundingbox.maxY - structureboundingbox.minY > 1 && structureboundingbox.maxZ - structureboundingbox.minZ > 1)
+                 {
+-                    this.field_184423_h = new BlockPos(structureboundingbox.minX - blockpos.func_177958_n() + 1, structureboundingbox.minY - blockpos.func_177956_o() + 1, structureboundingbox.minZ - blockpos.func_177952_p() + 1);
++                    this.field_184423_h = new BlockPos(structureboundingbox.minX - blockpos.getX() + 1, structureboundingbox.minY - blockpos.getY() + 1, structureboundingbox.minZ - blockpos.getZ() + 1);
+                     this.field_184424_i = new BlockPos(structureboundingbox.maxX - structureboundingbox.minX - 1, structureboundingbox.maxY - structureboundingbox.minY - 1, structureboundingbox.maxZ - structureboundingbox.minZ - 1);
+                     this.markDirty();
+-                    IBlockState iblockstate = this.worldObj.func_180495_p(blockpos);
++                    IBlockState iblockstate = this.worldObj.getBlockState(blockpos);
+                     this.worldObj.func_184138_a(blockpos, iblockstate, iblockstate, 3);
+                     return true;
+                 }
+@@ -375,9 +375,9 @@
+ 
+         for (BlockPos.MutableBlockPos blockpos$mutableblockpos : BlockPos.func_177975_b(p_184418_1_, p_184418_2_))
+         {
+-            IBlockState iblockstate = this.worldObj.func_180495_p(blockpos$mutableblockpos);
++            IBlockState iblockstate = this.worldObj.getBlockState(blockpos$mutableblockpos);
+ 
+-            if (iblockstate.func_177230_c() == Blocks.field_185779_df)
++            if (iblockstate.getBlock() == Blocks.field_185779_df)
+             {
+                 TileEntity tileentity = this.worldObj.func_175625_s(blockpos$mutableblockpos);
+ 
+@@ -409,31 +409,31 @@
+         {
+             BlockPos blockpos1 = tileentitystructure.func_174877_v();
+ 
+-            if (blockpos1.func_177958_n() < structureboundingbox.minX)
++            if (blockpos1.getX() < structureboundingbox.minX)
+             {
+-                structureboundingbox.minX = blockpos1.func_177958_n();
++                structureboundingbox.minX = blockpos1.getX();
+             }
+-            else if (blockpos1.func_177958_n() > structureboundingbox.maxX)
++            else if (blockpos1.getX() > structureboundingbox.maxX)
+             {
+-                structureboundingbox.maxX = blockpos1.func_177958_n();
++                structureboundingbox.maxX = blockpos1.getX();
+             }
+ 
+-            if (blockpos1.func_177956_o() < structureboundingbox.minY)
++            if (blockpos1.getY() < structureboundingbox.minY)
+             {
+-                structureboundingbox.minY = blockpos1.func_177956_o();
++                structureboundingbox.minY = blockpos1.getY();
+             }
+-            else if (blockpos1.func_177956_o() > structureboundingbox.maxY)
++            else if (blockpos1.getY() > structureboundingbox.maxY)
+             {
+-                structureboundingbox.maxY = blockpos1.func_177956_o();
++                structureboundingbox.maxY = blockpos1.getY();
+             }
+ 
+-            if (blockpos1.func_177952_p() < structureboundingbox.minZ)
++            if (blockpos1.getZ() < structureboundingbox.minZ)
+             {
+-                structureboundingbox.minZ = blockpos1.func_177952_p();
++                structureboundingbox.minZ = blockpos1.getZ();
+             }
+-            else if (blockpos1.func_177952_p() > structureboundingbox.maxZ)
++            else if (blockpos1.getZ() > structureboundingbox.maxZ)
+             {
+-                structureboundingbox.maxZ = blockpos1.func_177952_p();
++                structureboundingbox.maxZ = blockpos1.getZ();
+             }
+         }
+ 
+@@ -442,9 +442,9 @@
+ 
+     public void func_189705_a(ByteBuf p_189705_1_)
+     {
+-        p_189705_1_.writeInt(this.field_174879_c.func_177958_n());
+-        p_189705_1_.writeInt(this.field_174879_c.func_177956_o());
+-        p_189705_1_.writeInt(this.field_174879_c.func_177952_p());
++        p_189705_1_.writeInt(this.field_174879_c.getX());
++        p_189705_1_.writeInt(this.field_174879_c.getY());
++        p_189705_1_.writeInt(this.field_174879_c.getZ());
+     }
+ 
+     public boolean func_184419_m()
+@@ -505,7 +505,7 @@
+                 {
+                     this.field_184424_i = blockpos2;
+                     this.markDirty();
+-                    IBlockState iblockstate = this.worldObj.func_180495_p(blockpos);
++                    IBlockState iblockstate = this.worldObj.getBlockState(blockpos);
+                     this.worldObj.func_184138_a(blockpos, iblockstate, iblockstate, 3);
+                 }
+ 

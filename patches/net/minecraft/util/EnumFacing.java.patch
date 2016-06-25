@@ -1,0 +1,11 @@
+--- a/net/minecraft/util/EnumFacing.java
++++ b/net/minecraft/util/EnumFacing.java
+@@ -255,7 +255,7 @@
+ 
+         for (EnumFacing enumfacing1 : values())
+         {
+-            float f1 = p_176737_0_ * (float)enumfacing1.field_176756_m.func_177958_n() + p_176737_1_ * (float)enumfacing1.field_176756_m.func_177956_o() + p_176737_2_ * (float)enumfacing1.field_176756_m.func_177952_p();
++            float f1 = p_176737_0_ * (float)enumfacing1.field_176756_m.getX() + p_176737_1_ * (float)enumfacing1.field_176756_m.getY() + p_176737_2_ * (float)enumfacing1.field_176756_m.getZ();
+ 
+             if (f1 > f)
+             {

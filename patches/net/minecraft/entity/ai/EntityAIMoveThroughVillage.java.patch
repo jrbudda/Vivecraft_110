@@ -1,0 +1,11 @@
+--- a/net/minecraft/entity/ai/EntityAIMoveThroughVillage.java
++++ b/net/minecraft/entity/ai/EntityAIMoveThroughVillage.java
+@@ -76,7 +76,7 @@
+                     }
+                     else
+                     {
+-                        Vec3d vec3d = RandomPositionGenerator.findRandomTargetBlockTowards(this.theEntity, 10, 7, new Vec3d((double)this.doorInfo.func_179852_d().func_177958_n(), (double)this.doorInfo.func_179852_d().func_177956_o(), (double)this.doorInfo.func_179852_d().func_177952_p()));
++                        Vec3d vec3d = RandomPositionGenerator.findRandomTargetBlockTowards(this.theEntity, 10, 7, new Vec3d((double)this.doorInfo.func_179852_d().getX(), (double)this.doorInfo.func_179852_d().getY(), (double)this.doorInfo.func_179852_d().getZ()));
+ 
+                         if (vec3d == null)
+                         {

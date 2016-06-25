@@ -1,0 +1,29 @@
+--- a/net/minecraft/client/model/ModelPolarBear.java
++++ b/net/minecraft/client/model/ModelPolarBear.java
+@@ -59,20 +59,20 @@
+             float f = 2.0F;
+             this.field_78145_g = 16.0F;
+             this.field_78151_h = 4.0F;
+-            GlStateManager.func_179094_E();
+-            GlStateManager.func_179152_a(0.6666667F, 0.6666667F, 0.6666667F);
++            GlStateManager.push();
++            GlStateManager.scale(0.6666667F, 0.6666667F, 0.6666667F);
+             GlStateManager.func_179109_b(0.0F, this.field_78145_g * p_78088_7_, this.field_78151_h * p_78088_7_);
+             this.head.render(p_78088_7_);
+-            GlStateManager.func_179121_F();
+-            GlStateManager.func_179094_E();
+-            GlStateManager.func_179152_a(0.5F, 0.5F, 0.5F);
++            GlStateManager.pop();
++            GlStateManager.push();
++            GlStateManager.scale(0.5F, 0.5F, 0.5F);
+             GlStateManager.func_179109_b(0.0F, 24.0F * p_78088_7_, 0.0F);
+             this.body.render(p_78088_7_);
+             this.leg1.render(p_78088_7_);
+             this.leg2.render(p_78088_7_);
+             this.leg3.render(p_78088_7_);
+             this.leg4.render(p_78088_7_);
+-            GlStateManager.func_179121_F();
++            GlStateManager.pop();
+         }
+         else
+         {

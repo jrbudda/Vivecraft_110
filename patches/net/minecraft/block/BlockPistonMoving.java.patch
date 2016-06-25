@@ -1,0 +1,34 @@
+--- a/net/minecraft/block/BlockPistonMoving.java
++++ b/net/minecraft/block/BlockPistonMoving.java
+@@ -75,10 +75,10 @@
+ 
+     public void func_176206_d(World p_176206_1_, BlockPos p_176206_2_, IBlockState p_176206_3_)
+     {
+-        BlockPos blockpos = p_176206_2_.func_177972_a(((EnumFacing)p_176206_3_.func_177229_b(field_176426_a)).func_176734_d());
+-        IBlockState iblockstate = p_176206_1_.func_180495_p(blockpos);
++        BlockPos blockpos = p_176206_2_.getBlockPosRelative(((EnumFacing)p_176206_3_.func_177229_b(field_176426_a)).func_176734_d());
++        IBlockState iblockstate = p_176206_1_.getBlockState(blockpos);
+ 
+-        if (iblockstate.func_177230_c() instanceof BlockPistonBase && ((Boolean)iblockstate.func_177229_b(BlockPistonBase.field_176320_b)).booleanValue())
++        if (iblockstate.getBlock() instanceof BlockPistonBase && ((Boolean)iblockstate.func_177229_b(BlockPistonBase.field_176320_b)).booleanValue())
+         {
+             p_176206_1_.func_175698_g(blockpos);
+         }
+@@ -122,7 +122,7 @@
+             if (tileentitypiston != null)
+             {
+                 IBlockState iblockstate = tileentitypiston.func_174927_b();
+-                iblockstate.func_177230_c().func_176226_b(p_180653_1_, p_180653_2_, iblockstate, 0);
++                iblockstate.getBlock().func_176226_b(p_180653_1_, p_180653_2_, iblockstate, 0);
+             }
+         }
+     }
+@@ -168,7 +168,7 @@
+ 
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        return this.func_176223_P().func_177226_a(field_176426_a, BlockPistonExtension.func_176322_b(p_176203_1_)).func_177226_a(field_176425_b, (p_176203_1_ & 8) > 0 ? BlockPistonExtension.EnumPistonType.STICKY : BlockPistonExtension.EnumPistonType.DEFAULT);
++        return this.getBlockState().func_177226_a(field_176426_a, BlockPistonExtension.func_176322_b(p_176203_1_)).func_177226_a(field_176425_b, (p_176203_1_ & 8) > 0 ? BlockPistonExtension.EnumPistonType.STICKY : BlockPistonExtension.EnumPistonType.DEFAULT);
+     }
+ 
+     public IBlockState func_185499_a(IBlockState p_185499_1_, Rotation p_185499_2_)

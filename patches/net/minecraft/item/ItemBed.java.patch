@@ -1,0 +1,49 @@
+--- a/net/minecraft/item/ItemBed.java
++++ b/net/minecraft/item/ItemBed.java
+@@ -34,28 +34,28 @@
+         }
+         else
+         {
+-            IBlockState iblockstate = p_180614_3_.func_180495_p(p_180614_4_);
+-            Block block = iblockstate.func_177230_c();
++            IBlockState iblockstate = p_180614_3_.getBlockState(p_180614_4_);
++            Block block = iblockstate.getBlock();
+             boolean flag = block.func_176200_f(p_180614_3_, p_180614_4_);
+ 
+             if (!flag)
+             {
+-                p_180614_4_ = p_180614_4_.func_177984_a();
++                p_180614_4_ = p_180614_4_.getBlockPosAbove();
+             }
+ 
+             int i = MathHelper.floor_double((double)(p_180614_2_.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+             EnumFacing enumfacing = EnumFacing.func_176731_b(i);
+-            BlockPos blockpos = p_180614_4_.func_177972_a(enumfacing);
++            BlockPos blockpos = p_180614_4_.getBlockPosRelative(enumfacing);
+ 
+             if (p_180614_2_.func_175151_a(p_180614_4_, p_180614_6_, p_180614_1_) && p_180614_2_.func_175151_a(blockpos, p_180614_6_, p_180614_1_))
+             {
+-                boolean flag1 = p_180614_3_.func_180495_p(blockpos).func_177230_c().func_176200_f(p_180614_3_, blockpos);
+-                boolean flag2 = flag || p_180614_3_.func_175623_d(p_180614_4_);
+-                boolean flag3 = flag1 || p_180614_3_.func_175623_d(blockpos);
++                boolean flag1 = p_180614_3_.getBlockState(blockpos).getBlock().func_176200_f(p_180614_3_, blockpos);
++                boolean flag2 = flag || p_180614_3_.isEmpty(p_180614_4_);
++                boolean flag3 = flag1 || p_180614_3_.isEmpty(blockpos);
+ 
+-                if (flag2 && flag3 && p_180614_3_.func_180495_p(p_180614_4_.func_177977_b()).func_185896_q() && p_180614_3_.func_180495_p(blockpos.func_177977_b()).func_185896_q())
++                if (flag2 && flag3 && p_180614_3_.getBlockState(p_180614_4_.getBlockPosBelow()).func_185896_q() && p_180614_3_.getBlockState(blockpos.getBlockPosBelow()).func_185896_q())
+                 {
+-                    IBlockState iblockstate1 = Blocks.bed.func_176223_P().func_177226_a(BlockBed.field_176471_b, Boolean.valueOf(false)).func_177226_a(BlockBed.field_185512_D, enumfacing).func_177226_a(BlockBed.field_176472_a, BlockBed.EnumPartType.FOOT);
++                    IBlockState iblockstate1 = Blocks.bed.getBlockState().func_177226_a(BlockBed.field_176471_b, Boolean.valueOf(false)).func_177226_a(BlockBed.field_185512_D, enumfacing).func_177226_a(BlockBed.field_176472_a, BlockBed.EnumPartType.FOOT);
+ 
+                     if (p_180614_3_.func_180501_a(p_180614_4_, iblockstate1, 11))
+                     {
+@@ -63,7 +63,7 @@
+                         p_180614_3_.func_180501_a(blockpos, iblockstate2, 11);
+                     }
+ 
+-                    SoundType soundtype = iblockstate1.func_177230_c().func_185467_w();
++                    SoundType soundtype = iblockstate1.getBlock().func_185467_w();
+                     p_180614_3_.func_184133_a((EntityPlayer)null, p_180614_4_, soundtype.func_185841_e(), SoundCategory.BLOCKS, (soundtype.func_185843_a() + 1.0F) / 2.0F, soundtype.func_185847_b() * 0.8F);
+                     --p_180614_1_.stackSize;
+                     return EnumActionResult.SUCCESS;

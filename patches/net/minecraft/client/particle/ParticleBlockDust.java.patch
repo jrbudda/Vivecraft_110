@@ -1,0 +1,15 @@
+--- a/net/minecraft/client/particle/ParticleBlockDust.java
++++ b/net/minecraft/client/particle/ParticleBlockDust.java
+@@ -10,9 +10,9 @@
+     protected ParticleBlockDust(World p_i46281_1_, double p_i46281_2_, double p_i46281_4_, double p_i46281_6_, double p_i46281_8_, double p_i46281_10_, double p_i46281_12_, IBlockState p_i46281_14_)
+     {
+         super(p_i46281_1_, p_i46281_2_, p_i46281_4_, p_i46281_6_, p_i46281_8_, p_i46281_10_, p_i46281_12_, p_i46281_14_);
+-        this.field_187129_i = p_i46281_8_;
+-        this.field_187130_j = p_i46281_10_;
+-        this.field_187131_k = p_i46281_12_;
++        this.motionX = p_i46281_8_;
++        this.motionY = p_i46281_10_;
++        this.motionZ = p_i46281_12_;
+     }
+ 
+     public static class Factory implements IParticleFactory

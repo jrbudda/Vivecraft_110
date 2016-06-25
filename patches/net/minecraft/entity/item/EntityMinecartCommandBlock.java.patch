@@ -1,0 +1,11 @@
+--- a/net/minecraft/entity/item/EntityMinecartCommandBlock.java
++++ b/net/minecraft/entity/item/EntityMinecartCommandBlock.java
+@@ -129,7 +129,7 @@
+ 
+     public IBlockState func_180457_u()
+     {
+-        return Blocks.command_block.func_176223_P();
++        return Blocks.command_block.getBlockState();
+     }
+ 
+     public CommandBlockBaseLogic func_145822_e()

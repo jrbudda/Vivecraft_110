@@ -1,0 +1,54 @@
+--- a/net/minecraft/util/math/RayTraceResult.java
++++ b/net/minecraft/util/math/RayTraceResult.java
+@@ -5,11 +5,11 @@
+ 
+ public class RayTraceResult
+ {
+-    private BlockPos field_178783_e;
++    private BlockPos block;
+ 
+     /** What type of ray trace hit was this? 0 = block, 1 = entity */
+     public RayTraceResult.Type typeOfHit;
+-    public EnumFacing field_178784_b;
++    public EnumFacing sideHit;
+ 
+     /** The vector position of the hit */
+     public Vec3d hitVec;
+@@ -24,7 +24,7 @@
+ 
+     public RayTraceResult(Vec3d p_i47095_1_, EnumFacing p_i47095_2_)
+     {
+-        this(RayTraceResult.Type.BLOCK, p_i47095_1_, p_i47095_2_, BlockPos.field_177992_a);
++        this(RayTraceResult.Type.BLOCK, p_i47095_1_, p_i47095_2_, BlockPos.createDefault);
+     }
+ 
+     public RayTraceResult(Entity p_i2304_1_)
+@@ -35,8 +35,8 @@
+     public RayTraceResult(RayTraceResult.Type p_i47096_1_, Vec3d p_i47096_2_, EnumFacing p_i47096_3_, BlockPos p_i47096_4_)
+     {
+         this.typeOfHit = p_i47096_1_;
+-        this.field_178783_e = p_i47096_4_;
+-        this.field_178784_b = p_i47096_3_;
++        this.block = p_i47096_4_;
++        this.sideHit = p_i47096_3_;
+         this.hitVec = new Vec3d(p_i47096_2_.xCoord, p_i47096_2_.yCoord, p_i47096_2_.zCoord);
+     }
+ 
+@@ -47,14 +47,14 @@
+         this.hitVec = p_i47097_2_;
+     }
+ 
+-    public BlockPos func_178782_a()
++    public BlockPos getBlock()
+     {
+-        return this.field_178783_e;
++        return this.block;
+     }
+ 
+     public String toString()
+     {
+-        return "HitResult{type=" + this.typeOfHit + ", blockpos=" + this.field_178783_e + ", f=" + this.field_178784_b + ", pos=" + this.hitVec + ", entity=" + this.entityHit + '}';
++        return "HitResult{type=" + this.typeOfHit + ", blockpos=" + this.block + ", f=" + this.sideHit + ", pos=" + this.hitVec + ", entity=" + this.entityHit + '}';
+     }
+ 
+     public static enum Type

@@ -1,0 +1,50 @@
+--- a/net/minecraft/entity/projectile/EntityThrowable.java
++++ b/net/minecraft/entity/projectile/EntityThrowable.java
+@@ -157,7 +157,7 @@
+ 
+         if (this.field_174854_a)
+         {
+-            if (this.worldObj.func_180495_p(new BlockPos(this.xTile, this.yTile, this.zTile)).func_177230_c() == this.field_174853_f)
++            if (this.worldObj.getBlockState(new BlockPos(this.xTile, this.yTile, this.zTile)).getBlock() == this.field_174853_f)
+             {
+                 ++this.ticksInGround;
+ 
+@@ -193,7 +193,7 @@
+         }
+ 
+         Entity entity = null;
+-        List<Entity> list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.func_174813_aQ().addCoord(this.motionX, this.motionY, this.motionZ).func_186662_g(1.0D));
++        List<Entity> list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.func_174813_aQ().addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D));
+         double d0 = 0.0D;
+         boolean flag = false;
+ 
+@@ -215,7 +215,7 @@
+                 else
+                 {
+                     flag = false;
+-                    AxisAlignedBB axisalignedbb = entity1.func_174813_aQ().func_186662_g(0.30000001192092896D);
++                    AxisAlignedBB axisalignedbb = entity1.func_174813_aQ().expand(0.30000001192092896D);
+                     RayTraceResult raytraceresult1 = axisalignedbb.calculateIntercept(vec3d, vec3d1);
+ 
+                     if (raytraceresult1 != null)
+@@ -251,9 +251,9 @@
+ 
+         if (raytraceresult != null)
+         {
+-            if (raytraceresult.typeOfHit == RayTraceResult.Type.BLOCK && this.worldObj.func_180495_p(raytraceresult.func_178782_a()).func_177230_c() == Blocks.portal)
++            if (raytraceresult.typeOfHit == RayTraceResult.Type.BLOCK && this.worldObj.getBlockState(raytraceresult.getBlock()).getBlock() == Blocks.portal)
+             {
+-                this.func_181015_d(raytraceresult.func_178782_a());
++                this.func_181015_d(raytraceresult.getBlock());
+             }
+             else
+             {
+@@ -297,7 +297,7 @@
+             for (int j = 0; j < 4; ++j)
+             {
+                 float f3 = 0.25F;
+-                this.worldObj.func_175688_a(EnumParticleTypes.WATER_BUBBLE, this.posX - this.motionX * 0.25D, this.posY - this.motionY * 0.25D, this.posZ - this.motionZ * 0.25D, this.motionX, this.motionY, this.motionZ, new int[0]);
++                this.worldObj.spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.posX - this.motionX * 0.25D, this.posY - this.motionY * 0.25D, this.posZ - this.motionZ * 0.25D, this.motionX, this.motionY, this.motionZ, new int[0]);
+             }
+ 
+             f1 = 0.8F;

@@ -1,0 +1,346 @@
+--- a/net/minecraft/network/NetHandlerPlayServer.java
++++ b/net/minecraft/network/NetHandlerPlayServer.java
+@@ -192,7 +192,7 @@
+             this.floatingTickCount = 0;
+         }
+ 
+-        this.field_184355_r = this.playerEntity.func_184208_bv();
++        this.field_184355_r = this.playerEntity.getMovementEntity();
+ 
+         if (this.field_184355_r != this.playerEntity && this.field_184355_r.func_184179_bs() == this.playerEntity)
+         {
+@@ -203,7 +203,7 @@
+             this.field_184360_w = this.field_184355_r.posY;
+             this.field_184361_x = this.field_184355_r.posZ;
+ 
+-            if (this.field_184345_D && this.playerEntity.func_184208_bv().func_184179_bs() == this.playerEntity)
++            if (this.field_184345_D && this.playerEntity.getMovementEntity().func_184179_bs() == this.playerEntity)
+             {
+                 if (++this.field_184346_E > 80)
+                 {
+@@ -321,7 +321,7 @@
+         }
+         else
+         {
+-            Entity entity = this.playerEntity.func_184208_bv();
++            Entity entity = this.playerEntity.getMovementEntity();
+ 
+             if (entity != this.playerEntity && entity.func_184179_bs() == this.playerEntity && entity == this.field_184355_r)
+             {
+@@ -347,7 +347,7 @@
+                     return;
+                 }
+ 
+-                boolean flag = worldserver.func_184144_a(entity, entity.func_174813_aQ().func_186664_h(0.0625D)).isEmpty();
++                boolean flag = worldserver.getCollisionBoxes(entity, entity.func_174813_aQ().contract(0.0625D)).isEmpty();
+                 d6 = d3 - this.field_184359_v;
+                 d7 = d4 - this.field_184360_w - 1.0E-6D;
+                 d8 = d5 - this.field_184361_x;
+@@ -372,7 +372,7 @@
+                 }
+ 
+                 entity.setPositionAndRotation(d3, d4, d5, f, f1);
+-                boolean flag2 = worldserver.func_184144_a(entity, entity.func_174813_aQ().func_186664_h(0.0625D)).isEmpty();
++                boolean flag2 = worldserver.getCollisionBoxes(entity, entity.func_174813_aQ().contract(0.0625D)).isEmpty();
+ 
+                 if (flag && (flag1 || !flag2))
+                 {
+@@ -383,7 +383,7 @@
+ 
+                 this.serverController.func_184103_al().serverUpdateMountedMovingPlayer(this.playerEntity);
+                 this.playerEntity.addMovementStat(this.playerEntity.posX - d0, this.playerEntity.posY - d1, this.playerEntity.posZ - d2);
+-                this.field_184345_D = d11 >= -0.03125D && !this.serverController.isFlightAllowed() && !worldserver.checkBlockCollision(entity.func_174813_aQ().func_186662_g(0.0625D).addCoord(0.0D, -0.55D, 0.0D));
++                this.field_184345_D = d11 >= -0.03125D && !this.serverController.isFlightAllowed() && !worldserver.checkBlockCollision(entity.func_174813_aQ().expand(0.0625D).addCoord(0.0D, -0.55D, 0.0D));
+                 this.field_184359_v = entity.posX;
+                 this.field_184360_w = entity.posY;
+                 this.field_184361_x = entity.posZ;
+@@ -445,7 +445,7 @@
+                 {
+                     this.field_184343_A = this.networkTickCount;
+ 
+-                    if (this.playerEntity.func_184218_aH())
++                    if (this.playerEntity.isRiding())
+                     {
+                         this.playerEntity.setPositionAndRotation(this.playerEntity.posX, this.playerEntity.posY, this.playerEntity.posZ, packetIn.func_186999_a(this.playerEntity.rotationYaw), packetIn.func_186998_b(this.playerEntity.rotationPitch));
+                         this.serverController.func_184103_al().serverUpdateMountedMovingPlayer(this.playerEntity);
+@@ -487,7 +487,7 @@
+                             }
+                         }
+ 
+-                        boolean flag2 = worldserver.func_184144_a(this.playerEntity, this.playerEntity.func_174813_aQ().func_186664_h(0.0625D)).isEmpty();
++                        boolean flag2 = worldserver.getCollisionBoxes(this.playerEntity, this.playerEntity.func_174813_aQ().contract(0.0625D)).isEmpty();
+                         d7 = d4 - this.field_184352_o;
+                         d8 = d5 - this.field_184353_p;
+                         d9 = d6 - this.field_184354_q;
+@@ -523,7 +523,7 @@
+ 
+                         if (!this.playerEntity.noClip && !this.playerEntity.isPlayerSleeping())
+                         {
+-                            boolean flag1 = worldserver.func_184144_a(this.playerEntity, this.playerEntity.func_174813_aQ().func_186664_h(0.0625D)).isEmpty();
++                            boolean flag1 = worldserver.getCollisionBoxes(this.playerEntity, this.playerEntity.func_174813_aQ().contract(0.0625D)).isEmpty();
+ 
+                             if (flag2 && (flag || !flag1))
+                             {
+@@ -534,7 +534,7 @@
+ 
+                         this.field_184344_B = d12 >= -0.03125D;
+                         this.field_184344_B &= !this.serverController.isFlightAllowed() && !this.playerEntity.capabilities.allowFlying;
+-                        this.field_184344_B &= !this.playerEntity.isPotionActive(MobEffects.field_188424_y) && !this.playerEntity.func_184613_cA() && !worldserver.checkBlockCollision(this.playerEntity.func_174813_aQ().func_186662_g(0.0625D).addCoord(0.0D, -0.55D, 0.0D));
++                        this.field_184344_B &= !this.playerEntity.isPotionActive(MobEffects.field_188424_y) && !this.playerEntity.func_184613_cA() && !worldserver.checkBlockCollision(this.playerEntity.func_174813_aQ().expand(0.0625D).addCoord(0.0D, -0.55D, 0.0D));
+                         this.playerEntity.onGround = packetIn.func_149465_i();
+                         this.serverController.func_184103_al().serverUpdateMountedMovingPlayer(this.playerEntity);
+                         this.playerEntity.handleFalling(this.playerEntity.posY - d3, packetIn.func_149465_i());
+@@ -598,9 +598,9 @@
+             case SWAP_HELD_ITEMS:
+                 if (!this.playerEntity.func_175149_v())
+                 {
+-                    ItemStack itemstack1 = this.playerEntity.func_184586_b(EnumHand.OFF_HAND);
+-                    this.playerEntity.func_184611_a(EnumHand.OFF_HAND, this.playerEntity.func_184586_b(EnumHand.MAIN_HAND));
+-                    this.playerEntity.func_184611_a(EnumHand.MAIN_HAND, itemstack1);
++                    ItemStack itemstack1 = this.playerEntity.getItemStackInHand(EnumHand.OFF_HAND);
++                    this.playerEntity.equipItemInHand(EnumHand.OFF_HAND, this.playerEntity.getItemStackInHand(EnumHand.MAIN_HAND));
++                    this.playerEntity.equipItemInHand(EnumHand.MAIN_HAND, itemstack1);
+                 }
+ 
+                 return;
+@@ -623,11 +623,11 @@
+ 
+             case RELEASE_USE_ITEM:
+                 this.playerEntity.func_184597_cx();
+-                ItemStack itemstack = this.playerEntity.func_184614_ca();
++                ItemStack itemstack = this.playerEntity.getMainHandItem();
+ 
+                 if (itemstack != null && itemstack.stackSize == 0)
+                 {
+-                    this.playerEntity.func_184611_a(EnumHand.MAIN_HAND, (ItemStack)null);
++                    this.playerEntity.equipItemInHand(EnumHand.MAIN_HAND, (ItemStack)null);
+                 }
+ 
+                 return;
+@@ -635,16 +635,16 @@
+             case START_DESTROY_BLOCK:
+             case ABORT_DESTROY_BLOCK:
+             case STOP_DESTROY_BLOCK:
+-                double d0 = this.playerEntity.posX - ((double)blockpos.func_177958_n() + 0.5D);
+-                double d1 = this.playerEntity.posY - ((double)blockpos.func_177956_o() + 0.5D) + 1.5D;
+-                double d2 = this.playerEntity.posZ - ((double)blockpos.func_177952_p() + 0.5D);
++                double d0 = this.playerEntity.posX - ((double)blockpos.getX() + 0.5D);
++                double d1 = this.playerEntity.posY - ((double)blockpos.getY() + 0.5D) + 1.5D;
++                double d2 = this.playerEntity.posZ - ((double)blockpos.getZ() + 0.5D);
+                 double d3 = d0 * d0 + d1 * d1 + d2 * d2;
+ 
+                 if (d3 > 36.0D)
+                 {
+                     return;
+                 }
+-                else if (blockpos.func_177956_o() >= this.serverController.getBuildLimit())
++                else if (blockpos.getY() >= this.serverController.getBuildLimit())
+                 {
+                     return;
+                 }
+@@ -672,7 +672,7 @@
+                             this.playerEntity.theItemInWorldManager.func_180238_e();
+                         }
+ 
+-                        if (worldserver.func_180495_p(blockpos).func_185904_a() != Material.air)
++                        if (worldserver.getBlockState(blockpos).getMaterial() != Material.air)
+                         {
+                             this.playerEntity.playerNetServerHandler.sendPacket(new SPacketBlockChange(worldserver, blockpos));
+                         }
+@@ -691,14 +691,14 @@
+         PacketThreadUtil.func_180031_a(p_184337_1_, this, this.playerEntity.getServerForPlayer());
+         WorldServer worldserver = this.serverController.worldServerForDimension(this.playerEntity.dimension);
+         EnumHand enumhand = p_184337_1_.func_187022_c();
+-        ItemStack itemstack = this.playerEntity.func_184586_b(enumhand);
++        ItemStack itemstack = this.playerEntity.getItemStackInHand(enumhand);
+         BlockPos blockpos = p_184337_1_.func_187023_a();
+         EnumFacing enumfacing = p_184337_1_.func_187024_b();
+         this.playerEntity.markPlayerActive();
+ 
+-        if (blockpos.func_177956_o() < this.serverController.getBuildLimit() - 1 || enumfacing != EnumFacing.UP && blockpos.func_177956_o() < this.serverController.getBuildLimit())
++        if (blockpos.getY() < this.serverController.getBuildLimit() - 1 || enumfacing != EnumFacing.UP && blockpos.getY() < this.serverController.getBuildLimit())
+         {
+-            if (this.field_184362_y == null && this.playerEntity.getDistanceSq((double)blockpos.func_177958_n() + 0.5D, (double)blockpos.func_177956_o() + 0.5D, (double)blockpos.func_177952_p() + 0.5D) < 64.0D && !this.serverController.func_175579_a(worldserver, blockpos, this.playerEntity) && worldserver.func_175723_af().func_177746_a(blockpos))
++            if (this.field_184362_y == null && this.playerEntity.getDistanceSq((double)blockpos.getX() + 0.5D, (double)blockpos.getY() + 0.5D, (double)blockpos.getZ() + 0.5D) < 64.0D && !this.serverController.func_175579_a(worldserver, blockpos, this.playerEntity) && worldserver.func_175723_af().func_177746_a(blockpos))
+             {
+                 this.playerEntity.theItemInWorldManager.func_187251_a(this.playerEntity, worldserver, itemstack, enumhand, blockpos, enumfacing, p_184337_1_.func_187026_d(), p_184337_1_.func_187025_e(), p_184337_1_.func_187020_f());
+             }
+@@ -711,12 +711,12 @@
+         }
+ 
+         this.playerEntity.playerNetServerHandler.sendPacket(new SPacketBlockChange(worldserver, blockpos));
+-        this.playerEntity.playerNetServerHandler.sendPacket(new SPacketBlockChange(worldserver, blockpos.func_177972_a(enumfacing)));
+-        itemstack = this.playerEntity.func_184586_b(enumhand);
++        this.playerEntity.playerNetServerHandler.sendPacket(new SPacketBlockChange(worldserver, blockpos.getBlockPosRelative(enumfacing)));
++        itemstack = this.playerEntity.getItemStackInHand(enumhand);
+ 
+         if (itemstack != null && itemstack.stackSize == 0)
+         {
+-            this.playerEntity.func_184611_a(enumhand, (ItemStack)null);
++            this.playerEntity.equipItemInHand(enumhand, (ItemStack)null);
+         }
+     }
+ 
+@@ -728,17 +728,17 @@
+         PacketThreadUtil.func_180031_a(packetIn, this, this.playerEntity.getServerForPlayer());
+         WorldServer worldserver = this.serverController.worldServerForDimension(this.playerEntity.dimension);
+         EnumHand enumhand = packetIn.func_187028_a();
+-        ItemStack itemstack = this.playerEntity.func_184586_b(enumhand);
++        ItemStack itemstack = this.playerEntity.getItemStackInHand(enumhand);
+         this.playerEntity.markPlayerActive();
+ 
+         if (itemstack != null)
+         {
+             this.playerEntity.theItemInWorldManager.func_187250_a(this.playerEntity, worldserver, itemstack, enumhand);
+-            itemstack = this.playerEntity.func_184586_b(enumhand);
++            itemstack = this.playerEntity.getItemStackInHand(enumhand);
+ 
+             if (itemstack != null && itemstack.stackSize == 0)
+             {
+-                this.playerEntity.func_184611_a(enumhand, (ItemStack)null);
++                this.playerEntity.equipItemInHand(enumhand, (ItemStack)null);
+                 itemstack = null;
+             }
+         }
+@@ -768,7 +768,7 @@
+             if (entity != null)
+             {
+                 this.playerEntity.func_175399_e(this.playerEntity);
+-                this.playerEntity.func_184210_p();
++                this.playerEntity.dismount();
+ 
+                 if (entity.worldObj == this.playerEntity.worldObj)
+                 {
+@@ -810,7 +810,7 @@
+     public void func_184340_a(CPacketSteerBoat p_184340_1_)
+     {
+         PacketThreadUtil.func_180031_a(p_184340_1_, this, this.playerEntity.getServerForPlayer());
+-        Entity entity = this.playerEntity.func_184187_bx();
++        Entity entity = this.playerEntity.getRidingEntity();
+ 
+         if (entity instanceof EntityBoat)
+         {
+@@ -988,9 +988,9 @@
+                 break;
+ 
+             case START_RIDING_JUMP:
+-                if (this.playerEntity.func_184187_bx() instanceof IJumpingMount)
++                if (this.playerEntity.getRidingEntity() instanceof IJumpingMount)
+                 {
+-                    IJumpingMount ijumpingmount1 = (IJumpingMount)this.playerEntity.func_184187_bx();
++                    IJumpingMount ijumpingmount1 = (IJumpingMount)this.playerEntity.getRidingEntity();
+                     int i = packetIn.func_149512_e();
+ 
+                     if (ijumpingmount1.func_184776_b() && i > 0)
+@@ -1002,18 +1002,18 @@
+                 break;
+ 
+             case STOP_RIDING_JUMP:
+-                if (this.playerEntity.func_184187_bx() instanceof IJumpingMount)
++                if (this.playerEntity.getRidingEntity() instanceof IJumpingMount)
+                 {
+-                    IJumpingMount ijumpingmount = (IJumpingMount)this.playerEntity.func_184187_bx();
++                    IJumpingMount ijumpingmount = (IJumpingMount)this.playerEntity.getRidingEntity();
+                     ijumpingmount.func_184777_r_();
+                 }
+ 
+                 break;
+ 
+             case OPEN_INVENTORY:
+-                if (this.playerEntity.func_184187_bx() instanceof EntityHorse)
++                if (this.playerEntity.getRidingEntity() instanceof EntityHorse)
+                 {
+-                    ((EntityHorse)this.playerEntity.func_184187_bx()).openGUI(this.playerEntity);
++                    ((EntityHorse)this.playerEntity.getRidingEntity()).openGUI(this.playerEntity);
+                 }
+ 
+                 break;
+@@ -1021,7 +1021,7 @@
+             case START_FALL_FLYING:
+                 if (!this.playerEntity.onGround && this.playerEntity.motionY < 0.0D && !this.playerEntity.func_184613_cA() && !this.playerEntity.isInWater())
+                 {
+-                    ItemStack itemstack = this.playerEntity.func_184582_a(EntityEquipmentSlot.CHEST);
++                    ItemStack itemstack = this.playerEntity.getEquippedItemStack(EntityEquipmentSlot.CHEST);
+ 
+                     if (itemstack != null && itemstack.getItem() == Items.field_185160_cR && ItemElytra.func_185069_d(itemstack))
+                     {
+@@ -1066,13 +1066,13 @@
+                 if (packetIn.getAction() == CPacketUseEntity.Action.INTERACT)
+                 {
+                     EnumHand enumhand = packetIn.func_186994_b();
+-                    ItemStack itemstack = this.playerEntity.func_184586_b(enumhand);
+-                    this.playerEntity.func_184822_a(entity, itemstack, enumhand);
++                    ItemStack itemstack = this.playerEntity.getItemStackInHand(enumhand);
++                    this.playerEntity.interactWith(entity, itemstack, enumhand);
+                 }
+                 else if (packetIn.getAction() == CPacketUseEntity.Action.INTERACT_AT)
+                 {
+                     EnumHand enumhand1 = packetIn.func_186994_b();
+-                    ItemStack itemstack1 = this.playerEntity.func_184586_b(enumhand1);
++                    ItemStack itemstack1 = this.playerEntity.getItemStackInHand(enumhand1);
+                     entity.func_184199_a(this.playerEntity, packetIn.func_179712_b(), itemstack1, enumhand1);
+                 }
+                 else if (packetIn.getAction() == CPacketUseEntity.Action.ATTACK)
+@@ -1302,7 +1302,7 @@
+ 
+         if (worldserver.func_175667_e(blockpos))
+         {
+-            IBlockState iblockstate = worldserver.func_180495_p(blockpos);
++            IBlockState iblockstate = worldserver.getBlockState(blockpos);
+             TileEntity tileentity = worldserver.func_175625_s(blockpos);
+ 
+             if (!(tileentity instanceof TileEntitySign))
+@@ -1408,7 +1408,7 @@
+                     throw new IOException("Invalid book tag!");
+                 }
+ 
+-                ItemStack itemstack1 = this.playerEntity.func_184614_ca();
++                ItemStack itemstack1 = this.playerEntity.getMainHandItem();
+ 
+                 if (itemstack1 == null)
+                 {
+@@ -1443,7 +1443,7 @@
+                     throw new IOException("Invalid book tag!");
+                 }
+ 
+-                ItemStack itemstack3 = this.playerEntity.func_184614_ca();
++                ItemStack itemstack3 = this.playerEntity.getMainHandItem();
+ 
+                 if (itemstack3 == null)
+                 {
+@@ -1589,22 +1589,22 @@
+ 
+                 if (commandblockbaselogic != null)
+                 {
+-                    EnumFacing enumfacing = (EnumFacing)this.playerEntity.worldObj.func_180495_p(blockpos1).func_177229_b(BlockCommandBlock.field_185564_a);
++                    EnumFacing enumfacing = (EnumFacing)this.playerEntity.worldObj.getBlockState(blockpos1).func_177229_b(BlockCommandBlock.field_185564_a);
+ 
+                     switch (tileentitycommandblock$mode)
+                     {
+                         case SEQUENCE:
+-                            IBlockState iblockstate3 = Blocks.field_185777_dd.func_176223_P();
++                            IBlockState iblockstate3 = Blocks.field_185777_dd.getBlockState();
+                             this.playerEntity.worldObj.func_180501_a(blockpos1, iblockstate3.func_177226_a(BlockCommandBlock.field_185564_a, enumfacing).func_177226_a(BlockCommandBlock.field_185565_b, Boolean.valueOf(flag)), 2);
+                             break;
+ 
+                         case AUTO:
+-                            IBlockState lvt_14_2_ = Blocks.field_185776_dc.func_176223_P();
++                            IBlockState lvt_14_2_ = Blocks.field_185776_dc.getBlockState();
+                             this.playerEntity.worldObj.func_180501_a(blockpos1, lvt_14_2_.func_177226_a(BlockCommandBlock.field_185564_a, enumfacing).func_177226_a(BlockCommandBlock.field_185565_b, Boolean.valueOf(flag)), 2);
+                             break;
+ 
+                         case REDSTONE:
+-                            IBlockState lvt_14_1_ = Blocks.command_block.func_176223_P();
++                            IBlockState lvt_14_1_ = Blocks.command_block.getBlockState();
+                             this.playerEntity.worldObj.func_180501_a(blockpos1, lvt_14_1_.func_177226_a(BlockCommandBlock.field_185564_a, enumfacing).func_177226_a(BlockCommandBlock.field_185565_b, Boolean.valueOf(flag)), 2);
+                     }
+ 
+@@ -1692,7 +1692,7 @@
+             try
+             {
+                 BlockPos blockpos = new BlockPos(packetbuffer5.readInt(), packetbuffer5.readInt(), packetbuffer5.readInt());
+-                IBlockState iblockstate1 = this.playerEntity.worldObj.func_180495_p(blockpos);
++                IBlockState iblockstate1 = this.playerEntity.worldObj.getBlockState(blockpos);
+                 TileEntity tileentity1 = this.playerEntity.worldObj.func_175625_s(blockpos);
+ 
+                 if (tileentity1 instanceof TileEntityStructure)

@@ -1,0 +1,35 @@
+--- a/net/minecraft/entity/monster/EntityMob.java
++++ b/net/minecraft/entity/monster/EntityMob.java
+@@ -69,12 +69,12 @@
+         }
+     }
+ 
+-    protected SoundEvent func_184184_Z()
++    protected SoundEvent getStepSound()
+     {
+         return SoundEvents.field_187593_cC;
+     }
+ 
+-    protected SoundEvent func_184181_aa()
++    protected SoundEvent getSplashSound()
+     {
+         return SoundEvents.field_187591_cB;
+     }
+@@ -109,7 +109,7 @@
+ 
+         if (p_70652_1_ instanceof EntityLivingBase)
+         {
+-            f += EnchantmentHelper.func_152377_a(this.func_184614_ca(), ((EntityLivingBase)p_70652_1_).getCreatureAttribute());
++            f += EnchantmentHelper.func_152377_a(this.getMainHandItem(), ((EntityLivingBase)p_70652_1_).getCreatureAttribute());
+             i += EnchantmentHelper.getRespiration(this);
+         }
+ 
+@@ -134,7 +134,7 @@
+             if (p_70652_1_ instanceof EntityPlayer)
+             {
+                 EntityPlayer entityplayer = (EntityPlayer)p_70652_1_;
+-                ItemStack itemstack = this.func_184614_ca();
++                ItemStack itemstack = this.getMainHandItem();
+                 ItemStack itemstack1 = entityplayer.func_184587_cr() ? entityplayer.func_184607_cu() : null;
+ 
+                 if (itemstack != null && itemstack1 != null && itemstack.getItem() instanceof ItemAxe && itemstack1.getItem() == Items.field_185159_cQ)

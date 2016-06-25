@@ -1,0 +1,10 @@
+--- a/net/minecraft/item/crafting/RecipesWeapons.java
++++ b/net/minecraft/item/crafting/RecipesWeapons.java
+@@ -28,6 +28,6 @@
+ 
+         p_77583_1_.addRecipe(new ItemStack(Items.bow, 1), new Object[] {" #X", "# X", " #X", 'X', Items.string, '#', Items.stick});
+         p_77583_1_.addRecipe(new ItemStack(Items.arrow, 4), new Object[] {"X", "#", "Y", 'Y', Items.feather, 'X', Items.flint, '#', Items.stick});
+-        p_77583_1_.addRecipe(new ItemStack(Items.field_185166_h, 2), new Object[] {" # ", "#X#", " # ", 'X', Items.arrow, '#', Items.glowstone_dust});
++        p_77583_1_.addRecipe(new ItemStack(Items.spectralArrow, 2), new Object[] {" # ", "#X#", " # ", 'X', Items.arrow, '#', Items.glowstone_dust});
+     }
+ }

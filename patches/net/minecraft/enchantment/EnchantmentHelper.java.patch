@@ -1,0 +1,20 @@
+--- a/net/minecraft/enchantment/EnchantmentHelper.java
++++ b/net/minecraft/enchantment/EnchantmentHelper.java
+@@ -199,7 +199,7 @@
+ 
+         if (p_151384_1_ instanceof EntityPlayer)
+         {
+-            applyEnchantmentModifier(field_151388_d, p_151384_0_.func_184614_ca());
++            applyEnchantmentModifier(field_151388_d, p_151384_0_.getMainHandItem());
+         }
+     }
+ 
+@@ -215,7 +215,7 @@
+ 
+         if (p_151385_0_ instanceof EntityPlayer)
+         {
+-            applyEnchantmentModifier(field_151389_e, p_151385_0_.func_184614_ca());
++            applyEnchantmentModifier(field_151389_e, p_151385_0_.getMainHandItem());
+         }
+     }
+ 

@@ -1,0 +1,60 @@
+--- a/net/minecraft/command/CommandClone.java
++++ b/net/minecraft/command/CommandClone.java
+@@ -118,9 +118,9 @@
+                                     {
+                                         BlockPos blockpos4 = new BlockPos(i1, l, k);
+                                         BlockPos blockpos5 = blockpos4.func_177971_a(blockpos3);
+-                                        IBlockState iblockstate = world.func_180495_p(blockpos4);
++                                        IBlockState iblockstate = world.getBlockState(blockpos4);
+ 
+-                                        if ((!flag1 || iblockstate.func_177230_c() != Blocks.air) && (block == null || iblockstate.func_177230_c() == block && (j < 0 || iblockstate.func_177230_c().func_176201_c(iblockstate) == j)))
++                                        if ((!flag1 || iblockstate.getBlock() != Blocks.air) && (block == null || iblockstate.getBlock() == block && (j < 0 || iblockstate.getBlock().func_176201_c(iblockstate) == j)))
+                                         {
+                                             TileEntity tileentity = world.func_175625_s(blockpos4);
+ 
+@@ -156,12 +156,12 @@
+                                         ((IInventory)tileentity1).func_174888_l();
+                                     }
+ 
+-                                    world.func_180501_a(blockpos6, Blocks.field_180401_cv.func_176223_P(), 2);
++                                    world.func_180501_a(blockpos6, Blocks.field_180401_cv.getBlockState(), 2);
+                                 }
+ 
+                                 for (BlockPos blockpos7 : deque)
+                                 {
+-                                    world.func_180501_a(blockpos7, Blocks.air.func_176223_P(), 3);
++                                    world.func_180501_a(blockpos7, Blocks.air.getBlockState(), 3);
+                                 }
+                             }
+ 
+@@ -180,7 +180,7 @@
+                                     ((IInventory)tileentity2).func_174888_l();
+                                 }
+ 
+-                                world.func_180501_a(commandclone$staticclonedata.field_179537_a, Blocks.field_180401_cv.func_176223_P(), 2);
++                                world.func_180501_a(commandclone$staticclonedata.field_179537_a, Blocks.field_180401_cv.getBlockState(), 2);
+                             }
+ 
+                             i = 0;
+@@ -199,9 +199,9 @@
+ 
+                                 if (commandclone$staticclonedata2.field_184953_c != null && tileentity3 != null)
+                                 {
+-                                    commandclone$staticclonedata2.field_184953_c.setInteger("x", commandclone$staticclonedata2.field_179537_a.func_177958_n());
+-                                    commandclone$staticclonedata2.field_184953_c.setInteger("y", commandclone$staticclonedata2.field_179537_a.func_177956_o());
+-                                    commandclone$staticclonedata2.field_184953_c.setInteger("z", commandclone$staticclonedata2.field_179537_a.func_177952_p());
++                                    commandclone$staticclonedata2.field_184953_c.setInteger("x", commandclone$staticclonedata2.field_179537_a.getX());
++                                    commandclone$staticclonedata2.field_184953_c.setInteger("y", commandclone$staticclonedata2.field_179537_a.getY());
++                                    commandclone$staticclonedata2.field_184953_c.setInteger("z", commandclone$staticclonedata2.field_179537_a.getZ());
+                                     tileentity3.readFromNBT(commandclone$staticclonedata2.field_184953_c);
+                                     tileentity3.markDirty();
+                                 }
+@@ -211,7 +211,7 @@
+ 
+                             for (CommandClone.StaticCloneData commandclone$staticclonedata3 : list4)
+                             {
+-                                world.func_175722_b(commandclone$staticclonedata3.field_179537_a, commandclone$staticclonedata3.field_179535_b.func_177230_c());
++                                world.func_175722_b(commandclone$staticclonedata3.field_179537_a, commandclone$staticclonedata3.field_179535_b.getBlock());
+                             }
+ 
+                             List<NextTickListEntry> list5 = world.func_175712_a(structureboundingbox, false);

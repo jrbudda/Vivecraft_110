@@ -1,0 +1,21 @@
+--- a/net/minecraft/world/gen/feature/WorldGenVines.java
++++ b/net/minecraft/world/gen/feature/WorldGenVines.java
+@@ -12,15 +12,15 @@
+ {
+     public boolean func_180709_b(World p_180709_1_, Random p_180709_2_, BlockPos p_180709_3_)
+     {
+-        for (; p_180709_3_.func_177956_o() < 128; p_180709_3_ = p_180709_3_.func_177984_a())
++        for (; p_180709_3_.getY() < 128; p_180709_3_ = p_180709_3_.getBlockPosAbove())
+         {
+-            if (p_180709_1_.func_175623_d(p_180709_3_))
++            if (p_180709_1_.isEmpty(p_180709_3_))
+             {
+                 for (EnumFacing enumfacing : EnumFacing.Plane.HORIZONTAL.func_179516_a())
+                 {
+                     if (Blocks.vine.func_176198_a(p_180709_1_, p_180709_3_, enumfacing))
+                     {
+-                        IBlockState iblockstate = Blocks.vine.func_176223_P().func_177226_a(BlockVine.field_176273_b, Boolean.valueOf(enumfacing == EnumFacing.NORTH)).func_177226_a(BlockVine.field_176278_M, Boolean.valueOf(enumfacing == EnumFacing.EAST)).func_177226_a(BlockVine.field_176279_N, Boolean.valueOf(enumfacing == EnumFacing.SOUTH)).func_177226_a(BlockVine.field_176280_O, Boolean.valueOf(enumfacing == EnumFacing.WEST));
++                        IBlockState iblockstate = Blocks.vine.getBlockState().func_177226_a(BlockVine.field_176273_b, Boolean.valueOf(enumfacing == EnumFacing.NORTH)).func_177226_a(BlockVine.field_176278_M, Boolean.valueOf(enumfacing == EnumFacing.EAST)).func_177226_a(BlockVine.field_176279_N, Boolean.valueOf(enumfacing == EnumFacing.SOUTH)).func_177226_a(BlockVine.field_176280_O, Boolean.valueOf(enumfacing == EnumFacing.WEST));
+                         p_180709_1_.func_180501_a(p_180709_3_, iblockstate, 2);
+                         break;
+                     }

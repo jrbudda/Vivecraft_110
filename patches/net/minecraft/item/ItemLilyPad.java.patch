@@ -1,0 +1,28 @@
+--- a/net/minecraft/item/ItemLilyPad.java
++++ b/net/minecraft/item/ItemLilyPad.java
+@@ -35,19 +35,19 @@
+         {
+             if (raytraceresult.typeOfHit == RayTraceResult.Type.BLOCK)
+             {
+-                BlockPos blockpos = raytraceresult.func_178782_a();
++                BlockPos blockpos = raytraceresult.getBlock();
+ 
+-                if (!worldIn.func_175660_a(player, blockpos) || !player.func_175151_a(blockpos.func_177972_a(raytraceresult.field_178784_b), raytraceresult.field_178784_b, itemStackIn))
++                if (!worldIn.func_175660_a(player, blockpos) || !player.func_175151_a(blockpos.getBlockPosRelative(raytraceresult.sideHit), raytraceresult.sideHit, itemStackIn))
+                 {
+                     return new ActionResult(EnumActionResult.FAIL, itemStackIn);
+                 }
+ 
+-                BlockPos blockpos1 = blockpos.func_177984_a();
+-                IBlockState iblockstate = worldIn.func_180495_p(blockpos);
++                BlockPos blockpos1 = blockpos.getBlockPosAbove();
++                IBlockState iblockstate = worldIn.getBlockState(blockpos);
+ 
+-                if (iblockstate.func_185904_a() == Material.water && ((Integer)iblockstate.func_177229_b(BlockLiquid.field_176367_b)).intValue() == 0 && worldIn.func_175623_d(blockpos1))
++                if (iblockstate.getMaterial() == Material.water && ((Integer)iblockstate.func_177229_b(BlockLiquid.field_176367_b)).intValue() == 0 && worldIn.isEmpty(blockpos1))
+                 {
+-                    worldIn.func_180501_a(blockpos1, Blocks.waterlily.func_176223_P(), 11);
++                    worldIn.func_180501_a(blockpos1, Blocks.waterlily.getBlockState(), 11);
+ 
+                     if (!player.capabilities.isCreativeMode)
+                     {

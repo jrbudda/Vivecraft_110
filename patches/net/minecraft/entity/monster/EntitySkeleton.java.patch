@@ -1,0 +1,123 @@
+--- a/net/minecraft/entity/monster/EntitySkeleton.java
++++ b/net/minecraft/entity/monster/EntitySkeleton.java
+@@ -125,7 +125,7 @@
+     protected void func_180429_a(BlockPos p_180429_1_, Block p_180429_2_)
+     {
+         SoundEvent soundevent = this.func_189771_df().func_190131_g();
+-        this.func_184185_a(soundevent, 0.15F, 1.0F);
++        this.playSound(soundevent, 0.15F, 1.0F);
+     }
+ 
+     public boolean attackEntityAsMob(Entity p_70652_1_)
+@@ -162,12 +162,12 @@
+         if (this.worldObj.isDaytime() && !this.worldObj.isRemote)
+         {
+             float f = this.getBrightness(1.0F);
+-            BlockPos blockpos = this.func_184187_bx() instanceof EntityBoat ? (new BlockPos(this.posX, (double)Math.round(this.posY), this.posZ)).func_177984_a() : new BlockPos(this.posX, (double)Math.round(this.posY), this.posZ);
++            BlockPos blockpos = this.getRidingEntity() instanceof EntityBoat ? (new BlockPos(this.posX, (double)Math.round(this.posY), this.posZ)).getBlockPosAbove() : new BlockPos(this.posX, (double)Math.round(this.posY), this.posZ);
+ 
+             if (f > 0.5F && this.rand.nextFloat() * 30.0F < (f - 0.4F) * 2.0F && this.worldObj.func_175678_i(blockpos))
+             {
+                 boolean flag = true;
+-                ItemStack itemstack = this.func_184582_a(EntityEquipmentSlot.HEAD);
++                ItemStack itemstack = this.getEquippedItemStack(EntityEquipmentSlot.HEAD);
+ 
+                 if (itemstack != null)
+                 {
+@@ -178,7 +178,7 @@
+                         if (itemstack.getCurrentDurability() >= itemstack.getMaxDurability())
+                         {
+                             this.renderBrokenItemStack(itemstack);
+-                            this.func_184201_a(EntityEquipmentSlot.HEAD, (ItemStack)null);
++                            this.equipItemInSlot(EntityEquipmentSlot.HEAD, (ItemStack)null);
+                         }
+                     }
+ 
+@@ -207,9 +207,9 @@
+     {
+         super.updateRidden();
+ 
+-        if (this.func_184187_bx() instanceof EntityCreature)
++        if (this.getRidingEntity() instanceof EntityCreature)
+         {
+-            EntityCreature entitycreature = (EntityCreature)this.func_184187_bx();
++            EntityCreature entitycreature = (EntityCreature)this.getRidingEntity();
+             this.renderYawOffset = entitycreature.renderYawOffset;
+         }
+     }
+@@ -248,7 +248,7 @@
+     protected void func_180481_a(DifficultyInstance p_180481_1_)
+     {
+         super.func_180481_a(p_180481_1_);
+-        this.func_184201_a(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.bow));
++        this.equipItemInSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.bow));
+     }
+ 
+     @Nullable
+@@ -260,7 +260,7 @@
+         {
+             this.tasks.addTask(4, this.aiAttackOnCollide);
+             this.func_189768_a(SkeletonType.WITHER);
+-            this.func_184201_a(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.stone_sword));
++            this.equipItemInSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.stone_sword));
+             this.getEntityAttribute(SharedMonsterAttributes.attackDamage).setBaseValue(4.0D);
+         }
+         else
+@@ -279,13 +279,13 @@
+ 
+         this.setCanPickUpLoot(this.rand.nextFloat() < 0.55F * p_180482_1_.func_180170_c());
+ 
+-        if (this.func_184582_a(EntityEquipmentSlot.HEAD) == null)
++        if (this.getEquippedItemStack(EntityEquipmentSlot.HEAD) == null)
+         {
+             Calendar calendar = this.worldObj.getCurrentDate();
+ 
+             if (calendar.get(2) + 1 == 10 && calendar.get(5) == 31 && this.rand.nextFloat() < 0.25F)
+             {
+-                this.func_184201_a(EntityEquipmentSlot.HEAD, new ItemStack(this.rand.nextFloat() < 0.1F ? Blocks.lit_pumpkin : Blocks.pumpkin));
++                this.equipItemInSlot(EntityEquipmentSlot.HEAD, new ItemStack(this.rand.nextFloat() < 0.1F ? Blocks.lit_pumpkin : Blocks.pumpkin));
+                 this.field_184655_bs[EntityEquipmentSlot.HEAD.func_188454_b()] = 0.0F;
+             }
+         }
+@@ -302,7 +302,7 @@
+         {
+             this.tasks.removeTask(this.aiAttackOnCollide);
+             this.tasks.removeTask(this.aiArrowAttack);
+-            ItemStack itemstack = this.func_184614_ca();
++            ItemStack itemstack = this.getMainHandItem();
+ 
+             if (itemstack != null && itemstack.getItem() == Items.bow)
+             {
+@@ -357,9 +357,9 @@
+             entitytippedarrow.setFire(100);
+         }
+ 
+-        ItemStack itemstack = this.func_184586_b(EnumHand.OFF_HAND);
++        ItemStack itemstack = this.getItemStackInHand(EnumHand.OFF_HAND);
+ 
+-        if (itemstack != null && itemstack.getItem() == Items.field_185167_i)
++        if (itemstack != null && itemstack.getItem() == Items.tippedArrow)
+         {
+             entitytippedarrow.func_184555_a(itemstack);
+         }
+@@ -368,7 +368,7 @@
+             entitytippedarrow.func_184558_a(new PotionEffect(MobEffects.moveSlowdown, 600));
+         }
+ 
+-        this.func_184185_a(SoundEvents.field_187866_fi, 1.0F, 1.0F / (this.getRNG().nextFloat() * 0.4F + 0.8F));
++        this.playSound(SoundEvents.field_187866_fi, 1.0F, 1.0F / (this.getRNG().nextFloat() * 0.4F + 0.8F));
+         this.worldObj.spawnEntityInWorld(entitytippedarrow);
+     }
+ 
+@@ -426,9 +426,9 @@
+         tagCompound.setByte("SkeletonType", (byte)this.func_189771_df().func_190135_a());
+     }
+ 
+-    public void func_184201_a(EntityEquipmentSlot p_184201_1_, @Nullable ItemStack p_184201_2_)
++    public void equipItemInSlot(EntityEquipmentSlot p_184201_1_, @Nullable ItemStack p_184201_2_)
+     {
+-        super.func_184201_a(p_184201_1_, p_184201_2_);
++        super.equipItemInSlot(p_184201_1_, p_184201_2_);
+ 
+         if (!this.worldObj.isRemote && p_184201_1_ == EntityEquipmentSlot.MAINHAND)
+         {

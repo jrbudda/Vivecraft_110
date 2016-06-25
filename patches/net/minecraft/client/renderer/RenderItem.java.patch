@@ -1,0 +1,120 @@
+--- a/net/minecraft/client/renderer/RenderItem.java
++++ b/net/minecraft/client/renderer/RenderItem.java
+@@ -135,7 +135,7 @@
+     {
+         if (p_180454_1_ != null)
+         {
+-            GlStateManager.func_179094_E();
++            GlStateManager.push();
+             GlStateManager.func_179109_b(-0.5F, -0.5F, -0.5F);
+ 
+             if (p_180454_2_.func_188618_c())
+@@ -154,7 +154,7 @@
+                 }
+             }
+ 
+-            GlStateManager.func_179121_F();
++            GlStateManager.pop();
+         }
+     }
+ 
+@@ -165,22 +165,22 @@
+         GlStateManager.func_179140_f();
+         GlStateManager.func_187401_a(GlStateManager.SourceFactor.SRC_COLOR, GlStateManager.DestFactor.ONE);
+         this.field_175057_n.bindTexture(RES_ITEM_GLINT);
+-        GlStateManager.func_179128_n(5890);
+-        GlStateManager.func_179094_E();
+-        GlStateManager.func_179152_a(8.0F, 8.0F, 8.0F);
++        GlStateManager.matrixMode(5890);
++        GlStateManager.push();
++        GlStateManager.scale(8.0F, 8.0F, 8.0F);
+         float f = (float)(Minecraft.getSystemTime() % 3000L) / 3000.0F / 8.0F;
+         GlStateManager.func_179109_b(f, 0.0F, 0.0F);
+-        GlStateManager.func_179114_b(-50.0F, 0.0F, 0.0F, 1.0F);
++        GlStateManager.rotate(-50.0F, 0.0F, 0.0F, 1.0F);
+         this.func_175035_a(p_180451_1_, -8372020);
+-        GlStateManager.func_179121_F();
+-        GlStateManager.func_179094_E();
+-        GlStateManager.func_179152_a(8.0F, 8.0F, 8.0F);
++        GlStateManager.pop();
++        GlStateManager.push();
++        GlStateManager.scale(8.0F, 8.0F, 8.0F);
+         float f1 = (float)(Minecraft.getSystemTime() % 4873L) / 4873.0F / 8.0F;
+         GlStateManager.func_179109_b(-f1, 0.0F, 0.0F);
+-        GlStateManager.func_179114_b(10.0F, 0.0F, 0.0F, 1.0F);
++        GlStateManager.rotate(10.0F, 0.0F, 0.0F, 1.0F);
+         this.func_175035_a(p_180451_1_, -8372020);
+-        GlStateManager.func_179121_F();
+-        GlStateManager.func_179128_n(5888);
++        GlStateManager.pop();
++        GlStateManager.matrixMode(5888);
+         GlStateManager.func_187401_a(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+         GlStateManager.func_179145_e();
+         GlStateManager.func_179143_c(515);
+@@ -191,7 +191,7 @@
+     private void func_175038_a(VertexBuffer p_175038_1_, BakedQuad p_175038_2_)
+     {
+         Vec3i vec3i = p_175038_2_.func_178210_d().func_176730_m();
+-        p_175038_1_.func_178975_e((float)vec3i.func_177958_n(), (float)vec3i.func_177956_o(), (float)vec3i.func_177952_p());
++        p_175038_1_.func_178975_e((float)vec3i.getX(), (float)vec3i.getY(), (float)vec3i.getZ());
+     }
+ 
+     private void func_175033_a(VertexBuffer p_175033_1_, BakedQuad p_175033_2_, int p_175033_3_)
+@@ -278,7 +278,7 @@
+             GlStateManager.func_179092_a(516, 0.1F);
+             GlStateManager.func_179147_l();
+             GlStateManager.func_187428_a(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+-            GlStateManager.func_179094_E();
++            GlStateManager.push();
+             ItemCameraTransforms itemcameratransforms = p_184394_2_.func_177552_f();
+             ItemCameraTransforms.func_188034_a(itemcameratransforms.func_181688_b(p_184394_3_), p_184394_4_);
+ 
+@@ -289,7 +289,7 @@
+ 
+             this.func_180454_a(p_184394_1_, p_184394_2_);
+             GlStateManager.func_187407_a(GlStateManager.CullFace.BACK);
+-            GlStateManager.func_179121_F();
++            GlStateManager.pop();
+             GlStateManager.func_179101_C();
+             GlStateManager.func_179084_k();
+             this.field_175057_n.bindTexture(TextureMap.locationBlocksTexture);
+@@ -309,7 +309,7 @@
+ 
+     protected void func_184390_a(ItemStack p_184390_1_, int p_184390_2_, int p_184390_3_, IBakedModel p_184390_4_)
+     {
+-        GlStateManager.func_179094_E();
++        GlStateManager.push();
+         this.field_175057_n.bindTexture(TextureMap.locationBlocksTexture);
+         this.field_175057_n.getTexture(TextureMap.locationBlocksTexture).func_174936_b(false, false);
+         GlStateManager.func_179091_B();
+@@ -324,7 +324,7 @@
+         GlStateManager.func_179118_c();
+         GlStateManager.func_179101_C();
+         GlStateManager.func_179140_f();
+-        GlStateManager.func_179121_F();
++        GlStateManager.pop();
+         this.field_175057_n.bindTexture(TextureMap.locationBlocksTexture);
+         this.field_175057_n.getTexture(TextureMap.locationBlocksTexture).func_174935_a();
+     }
+@@ -333,8 +333,8 @@
+     {
+         GlStateManager.func_179109_b((float)p_180452_1_, (float)p_180452_2_, 100.0F + this.zLevel);
+         GlStateManager.func_179109_b(8.0F, 8.0F, 0.0F);
+-        GlStateManager.func_179152_a(1.0F, -1.0F, 1.0F);
+-        GlStateManager.func_179152_a(16.0F, 16.0F, 16.0F);
++        GlStateManager.scale(1.0F, -1.0F, 1.0F);
++        GlStateManager.scale(16.0F, 16.0F, 16.0F);
+ 
+         if (p_180452_3_)
+         {
+@@ -792,8 +792,8 @@
+         this.func_175047_a(Items.apple, "apple");
+         this.func_175047_a(Items.bow, "bow");
+         this.func_175047_a(Items.arrow, "arrow");
+-        this.func_175047_a(Items.field_185166_h, "spectral_arrow");
+-        this.func_175047_a(Items.field_185167_i, "tipped_arrow");
++        this.func_175047_a(Items.spectralArrow, "spectral_arrow");
++        this.func_175047_a(Items.tippedArrow, "tipped_arrow");
+         this.func_175048_a(Items.coal, 0, "coal");
+         this.func_175048_a(Items.coal, 1, "charcoal");
+         this.func_175047_a(Items.diamond, "diamond");

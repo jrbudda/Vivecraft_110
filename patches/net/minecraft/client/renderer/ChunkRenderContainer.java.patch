@@ -1,0 +1,11 @@
+--- a/net/minecraft/client/renderer/ChunkRenderContainer.java
++++ b/net/minecraft/client/renderer/ChunkRenderContainer.java
+@@ -26,7 +26,7 @@
+     public void func_178003_a(RenderChunk p_178003_1_)
+     {
+         BlockPos blockpos = p_178003_1_.func_178568_j();
+-        GlStateManager.func_179109_b((float)((double)blockpos.func_177958_n() - this.field_178008_c), (float)((double)blockpos.func_177956_o() - this.field_178005_d), (float)((double)blockpos.func_177952_p() - this.field_178006_e));
++        GlStateManager.func_179109_b((float)((double)blockpos.getX() - this.field_178008_c), (float)((double)blockpos.getY() - this.field_178005_d), (float)((double)blockpos.getZ() - this.field_178006_e));
+     }
+ 
+     public void func_178002_a(RenderChunk p_178002_1_, BlockRenderLayer p_178002_2_)

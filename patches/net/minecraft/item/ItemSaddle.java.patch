@@ -1,0 +1,11 @@
+--- a/net/minecraft/item/ItemSaddle.java
++++ b/net/minecraft/item/ItemSaddle.java
+@@ -32,7 +32,7 @@
+             if (!entitypig.getSaddled() && !entitypig.isChild())
+             {
+                 entitypig.setSaddled(true);
+-                entitypig.worldObj.func_184148_a(player, entitypig.posX, entitypig.posY, entitypig.posZ, SoundEvents.field_187706_dO, SoundCategory.NEUTRAL, 0.5F, 1.0F);
++                entitypig.worldObj.playSound(player, entitypig.posX, entitypig.posY, entitypig.posZ, SoundEvents.field_187706_dO, SoundCategory.NEUTRAL, 0.5F, 1.0F);
+                 --stack.stackSize;
+             }
+ 

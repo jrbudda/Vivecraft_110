@@ -1,0 +1,59 @@
+--- a/net/minecraft/client/renderer/chunk/RenderChunk.java
++++ b/net/minecraft/client/renderer/chunk/RenderChunk.java
+@@ -90,7 +90,7 @@
+ 
+     public void func_189562_a(int p_189562_1_, int p_189562_2_, int p_189562_3_)
+     {
+-        if (p_189562_1_ != this.field_178586_f.func_177958_n() || p_189562_2_ != this.field_178586_f.func_177956_o() || p_189562_3_ != this.field_178586_f.func_177952_p())
++        if (p_189562_1_ != this.field_178586_f.getX() || p_189562_2_ != this.field_178586_f.getY() || p_189562_3_ != this.field_178586_f.getZ())
+         {
+             this.func_178585_h();
+             this.field_178586_f.func_181079_c(p_189562_1_, p_189562_2_, p_189562_3_);
+@@ -150,8 +150,8 @@
+ 
+             for (BlockPos.MutableBlockPos blockpos$mutableblockpos : BlockPos.func_177975_b(blockpos, blockpos1))
+             {
+-                IBlockState iblockstate = this.field_189564_r.func_180495_p(blockpos$mutableblockpos);
+-                Block block = iblockstate.func_177230_c();
++                IBlockState iblockstate = this.field_189564_r.getBlockState(blockpos$mutableblockpos);
++                Block block = iblockstate.getBlock();
+ 
+                 if (iblockstate.func_185914_p())
+                 {
+@@ -181,7 +181,7 @@
+                 BlockRenderLayer blockrenderlayer1 = block.func_180664_k();
+                 int j = blockrenderlayer1.ordinal();
+ 
+-                if (block.func_176223_P().func_185901_i() != EnumBlockRenderType.INVISIBLE)
++                if (block.getBlockState().func_185901_i() != EnumBlockRenderType.INVISIBLE)
+                 {
+                     net.minecraft.client.renderer.VertexBuffer vertexbuffer = p_178581_4_.func_178545_d().func_179039_a(j);
+ 
+@@ -321,7 +321,7 @@
+     private void func_178573_a(net.minecraft.client.renderer.VertexBuffer p_178573_1_, BlockPos p_178573_2_)
+     {
+         p_178573_1_.func_181668_a(7, DefaultVertexFormats.field_176600_a);
+-        p_178573_1_.func_178969_c((double)(-p_178573_2_.func_177958_n()), (double)(-p_178573_2_.func_177956_o()), (double)(-p_178573_2_.func_177952_p()));
++        p_178573_1_.func_178969_c((double)(-p_178573_2_.getX()), (double)(-p_178573_2_.getY()), (double)(-p_178573_2_.getZ()));
+     }
+ 
+     private void func_178584_a(BlockRenderLayer p_178584_1_, float p_178584_2_, float p_178584_3_, float p_178584_4_, net.minecraft.client.renderer.VertexBuffer p_178584_5_, CompiledChunk p_178584_6_)
+@@ -337,14 +337,14 @@
+ 
+     private void func_178567_n()
+     {
+-        GlStateManager.func_179094_E();
+-        GlStateManager.func_179096_D();
++        GlStateManager.push();
++        GlStateManager.loadIdentity();
+         float f = 1.000001F;
+         GlStateManager.func_179109_b(-8.0F, -8.0F, -8.0F);
+-        GlStateManager.func_179152_a(1.000001F, 1.000001F, 1.000001F);
++        GlStateManager.scale(1.000001F, 1.000001F, 1.000001F);
+         GlStateManager.func_179109_b(8.0F, 8.0F, 8.0F);
+         GlStateManager.func_179111_a(2982, this.field_178597_k);
+-        GlStateManager.func_179121_F();
++        GlStateManager.pop();
+     }
+ 
+     public void func_178572_f()

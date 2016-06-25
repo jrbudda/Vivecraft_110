@@ -1,0 +1,18 @@
+Updating MCP versions.
+
+Copy everyting to new directory, delete mcp(old) and src folder.
+Open minecriftversion.py
+	Update MC version
+	Set md5 to ""
+	Update Optifine version
+	set OF mdf to ""
+	Update MCP version and link
+	Update Forge version
+	
+Download vanialla with launcher for real. Go to game directory/version and grab the (version).json. Copy it to the \installer directory
+Edit (version).json.
+	Add extra vivecraft dependencies (Optifine, JRift, JOpenvr..... ummmm)
+	
+Run install.py. Note optifine md5. copy paste into minecriftversion.py
+Run install.py again. Note minecraft md5. copy paste into minecriftversion.py
+Run install.py again. Pray.

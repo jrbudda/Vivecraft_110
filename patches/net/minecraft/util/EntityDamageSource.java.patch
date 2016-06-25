@@ -1,0 +1,11 @@
+--- a/net/minecraft/util/EntityDamageSource.java
++++ b/net/minecraft/util/EntityDamageSource.java
+@@ -43,7 +43,7 @@
+      */
+     public ITextComponent getDeathMessage(EntityLivingBase p_151519_1_)
+     {
+-        ItemStack itemstack = this.damageSourceEntity instanceof EntityLivingBase ? ((EntityLivingBase)this.damageSourceEntity).func_184614_ca() : null;
++        ItemStack itemstack = this.damageSourceEntity instanceof EntityLivingBase ? ((EntityLivingBase)this.damageSourceEntity).getMainHandItem() : null;
+         String s = "death.attack." + this.damageType;
+         String s1 = s + ".item";
+         return itemstack != null && itemstack.hasDisplayName() && I18n.canTranslate(s1) ? new TextComponentTranslation(s1, new Object[] {p_151519_1_.getFormattedCommandSenderName(), this.damageSourceEntity.getFormattedCommandSenderName(), itemstack.func_151000_E()}): new TextComponentTranslation(s, new Object[] {p_151519_1_.getFormattedCommandSenderName(), this.damageSourceEntity.getFormattedCommandSenderName()});

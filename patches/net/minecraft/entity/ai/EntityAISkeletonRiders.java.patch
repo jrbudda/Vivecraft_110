@@ -1,0 +1,20 @@
+--- a/net/minecraft/entity/ai/EntityAISkeletonRiders.java
++++ b/net/minecraft/entity/ai/EntityAISkeletonRiders.java
+@@ -74,13 +74,13 @@
+         entityskeleton.hurtResistantTime = 60;
+         entityskeleton.enablePersistence();
+ 
+-        if (entityskeleton.func_184582_a(EntityEquipmentSlot.HEAD) == null)
++        if (entityskeleton.getEquippedItemStack(EntityEquipmentSlot.HEAD) == null)
+         {
+-            entityskeleton.func_184201_a(EntityEquipmentSlot.HEAD, new ItemStack(Items.iron_helmet));
++            entityskeleton.equipItemInSlot(EntityEquipmentSlot.HEAD, new ItemStack(Items.iron_helmet));
+         }
+ 
+-        EnchantmentHelper.addRandomEnchantment(entityskeleton.getRNG(), entityskeleton.func_184614_ca(), (int)(5.0F + p_188514_1_.func_180170_c() * (float)entityskeleton.getRNG().nextInt(18)), false);
+-        EnchantmentHelper.addRandomEnchantment(entityskeleton.getRNG(), entityskeleton.func_184582_a(EntityEquipmentSlot.HEAD), (int)(5.0F + p_188514_1_.func_180170_c() * (float)entityskeleton.getRNG().nextInt(18)), false);
++        EnchantmentHelper.addRandomEnchantment(entityskeleton.getRNG(), entityskeleton.getMainHandItem(), (int)(5.0F + p_188514_1_.func_180170_c() * (float)entityskeleton.getRNG().nextInt(18)), false);
++        EnchantmentHelper.addRandomEnchantment(entityskeleton.getRNG(), entityskeleton.getEquippedItemStack(EntityEquipmentSlot.HEAD), (int)(5.0F + p_188514_1_.func_180170_c() * (float)entityskeleton.getRNG().nextInt(18)), false);
+         entityskeleton.worldObj.spawnEntityInWorld(entityskeleton);
+         return entityskeleton;
+     }

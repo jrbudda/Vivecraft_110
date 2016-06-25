@@ -1,0 +1,10 @@
+--- a/net/minecraft/block/state/pattern/BlockMatcher.java
++++ b/net/minecraft/block/state/pattern/BlockMatcher.java
+@@ -21,6 +21,6 @@
+ 
+     public boolean apply(@Nullable IBlockState p_apply_1_)
+     {
+-        return p_apply_1_ != null && p_apply_1_.func_177230_c() == this.field_177644_a;
++        return p_apply_1_ != null && p_apply_1_.getBlock() == this.field_177644_a;
+     }
+ }

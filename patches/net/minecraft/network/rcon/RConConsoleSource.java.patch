@@ -1,0 +1,11 @@
+--- a/net/minecraft/network/rcon/RConConsoleSource.java
++++ b/net/minecraft/network/rcon/RConConsoleSource.java
+@@ -55,7 +55,7 @@
+ 
+     public BlockPos func_180425_c()
+     {
+-        return BlockPos.field_177992_a;
++        return BlockPos.createDefault;
+     }
+ 
+     public Vec3d func_174791_d()

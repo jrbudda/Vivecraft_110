@@ -1,0 +1,20 @@
+--- a/net/minecraft/entity/ai/EntityAIMate.java
++++ b/net/minecraft/entity/ai/EntityAIMate.java
+@@ -88,7 +88,7 @@
+      */
+     private EntityAnimal getNearbyMate()
+     {
+-        List<EntityAnimal> list = this.theWorld.<EntityAnimal>getEntitiesWithinAABB(this.theAnimal.getClass(), this.theAnimal.func_174813_aQ().func_186662_g(8.0D));
++        List<EntityAnimal> list = this.theWorld.<EntityAnimal>getEntitiesWithinAABB(this.theAnimal.getClass(), this.theAnimal.func_174813_aQ().expand(8.0D));
+         double d0 = Double.MAX_VALUE;
+         EntityAnimal entityanimal = null;
+ 
+@@ -147,7 +147,7 @@
+                 double d3 = random.nextDouble() * (double)this.theAnimal.width * 2.0D - (double)this.theAnimal.width;
+                 double d4 = 0.5D + random.nextDouble() * (double)this.theAnimal.height;
+                 double d5 = random.nextDouble() * (double)this.theAnimal.width * 2.0D - (double)this.theAnimal.width;
+-                this.theWorld.func_175688_a(EnumParticleTypes.HEART, this.theAnimal.posX + d3, this.theAnimal.posY + d4, this.theAnimal.posZ + d5, d0, d1, d2, new int[0]);
++                this.theWorld.spawnParticle(EnumParticleTypes.HEART, this.theAnimal.posX + d3, this.theAnimal.posY + d4, this.theAnimal.posZ + d5, d0, d1, d2, new int[0]);
+             }
+ 
+             if (this.theWorld.getGameRules().getGameRuleBooleanValue("doMobLoot"))

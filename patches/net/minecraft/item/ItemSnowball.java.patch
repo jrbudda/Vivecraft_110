@@ -1,0 +1,11 @@
+--- a/net/minecraft/item/ItemSnowball.java
++++ b/net/minecraft/item/ItemSnowball.java
+@@ -26,7 +26,7 @@
+             --itemStackIn.stackSize;
+         }
+ 
+-        worldIn.func_184148_a((EntityPlayer)null, player.posX, player.posY, player.posZ, SoundEvents.field_187797_fA, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
++        worldIn.playSound((EntityPlayer)null, player.posX, player.posY, player.posZ, SoundEvents.field_187797_fA, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+ 
+         if (!worldIn.isRemote)
+         {

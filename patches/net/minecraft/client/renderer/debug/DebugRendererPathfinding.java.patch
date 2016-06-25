@@ -1,0 +1,20 @@
+--- a/net/minecraft/client/renderer/debug/DebugRendererPathfinding.java
++++ b/net/minecraft/client/renderer/debug/DebugRendererPathfinding.java
+@@ -46,7 +46,7 @@
+             this.field_190069_f = this.field_190068_e.lastTickPosX + (this.field_190068_e.posX - this.field_190068_e.lastTickPosX) * (double)p_190060_1_;
+             this.field_190070_g = this.field_190068_e.lastTickPosY + (this.field_190068_e.posY - this.field_190068_e.lastTickPosY) * (double)p_190060_1_;
+             this.field_190071_h = this.field_190068_e.lastTickPosZ + (this.field_190068_e.posZ - this.field_190068_e.lastTickPosZ) * (double)p_190060_1_;
+-            GlStateManager.func_179094_E();
++            GlStateManager.push();
+             GlStateManager.func_179147_l();
+             GlStateManager.func_187428_a(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+             GlStateManager.func_179131_c(0.0F, 1.0F, 0.0F, 0.75F);
+@@ -123,7 +123,7 @@
+ 
+             GlStateManager.func_179098_w();
+             GlStateManager.func_179084_k();
+-            GlStateManager.func_179121_F();
++            GlStateManager.pop();
+         }
+     }
+ 

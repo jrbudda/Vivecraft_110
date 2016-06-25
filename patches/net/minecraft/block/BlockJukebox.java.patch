@@ -1,0 +1,20 @@
+--- a/net/minecraft/block/BlockJukebox.java
++++ b/net/minecraft/block/BlockJukebox.java
+@@ -91,7 +91,7 @@
+                     double d1 = (double)(p_180678_1_.rand.nextFloat() * 0.7F) + 0.06000000238418579D + 0.6D;
+                     double d2 = (double)(p_180678_1_.rand.nextFloat() * 0.7F) + 0.15000000596046448D;
+                     ItemStack itemstack1 = itemstack.copy();
+-                    EntityItem entityitem = new EntityItem(p_180678_1_, (double)p_180678_2_.func_177958_n() + d0, (double)p_180678_2_.func_177956_o() + d1, (double)p_180678_2_.func_177952_p() + d2, itemstack1);
++                    EntityItem entityitem = new EntityItem(p_180678_1_, (double)p_180678_2_.getX() + d0, (double)p_180678_2_.getY() + d1, (double)p_180678_2_.getZ() + d2, itemstack1);
+                     entityitem.func_174869_p();
+                     p_180678_1_.spawnEntityInWorld(entityitem);
+                 }
+@@ -153,7 +153,7 @@
+ 
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        return this.func_176223_P().func_177226_a(field_176432_a, Boolean.valueOf(p_176203_1_ > 0));
++        return this.getBlockState().func_177226_a(field_176432_a, Boolean.valueOf(p_176203_1_ > 0));
+     }
+ 
+     public int func_176201_c(IBlockState p_176201_1_)

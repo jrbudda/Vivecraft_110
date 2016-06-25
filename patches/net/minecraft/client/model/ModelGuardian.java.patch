@@ -1,0 +1,20 @@
+--- a/net/minecraft/client/model/ModelGuardian.java
++++ b/net/minecraft/client/model/ModelGuardian.java
+@@ -92,7 +92,7 @@
+         }
+ 
+         this.field_178708_b.rotationPointZ = -8.25F;
+-        Entity entity = Minecraft.getMinecraft().func_175606_aa();
++        Entity entity = Minecraft.getMinecraft().getRenderViewEntity();
+ 
+         if (entityguardian.func_175474_cn())
+         {
+@@ -116,7 +116,7 @@
+ 
+             Vec3d vec3d2 = p_78087_7_.getLook(0.0F);
+             vec3d2 = new Vec3d(vec3d2.xCoord, 0.0D, vec3d2.zCoord);
+-            Vec3d vec3d3 = (new Vec3d(vec3d1.xCoord - vec3d.xCoord, 0.0D, vec3d1.zCoord - vec3d.zCoord)).normalize().func_178785_b(((float)Math.PI / 2F));
++            Vec3d vec3d3 = (new Vec3d(vec3d1.xCoord - vec3d.xCoord, 0.0D, vec3d1.zCoord - vec3d.zCoord)).normalize().rotateY(((float)Math.PI / 2F));
+             double d1 = vec3d2.dotProduct(vec3d3);
+             this.field_178708_b.rotationPointX = MathHelper.sqrt_float((float)Math.abs(d1)) * 2.0F * (float)Math.signum(d1);
+         }

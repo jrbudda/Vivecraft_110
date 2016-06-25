@@ -1,0 +1,20 @@
+--- a/net/minecraft/entity/monster/EntityCreeper.java
++++ b/net/minecraft/entity/monster/EntityCreeper.java
+@@ -170,7 +170,7 @@
+ 
+             if (i > 0 && this.timeSinceIgnited == 0)
+             {
+-                this.func_184185_a(SoundEvents.field_187572_ar, 1.0F, 0.5F);
++                this.playSound(SoundEvents.field_187572_ar, 1.0F, 0.5F);
+             }
+ 
+             this.timeSinceIgnited += i;
+@@ -280,7 +280,7 @@
+     {
+         if (p_184645_3_ != null && p_184645_3_.getItem() == Items.flint_and_steel)
+         {
+-            this.worldObj.func_184148_a(p_184645_1_, this.posX, this.posY, this.posZ, SoundEvents.field_187649_bu, this.func_184176_by(), 1.0F, this.rand.nextFloat() * 0.4F + 0.8F);
++            this.worldObj.playSound(p_184645_1_, this.posX, this.posY, this.posZ, SoundEvents.field_187649_bu, this.func_184176_by(), 1.0F, this.rand.nextFloat() * 0.4F + 0.8F);
+             p_184645_1_.func_184609_a(p_184645_2_);
+ 
+             if (!this.worldObj.isRemote)

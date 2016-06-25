@@ -1,0 +1,15 @@
+--- a/net/minecraft/client/renderer/RenderList.java
++++ b/net/minecraft/client/renderer/RenderList.java
+@@ -13,10 +13,10 @@
+             for (RenderChunk renderchunk : this.field_178009_a)
+             {
+                 ListedRenderChunk listedrenderchunk = (ListedRenderChunk)renderchunk;
+-                GlStateManager.func_179094_E();
++                GlStateManager.push();
+                 this.func_178003_a(renderchunk);
+                 GlStateManager.func_179148_o(listedrenderchunk.func_178600_a(p_178001_1_, listedrenderchunk.func_178571_g()));
+-                GlStateManager.func_179121_F();
++                GlStateManager.pop();
+             }
+ 
+             GlStateManager.func_179117_G();

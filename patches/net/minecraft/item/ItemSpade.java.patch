@@ -1,0 +1,33 @@
+--- a/net/minecraft/item/ItemSpade.java
++++ b/net/minecraft/item/ItemSpade.java
+@@ -29,24 +29,24 @@
+      */
+     public boolean canItemHarvestBlock(IBlockState p_150897_1_)
+     {
+-        Block block = p_150897_1_.func_177230_c();
++        Block block = p_150897_1_.getBlock();
+         return block == Blocks.snow_layer ? true : block == Blocks.snow;
+     }
+ 
+     public EnumActionResult func_180614_a(ItemStack p_180614_1_, EntityPlayer p_180614_2_, World p_180614_3_, BlockPos p_180614_4_, EnumHand p_180614_5_, EnumFacing p_180614_6_, float p_180614_7_, float p_180614_8_, float p_180614_9_)
+     {
+-        if (!p_180614_2_.func_175151_a(p_180614_4_.func_177972_a(p_180614_6_), p_180614_6_, p_180614_1_))
++        if (!p_180614_2_.func_175151_a(p_180614_4_.getBlockPosRelative(p_180614_6_), p_180614_6_, p_180614_1_))
+         {
+             return EnumActionResult.FAIL;
+         }
+         else
+         {
+-            IBlockState iblockstate = p_180614_3_.func_180495_p(p_180614_4_);
+-            Block block = iblockstate.func_177230_c();
++            IBlockState iblockstate = p_180614_3_.getBlockState(p_180614_4_);
++            Block block = iblockstate.getBlock();
+ 
+-            if (p_180614_6_ != EnumFacing.DOWN && p_180614_3_.func_180495_p(p_180614_4_.func_177984_a()).func_185904_a() == Material.air && block == Blocks.grass)
++            if (p_180614_6_ != EnumFacing.DOWN && p_180614_3_.getBlockState(p_180614_4_.getBlockPosAbove()).getMaterial() == Material.air && block == Blocks.grass)
+             {
+-                IBlockState iblockstate1 = Blocks.field_185774_da.func_176223_P();
++                IBlockState iblockstate1 = Blocks.field_185774_da.getBlockState();
+                 p_180614_3_.func_184133_a(p_180614_2_, p_180614_4_, SoundEvents.field_187771_eN, SoundCategory.BLOCKS, 1.0F, 1.0F);
+ 
+                 if (!p_180614_3_.isRemote)

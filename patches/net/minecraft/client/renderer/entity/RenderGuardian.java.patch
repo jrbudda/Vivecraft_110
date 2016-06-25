@@ -1,0 +1,42 @@
+--- a/net/minecraft/client/renderer/entity/RenderGuardian.java
++++ b/net/minecraft/client/renderer/entity/RenderGuardian.java
+@@ -97,17 +97,17 @@
+             float f2 = (float)p_76986_1_.worldObj.getTotalWorldTime() + p_76986_9_;
+             float f3 = f2 * 0.5F % 1.0F;
+             float f4 = p_76986_1_.getEyeHeight();
+-            GlStateManager.func_179094_E();
++            GlStateManager.push();
+             GlStateManager.func_179109_b((float)p_76986_2_, (float)p_76986_4_ + f4, (float)p_76986_6_);
+             Vec3d vec3d = this.func_177110_a(entitylivingbase, (double)entitylivingbase.height * 0.5D, p_76986_9_);
+             Vec3d vec3d1 = this.func_177110_a(p_76986_1_, (double)f4, p_76986_9_);
+-            Vec3d vec3d2 = vec3d.func_178788_d(vec3d1);
++            Vec3d vec3d2 = vec3d.subtractVector(vec3d1);
+             double d0 = vec3d2.lengthVector() + 1.0D;
+             vec3d2 = vec3d2.normalize();
+             float f5 = (float)Math.acos(vec3d2.yCoord);
+             float f6 = (float)Math.atan2(vec3d2.zCoord, vec3d2.xCoord);
+-            GlStateManager.func_179114_b((((float)Math.PI / 2F) + -f6) * (180F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
+-            GlStateManager.func_179114_b(f5 * (180F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
++            GlStateManager.rotate((((float)Math.PI / 2F) + -f6) * (180F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
++            GlStateManager.rotate(f5 * (180F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
+             int i = 1;
+             double d1 = (double)f2 * 0.05D * -1.5D;
+             vertexbuffer.func_181668_a(7, DefaultVertexFormats.field_181709_i);
+@@ -157,7 +157,7 @@
+             vertexbuffer.func_181662_b(d10, d0, d11).func_187315_a(1.0D, d24).func_181669_b(j, k, l, 255).func_181675_d();
+             vertexbuffer.func_181662_b(d8, d0, d9).func_187315_a(0.5D, d24).func_181669_b(j, k, l, 255).func_181675_d();
+             tessellator.draw();
+-            GlStateManager.func_179121_F();
++            GlStateManager.pop();
+         }
+     }
+ 
+@@ -169,7 +169,7 @@
+     {
+         if (p_77041_1_.func_175461_cl())
+         {
+-            GlStateManager.func_179152_a(2.35F, 2.35F, 2.35F);
++            GlStateManager.scale(2.35F, 2.35F, 2.35F);
+         }
+     }
+ 

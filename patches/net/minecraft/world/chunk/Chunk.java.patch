@@ -1,0 +1,325 @@
+--- a/net/minecraft/world/chunk/Chunk.java
++++ b/net/minecraft/world/chunk/Chunk.java
+@@ -147,7 +147,7 @@
+                 {
+                     IBlockState iblockstate = p_i45645_2_.func_177856_a(j, l, k);
+ 
+-                    if (iblockstate.func_185904_a() != Material.air)
++                    if (iblockstate.getMaterial() != Material.air)
+                     {
+                         int i1 = l >> 4;
+ 
+@@ -173,7 +173,7 @@
+ 
+     public int func_177433_f(BlockPos p_177433_1_)
+     {
+-        return this.getHeightValue(p_177433_1_.func_177958_n() & 15, p_177433_1_.func_177952_p() & 15);
++        return this.getHeightValue(p_177433_1_.getX() & 15, p_177433_1_.getZ() & 15);
+     }
+ 
+     /**
+@@ -380,7 +380,7 @@
+      */
+     private void checkSkylightNeighborHeight(int p_76599_1_, int p_76599_2_, int p_76599_3_)
+     {
+-        int i = this.worldObj.func_175645_m(new BlockPos(p_76599_1_, 0, p_76599_2_)).func_177956_o();
++        int i = this.worldObj.func_175645_m(new BlockPos(p_76599_1_, 0, p_76599_2_)).getY();
+ 
+         if (i > p_76599_3_)
+         {
+@@ -518,7 +518,7 @@
+ 
+     public int func_177437_b(BlockPos p_177437_1_)
+     {
+-        return this.func_177435_g(p_177437_1_).func_185891_c();
++        return this.getBlockState(p_177437_1_).func_185891_c();
+     }
+ 
+     private int getBlockLightOpacity(int p_150808_1_, int p_150808_2_, int p_150808_3_)
+@@ -526,9 +526,9 @@
+         return this.func_186032_a(p_150808_1_, p_150808_2_, p_150808_3_).func_185891_c();
+     }
+ 
+-    public IBlockState func_177435_g(BlockPos p_177435_1_)
++    public IBlockState getBlockState(BlockPos p_177435_1_)
+     {
+-        return this.func_186032_a(p_177435_1_.func_177958_n(), p_177435_1_.func_177956_o(), p_177435_1_.func_177952_p());
++        return this.func_186032_a(p_177435_1_.getX(), p_177435_1_.getY(), p_177435_1_.getZ());
+     }
+ 
+     public IBlockState func_186032_a(final int p_186032_1_, final int p_186032_2_, final int p_186032_3_)
+@@ -539,7 +539,7 @@
+ 
+             if (p_186032_2_ == 60)
+             {
+-                iblockstate = Blocks.field_180401_cv.func_176223_P();
++                iblockstate = Blocks.field_180401_cv.getBlockState();
+             }
+ 
+             if (p_186032_2_ == 70)
+@@ -547,7 +547,7 @@
+                 iblockstate = ChunkProviderDebug.func_177461_b(p_186032_1_, p_186032_3_);
+             }
+ 
+-            return iblockstate == null ? Blocks.air.func_176223_P() : iblockstate;
++            return iblockstate == null ? Blocks.air.getBlockState() : iblockstate;
+         }
+         else
+         {
+@@ -563,7 +563,7 @@
+                     }
+                 }
+ 
+-                return Blocks.air.func_176223_P();
++                return Blocks.air.getBlockState();
+             }
+             catch (Throwable throwable)
+             {
+@@ -584,9 +584,9 @@
+     @Nullable
+     public IBlockState func_177436_a(BlockPos p_177436_1_, IBlockState p_177436_2_)
+     {
+-        int i = p_177436_1_.func_177958_n() & 15;
+-        int j = p_177436_1_.func_177956_o();
+-        int k = p_177436_1_.func_177952_p() & 15;
++        int i = p_177436_1_.getX() & 15;
++        int j = p_177436_1_.getY();
++        int k = p_177436_1_.getZ() & 15;
+         int l = k << 4 | i;
+ 
+         if (j >= this.precipitationHeightMap[l] - 1)
+@@ -595,7 +595,7 @@
+         }
+ 
+         int i1 = this.heightMap[l];
+-        IBlockState iblockstate = this.func_177435_g(p_177436_1_);
++        IBlockState iblockstate = this.getBlockState(p_177436_1_);
+ 
+         if (iblockstate == p_177436_2_)
+         {
+@@ -603,8 +603,8 @@
+         }
+         else
+         {
+-            Block block = p_177436_2_.func_177230_c();
+-            Block block1 = iblockstate.func_177230_c();
++            Block block = p_177436_2_.getBlock();
++            Block block1 = iblockstate.getBlock();
+             ExtendedBlockStorage extendedblockstorage = this.storageArrays[j >> 4];
+             boolean flag = false;
+ 
+@@ -634,7 +634,7 @@
+                 }
+             }
+ 
+-            if (extendedblockstorage.func_177485_a(i, j & 15, k).func_177230_c() != block)
++            if (extendedblockstorage.func_177485_a(i, j & 15, k).getBlock() != block)
+             {
+                 return null;
+             }
+@@ -706,18 +706,18 @@
+ 
+     public int func_177413_a(EnumSkyBlock p_177413_1_, BlockPos p_177413_2_)
+     {
+-        int i = p_177413_2_.func_177958_n() & 15;
+-        int j = p_177413_2_.func_177956_o();
+-        int k = p_177413_2_.func_177952_p() & 15;
++        int i = p_177413_2_.getX() & 15;
++        int j = p_177413_2_.getY();
++        int k = p_177413_2_.getZ() & 15;
+         ExtendedBlockStorage extendedblockstorage = this.storageArrays[j >> 4];
+         return extendedblockstorage == field_186036_a ? (this.func_177444_d(p_177413_2_) ? p_177413_1_.defaultLightValue : 0) : (p_177413_1_ == EnumSkyBlock.SKY ? (this.worldObj.provider.func_177495_o() ? 0 : extendedblockstorage.getExtSkylightValue(i, j & 15, k)) : (p_177413_1_ == EnumSkyBlock.BLOCK ? extendedblockstorage.getExtBlocklightValue(i, j & 15, k) : p_177413_1_.defaultLightValue));
+     }
+ 
+     public void func_177431_a(EnumSkyBlock p_177431_1_, BlockPos p_177431_2_, int p_177431_3_)
+     {
+-        int i = p_177431_2_.func_177958_n() & 15;
+-        int j = p_177431_2_.func_177956_o();
+-        int k = p_177431_2_.func_177952_p() & 15;
++        int i = p_177431_2_.getX() & 15;
++        int j = p_177431_2_.getY();
++        int k = p_177431_2_.getZ() & 15;
+         ExtendedBlockStorage extendedblockstorage = this.storageArrays[j >> 4];
+ 
+         if (extendedblockstorage == field_186036_a)
+@@ -744,9 +744,9 @@
+ 
+     public int func_177443_a(BlockPos p_177443_1_, int p_177443_2_)
+     {
+-        int i = p_177443_1_.func_177958_n() & 15;
+-        int j = p_177443_1_.func_177956_o();
+-        int k = p_177443_1_.func_177952_p() & 15;
++        int i = p_177443_1_.getX() & 15;
++        int j = p_177443_1_.getY();
++        int k = p_177443_1_.getZ() & 15;
+         ExtendedBlockStorage extendedblockstorage = this.storageArrays[j >> 4];
+ 
+         if (extendedblockstorage == field_186036_a)
+@@ -830,18 +830,18 @@
+ 
+     public boolean func_177444_d(BlockPos p_177444_1_)
+     {
+-        int i = p_177444_1_.func_177958_n() & 15;
+-        int j = p_177444_1_.func_177956_o();
+-        int k = p_177444_1_.func_177952_p() & 15;
++        int i = p_177444_1_.getX() & 15;
++        int j = p_177444_1_.getY();
++        int k = p_177444_1_.getZ() & 15;
+         return j >= this.heightMap[k << 4 | i];
+     }
+ 
+     @Nullable
+     private TileEntity func_177422_i(BlockPos p_177422_1_)
+     {
+-        IBlockState iblockstate = this.func_177435_g(p_177422_1_);
+-        Block block = iblockstate.func_177230_c();
+-        return !block.hasTileEntity() ? null : ((ITileEntityProvider)block).createNewTileEntity(this.worldObj, iblockstate.func_177230_c().func_176201_c(iblockstate));
++        IBlockState iblockstate = this.getBlockState(p_177422_1_);
++        Block block = iblockstate.getBlock();
++        return !block.hasTileEntity() ? null : ((ITileEntityProvider)block).createNewTileEntity(this.worldObj, iblockstate.getBlock().func_176201_c(iblockstate));
+     }
+ 
+     @Nullable
+@@ -885,7 +885,7 @@
+         p_177426_2_.setWorldObj(this.worldObj);
+         p_177426_2_.func_174878_a(p_177426_1_);
+ 
+-        if (this.func_177435_g(p_177426_1_).func_177230_c() instanceof ITileEntityProvider)
++        if (this.getBlockState(p_177426_1_).getBlock() instanceof ITileEntityProvider)
+         {
+             if (this.chunkTileEntityMap.containsKey(p_177426_1_))
+             {
+@@ -1089,36 +1089,36 @@
+ 
+     public BlockPos func_177440_h(BlockPos p_177440_1_)
+     {
+-        int i = p_177440_1_.func_177958_n() & 15;
+-        int j = p_177440_1_.func_177952_p() & 15;
++        int i = p_177440_1_.getX() & 15;
++        int j = p_177440_1_.getZ() & 15;
+         int k = i | j << 4;
+-        BlockPos blockpos = new BlockPos(p_177440_1_.func_177958_n(), this.precipitationHeightMap[k], p_177440_1_.func_177952_p());
++        BlockPos blockpos = new BlockPos(p_177440_1_.getX(), this.precipitationHeightMap[k], p_177440_1_.getZ());
+ 
+-        if (blockpos.func_177956_o() == -999)
++        if (blockpos.getY() == -999)
+         {
+             int l = this.getTopFilledSegment() + 15;
+-            blockpos = new BlockPos(p_177440_1_.func_177958_n(), l, p_177440_1_.func_177952_p());
++            blockpos = new BlockPos(p_177440_1_.getX(), l, p_177440_1_.getZ());
+             int i1 = -1;
+ 
+-            while (blockpos.func_177956_o() > 0 && i1 == -1)
++            while (blockpos.getY() > 0 && i1 == -1)
+             {
+-                IBlockState iblockstate = this.func_177435_g(blockpos);
+-                Material material = iblockstate.func_185904_a();
++                IBlockState iblockstate = this.getBlockState(blockpos);
++                Material material = iblockstate.getMaterial();
+ 
+                 if (!material.blocksMovement() && !material.isLiquid())
+                 {
+-                    blockpos = blockpos.func_177977_b();
++                    blockpos = blockpos.getBlockPosBelow();
+                 }
+                 else
+                 {
+-                    i1 = blockpos.func_177956_o() + 1;
++                    i1 = blockpos.getY() + 1;
+                 }
+             }
+ 
+             this.precipitationHeightMap[k] = i1;
+         }
+ 
+-        return new BlockPos(p_177440_1_.func_177958_n(), this.precipitationHeightMap[k], p_177440_1_.func_177952_p());
++        return new BlockPos(p_177440_1_.getX(), this.precipitationHeightMap[k], p_177440_1_.getZ());
+     }
+ 
+     public void func_150804_b(boolean p_150804_1_)
+@@ -1139,7 +1139,7 @@
+         {
+             BlockPos blockpos = (BlockPos)this.field_177447_w.poll();
+ 
+-            if (this.func_177424_a(blockpos, Chunk.EnumCreateEntityType.CHECK) == null && this.func_177435_g(blockpos).func_177230_c().hasTileEntity())
++            if (this.func_177424_a(blockpos, Chunk.EnumCreateEntityType.CHECK) == null && this.getBlockState(blockpos).getBlock().hasTileEntity())
+             {
+                 TileEntity tileentity = this.func_177422_i(blockpos);
+                 this.worldObj.func_175690_a(blockpos, tileentity);
+@@ -1265,8 +1265,8 @@
+ 
+     public Biome func_177411_a(BlockPos p_177411_1_, BiomeProvider p_177411_2_)
+     {
+-        int i = p_177411_1_.func_177958_n() & 15;
+-        int j = p_177411_1_.func_177952_p() & 15;
++        int i = p_177411_1_.getX() & 15;
++        int j = p_177411_1_.getZ() & 15;
+         int k = this.blockBiomeArray[j << 4 | i] & 255;
+ 
+         if (k == 255)
+@@ -1340,13 +1340,13 @@
+                     BlockPos blockpos1 = blockpos.func_177982_a(k, (j << 4) + i1, l);
+                     boolean flag = i1 == 0 || i1 == 15 || k == 0 || k == 15 || l == 0 || l == 15;
+ 
+-                    if (this.storageArrays[j] == field_186036_a && flag || this.storageArrays[j] != field_186036_a && this.storageArrays[j].func_177485_a(k, i1, l).func_185904_a() == Material.air)
++                    if (this.storageArrays[j] == field_186036_a && flag || this.storageArrays[j] != field_186036_a && this.storageArrays[j].func_177485_a(k, i1, l).getMaterial() == Material.air)
+                     {
+                         for (EnumFacing enumfacing : EnumFacing.values())
+                         {
+-                            BlockPos blockpos2 = blockpos1.func_177972_a(enumfacing);
++                            BlockPos blockpos2 = blockpos1.getBlockPosRelative(enumfacing);
+ 
+-                            if (this.worldObj.func_180495_p(blockpos2).func_185906_d() > 0)
++                            if (this.worldObj.getBlockState(blockpos2).func_185906_d() > 0)
+                             {
+                                 this.worldObj.func_175664_x(blockpos2);
+                             }
+@@ -1367,7 +1367,7 @@
+ 
+         if (!this.worldObj.provider.func_177495_o())
+         {
+-            if (this.worldObj.func_175707_a(blockpos.func_177982_a(-1, 0, -1), blockpos.func_177982_a(16, this.worldObj.func_181545_F(), 16)))
++            if (this.worldObj.func_175707_a(blockpos.func_177982_a(-1, 0, -1), blockpos.func_177982_a(16, this.worldObj.getSpawnLevel(), 16)))
+             {
+                 label92:
+ 
+@@ -1388,7 +1388,7 @@
+                     for (EnumFacing enumfacing : EnumFacing.Plane.HORIZONTAL)
+                     {
+                         int k = enumfacing.func_176743_c() == EnumFacing.AxisDirection.POSITIVE ? 16 : 1;
+-                        this.worldObj.func_175726_f(blockpos.func_177967_a(enumfacing, k)).func_180700_a(enumfacing.func_176734_d());
++                        this.worldObj.getChunk(blockpos.getBlockPosRelative(enumfacing, k)).func_180700_a(enumfacing.func_176734_d());
+                     }
+ 
+                     this.func_177441_y();
+@@ -1453,12 +1453,12 @@
+         boolean flag1 = false;
+         BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos((this.xPosition << 4) + p_150811_1_, 0, (this.zPosition << 4) + p_150811_2_);
+ 
+-        for (int j = i + 16 - 1; j > this.worldObj.func_181545_F() || j > 0 && !flag1; --j)
++        for (int j = i + 16 - 1; j > this.worldObj.getSpawnLevel() || j > 0 && !flag1; --j)
+         {
+-            blockpos$mutableblockpos.func_181079_c(blockpos$mutableblockpos.func_177958_n(), j, blockpos$mutableblockpos.func_177952_p());
++            blockpos$mutableblockpos.func_181079_c(blockpos$mutableblockpos.getX(), j, blockpos$mutableblockpos.getZ());
+             int k = this.func_177437_b(blockpos$mutableblockpos);
+ 
+-            if (k == 255 && blockpos$mutableblockpos.func_177956_o() < this.worldObj.func_181545_F())
++            if (k == 255 && blockpos$mutableblockpos.getY() < this.worldObj.getSpawnLevel())
+             {
+                 flag1 = true;
+             }
+@@ -1473,11 +1473,11 @@
+             }
+         }
+ 
+-        for (int l = blockpos$mutableblockpos.func_177956_o(); l > 0; --l)
++        for (int l = blockpos$mutableblockpos.getY(); l > 0; --l)
+         {
+-            blockpos$mutableblockpos.func_181079_c(blockpos$mutableblockpos.func_177958_n(), l, blockpos$mutableblockpos.func_177952_p());
++            blockpos$mutableblockpos.func_181079_c(blockpos$mutableblockpos.getX(), l, blockpos$mutableblockpos.getZ());
+ 
+-            if (this.func_177435_g(blockpos$mutableblockpos).func_185906_d() > 0)
++            if (this.getBlockState(blockpos$mutableblockpos).func_185906_d() > 0)
+             {
+                 this.worldObj.func_175664_x(blockpos$mutableblockpos);
+             }

@@ -1,0 +1,20 @@
+--- a/net/minecraft/world/WorldProvider.java
++++ b/net/minecraft/world/WorldProvider.java
+@@ -104,7 +104,7 @@
+     public boolean canCoordinateBeSpawn(int p_76566_1_, int p_76566_2_)
+     {
+         BlockPos blockpos = new BlockPos(p_76566_1_, 0, p_76566_2_);
+-        return this.worldObj.func_180494_b(blockpos).func_185352_i() ? true : this.worldObj.func_184141_c(blockpos).func_177230_c() == Blocks.grass;
++        return this.worldObj.func_180494_b(blockpos).func_185352_i() ? true : this.worldObj.getBlockSomething(blockpos).getBlock() == Blocks.grass;
+     }
+ 
+     /**
+@@ -215,7 +215,7 @@
+ 
+     public int getAverageGroundLevel()
+     {
+-        return this.terrainType == WorldType.FLAT ? 4 : this.worldObj.func_181545_F() + 1;
++        return this.terrainType == WorldType.FLAT ? 4 : this.worldObj.getSpawnLevel() + 1;
+     }
+ 
+     /**

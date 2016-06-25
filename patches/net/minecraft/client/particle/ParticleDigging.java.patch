@@ -1,0 +1,44 @@
+--- a/net/minecraft/client/particle/ParticleDigging.java
++++ b/net/minecraft/client/particle/ParticleDigging.java
+@@ -20,7 +20,7 @@
+         super(p_i46280_1_, p_i46280_2_, p_i46280_4_, p_i46280_6_, p_i46280_8_, p_i46280_10_, p_i46280_12_);
+         this.field_174847_a = p_i46280_14_;
+         this.func_187117_a(Minecraft.getMinecraft().func_175602_ab().func_175023_a().func_178122_a(p_i46280_14_));
+-        this.particleGravity = p_i46280_14_.func_177230_c().blockParticleGravity;
++        this.particleGravity = p_i46280_14_.getBlock().blockParticleGravity;
+         this.particleRed = 0.6F;
+         this.particleGreen = 0.6F;
+         this.particleBlue = 0.6F;
+@@ -31,7 +31,7 @@
+     {
+         this.field_181019_az = p_174846_1_;
+ 
+-        if (this.field_174847_a.func_177230_c() == Blocks.grass)
++        if (this.field_174847_a.getBlock() == Blocks.grass)
+         {
+             return this;
+         }
+@@ -44,8 +44,8 @@
+ 
+     public ParticleDigging func_174845_l()
+     {
+-        this.field_181019_az = new BlockPos(this.field_187126_f, this.field_187127_g, this.field_187128_h);
+-        Block block = this.field_174847_a.func_177230_c();
++        this.field_181019_az = new BlockPos(this.prevPosX, this.prevPosY, this.prevPosZ);
++        Block block = this.field_174847_a.getBlock();
+ 
+         if (block == Blocks.grass)
+         {
+@@ -87,9 +87,9 @@
+             f3 = this.field_187119_C.getInterpolatedV((double)((this.particleTextureJitterY + 1.0F) / 4.0F * 16.0F));
+         }
+ 
+-        float f5 = (float)(this.field_187123_c + (this.field_187126_f - this.field_187123_c) * (double)p_180434_3_ - interpPosX);
+-        float f6 = (float)(this.field_187124_d + (this.field_187127_g - this.field_187124_d) * (double)p_180434_3_ - interpPosY);
+-        float f7 = (float)(this.field_187125_e + (this.field_187128_h - this.field_187125_e) * (double)p_180434_3_ - interpPosZ);
++        float f5 = (float)(this.posX + (this.prevPosX - this.posX) * (double)p_180434_3_ - interpPosX);
++        float f6 = (float)(this.posY + (this.prevPosY - this.posY) * (double)p_180434_3_ - interpPosY);
++        float f7 = (float)(this.posZ + (this.prevPosZ - this.posZ) * (double)p_180434_3_ - interpPosZ);
+         int i = this.func_189214_a(p_180434_3_);
+         int j = i >> 16 & 65535;
+         int k = i & 65535;

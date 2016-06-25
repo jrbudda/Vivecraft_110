@@ -1,0 +1,39 @@
+--- a/net/minecraft/entity/ai/EntityAIPanic.java
++++ b/net/minecraft/entity/ai/EntityAIPanic.java
+@@ -59,9 +59,9 @@
+             }
+             else
+             {
+-                this.randPosX = (double)blockpos.func_177958_n();
+-                this.randPosY = (double)blockpos.func_177956_o();
+-                this.randPosZ = (double)blockpos.func_177952_p();
++                this.randPosX = (double)blockpos.getX();
++                this.randPosY = (double)blockpos.getY();
++                this.randPosZ = (double)blockpos.getZ();
+                 return true;
+             }
+         }
+@@ -87,9 +87,9 @@
+     {
+         BlockPos blockpos = new BlockPos(p_188497_2_);
+         BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
+-        int i = blockpos.func_177958_n();
+-        int j = blockpos.func_177956_o();
+-        int k = blockpos.func_177952_p();
++        int i = blockpos.getX();
++        int j = blockpos.getY();
++        int k = blockpos.getZ();
+         float f = (float)(p_188497_3_ * p_188497_3_ * p_188497_4_ * 2);
+         BlockPos blockpos1 = null;
+ 
+@@ -100,8 +100,8 @@
+                 for (int j1 = k - p_188497_3_; j1 <= k + p_188497_3_; ++j1)
+                 {
+                     blockpos$mutableblockpos.func_181079_c(l, i1, j1);
+-                    IBlockState iblockstate = p_188497_1_.func_180495_p(blockpos$mutableblockpos);
+-                    Block block = iblockstate.func_177230_c();
++                    IBlockState iblockstate = p_188497_1_.getBlockState(blockpos$mutableblockpos);
++                    Block block = iblockstate.getBlock();
+ 
+                     if (block == Blocks.water || block == Blocks.flowing_water)
+                     {

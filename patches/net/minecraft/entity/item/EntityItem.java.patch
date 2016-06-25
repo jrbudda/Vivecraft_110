@@ -1,0 +1,35 @@
+--- a/net/minecraft/entity/item/EntityItem.java
++++ b/net/minecraft/entity/item/EntityItem.java
+@@ -122,12 +122,12 @@
+ 
+             if (flag || this.ticksExisted % 25 == 0)
+             {
+-                if (this.worldObj.func_180495_p(new BlockPos(this)).func_185904_a() == Material.lava)
++                if (this.worldObj.getBlockState(new BlockPos(this)).getMaterial() == Material.lava)
+                 {
+                     this.motionY = 0.20000000298023224D;
+                     this.motionX = (double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
+                     this.motionZ = (double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
+-                    this.func_184185_a(SoundEvents.field_187658_bx, 0.4F, 2.0F + this.rand.nextFloat() * 0.4F);
++                    this.playSound(SoundEvents.field_187658_bx, 0.4F, 2.0F + this.rand.nextFloat() * 0.4F);
+                 }
+ 
+                 if (!this.worldObj.isRemote)
+@@ -140,7 +140,7 @@
+ 
+             if (this.onGround)
+             {
+-                f = this.worldObj.func_180495_p(new BlockPos(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.func_174813_aQ().minY) - 1, MathHelper.floor_double(this.posZ))).func_177230_c().slipperiness * 0.98F;
++                f = this.worldObj.getBlockState(new BlockPos(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.func_174813_aQ().minY) - 1, MathHelper.floor_double(this.posZ))).getBlock().slipperiness * 0.98F;
+             }
+ 
+             this.motionX *= (double)f;
+@@ -428,7 +428,7 @@
+ 
+                 if (!this.func_174814_R())
+                 {
+-                    this.worldObj.func_184148_a((EntityPlayer)null, entityIn.posX, entityIn.posY, entityIn.posZ, SoundEvents.field_187638_cR, SoundCategory.PLAYERS, 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
++                    this.worldObj.playSound((EntityPlayer)null, entityIn.posX, entityIn.posY, entityIn.posZ, SoundEvents.field_187638_cR, SoundCategory.PLAYERS, 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                 }
+ 
+                 entityIn.onItemPickup(this, i);

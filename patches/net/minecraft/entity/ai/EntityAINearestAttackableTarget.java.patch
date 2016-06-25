@@ -1,0 +1,11 @@
+--- a/net/minecraft/entity/ai/EntityAINearestAttackableTarget.java
++++ b/net/minecraft/entity/ai/EntityAINearestAttackableTarget.java
+@@ -88,7 +88,7 @@
+                 @Nullable
+                 public Double apply(@Nullable EntityPlayer p_apply_1_)
+                 {
+-                    ItemStack itemstack = p_apply_1_.func_184582_a(EntityEquipmentSlot.HEAD);
++                    ItemStack itemstack = p_apply_1_.getEquippedItemStack(EntityEquipmentSlot.HEAD);
+ 
+                     if (itemstack != null && itemstack.getItem() == Items.skull)
+                     {

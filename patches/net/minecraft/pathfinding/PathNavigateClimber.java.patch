@@ -1,0 +1,14 @@
+--- a/net/minecraft/pathfinding/PathNavigateClimber.java
++++ b/net/minecraft/pathfinding/PathNavigateClimber.java
+@@ -61,9 +61,9 @@
+             {
+                 double d0 = (double)(this.theEntity.width * this.theEntity.width);
+ 
+-                if (this.theEntity.func_174831_c(this.field_179696_f) >= d0 && (this.theEntity.posY <= (double)this.field_179696_f.func_177956_o() || this.theEntity.func_174831_c(new BlockPos(this.field_179696_f.func_177958_n(), MathHelper.floor_double(this.theEntity.posY), this.field_179696_f.func_177952_p())) >= d0))
++                if (this.theEntity.func_174831_c(this.field_179696_f) >= d0 && (this.theEntity.posY <= (double)this.field_179696_f.getY() || this.theEntity.func_174831_c(new BlockPos(this.field_179696_f.getX(), MathHelper.floor_double(this.theEntity.posY), this.field_179696_f.getZ())) >= d0))
+                 {
+-                    this.theEntity.getMoveHelper().setMoveTo((double)this.field_179696_f.func_177958_n(), (double)this.field_179696_f.func_177956_o(), (double)this.field_179696_f.func_177952_p(), this.speed);
++                    this.theEntity.getMoveHelper().setMoveTo((double)this.field_179696_f.getX(), (double)this.field_179696_f.getY(), (double)this.field_179696_f.getZ(), this.speed);
+                 }
+                 else
+                 {

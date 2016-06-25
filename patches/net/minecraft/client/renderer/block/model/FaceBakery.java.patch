@@ -1,0 +1,11 @@
+--- a/net/minecraft/client/renderer/block/model/FaceBakery.java
++++ b/net/minecraft/client/renderer/block/model/FaceBakery.java
+@@ -242,7 +242,7 @@
+         for (EnumFacing enumfacing1 : EnumFacing.values())
+         {
+             Vec3i vec3i = enumfacing1.func_176730_m();
+-            Vector3f vector3f6 = new Vector3f((float)vec3i.func_177958_n(), (float)vec3i.func_177956_o(), (float)vec3i.func_177952_p());
++            Vector3f vector3f6 = new Vector3f((float)vec3i.getX(), (float)vec3i.getY(), (float)vec3i.getZ());
+             float f2 = Vector3f.dot(vector3f5, vector3f6);
+ 
+             if (f2 >= 0.0F && f2 > f1)

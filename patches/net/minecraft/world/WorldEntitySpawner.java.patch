@@ -1,0 +1,67 @@
+--- a/net/minecraft/world/WorldEntitySpawner.java
++++ b/net/minecraft/world/WorldEntitySpawner.java
+@@ -93,10 +93,10 @@
+                         for (ChunkPos chunkpos1 : this.eligibleChunksForSpawning)
+                         {
+                             BlockPos blockpos = func_180621_a(p_77192_1_, chunkpos1.chunkXPos, chunkpos1.chunkZPos);
+-                            int k1 = blockpos.func_177958_n();
+-                            int l1 = blockpos.func_177956_o();
+-                            int i2 = blockpos.func_177952_p();
+-                            IBlockState iblockstate = p_77192_1_.func_180495_p(blockpos);
++                            int k1 = blockpos.getX();
++                            int l1 = blockpos.getY();
++                            int i2 = blockpos.getZ();
++                            IBlockState iblockstate = p_77192_1_.getBlockState(blockpos);
+ 
+                             if (!iblockstate.func_185915_l())
+                             {
+@@ -196,7 +196,7 @@
+ 
+     public static boolean func_185331_a(IBlockState p_185331_0_)
+     {
+-        return p_185331_0_.func_185898_k() ? false : (p_185331_0_.func_185897_m() ? false : (p_185331_0_.func_185904_a().isLiquid() ? false : !BlockRailBase.func_176563_d(p_185331_0_)));
++        return p_185331_0_.func_185898_k() ? false : (p_185331_0_.func_185897_m() ? false : (p_185331_0_.getMaterial().isLiquid() ? false : !BlockRailBase.func_176563_d(p_185331_0_)));
+     }
+ 
+     public static boolean func_180267_a(EntityLiving.SpawnPlacementType p_180267_0_, World p_180267_1_, BlockPos p_180267_2_)
+@@ -207,25 +207,25 @@
+         }
+         else
+         {
+-            IBlockState iblockstate = p_180267_1_.func_180495_p(p_180267_2_);
++            IBlockState iblockstate = p_180267_1_.getBlockState(p_180267_2_);
+ 
+             if (p_180267_0_ == EntityLiving.SpawnPlacementType.IN_WATER)
+             {
+-                return iblockstate.func_185904_a().isLiquid() && p_180267_1_.func_180495_p(p_180267_2_.func_177977_b()).func_185904_a().isLiquid() && !p_180267_1_.func_180495_p(p_180267_2_.func_177984_a()).func_185915_l();
++                return iblockstate.getMaterial().isLiquid() && p_180267_1_.getBlockState(p_180267_2_.getBlockPosBelow()).getMaterial().isLiquid() && !p_180267_1_.getBlockState(p_180267_2_.getBlockPosAbove()).func_185915_l();
+             }
+             else
+             {
+-                BlockPos blockpos = p_180267_2_.func_177977_b();
++                BlockPos blockpos = p_180267_2_.getBlockPosBelow();
+ 
+-                if (!p_180267_1_.func_180495_p(blockpos).func_185896_q())
++                if (!p_180267_1_.getBlockState(blockpos).func_185896_q())
+                 {
+                     return false;
+                 }
+                 else
+                 {
+-                    Block block = p_180267_1_.func_180495_p(blockpos).func_177230_c();
++                    Block block = p_180267_1_.getBlockState(blockpos).getBlock();
+                     boolean flag = block != Blocks.bedrock && block != Blocks.field_180401_cv;
+-                    return flag && func_185331_a(iblockstate) && func_185331_a(p_180267_1_.func_180495_p(p_180267_2_.func_177984_a()));
++                    return flag && func_185331_a(iblockstate) && func_185331_a(p_180267_1_.getBlockState(p_180267_2_.getBlockPosAbove()));
+                 }
+             }
+         }
+@@ -272,7 +272,7 @@
+                                 continue;
+                             }
+ 
+-                            entityliving.setLocationAndAngles((double)((float)j + 0.5F), (double)blockpos.func_177956_o(), (double)((float)k + 0.5F), p_77191_6_.nextFloat() * 360.0F, 0.0F);
++                            entityliving.setLocationAndAngles((double)((float)j + 0.5F), (double)blockpos.getY(), (double)((float)k + 0.5F), p_77191_6_.nextFloat() * 360.0F, 0.0F);
+                             p_77191_0_.spawnEntityInWorld(entityliving);
+                             ientitylivingdata = entityliving.func_180482_a(p_77191_0_.func_175649_E(new BlockPos(entityliving)), ientitylivingdata);
+                             flag = true;

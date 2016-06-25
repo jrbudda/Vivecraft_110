@@ -1,0 +1,78 @@
+--- a/net/minecraft/block/BlockTripWire.java
++++ b/net/minecraft/block/BlockTripWire.java
+@@ -99,7 +99,7 @@
+     {
+         if (!p_176208_1_.isRemote)
+         {
+-            if (p_176208_4_.func_184614_ca() != null && p_176208_4_.func_184614_ca().getItem() == Items.shears)
++            if (p_176208_4_.getMainHandItem() != null && p_176208_4_.getMainHandItem().getItem() == Items.shears)
+             {
+                 p_176208_1_.func_180501_a(p_176208_2_, p_176208_3_.func_177226_a(field_176295_N, Boolean.valueOf(true)), 4);
+             }
+@@ -112,10 +112,10 @@
+         {
+             for (int i = 1; i < 42; ++i)
+             {
+-                BlockPos blockpos = p_176286_2_.func_177967_a(enumfacing, i);
+-                IBlockState iblockstate = p_176286_1_.func_180495_p(blockpos);
++                BlockPos blockpos = p_176286_2_.getBlockPosRelative(enumfacing, i);
++                IBlockState iblockstate = p_176286_1_.getBlockState(blockpos);
+ 
+-                if (iblockstate.func_177230_c() == Blocks.tripwire_hook)
++                if (iblockstate.getBlock() == Blocks.tripwire_hook)
+                 {
+                     if (iblockstate.func_177229_b(BlockTripWireHook.field_176264_a) == enumfacing.func_176734_d())
+                     {
+@@ -125,7 +125,7 @@
+                     break;
+                 }
+ 
+-                if (iblockstate.func_177230_c() != Blocks.tripwire)
++                if (iblockstate.getBlock() != Blocks.tripwire)
+                 {
+                     break;
+                 }
+@@ -152,7 +152,7 @@
+     {
+         if (!p_180650_1_.isRemote)
+         {
+-            if (((Boolean)p_180650_1_.func_180495_p(p_180650_2_).func_177229_b(field_176293_a)).booleanValue())
++            if (((Boolean)p_180650_1_.getBlockState(p_180650_2_).func_177229_b(field_176293_a)).booleanValue())
+             {
+                 this.func_176288_d(p_180650_1_, p_180650_2_);
+             }
+@@ -161,10 +161,10 @@
+ 
+     private void func_176288_d(World p_176288_1_, BlockPos p_176288_2_)
+     {
+-        IBlockState iblockstate = p_176288_1_.func_180495_p(p_176288_2_);
++        IBlockState iblockstate = p_176288_1_.getBlockState(p_176288_2_);
+         boolean flag = ((Boolean)iblockstate.func_177229_b(field_176293_a)).booleanValue();
+         boolean flag1 = false;
+-        List <? extends Entity > list = p_176288_1_.getEntitiesWithinAABBExcludingEntity((Entity)null, iblockstate.func_185900_c(p_176288_1_, p_176288_2_).func_186670_a(p_176288_2_));
++        List <? extends Entity > list = p_176288_1_.getEntitiesWithinAABBExcludingEntity((Entity)null, iblockstate.func_185900_c(p_176288_1_, p_176288_2_).offset(p_176288_2_));
+ 
+         if (!list.isEmpty())
+         {
+@@ -193,9 +193,9 @@
+ 
+     public static boolean func_176287_c(IBlockAccess p_176287_0_, BlockPos p_176287_1_, IBlockState p_176287_2_, EnumFacing p_176287_3_)
+     {
+-        BlockPos blockpos = p_176287_1_.func_177972_a(p_176287_3_);
+-        IBlockState iblockstate = p_176287_0_.func_180495_p(blockpos);
+-        Block block = iblockstate.func_177230_c();
++        BlockPos blockpos = p_176287_1_.getBlockPosRelative(p_176287_3_);
++        IBlockState iblockstate = p_176287_0_.getBlockState(blockpos);
++        Block block = iblockstate.getBlock();
+ 
+         if (block == Blocks.tripwire_hook)
+         {
+@@ -210,7 +210,7 @@
+ 
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        return this.func_176223_P().func_177226_a(field_176293_a, Boolean.valueOf((p_176203_1_ & 1) > 0)).func_177226_a(field_176294_M, Boolean.valueOf((p_176203_1_ & 4) > 0)).func_177226_a(field_176295_N, Boolean.valueOf((p_176203_1_ & 8) > 0));
++        return this.getBlockState().func_177226_a(field_176293_a, Boolean.valueOf((p_176203_1_ & 1) > 0)).func_177226_a(field_176294_M, Boolean.valueOf((p_176203_1_ & 4) > 0)).func_177226_a(field_176295_N, Boolean.valueOf((p_176203_1_ & 8) > 0));
+     }
+ 
+     public int func_176201_c(IBlockState p_176201_1_)

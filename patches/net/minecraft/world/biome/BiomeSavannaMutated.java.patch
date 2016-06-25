@@ -1,0 +1,25 @@
+--- a/net/minecraft/world/biome/BiomeSavannaMutated.java
++++ b/net/minecraft/world/biome/BiomeSavannaMutated.java
+@@ -19,17 +19,17 @@
+ 
+     public void func_180622_a(World p_180622_1_, Random p_180622_2_, ChunkPrimer p_180622_3_, int p_180622_4_, int p_180622_5_, double p_180622_6_)
+     {
+-        this.topBlock = Blocks.grass.func_176223_P();
+-        this.fillerBlock = Blocks.dirt.func_176223_P();
++        this.topBlock = Blocks.grass.getBlockState();
++        this.fillerBlock = Blocks.dirt.getBlockState();
+ 
+         if (p_180622_6_ > 1.75D)
+         {
+-            this.topBlock = Blocks.stone.func_176223_P();
+-            this.fillerBlock = Blocks.stone.func_176223_P();
++            this.topBlock = Blocks.stone.getBlockState();
++            this.fillerBlock = Blocks.stone.getBlockState();
+         }
+         else if (p_180622_6_ > -0.5D)
+         {
+-            this.topBlock = Blocks.dirt.func_176223_P().func_177226_a(BlockDirt.field_176386_a, BlockDirt.DirtType.COARSE_DIRT);
++            this.topBlock = Blocks.dirt.getBlockState().func_177226_a(BlockDirt.field_176386_a, BlockDirt.DirtType.COARSE_DIRT);
+         }
+ 
+         this.func_180628_b(p_180622_1_, p_180622_2_, p_180622_3_, p_180622_4_, p_180622_5_, p_180622_6_);

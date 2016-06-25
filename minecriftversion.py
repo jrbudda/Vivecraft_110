@@ -1,0 +1,12 @@
+mc_version = "1.10"
+mc_file_md5 = "752390ee40cdcd6429818cf6efa25067"
+of_file_name = "1.10_HD_U_B7"
+of_json_name = "1.10_HD_U_B7"
+of_file_md5 = "b5559b17ced8e0bb1b71956c23fab208"
+minecrift_version_num = "1.10"
+minecrift_build = "Vivecraft-jrbudda1alpha"
+of_file_extension = ".jar"
+mcp_version = "mcp931"
+mcp_uses_generics = True
+mcp_download_url = "http://www.modcoderpack.com/website/sites/default/files/releases/mcp931.zip"
+forge_version = "112.18.0.1986"

@@ -1,0 +1,60 @@
+--- a/net/minecraft/world/gen/ChunkProviderOverworld.java
++++ b/net/minecraft/world/gen/ChunkProviderOverworld.java
+@@ -28,7 +28,7 @@
+ 
+ public class ChunkProviderOverworld implements IChunkGenerator
+ {
+-    protected static final IBlockState field_185982_a = Blocks.stone.func_176223_P();
++    protected static final IBlockState field_185982_a = Blocks.stone.getBlockState();
+     private final Random field_185990_i;
+     private final NoiseGeneratorOctaves field_185991_j;
+     private final NoiseGeneratorOctaves field_185992_k;
+@@ -43,7 +43,7 @@
+     private final double[] field_185998_q;
+     private final float[] field_185999_r;
+     private ChunkProviderSettings field_186000_s;
+-    private IBlockState field_186001_t = Blocks.water.func_176223_P();
++    private IBlockState field_186001_t = Blocks.water.getBlockState();
+     private double[] field_186002_u = new double[256];
+     private final MapGenBase field_186003_v = new MapGenCaves();
+     private final MapGenStronghold field_186004_w = new MapGenStronghold();
+@@ -86,8 +86,8 @@
+         if (p_i46668_5_ != null)
+         {
+             this.field_186000_s = ChunkProviderSettings.Factory.func_177865_a(p_i46668_5_).func_177864_b();
+-            this.field_186001_t = this.field_186000_s.field_177778_E ? Blocks.lava.func_176223_P() : Blocks.water.func_176223_P();
+-            p_i46668_1_.func_181544_b(this.field_186000_s.field_177841_q);
++            this.field_186001_t = this.field_186000_s.field_177778_E ? Blocks.lava.getBlockState() : Blocks.water.getBlockState();
++            p_i46668_1_.setSpawnLevel(this.field_186000_s.field_177841_q);
+         }
+     }
+ 
+@@ -406,7 +406,7 @@
+             int l2 = this.field_185990_i.nextInt(this.field_185990_i.nextInt(248) + 8);
+             int k3 = this.field_185990_i.nextInt(16) + 8;
+ 
+-            if (l2 < this.field_185995_n.func_181545_F() || this.field_185990_i.nextInt(this.field_186000_s.field_177777_D / 8) == 0)
++            if (l2 < this.field_185995_n.getSpawnLevel() || this.field_185990_i.nextInt(this.field_186000_s.field_177777_D / 8) == 0)
+             {
+                 (new WorldGenLakes(Blocks.lava)).func_180709_b(this.field_185995_n, this.field_185990_i, blockpos.func_177982_a(i2, l2, k3));
+             }
+@@ -432,16 +432,16 @@
+             for (int j3 = 0; j3 < 16; ++j3)
+             {
+                 BlockPos blockpos1 = this.field_185995_n.func_175725_q(blockpos.func_177982_a(k2, 0, j3));
+-                BlockPos blockpos2 = blockpos1.func_177977_b();
++                BlockPos blockpos2 = blockpos1.getBlockPosBelow();
+ 
+                 if (this.field_185995_n.func_175675_v(blockpos2))
+                 {
+-                    this.field_185995_n.func_180501_a(blockpos2, Blocks.ice.func_176223_P(), 2);
++                    this.field_185995_n.func_180501_a(blockpos2, Blocks.ice.getBlockState(), 2);
+                 }
+ 
+                 if (this.field_185995_n.func_175708_f(blockpos1, true))
+                 {
+-                    this.field_185995_n.func_180501_a(blockpos1, Blocks.snow_layer.func_176223_P(), 2);
++                    this.field_185995_n.func_180501_a(blockpos1, Blocks.snow_layer.getBlockState(), 2);
+                 }
+             }
+         }

@@ -1,0 +1,29 @@
+--- a/net/minecraft/block/BlockEndPortal.java
++++ b/net/minecraft/block/BlockEndPortal.java
+@@ -69,7 +69,7 @@
+ 
+     public void func_180634_a(World p_180634_1_, BlockPos p_180634_2_, IBlockState p_180634_3_, Entity p_180634_4_)
+     {
+-        if (!p_180634_4_.func_184218_aH() && !p_180634_4_.func_184207_aI() && p_180634_4_.func_184222_aU() && !p_180634_1_.isRemote && p_180634_4_.func_174813_aQ().intersectsWith(p_180634_3_.func_185900_c(p_180634_1_, p_180634_2_).func_186670_a(p_180634_2_)))
++        if (!p_180634_4_.isRiding() && !p_180634_4_.func_184207_aI() && p_180634_4_.func_184222_aU() && !p_180634_1_.isRemote && p_180634_4_.func_174813_aQ().intersectsWith(p_180634_3_.func_185900_c(p_180634_1_, p_180634_2_).offset(p_180634_2_)))
+         {
+             p_180634_4_.func_184204_a(1);
+         }
+@@ -77,13 +77,13 @@
+ 
+     public void func_180655_c(IBlockState p_180655_1_, World p_180655_2_, BlockPos p_180655_3_, Random p_180655_4_)
+     {
+-        double d0 = (double)((float)p_180655_3_.func_177958_n() + p_180655_4_.nextFloat());
+-        double d1 = (double)((float)p_180655_3_.func_177956_o() + 0.8F);
+-        double d2 = (double)((float)p_180655_3_.func_177952_p() + p_180655_4_.nextFloat());
++        double d0 = (double)((float)p_180655_3_.getX() + p_180655_4_.nextFloat());
++        double d1 = (double)((float)p_180655_3_.getY() + 0.8F);
++        double d2 = (double)((float)p_180655_3_.getZ() + p_180655_4_.nextFloat());
+         double d3 = 0.0D;
+         double d4 = 0.0D;
+         double d5 = 0.0D;
+-        p_180655_2_.func_175688_a(EnumParticleTypes.SMOKE_NORMAL, d0, d1, d2, 0.0D, 0.0D, 0.0D, new int[0]);
++        p_180655_2_.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0, d1, d2, 0.0D, 0.0D, 0.0D, new int[0]);
+     }
+ 
+     @Nullable

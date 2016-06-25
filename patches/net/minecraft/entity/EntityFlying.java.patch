@@ -1,0 +1,20 @@
+--- a/net/minecraft/entity/EntityFlying.java
++++ b/net/minecraft/entity/EntityFlying.java
+@@ -47,7 +47,7 @@
+ 
+             if (this.onGround)
+             {
+-                f = this.worldObj.func_180495_p(new BlockPos(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.func_174813_aQ().minY) - 1, MathHelper.floor_double(this.posZ))).func_177230_c().slipperiness * 0.91F;
++                f = this.worldObj.getBlockState(new BlockPos(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.func_174813_aQ().minY) - 1, MathHelper.floor_double(this.posZ))).getBlock().slipperiness * 0.91F;
+             }
+ 
+             float f1 = 0.16277136F / (f * f * f);
+@@ -56,7 +56,7 @@
+ 
+             if (this.onGround)
+             {
+-                f = this.worldObj.func_180495_p(new BlockPos(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.func_174813_aQ().minY) - 1, MathHelper.floor_double(this.posZ))).func_177230_c().slipperiness * 0.91F;
++                f = this.worldObj.getBlockState(new BlockPos(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.func_174813_aQ().minY) - 1, MathHelper.floor_double(this.posZ))).getBlock().slipperiness * 0.91F;
+             }
+ 
+             this.moveEntity(this.motionX, this.motionY, this.motionZ);

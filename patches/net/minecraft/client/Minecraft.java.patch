@@ -1,0 +1,546 @@
+--- a/net/minecraft/client/Minecraft.java
++++ b/net/minecraft/client/Minecraft.java
+@@ -13,10 +13,24 @@
+ import com.mojang.authlib.minecraft.MinecraftSessionService;
+ import com.mojang.authlib.properties.PropertyMap;
+ import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
++import com.mtbs3d.minecrift.api.ErrorHelper;
++import com.mtbs3d.minecrift.api.IRoomscaleAdapter;
++import com.mtbs3d.minecrift.api.IStereoProvider;
++import com.mtbs3d.minecrift.provider.OpenVRPlayer;
++import com.mtbs3d.minecrift.render.FBOParams;
++import com.mtbs3d.minecrift.settings.VRSettings;
++import com.mtbs3d.minecrift.utils.TextureSelector;
++import com.sun.jna.platform.unix.X11.Cursor;
++
++import de.fruitfly.ovr.enums.EyeType;
++import de.fruitfly.ovr.structs.GLConfig;
++
+ import java.awt.image.BufferedImage;
+ import java.io.File;
+ import java.io.IOException;
+ import java.io.InputStream;
++import java.lang.reflect.Field;
++import java.lang.reflect.Method;
+ import java.net.Proxy;
+ import java.net.SocketAddress;
+ import java.nio.ByteBuffer;
+@@ -25,8 +39,10 @@
+ import java.text.DecimalFormat;
+ import java.text.MessageFormat;
+ import java.text.SimpleDateFormat;
++import java.util.ArrayDeque;
+ import java.util.Collections;
+ import java.util.Date;
++import java.util.Deque;
+ import java.util.Iterator;
+ import java.util.List;
+ import java.util.Queue;
+@@ -42,6 +58,7 @@
+ import net.minecraft.block.state.IBlockState;
+ import net.minecraft.client.audio.MusicTicker;
+ import net.minecraft.client.audio.SoundHandler;
++import net.minecraft.client.audio.SoundManager;
+ import net.minecraft.client.entity.EntityPlayerSP;
+ import net.minecraft.client.gui.FontRenderer;
+ import net.minecraft.client.gui.GuiChat;
+@@ -112,6 +129,7 @@
+ import net.minecraft.client.settings.GameSettings;
+ import net.minecraft.client.settings.KeyBinding;
+ import net.minecraft.client.shader.Framebuffer;
++import net.minecraft.client.shader.ShaderGroup;
+ import net.minecraft.crash.CrashReport;
+ import net.minecraft.crash.CrashReportCategory;
+ import net.minecraft.crash.ICrashReportDetail;
+@@ -194,6 +212,7 @@
+ import org.lwjgl.opengl.ContextCapabilities;
+ import org.lwjgl.opengl.Display;
+ import org.lwjgl.opengl.DisplayMode;
++import org.lwjgl.opengl.GL11;
+ import org.lwjgl.opengl.GLContext;
+ import org.lwjgl.opengl.OpenGLException;
+ import org.lwjgl.opengl.PixelFormat;
+@@ -201,6 +220,112 @@
+ 
+ public class Minecraft implements IThreadListener, ISnooperInfo
+ {
++	// VIVE START - teleport movement
++	public OpenVRPlayer vrPlayer; 
++	public IRoomscaleAdapter roomScale;
++	// VIVE END - teleport movement
++
++	// VIVE START - vive ui debugging
++	public float guiU;
++	public float guiV;
++	public float intersectDist;
++	public float pointOnPlaneX;
++	public float pointOnPlaneY;
++	public float pointOnPlaneZ;
++	public float guiTopLeftX;
++	public float guiTopLeftY;
++	public float guiTopLeftZ;
++	public float guiTopRightX;
++	public float guiTopRightY;
++	public float guiTopRightZ;
++	public float controllerPosX;
++	public float controllerPosY;
++	public float controllerPosZ;
++	// VIVE END - vive ui debugging
++	
++	/** MINECRIFT */
++	public boolean minecriftDebug = false;
++	public final float PIOVER180 = (float)(Math.PI/180);
++	public boolean reinitFramebuffers = true;
++	
++	private Framebuffer framebuffer;
++	private Framebuffer framebufferEye;
++	public Framebuffer guiFramebuffer = null;
++	
++	public int lastDisplayFBWidth = 0;
++	public int lastDisplayFBHeight = 0;
++	public int displayFBWidth;     /* Actual width of the display buffer */
++	public int displayFBHeight;    /* Actual height of the display buffer */
++	public int mirrorFBWidth;     /* Actual width of the display buffer */
++	public int mirrorFBHeight;    /* Actual height of the display buffer */
++	public int viewPortCount = 2;
++	public ShaderGroup shaderGroup;
++	public int lastShaderIndex = -1;
++	public Object displayImpl = null;
++	public Field fieldHwnd = null;
++	public Field fieldDisplay = null;
++	public Field fieldWindow = null;
++	public Field fieldResized = null;
++	public Method fieldResizedMethod = null;
++	public IStereoProvider stereoProvider;
++	public VRSettings vrSettings;
++	public long lastIntegratedServerLaunchCheck = 0;
++	public boolean integratedServerLaunchInProgress = false;
++	public boolean lastEnableVsync = true;
++	public int lastMirrorSetting = -1;
++	//public EyeRenderParams eyeRenderParams = null;
++	public EyeType currentEye = EyeType.ovrEye_Left;
++	public Cursor nativeMouseCursor = null;
++	public boolean lastShowMouseNative = true;
++	public Cursor invisibleMouseCursor = null;
++	public GLConfig glConfig = new GLConfig();
++	public long lastWindow = 0;
++	public int lastRenderDistanceChunks = -1;
++	public boolean lastFogFancy = true;
++	public boolean lastFogFast = false;
++	public float lastWorldScale = 0f;
++	public int lastDimensionId = -1;
++	public SoundManager sndManager = null;
++	public boolean hydraLibsAvailable = false;
++	public double PredictedDisplayTimeSeconds = 0d;
++	public int _Lanczos_shaderProgramId = -1;
++	public int _LanczosShader_texelWidthOffsetUniform = -1;
++	public int _LanczosShader_texelHeightOffsetUniform = -1;
++	public int _LanczosShader_inputImageTextureUniform = -1;
++	private FBOParams mirrorFB = null;
++	private FBOParams fsaaFirstPassResultFBO;
++	private FBOParams fsaaSecondPassResultFBO;
++	private final float OCULUS_RED_COLOUR_COMPONENT = (1f/255f)*61f;
++	private final float OCULUS_GREEN_COLOUR_COMPONENT = (1f/255f)*61f;
++	private final float OCULUS_BLUE_COLOUR_COMPONENT = (1f/255f)*61f;
++	public float RED_COLOUR_COMPONENT = OCULUS_RED_COLOUR_COMPONENT;
++	public float GREEN_COLOUR_COMPONENT = OCULUS_GREEN_COLOUR_COMPONENT;
++	public float BLUE_COLOUR_COMPONENT = OCULUS_BLUE_COLOUR_COMPONENT;
++	private boolean firstInit = true;
++	public boolean showSplashScreen = true;
++	public long splashTimer1 = 0;
++	public long splashTimer2 = 0;
++	private Framebuffer splash;
++	private float splashFadeAlpha = 0;
++	private int lastGuiScale = -1;
++	public Deque<Long> runTickTimeNanos = new ArrayDeque<Long>();
++	public long medianRunTickTimeNanos = 0;
++	public long frameIndex = 0;
++	private TextureSelector renderTexProvider;
++	private TextureSelector mirrorTexProvider;
++	public boolean visible = true;
++	public ErrorHelper errorHelper;
++	public static final String RENDER_SETUP_FAILURE_MESSAGE = "Failed to initialise stereo rendering plugin: ";
++	public static final int ERROR_DISPLAY_TIME_SECS = 10;
++
++	/*
++	 * The minecriftVerString will be automatically updated by the build scripts, do not modify here.
++	 * Modify minecriftversion.py in root minecrift dir.
++	 */
++    public final String minecriftVerString = "ViveCraft 1.10 Vivecraft-jrbudda1alpha";
++	/* end version */
++	/** END MINECRIFT */
++	
+     private static final Logger logger = LogManager.getLogger();
+     private static final ResourceLocation locationMojangPng = new ResourceLocation("textures/gui/title/mojang.png");
+     public static final boolean isRunningOnMac = Util.getOSType() == Util.EnumOS.OSX;
+@@ -243,7 +368,7 @@
+     private ItemRenderer field_175620_Y;
+     public EntityPlayerSP thePlayer;
+     @Nullable
+-    private Entity field_175622_Z;
++    private Entity renderViewEntity;
+     public Entity pointedEntity;
+     public ParticleManager effectRenderer;
+     private final Session session;
+@@ -388,8 +513,10 @@
+         logger.info("Setting user: {}", new Object[] {this.session.getUsername()});
+         logger.debug("(Session ID is {})", new Object[] {this.session.getSessionID()});
+         this.isDemo = p_i45547_1_.field_178741_d.field_178756_a;
+-        this.displayWidth = p_i45547_1_.field_178743_b.field_178764_a > 0 ? p_i45547_1_.field_178743_b.field_178764_a : 1;
+-        this.displayHeight = p_i45547_1_.field_178743_b.field_178762_b > 0 ? p_i45547_1_.field_178743_b.field_178762_b : 1;
++		/** MINECRIFT **/
++		displayWidth = 1280;
++		displayHeight = 720;
++		/** END MINECRIFT **/
+         this.tempDisplayWidth = p_i45547_1_.field_178743_b.field_178764_a;
+         this.tempDisplayHeight = p_i45547_1_.field_178743_b.field_178762_b;
+         this.fullscreen = p_i45547_1_.field_178743_b.field_178763_c;
+@@ -405,6 +532,18 @@
+         ImageIO.setUseCache(false);
+         Bootstrap.register();
+         this.field_184131_U = DataFixesManager.func_188279_a();
++        
++		/** MINECRIFT **/
++		VRSettings.initSettings(this, this.mcDataDir);
++		renderTexProvider = new TextureSelector();
++		mirrorTexProvider    = new TextureSelector();
++		if (!vrSettings.badStereoProviderPluginID.isEmpty()) {
++			vrSettings.stereoProviderPluginID = vrSettings.badStereoProviderPluginID;
++			vrSettings.badStereoProviderPluginID = "";
++			vrSettings.saveOptions();
++		}
++		
++		/** END MINECRIFT **/
+     }
+ 
+     public void run()
+@@ -550,9 +689,9 @@
+         GlStateManager.func_179141_d();
+         GlStateManager.func_179092_a(516, 0.1F);
+         GlStateManager.func_187407_a(GlStateManager.CullFace.BACK);
+-        GlStateManager.func_179128_n(5889);
+-        GlStateManager.func_179096_D();
+-        GlStateManager.func_179128_n(5888);
++        GlStateManager.matrixMode(5889);
++        GlStateManager.loadIdentity();
++        GlStateManager.matrixMode(5888);
+         this.checkGLError("Startup");
+         this.textureMapBlocks = new TextureMap("textures");
+         this.textureMapBlocks.setMipmapLevels(this.gameSettings.mipmapLevels);
+@@ -906,11 +1045,11 @@
+         int i = scaledresolution.getScaleFactor();
+         Framebuffer framebuffer = new Framebuffer(scaledresolution.getScaledWidth() * i, scaledresolution.getScaledHeight() * i, true);
+         framebuffer.bindFramebuffer(false);
+-        GlStateManager.func_179128_n(5889);
+-        GlStateManager.func_179096_D();
++        GlStateManager.matrixMode(5889);
++        GlStateManager.loadIdentity();
+         GlStateManager.func_179130_a(0.0D, (double)scaledresolution.getScaledWidth(), (double)scaledresolution.getScaledHeight(), 0.0D, 1000.0D, 3000.0D);
+-        GlStateManager.func_179128_n(5888);
+-        GlStateManager.func_179096_D();
++        GlStateManager.matrixMode(5888);
++        GlStateManager.loadIdentity();
+         GlStateManager.func_179109_b(0.0F, 0.0F, -2000.0F);
+         GlStateManager.func_179140_f();
+         GlStateManager.func_179106_n();
+@@ -1033,7 +1172,8 @@
+     /**
+      * Checks for an OpenGL error. If there is one, prints the error ID and error string.
+      */
+-    private void checkGLError(String message)
++    //VIVECRAFT MAKE public
++    public void checkGLError(String message)
+     {
+         int i = GlStateManager.func_187434_L();
+ 
+@@ -1130,7 +1270,7 @@
+         this.mcSoundHandler.setListener(this.thePlayer, this.timer.renderPartialTicks);
+         this.mcProfiler.endSection();
+         this.mcProfiler.startSection("render");
+-        GlStateManager.func_179094_E();
++        GlStateManager.push();
+         GlStateManager.func_179086_m(16640);
+         this.framebufferMc.bindFramebuffer(true);
+         this.mcProfiler.startSection("display");
+@@ -1164,13 +1304,13 @@
+ 
+         this.guiAchievement.updateAchievementWindow();
+         this.framebufferMc.unbindFramebuffer();
+-        GlStateManager.func_179121_F();
+-        GlStateManager.func_179094_E();
++        GlStateManager.pop();
++        GlStateManager.push();
+         this.framebufferMc.framebufferRender(this.displayWidth, this.displayHeight);
+-        GlStateManager.func_179121_F();
+-        GlStateManager.func_179094_E();
++        GlStateManager.pop();
++        GlStateManager.push();
+         this.entityRenderer.func_152430_c(this.timer.renderPartialTicks);
+-        GlStateManager.func_179121_F();
++        GlStateManager.pop();
+         this.mcProfiler.startSection("root");
+         this.func_175601_h();
+         Thread.yield();
+@@ -1327,12 +1467,12 @@
+             List<Profiler.Result> list = this.mcProfiler.getProfilingData(this.debugProfilerName);
+             Profiler.Result profiler$result = (Profiler.Result)list.remove(0);
+             GlStateManager.func_179086_m(256);
+-            GlStateManager.func_179128_n(5889);
++            GlStateManager.matrixMode(5889);
+             GlStateManager.func_179142_g();
+-            GlStateManager.func_179096_D();
++            GlStateManager.loadIdentity();
+             GlStateManager.func_179130_a(0.0D, (double)this.displayWidth, (double)this.displayHeight, 0.0D, 1000.0D, 3000.0D);
+-            GlStateManager.func_179128_n(5888);
+-            GlStateManager.func_179096_D();
++            GlStateManager.matrixMode(5888);
++            GlStateManager.loadIdentity();
+             GlStateManager.func_179109_b(0.0F, 0.0F, -2000.0F);
+             GlStateManager.func_187441_d(1.0F);
+             GlStateManager.func_179090_x();
+@@ -1503,11 +1643,11 @@
+         {
+             if (leftClick && this.objectMouseOver != null && this.objectMouseOver.typeOfHit == RayTraceResult.Type.BLOCK)
+             {
+-                BlockPos blockpos = this.objectMouseOver.func_178782_a();
++                BlockPos blockpos = this.objectMouseOver.getBlock();
+ 
+-                if (this.theWorld.func_180495_p(blockpos).func_185904_a() != Material.air && this.playerController.func_180512_c(blockpos, this.objectMouseOver.field_178784_b))
++                if (this.theWorld.getBlockState(blockpos).getMaterial() != Material.air && this.playerController.onPlayerDamageBlock(blockpos, this.objectMouseOver.sideHit))
+                 {
+-                    this.effectRenderer.func_180532_a(blockpos, this.objectMouseOver.field_178784_b);
++                    this.effectRenderer.func_180532_a(blockpos, this.objectMouseOver.sideHit);
+                     this.thePlayer.func_184609_a(EnumHand.MAIN_HAND);
+                 }
+             }
+@@ -1540,11 +1680,11 @@
+                         break;
+ 
+                     case BLOCK:
+-                        BlockPos blockpos = this.objectMouseOver.func_178782_a();
++                        BlockPos blockpos = this.objectMouseOver.getBlock();
+ 
+-                        if (this.theWorld.func_180495_p(blockpos).func_185904_a() != Material.air)
++                        if (this.theWorld.getBlockState(blockpos).getMaterial() != Material.air)
+                         {
+-                            this.playerController.func_180511_b(blockpos, this.objectMouseOver.field_178784_b);
++                            this.playerController.clickBlock(blockpos, this.objectMouseOver.sideHit);
+                             break;
+                         }
+ 
+@@ -1563,11 +1703,11 @@
+     }
+ 
+     @SuppressWarnings("incomplete-switch")
++	public //VIVECRAFT MAKE PUBLIC
+ 
+     /**
+      * Called when user clicked he's mouse right button (place)
+-     */
+-    private void rightClickMouse()
++     */ void rightClickMouse()
+     {
+         if (!this.playerController.func_181040_m())
+         {
+@@ -1577,7 +1717,7 @@
+             {
+                 for (EnumHand enumhand : EnumHand.values())
+                 {
+-                    ItemStack itemstack = this.thePlayer.func_184586_b(enumhand);
++                    ItemStack itemstack = this.thePlayer.getItemStackInHand(enumhand);
+ 
+                     if (this.objectMouseOver == null)
+                     {
+@@ -1588,12 +1728,12 @@
+                         switch (this.objectMouseOver.typeOfHit)
+                         {
+                             case ENTITY:
+-                                if (this.playerController.func_187102_a(this.thePlayer, this.objectMouseOver.entityHit, this.objectMouseOver, this.thePlayer.func_184586_b(enumhand), enumhand) == EnumActionResult.SUCCESS)
++                                if (this.playerController.func_187102_a(this.thePlayer, this.objectMouseOver.entityHit, this.objectMouseOver, this.thePlayer.getItemStackInHand(enumhand), enumhand) == EnumActionResult.SUCCESS)
+                                 {
+                                     return;
+                                 }
+ 
+-                                if (this.playerController.func_187097_a(this.thePlayer, this.objectMouseOver.entityHit, this.thePlayer.func_184586_b(enumhand), enumhand) == EnumActionResult.SUCCESS)
++                                if (this.playerController.interactWithEntitySendPacket(this.thePlayer, this.objectMouseOver.entityHit, this.thePlayer.getItemStackInHand(enumhand), enumhand) == EnumActionResult.SUCCESS)
+                                 {
+                                     return;
+                                 }
+@@ -1601,12 +1741,12 @@
+                                 break;
+ 
+                             case BLOCK:
+-                                BlockPos blockpos = this.objectMouseOver.func_178782_a();
++                                BlockPos blockpos = this.objectMouseOver.getBlock();
+ 
+-                                if (this.theWorld.func_180495_p(blockpos).func_185904_a() != Material.air)
++                                if (this.theWorld.getBlockState(blockpos).getMaterial() != Material.air)
+                                 {
+                                     int i = itemstack != null ? itemstack.stackSize : 0;
+-                                    EnumActionResult enumactionresult = this.playerController.func_187099_a(this.thePlayer, this.theWorld, itemstack, blockpos, this.objectMouseOver.field_178784_b, this.objectMouseOver.hitVec, enumhand);
++                                    EnumActionResult enumactionresult = this.playerController.onPlayerRightClick(this.thePlayer, this.theWorld, itemstack, blockpos, this.objectMouseOver.sideHit, this.objectMouseOver.hitVec, enumhand);
+ 
+                                     if (enumactionresult == EnumActionResult.SUCCESS)
+                                     {
+@@ -1616,7 +1756,7 @@
+                                         {
+                                             if (itemstack.stackSize == 0)
+                                             {
+-                                                this.thePlayer.func_184611_a(enumhand, (ItemStack)null);
++                                                this.thePlayer.equipItemInHand(enumhand, (ItemStack)null);
+                                             }
+                                             else if (itemstack.stackSize != i || this.playerController.isInCreativeMode())
+                                             {
+@@ -1630,9 +1770,9 @@
+                         }
+                     }
+ 
+-                    ItemStack itemstack1 = this.thePlayer.func_184586_b(enumhand);
++                    ItemStack itemstack1 = this.thePlayer.getItemStackInHand(enumhand);
+ 
+-                    if (itemstack1 != null && this.playerController.func_187101_a(this.thePlayer, this.theWorld, itemstack1, enumhand) == EnumActionResult.SUCCESS)
++                    if (itemstack1 != null && this.playerController.sendUseItem(this.thePlayer, this.theWorld, itemstack1, enumhand) == EnumActionResult.SUCCESS)
+                     {
+                         this.entityRenderer.itemRenderer.func_187460_a(enumhand);
+                         return;
+@@ -2047,7 +2187,7 @@
+                     {
+                         this.gameSettings.showDebugInfo = !this.gameSettings.showDebugInfo;
+                         this.gameSettings.showDebugProfilerChart = this.gameSettings.showDebugInfo && GuiScreen.isShiftKeyDown();
+-                        this.gameSettings.field_181657_aC = this.gameSettings.showDebugInfo && GuiScreen.func_175283_s();
++                        this.gameSettings.field_181657_aC = this.gameSettings.showDebugInfo && GuiScreen.isAltKeyDown();
+                     }
+                 }
+             }
+@@ -2164,7 +2304,7 @@
+ 
+             if (this.gameSettings.thirdPersonView == 0)
+             {
+-                this.entityRenderer.func_175066_a(this.func_175606_aa());
++                this.entityRenderer.func_175066_a(this.getRenderViewEntity());
+             }
+             else if (this.gameSettings.thirdPersonView == 1)
+             {
+@@ -2210,7 +2350,7 @@
+         {
+             if (!this.thePlayer.func_175149_v())
+             {
+-                this.getNetHandler().addToSendQueue(new CPacketPlayerDigging(CPacketPlayerDigging.Action.SWAP_HELD_ITEMS, BlockPos.field_177992_a, EnumFacing.DOWN));
++                this.getNetHandler().addToSendQueue(new CPacketPlayerDigging(CPacketPlayerDigging.Action.SWAP_HELD_ITEMS, BlockPos.createDefault, EnumFacing.DOWN));
+             }
+         }
+ 
+@@ -2470,7 +2610,7 @@
+             this.playerController = null;
+         }
+ 
+-        this.field_175622_Z = null;
++        this.renderViewEntity = null;
+         this.myNetworkManager = null;
+ 
+         if (this.loadingScreen != null)
+@@ -2517,7 +2657,7 @@
+ 
+             if (this.thePlayer == null)
+             {
+-                this.thePlayer = this.playerController.func_178892_a(worldClientIn, new StatisticsManager());
++                this.thePlayer = this.playerController.createPlayer(worldClientIn, new StatisticsManager());
+                 this.playerController.flipPlayer(this.thePlayer);
+             }
+ 
+@@ -2525,7 +2665,7 @@
+             worldClientIn.spawnEntityInWorld(this.thePlayer);
+             this.thePlayer.movementInput = new MovementInputFromOptions(this.gameSettings);
+             this.playerController.setPlayerCapabilities(this.thePlayer);
+-            this.field_175622_Z = this.thePlayer;
++            this.renderViewEntity = this.thePlayer;
+         }
+         else
+         {
+@@ -2551,12 +2691,12 @@
+             s = this.thePlayer.getClientBrand();
+         }
+ 
+-        this.field_175622_Z = null;
++        this.renderViewEntity = null;
+         EntityPlayerSP entityplayersp = this.thePlayer;
+-        this.thePlayer = this.playerController.func_178892_a(this.theWorld, this.thePlayer == null ? new StatisticsManager() : this.thePlayer.getStatFileWriter());
++        this.thePlayer = this.playerController.createPlayer(this.theWorld, this.thePlayer == null ? new StatisticsManager() : this.thePlayer.getStatFileWriter());
+         this.thePlayer.func_184212_Q().func_187218_a(entityplayersp.func_184212_Q().func_187231_c());
+         this.thePlayer.dimension = dimension;
+-        this.field_175622_Z = this.thePlayer;
++        this.renderViewEntity = this.thePlayer;
+         this.thePlayer.preparePlayerToSpawn();
+         this.thePlayer.func_175158_f(s);
+         this.theWorld.spawnEntityInWorld(this.thePlayer);
+@@ -2617,11 +2757,11 @@
+ 
+             if (this.objectMouseOver.typeOfHit == RayTraceResult.Type.BLOCK)
+             {
+-                BlockPos blockpos = this.objectMouseOver.func_178782_a();
+-                IBlockState iblockstate = this.theWorld.func_180495_p(blockpos);
+-                Block block = iblockstate.func_177230_c();
++                BlockPos blockpos = this.objectMouseOver.getBlock();
++                IBlockState iblockstate = this.theWorld.getBlockState(blockpos);
++                Block block = iblockstate.getBlock();
+ 
+-                if (iblockstate.func_185904_a() == Material.air)
++                if (iblockstate.getMaterial() == Material.air)
+                 {
+                     return;
+                 }
+@@ -2732,7 +2872,7 @@
+ 
+                 if (this.objectMouseOver.typeOfHit == RayTraceResult.Type.BLOCK)
+                 {
+-                    s1 = ((ResourceLocation)Block.blockRegistry.func_177774_c(this.theWorld.func_180495_p(this.objectMouseOver.func_178782_a()).func_177230_c())).toString();
++                    s1 = ((ResourceLocation)Block.blockRegistry.func_177774_c(this.theWorld.getBlockState(this.objectMouseOver.getBlock()).getBlock())).toString();
+                 }
+                 else if (this.objectMouseOver.typeOfHit == RayTraceResult.Type.ENTITY)
+                 {
+@@ -2755,7 +2895,7 @@
+                 if (flag)
+                 {
+                     inventoryplayer.func_184434_a(itemstack);
+-                    this.playerController.sendSlotPacket(this.thePlayer.func_184586_b(EnumHand.MAIN_HAND), 36 + inventoryplayer.currentItem);
++                    this.playerController.sendSlotPacket(this.thePlayer.getItemStackInHand(EnumHand.MAIN_HAND), 36 + inventoryplayer.currentItem);
+                 }
+                 else if (i != -1)
+                 {
+@@ -3275,14 +3415,14 @@
+     }
+ 
+     @Nullable
+-    public Entity func_175606_aa()
++    public Entity getRenderViewEntity()
+     {
+-        return this.field_175622_Z;
++        return this.renderViewEntity;
+     }
+ 
+     public void func_175607_a(Entity p_175607_1_)
+     {
+-        this.field_175622_Z = p_175607_1_;
++        this.renderViewEntity = p_175607_1_;
+         this.entityRenderer.func_175066_a(p_175607_1_);
+     }
+ 
+@@ -3383,4 +3523,18 @@
+     {
+         return this.thePlayer != null && this.thePlayer.func_175140_cp() || this.gameSettings.field_178879_v;
+     }
++    
++    //VIVECRAFT ADDITIONS **************************************************************************
++	public void printChatMessage(String msg)
++	{
++		if (this.theWorld != null) {
++			ITextComponent chatText = new TextComponentString(msg);
++			this.ingameGUI.getChatGUI().printChatMessage(chatText);
++		}
++	}
++    
++	public void clearGLError() //bad bad bad
++	{
++		int var2 = GL11.glGetError();
++	}
+ }

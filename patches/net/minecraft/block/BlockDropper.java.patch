@@ -1,0 +1,15 @@
+--- a/net/minecraft/block/BlockDropper.java
++++ b/net/minecraft/block/BlockDropper.java
+@@ -49,9 +49,9 @@
+ 
+                 if (itemstack != null)
+                 {
+-                    EnumFacing enumfacing = (EnumFacing)p_176439_1_.func_180495_p(p_176439_2_).func_177229_b(field_176441_a);
+-                    BlockPos blockpos = p_176439_2_.func_177972_a(enumfacing);
+-                    IInventory iinventory = TileEntityHopper.func_145893_b(p_176439_1_, (double)blockpos.func_177958_n(), (double)blockpos.func_177956_o(), (double)blockpos.func_177952_p());
++                    EnumFacing enumfacing = (EnumFacing)p_176439_1_.getBlockState(p_176439_2_).func_177229_b(field_176441_a);
++                    BlockPos blockpos = p_176439_2_.getBlockPosRelative(enumfacing);
++                    IInventory iinventory = TileEntityHopper.func_145893_b(p_176439_1_, (double)blockpos.getX(), (double)blockpos.getY(), (double)blockpos.getZ());
+                     ItemStack itemstack1;
+ 
+                     if (iinventory == null)

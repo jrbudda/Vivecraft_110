@@ -1,0 +1,243 @@
+--- a/net/minecraft/block/BlockRedstoneWire.java
++++ b/net/minecraft/block/BlockRedstoneWire.java
+@@ -93,18 +93,18 @@
+ 
+     private BlockRedstoneWire.EnumAttachPosition func_176341_c(IBlockAccess p_176341_1_, BlockPos p_176341_2_, EnumFacing p_176341_3_)
+     {
+-        BlockPos blockpos = p_176341_2_.func_177972_a(p_176341_3_);
+-        IBlockState iblockstate = p_176341_1_.func_180495_p(p_176341_2_.func_177972_a(p_176341_3_));
++        BlockPos blockpos = p_176341_2_.getBlockPosRelative(p_176341_3_);
++        IBlockState iblockstate = p_176341_1_.getBlockState(p_176341_2_.getBlockPosRelative(p_176341_3_));
+ 
+-        if (!func_176343_a(p_176341_1_.func_180495_p(blockpos), p_176341_3_) && (iblockstate.func_185915_l() || !func_176346_d(p_176341_1_.func_180495_p(blockpos.func_177977_b()))))
++        if (!func_176343_a(p_176341_1_.getBlockState(blockpos), p_176341_3_) && (iblockstate.func_185915_l() || !func_176346_d(p_176341_1_.getBlockState(blockpos.getBlockPosBelow()))))
+         {
+-            IBlockState iblockstate1 = p_176341_1_.func_180495_p(p_176341_2_.func_177984_a());
++            IBlockState iblockstate1 = p_176341_1_.getBlockState(p_176341_2_.getBlockPosAbove());
+ 
+             if (!iblockstate1.func_185915_l())
+             {
+-                boolean flag = p_176341_1_.func_180495_p(blockpos).func_185896_q() || p_176341_1_.func_180495_p(blockpos).func_177230_c() == Blocks.glowstone;
++                boolean flag = p_176341_1_.getBlockState(blockpos).func_185896_q() || p_176341_1_.getBlockState(blockpos).getBlock() == Blocks.glowstone;
+ 
+-                if (flag && func_176346_d(p_176341_1_.func_180495_p(blockpos.func_177984_a())))
++                if (flag && func_176346_d(p_176341_1_.getBlockState(blockpos.getBlockPosAbove())))
+                 {
+                     if (iblockstate.func_185898_k())
+                     {
+@@ -141,7 +141,7 @@
+ 
+     public boolean func_176196_c(World p_176196_1_, BlockPos p_176196_2_)
+     {
+-        return p_176196_1_.func_180495_p(p_176196_2_.func_177977_b()).func_185896_q() || p_176196_1_.func_180495_p(p_176196_2_.func_177977_b()).func_177230_c() == Blocks.glowstone;
++        return p_176196_1_.getBlockState(p_176196_2_.getBlockPosBelow()).func_185896_q() || p_176196_1_.getBlockState(p_176196_2_.getBlockPosBelow()).getBlock() == Blocks.glowstone;
+     }
+ 
+     private IBlockState func_176338_e(World p_176338_1_, BlockPos p_176338_2_, IBlockState p_176338_3_)
+@@ -177,24 +177,24 @@
+ 
+         for (EnumFacing enumfacing : EnumFacing.Plane.HORIZONTAL)
+         {
+-            BlockPos blockpos = p_176345_2_.func_177972_a(enumfacing);
+-            boolean flag = blockpos.func_177958_n() != p_176345_3_.func_177958_n() || blockpos.func_177952_p() != p_176345_3_.func_177952_p();
++            BlockPos blockpos = p_176345_2_.getBlockPosRelative(enumfacing);
++            boolean flag = blockpos.getX() != p_176345_3_.getX() || blockpos.getZ() != p_176345_3_.getZ();
+ 
+             if (flag)
+             {
+                 l = this.func_176342_a(p_176345_1_, blockpos, l);
+             }
+ 
+-            if (p_176345_1_.func_180495_p(blockpos).func_185915_l() && !p_176345_1_.func_180495_p(p_176345_2_.func_177984_a()).func_185915_l())
++            if (p_176345_1_.getBlockState(blockpos).func_185915_l() && !p_176345_1_.getBlockState(p_176345_2_.getBlockPosAbove()).func_185915_l())
+             {
+-                if (flag && p_176345_2_.func_177956_o() >= p_176345_3_.func_177956_o())
++                if (flag && p_176345_2_.getY() >= p_176345_3_.getY())
+                 {
+-                    l = this.func_176342_a(p_176345_1_, blockpos.func_177984_a(), l);
++                    l = this.func_176342_a(p_176345_1_, blockpos.getBlockPosAbove(), l);
+                 }
+             }
+-            else if (!p_176345_1_.func_180495_p(blockpos).func_185915_l() && flag && p_176345_2_.func_177956_o() <= p_176345_3_.func_177956_o())
++            else if (!p_176345_1_.getBlockState(blockpos).func_185915_l() && flag && p_176345_2_.getY() <= p_176345_3_.getY())
+             {
+-                l = this.func_176342_a(p_176345_1_, blockpos.func_177977_b(), l);
++                l = this.func_176342_a(p_176345_1_, blockpos.getBlockPosBelow(), l);
+             }
+         }
+ 
+@@ -220,7 +220,7 @@
+         {
+             p_176345_4_ = p_176345_4_.func_177226_a(field_176351_O, Integer.valueOf(j));
+ 
+-            if (p_176345_1_.func_180495_p(p_176345_2_) == iblockstate)
++            if (p_176345_1_.getBlockState(p_176345_2_) == iblockstate)
+             {
+                 p_176345_1_.func_180501_a(p_176345_2_, p_176345_4_, 2);
+             }
+@@ -229,7 +229,7 @@
+ 
+             for (EnumFacing enumfacing1 : EnumFacing.values())
+             {
+-                this.field_150179_b.add(p_176345_2_.func_177972_a(enumfacing1));
++                this.field_150179_b.add(p_176345_2_.getBlockPosRelative(enumfacing1));
+             }
+         }
+ 
+@@ -238,13 +238,13 @@
+ 
+     private void func_176344_d(World p_176344_1_, BlockPos p_176344_2_)
+     {
+-        if (p_176344_1_.func_180495_p(p_176344_2_).func_177230_c() == this)
++        if (p_176344_1_.getBlockState(p_176344_2_).getBlock() == this)
+         {
+             p_176344_1_.func_175685_c(p_176344_2_, this);
+ 
+             for (EnumFacing enumfacing : EnumFacing.values())
+             {
+-                p_176344_1_.func_175685_c(p_176344_2_.func_177972_a(enumfacing), this);
++                p_176344_1_.func_175685_c(p_176344_2_.getBlockPosRelative(enumfacing), this);
+             }
+         }
+     }
+@@ -257,25 +257,25 @@
+ 
+             for (EnumFacing enumfacing : EnumFacing.Plane.VERTICAL)
+             {
+-                p_176213_1_.func_175685_c(p_176213_2_.func_177972_a(enumfacing), this);
++                p_176213_1_.func_175685_c(p_176213_2_.getBlockPosRelative(enumfacing), this);
+             }
+ 
+             for (EnumFacing enumfacing1 : EnumFacing.Plane.HORIZONTAL)
+             {
+-                this.func_176344_d(p_176213_1_, p_176213_2_.func_177972_a(enumfacing1));
++                this.func_176344_d(p_176213_1_, p_176213_2_.getBlockPosRelative(enumfacing1));
+             }
+ 
+             for (EnumFacing enumfacing2 : EnumFacing.Plane.HORIZONTAL)
+             {
+-                BlockPos blockpos = p_176213_2_.func_177972_a(enumfacing2);
++                BlockPos blockpos = p_176213_2_.getBlockPosRelative(enumfacing2);
+ 
+-                if (p_176213_1_.func_180495_p(blockpos).func_185915_l())
++                if (p_176213_1_.getBlockState(blockpos).func_185915_l())
+                 {
+-                    this.func_176344_d(p_176213_1_, blockpos.func_177984_a());
++                    this.func_176344_d(p_176213_1_, blockpos.getBlockPosAbove());
+                 }
+                 else
+                 {
+-                    this.func_176344_d(p_176213_1_, blockpos.func_177977_b());
++                    this.func_176344_d(p_176213_1_, blockpos.getBlockPosBelow());
+                 }
+             }
+         }
+@@ -289,27 +289,27 @@
+         {
+             for (EnumFacing enumfacing : EnumFacing.values())
+             {
+-                p_180663_1_.func_175685_c(p_180663_2_.func_177972_a(enumfacing), this);
++                p_180663_1_.func_175685_c(p_180663_2_.getBlockPosRelative(enumfacing), this);
+             }
+ 
+             this.func_176338_e(p_180663_1_, p_180663_2_, p_180663_3_);
+ 
+             for (EnumFacing enumfacing1 : EnumFacing.Plane.HORIZONTAL)
+             {
+-                this.func_176344_d(p_180663_1_, p_180663_2_.func_177972_a(enumfacing1));
++                this.func_176344_d(p_180663_1_, p_180663_2_.getBlockPosRelative(enumfacing1));
+             }
+ 
+             for (EnumFacing enumfacing2 : EnumFacing.Plane.HORIZONTAL)
+             {
+-                BlockPos blockpos = p_180663_2_.func_177972_a(enumfacing2);
++                BlockPos blockpos = p_180663_2_.getBlockPosRelative(enumfacing2);
+ 
+-                if (p_180663_1_.func_180495_p(blockpos).func_185915_l())
++                if (p_180663_1_.getBlockState(blockpos).func_185915_l())
+                 {
+-                    this.func_176344_d(p_180663_1_, blockpos.func_177984_a());
++                    this.func_176344_d(p_180663_1_, blockpos.getBlockPosAbove());
+                 }
+                 else
+                 {
+-                    this.func_176344_d(p_180663_1_, blockpos.func_177977_b());
++                    this.func_176344_d(p_180663_1_, blockpos.getBlockPosBelow());
+                 }
+             }
+         }
+@@ -317,13 +317,13 @@
+ 
+     private int func_176342_a(World p_176342_1_, BlockPos p_176342_2_, int p_176342_3_)
+     {
+-        if (p_176342_1_.func_180495_p(p_176342_2_).func_177230_c() != this)
++        if (p_176342_1_.getBlockState(p_176342_2_).getBlock() != this)
+         {
+             return p_176342_3_;
+         }
+         else
+         {
+-            int i = ((Integer)p_176342_1_.func_180495_p(p_176342_2_).func_177229_b(field_176351_O)).intValue();
++            int i = ((Integer)p_176342_1_.getBlockState(p_176342_2_).func_177229_b(field_176351_O)).intValue();
+             return i > p_176342_3_ ? i : p_176342_3_;
+         }
+     }
+@@ -403,16 +403,16 @@
+ 
+     private boolean func_176339_d(IBlockAccess p_176339_1_, BlockPos p_176339_2_, EnumFacing p_176339_3_)
+     {
+-        BlockPos blockpos = p_176339_2_.func_177972_a(p_176339_3_);
+-        IBlockState iblockstate = p_176339_1_.func_180495_p(blockpos);
++        BlockPos blockpos = p_176339_2_.getBlockPosRelative(p_176339_3_);
++        IBlockState iblockstate = p_176339_1_.getBlockState(blockpos);
+         boolean flag = iblockstate.func_185915_l();
+-        boolean flag1 = p_176339_1_.func_180495_p(p_176339_2_.func_177984_a()).func_185915_l();
+-        return !flag1 && flag && func_176340_e(p_176339_1_, blockpos.func_177984_a()) ? true : (func_176343_a(iblockstate, p_176339_3_) ? true : (iblockstate.func_177230_c() == Blocks.powered_repeater && iblockstate.func_177229_b(BlockRedstoneDiode.field_185512_D) == p_176339_3_ ? true : !flag && func_176340_e(p_176339_1_, blockpos.func_177977_b())));
++        boolean flag1 = p_176339_1_.getBlockState(p_176339_2_.getBlockPosAbove()).func_185915_l();
++        return !flag1 && flag && func_176340_e(p_176339_1_, blockpos.getBlockPosAbove()) ? true : (func_176343_a(iblockstate, p_176339_3_) ? true : (iblockstate.getBlock() == Blocks.powered_repeater && iblockstate.func_177229_b(BlockRedstoneDiode.field_185512_D) == p_176339_3_ ? true : !flag && func_176340_e(p_176339_1_, blockpos.getBlockPosBelow())));
+     }
+ 
+     protected static boolean func_176340_e(IBlockAccess p_176340_0_, BlockPos p_176340_1_)
+     {
+-        return func_176346_d(p_176340_0_.func_180495_p(p_176340_1_));
++        return func_176346_d(p_176340_0_.getBlockState(p_176340_1_));
+     }
+ 
+     protected static boolean func_176346_d(IBlockState p_176346_0_)
+@@ -422,7 +422,7 @@
+ 
+     protected static boolean func_176343_a(IBlockState p_176343_0_, @Nullable EnumFacing p_176343_1_)
+     {
+-        Block block = p_176343_0_.func_177230_c();
++        Block block = p_176343_0_.getBlock();
+ 
+         if (block == Blocks.redstone_wire)
+         {
+@@ -482,14 +482,14 @@
+ 
+         if (i != 0)
+         {
+-            double d0 = (double)p_180655_3_.func_177958_n() + 0.5D + ((double)p_180655_4_.nextFloat() - 0.5D) * 0.2D;
+-            double d1 = (double)((float)p_180655_3_.func_177956_o() + 0.0625F);
+-            double d2 = (double)p_180655_3_.func_177952_p() + 0.5D + ((double)p_180655_4_.nextFloat() - 0.5D) * 0.2D;
++            double d0 = (double)p_180655_3_.getX() + 0.5D + ((double)p_180655_4_.nextFloat() - 0.5D) * 0.2D;
++            double d1 = (double)((float)p_180655_3_.getY() + 0.0625F);
++            double d2 = (double)p_180655_3_.getZ() + 0.5D + ((double)p_180655_4_.nextFloat() - 0.5D) * 0.2D;
+             float f = (float)i / 15.0F;
+             float f1 = f * 0.6F + 0.4F;
+             float f2 = Math.max(0.0F, f * f * 0.7F - 0.5F);
+             float f3 = Math.max(0.0F, f * f * 0.6F - 0.7F);
+-            p_180655_2_.func_175688_a(EnumParticleTypes.REDSTONE, d0, d1, d2, (double)f1, (double)f2, (double)f3, new int[0]);
++            p_180655_2_.spawnParticle(EnumParticleTypes.REDSTONE, d0, d1, d2, (double)f1, (double)f2, (double)f3, new int[0]);
+         }
+     }
+ 
+@@ -505,7 +505,7 @@
+ 
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        return this.func_176223_P().func_177226_a(field_176351_O, Integer.valueOf(p_176203_1_));
++        return this.getBlockState().func_177226_a(field_176351_O, Integer.valueOf(p_176203_1_));
+     }
+ 
+     public int func_176201_c(IBlockState p_176201_1_)

@@ -1,0 +1,11 @@
+--- a/net/minecraft/block/state/IBlockProperties.java
++++ b/net/minecraft/block/state/IBlockProperties.java
+@@ -20,7 +20,7 @@
+ 
+ public interface IBlockProperties
+ {
+-    Material func_185904_a();
++    Material getMaterial();
+ 
+     boolean func_185913_b();
+ 

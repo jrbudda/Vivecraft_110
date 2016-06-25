@@ -1,0 +1,42 @@
+--- a/net/minecraft/world/gen/feature/WorldGenEndGateway.java
++++ b/net/minecraft/world/gen/feature/WorldGenEndGateway.java
+@@ -11,30 +11,30 @@
+     {
+         for (BlockPos.MutableBlockPos blockpos$mutableblockpos : BlockPos.func_177975_b(p_180709_3_.func_177982_a(-1, -2, -1), p_180709_3_.func_177982_a(1, 2, 1)))
+         {
+-            boolean flag = blockpos$mutableblockpos.func_177958_n() == p_180709_3_.func_177958_n();
+-            boolean flag1 = blockpos$mutableblockpos.func_177956_o() == p_180709_3_.func_177956_o();
+-            boolean flag2 = blockpos$mutableblockpos.func_177952_p() == p_180709_3_.func_177952_p();
+-            boolean flag3 = Math.abs(blockpos$mutableblockpos.func_177956_o() - p_180709_3_.func_177956_o()) == 2;
++            boolean flag = blockpos$mutableblockpos.getX() == p_180709_3_.getX();
++            boolean flag1 = blockpos$mutableblockpos.getY() == p_180709_3_.getY();
++            boolean flag2 = blockpos$mutableblockpos.getZ() == p_180709_3_.getZ();
++            boolean flag3 = Math.abs(blockpos$mutableblockpos.getY() - p_180709_3_.getY()) == 2;
+ 
+             if (flag && flag1 && flag2)
+             {
+-                this.func_175903_a(p_180709_1_, new BlockPos(blockpos$mutableblockpos), Blocks.field_185775_db.func_176223_P());
++                this.func_175903_a(p_180709_1_, new BlockPos(blockpos$mutableblockpos), Blocks.field_185775_db.getBlockState());
+             }
+             else if (flag1)
+             {
+-                this.func_175903_a(p_180709_1_, blockpos$mutableblockpos, Blocks.air.func_176223_P());
++                this.func_175903_a(p_180709_1_, blockpos$mutableblockpos, Blocks.air.getBlockState());
+             }
+             else if (flag3 && flag && flag2)
+             {
+-                this.func_175903_a(p_180709_1_, blockpos$mutableblockpos, Blocks.bedrock.func_176223_P());
++                this.func_175903_a(p_180709_1_, blockpos$mutableblockpos, Blocks.bedrock.getBlockState());
+             }
+             else if ((flag || flag2) && !flag3)
+             {
+-                this.func_175903_a(p_180709_1_, blockpos$mutableblockpos, Blocks.bedrock.func_176223_P());
++                this.func_175903_a(p_180709_1_, blockpos$mutableblockpos, Blocks.bedrock.getBlockState());
+             }
+             else
+             {
+-                this.func_175903_a(p_180709_1_, blockpos$mutableblockpos, Blocks.air.func_176223_P());
++                this.func_175903_a(p_180709_1_, blockpos$mutableblockpos, Blocks.air.getBlockState());
+             }
+         }
+ 

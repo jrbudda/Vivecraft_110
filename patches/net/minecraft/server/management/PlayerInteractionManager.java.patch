@@ -1,0 +1,211 @@
+--- a/net/minecraft/server/management/PlayerInteractionManager.java
++++ b/net/minecraft/server/management/PlayerInteractionManager.java
+@@ -39,7 +39,7 @@
+     /** True if the player is destroying a block */
+     private boolean isDestroyingBlock;
+     private int initialDamage;
+-    private BlockPos field_180240_f = BlockPos.field_177992_a;
++    private BlockPos field_180240_f = BlockPos.createDefault;
+     private int curblockDamage;
+ 
+     /**
+@@ -47,7 +47,7 @@
+      * block will not be destroyed while this is false.
+      */
+     private boolean receivedFinishDiggingPacket;
+-    private BlockPos field_180241_i = BlockPos.field_177992_a;
++    private BlockPos field_180241_i = BlockPos.createDefault;
+     private int initialBlockDamage;
+     private int durabilityRemainingOnBlock = -1;
+ 
+@@ -103,10 +103,10 @@
+         if (this.receivedFinishDiggingPacket)
+         {
+             int i = this.curblockDamage - this.initialBlockDamage;
+-            IBlockState iblockstate = this.theWorld.func_180495_p(this.field_180241_i);
+-            Block block = iblockstate.func_177230_c();
++            IBlockState iblockstate = this.theWorld.getBlockState(this.field_180241_i);
++            Block block = iblockstate.getBlock();
+ 
+-            if (iblockstate.func_185904_a() == Material.air)
++            if (iblockstate.getMaterial() == Material.air)
+             {
+                 this.receivedFinishDiggingPacket = false;
+             }
+@@ -130,10 +130,10 @@
+         }
+         else if (this.isDestroyingBlock)
+         {
+-            IBlockState iblockstate1 = this.theWorld.func_180495_p(this.field_180240_f);
+-            Block block1 = iblockstate1.func_177230_c();
++            IBlockState iblockstate1 = this.theWorld.getBlockState(this.field_180240_f);
++            Block block1 = iblockstate1.getBlock();
+ 
+-            if (iblockstate1.func_185904_a() == Material.air)
++            if (iblockstate1.getMaterial() == Material.air)
+             {
+                 this.theWorld.func_175715_c(this.thisPlayerMP.getEntityId(), this.field_180240_f, -1);
+                 this.durabilityRemainingOnBlock = -1;
+@@ -165,8 +165,8 @@
+         }
+         else
+         {
+-            IBlockState iblockstate = this.theWorld.func_180495_p(p_180784_1_);
+-            Block block = iblockstate.func_177230_c();
++            IBlockState iblockstate = this.theWorld.getBlockState(p_180784_1_);
++            Block block = iblockstate.getBlock();
+ 
+             if (this.gameType.isAdventure())
+             {
+@@ -177,7 +177,7 @@
+ 
+                 if (!this.thisPlayerMP.func_175142_cm())
+                 {
+-                    ItemStack itemstack = this.thisPlayerMP.func_184614_ca();
++                    ItemStack itemstack = this.thisPlayerMP.getMainHandItem();
+ 
+                     if (itemstack == null)
+                     {
+@@ -195,13 +195,13 @@
+             this.initialDamage = this.curblockDamage;
+             float f = 1.0F;
+ 
+-            if (iblockstate.func_185904_a() != Material.air)
++            if (iblockstate.getMaterial() != Material.air)
+             {
+                 block.func_180649_a(this.theWorld, p_180784_1_, this.thisPlayerMP);
+                 f = iblockstate.func_185903_a(this.thisPlayerMP, this.thisPlayerMP.worldObj, p_180784_1_);
+             }
+ 
+-            if (iblockstate.func_185904_a() != Material.air && f >= 1.0F)
++            if (iblockstate.getMaterial() != Material.air && f >= 1.0F)
+             {
+                 this.func_180237_b(p_180784_1_);
+             }
+@@ -221,9 +221,9 @@
+         if (p_180785_1_.equals(this.field_180240_f))
+         {
+             int i = this.curblockDamage - this.initialDamage;
+-            IBlockState iblockstate = this.theWorld.func_180495_p(p_180785_1_);
++            IBlockState iblockstate = this.theWorld.getBlockState(p_180785_1_);
+ 
+-            if (iblockstate.func_185904_a() != Material.air)
++            if (iblockstate.getMaterial() != Material.air)
+             {
+                 float f = iblockstate.func_185903_a(this.thisPlayerMP, this.thisPlayerMP.worldObj, p_180785_1_) * (float)(i + 1);
+ 
+@@ -252,13 +252,13 @@
+ 
+     private boolean func_180235_c(BlockPos p_180235_1_)
+     {
+-        IBlockState iblockstate = this.theWorld.func_180495_p(p_180235_1_);
+-        iblockstate.func_177230_c().func_176208_a(this.theWorld, p_180235_1_, iblockstate, this.thisPlayerMP);
++        IBlockState iblockstate = this.theWorld.getBlockState(p_180235_1_);
++        iblockstate.getBlock().func_176208_a(this.theWorld, p_180235_1_, iblockstate, this.thisPlayerMP);
+         boolean flag = this.theWorld.func_175698_g(p_180235_1_);
+ 
+         if (flag)
+         {
+-            iblockstate.func_177230_c().func_176206_d(this.theWorld, p_180235_1_, iblockstate);
++            iblockstate.getBlock().func_176206_d(this.theWorld, p_180235_1_, iblockstate);
+         }
+ 
+         return flag;
+@@ -266,15 +266,15 @@
+ 
+     public boolean func_180237_b(BlockPos p_180237_1_)
+     {
+-        if (this.gameType.isCreative() && this.thisPlayerMP.func_184614_ca() != null && this.thisPlayerMP.func_184614_ca().getItem() instanceof ItemSword)
++        if (this.gameType.isCreative() && this.thisPlayerMP.getMainHandItem() != null && this.thisPlayerMP.getMainHandItem().getItem() instanceof ItemSword)
+         {
+             return false;
+         }
+         else
+         {
+-            IBlockState iblockstate = this.theWorld.func_180495_p(p_180237_1_);
++            IBlockState iblockstate = this.theWorld.getBlockState(p_180237_1_);
+             TileEntity tileentity = this.theWorld.func_175625_s(p_180237_1_);
+-            Block block = iblockstate.func_177230_c();
++            Block block = iblockstate.getBlock();
+ 
+             if ((block instanceof BlockCommandBlock || block instanceof BlockStructure) && !this.thisPlayerMP.func_189808_dh())
+             {
+@@ -292,7 +292,7 @@
+ 
+                     if (!this.thisPlayerMP.func_175142_cm())
+                     {
+-                        ItemStack itemstack = this.thisPlayerMP.func_184614_ca();
++                        ItemStack itemstack = this.thisPlayerMP.getMainHandItem();
+ 
+                         if (itemstack == null)
+                         {
+@@ -315,9 +315,9 @@
+                 }
+                 else
+                 {
+-                    ItemStack itemstack1 = this.thisPlayerMP.func_184614_ca();
++                    ItemStack itemstack1 = this.thisPlayerMP.getMainHandItem();
+                     ItemStack itemstack2 = itemstack1 == null ? null : itemstack1.copy();
+-                    boolean flag = this.thisPlayerMP.func_184823_b(iblockstate);
++                    boolean flag = this.thisPlayerMP.canHarvest(iblockstate);
+ 
+                     if (itemstack1 != null)
+                     {
+@@ -325,13 +325,13 @@
+ 
+                         if (itemstack1.stackSize == 0)
+                         {
+-                            this.thisPlayerMP.func_184611_a(EnumHand.MAIN_HAND, (ItemStack)null);
++                            this.thisPlayerMP.equipItemInHand(EnumHand.MAIN_HAND, (ItemStack)null);
+                         }
+                     }
+ 
+                     if (flag1 && flag)
+                     {
+-                        iblockstate.func_177230_c().func_180657_a(this.theWorld, this.thisPlayerMP, p_180237_1_, iblockstate, tileentity, itemstack2);
++                        iblockstate.getBlock().func_180657_a(this.theWorld, this.thisPlayerMP, p_180237_1_, iblockstate, tileentity, itemstack2);
+                     }
+                 }
+ 
+@@ -363,7 +363,7 @@
+             }
+             else
+             {
+-                p_187250_1_.func_184611_a(p_187250_4_, itemstack);
++                p_187250_1_.equipItemInHand(p_187250_4_, itemstack);
+ 
+                 if (this.isCreative())
+                 {
+@@ -377,7 +377,7 @@
+ 
+                 if (itemstack.stackSize == 0)
+                 {
+-                    p_187250_1_.func_184611_a(p_187250_4_, (ItemStack)null);
++                    p_187250_1_.equipItemInHand(p_187250_4_, (ItemStack)null);
+                 }
+ 
+                 if (!p_187250_1_.func_184587_cr())
+@@ -398,7 +398,7 @@
+ 
+             if (tileentity instanceof ILockableContainer)
+             {
+-                Block block1 = p_187251_2_.func_180495_p(p_187251_5_).func_177230_c();
++                Block block1 = p_187251_2_.getBlockState(p_187251_5_).getBlock();
+                 ILockableContainer ilockablecontainer = (ILockableContainer)tileentity;
+ 
+                 if (ilockablecontainer instanceof TileEntityChest && block1 instanceof BlockChest)
+@@ -422,11 +422,11 @@
+         }
+         else
+         {
+-            if (!p_187251_1_.isSneaking() || p_187251_1_.func_184614_ca() == null && p_187251_1_.func_184592_cb() == null)
++            if (!p_187251_1_.isSneaking() || p_187251_1_.getMainHandItem() == null && p_187251_1_.getOffhandItem() == null)
+             {
+-                IBlockState iblockstate = p_187251_2_.func_180495_p(p_187251_5_);
++                IBlockState iblockstate = p_187251_2_.getBlockState(p_187251_5_);
+ 
+-                if (iblockstate.func_177230_c().func_180639_a(p_187251_2_, p_187251_5_, iblockstate, p_187251_1_, p_187251_4_, p_187251_3_, p_187251_6_, p_187251_7_, p_187251_8_, p_187251_9_))
++                if (iblockstate.getBlock().func_180639_a(p_187251_2_, p_187251_5_, iblockstate, p_187251_1_, p_187251_4_, p_187251_3_, p_187251_6_, p_187251_7_, p_187251_8_, p_187251_9_))
+                 {
+                     return EnumActionResult.SUCCESS;
+                 }

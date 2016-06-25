@@ -1,0 +1,57 @@
+--- a/net/minecraft/block/BlockStairs.java
++++ b/net/minecraft/block/BlockStairs.java
+@@ -58,9 +58,9 @@
+ 
+     protected BlockStairs(IBlockState p_i45684_1_)
+     {
+-        super(p_i45684_1_.func_177230_c().blockMaterial);
++        super(p_i45684_1_.getBlock().blockMaterial);
+         this.func_180632_j(this.field_176227_L.func_177621_b().func_177226_a(field_176309_a, EnumFacing.NORTH).func_177226_a(field_176308_b, BlockStairs.EnumHalf.BOTTOM).func_177226_a(field_176310_M, BlockStairs.EnumShape.STRAIGHT));
+-        this.field_150149_b = p_i45684_1_.func_177230_c();
++        this.field_150149_b = p_i45684_1_.getBlock();
+         this.field_150151_M = p_i45684_1_;
+         this.setHardness(this.field_150149_b.blockHardness);
+         this.setResistance(this.field_150149_b.blockResistance / 3.0F);
+@@ -322,7 +322,7 @@
+ 
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        IBlockState iblockstate = this.func_176223_P().func_177226_a(field_176308_b, (p_176203_1_ & 4) > 0 ? BlockStairs.EnumHalf.TOP : BlockStairs.EnumHalf.BOTTOM);
++        IBlockState iblockstate = this.getBlockState().func_177226_a(field_176308_b, (p_176203_1_ & 4) > 0 ? BlockStairs.EnumHalf.TOP : BlockStairs.EnumHalf.BOTTOM);
+         iblockstate = iblockstate.func_177226_a(field_176309_a, EnumFacing.getFront(5 - (p_176203_1_ & 3)));
+         return iblockstate;
+     }
+@@ -348,7 +348,7 @@
+     private static BlockStairs.EnumShape func_185706_d(IBlockState p_185706_0_, IBlockAccess p_185706_1_, BlockPos p_185706_2_)
+     {
+         EnumFacing enumfacing = (EnumFacing)p_185706_0_.func_177229_b(field_176309_a);
+-        IBlockState iblockstate = p_185706_1_.func_180495_p(p_185706_2_.func_177972_a(enumfacing));
++        IBlockState iblockstate = p_185706_1_.getBlockState(p_185706_2_.getBlockPosRelative(enumfacing));
+ 
+         if (func_185709_i(iblockstate) && p_185706_0_.func_177229_b(field_176308_b) == iblockstate.func_177229_b(field_176308_b))
+         {
+@@ -365,7 +365,7 @@
+             }
+         }
+ 
+-        IBlockState iblockstate1 = p_185706_1_.func_180495_p(p_185706_2_.func_177972_a(enumfacing.func_176734_d()));
++        IBlockState iblockstate1 = p_185706_1_.getBlockState(p_185706_2_.getBlockPosRelative(enumfacing.func_176734_d()));
+ 
+         if (func_185709_i(iblockstate1) && p_185706_0_.func_177229_b(field_176308_b) == iblockstate1.func_177229_b(field_176308_b))
+         {
+@@ -387,13 +387,13 @@
+ 
+     private static boolean func_185704_d(IBlockState p_185704_0_, IBlockAccess p_185704_1_, BlockPos p_185704_2_, EnumFacing p_185704_3_)
+     {
+-        IBlockState iblockstate = p_185704_1_.func_180495_p(p_185704_2_.func_177972_a(p_185704_3_));
++        IBlockState iblockstate = p_185704_1_.getBlockState(p_185704_2_.getBlockPosRelative(p_185704_3_));
+         return !func_185709_i(iblockstate) || iblockstate.func_177229_b(field_176309_a) != p_185704_0_.func_177229_b(field_176309_a) || iblockstate.func_177229_b(field_176308_b) != p_185704_0_.func_177229_b(field_176308_b);
+     }
+ 
+     public static boolean func_185709_i(IBlockState p_185709_0_)
+     {
+-        return p_185709_0_.func_177230_c() instanceof BlockStairs;
++        return p_185709_0_.getBlock() instanceof BlockStairs;
+     }
+ 
+     public IBlockState func_185499_a(IBlockState p_185499_1_, Rotation p_185499_2_)

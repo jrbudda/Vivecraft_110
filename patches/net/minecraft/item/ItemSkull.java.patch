@@ -1,0 +1,34 @@
+--- a/net/minecraft/item/ItemSkull.java
++++ b/net/minecraft/item/ItemSkull.java
+@@ -40,18 +40,18 @@
+         }
+         else
+         {
+-            IBlockState iblockstate = p_180614_3_.func_180495_p(p_180614_4_);
+-            Block block = iblockstate.func_177230_c();
++            IBlockState iblockstate = p_180614_3_.getBlockState(p_180614_4_);
++            Block block = iblockstate.getBlock();
+             boolean flag = block.func_176200_f(p_180614_3_, p_180614_4_);
+ 
+             if (!flag)
+             {
+-                if (!p_180614_3_.func_180495_p(p_180614_4_).func_185904_a().isSolid())
++                if (!p_180614_3_.getBlockState(p_180614_4_).getMaterial().isSolid())
+                 {
+                     return EnumActionResult.FAIL;
+                 }
+ 
+-                p_180614_4_ = p_180614_4_.func_177972_a(p_180614_6_);
++                p_180614_4_ = p_180614_4_.getBlockPosRelative(p_180614_6_);
+             }
+ 
+             if (p_180614_2_.func_175151_a(p_180614_4_, p_180614_6_, p_180614_1_) && Blocks.skull.func_176196_c(p_180614_3_, p_180614_4_))
+@@ -62,7 +62,7 @@
+                 }
+                 else
+                 {
+-                    p_180614_3_.func_180501_a(p_180614_4_, Blocks.skull.func_176223_P().func_177226_a(BlockSkull.field_176418_a, p_180614_6_), 11);
++                    p_180614_3_.func_180501_a(p_180614_4_, Blocks.skull.getBlockState().func_177226_a(BlockSkull.field_176418_a, p_180614_6_), 11);
+                     int i = 0;
+ 
+                     if (p_180614_6_ == EnumFacing.UP)

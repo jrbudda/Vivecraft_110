@@ -1,0 +1,11 @@
+--- a/net/minecraft/command/CommandReplaceItem.java
++++ b/net/minecraft/command/CommandReplaceItem.java
+@@ -138,7 +138,7 @@
+ 
+                 if (tileentity == null || !(tileentity instanceof IInventory))
+                 {
+-                    throw new CommandException("commands.replaceitem.noContainer", new Object[] {Integer.valueOf(blockpos.func_177958_n()), Integer.valueOf(blockpos.func_177956_o()), Integer.valueOf(blockpos.func_177952_p())});
++                    throw new CommandException("commands.replaceitem.noContainer", new Object[] {Integer.valueOf(blockpos.getX()), Integer.valueOf(blockpos.getY()), Integer.valueOf(blockpos.getZ())});
+                 }
+ 
+                 IInventory iinventory = (IInventory)tileentity;

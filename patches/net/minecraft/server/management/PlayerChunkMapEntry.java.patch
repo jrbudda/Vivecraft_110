@@ -1,0 +1,20 @@
+--- a/net/minecraft/server/management/PlayerChunkMapEntry.java
++++ b/net/minecraft/server/management/PlayerChunkMapEntry.java
+@@ -211,7 +211,7 @@
+                     BlockPos blockpos = new BlockPos(i, j, k);
+                     this.func_187267_a(new SPacketBlockChange(this.field_187282_b.getMinecraftServer(), blockpos));
+ 
+-                    if (this.field_187282_b.getMinecraftServer().func_180495_p(blockpos).func_177230_c().hasTileEntity())
++                    if (this.field_187282_b.getMinecraftServer().getBlockState(blockpos).getBlock().hasTileEntity())
+                     {
+                         this.func_187273_a(this.field_187282_b.getMinecraftServer().func_175625_s(blockpos));
+                     }
+@@ -231,7 +231,7 @@
+                         int k1 = (this.field_187285_e[l] >> 8 & 15) + this.field_187284_d.chunkZPos * 16;
+                         BlockPos blockpos1 = new BlockPos(i1, j1, k1);
+ 
+-                        if (this.field_187282_b.getMinecraftServer().func_180495_p(blockpos1).func_177230_c().hasTileEntity())
++                        if (this.field_187282_b.getMinecraftServer().getBlockState(blockpos1).getBlock().hasTileEntity())
+                         {
+                             this.func_187273_a(this.field_187282_b.getMinecraftServer().func_175625_s(blockpos1));
+                         }

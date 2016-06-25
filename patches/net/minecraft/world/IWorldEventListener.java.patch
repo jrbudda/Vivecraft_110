@@ -1,0 +1,11 @@
+--- a/net/minecraft/world/IWorldEventListener.java
++++ b/net/minecraft/world/IWorldEventListener.java
+@@ -20,7 +20,7 @@
+      */
+     void markBlockRangeForRenderUpdate(int p_147585_1_, int p_147585_2_, int p_147585_3_, int p_147585_4_, int p_147585_5_, int p_147585_6_);
+ 
+-    void func_184375_a(EntityPlayer p_184375_1_, SoundEvent p_184375_2_, SoundCategory p_184375_3_, double p_184375_4_, double p_184375_6_, double p_184375_8_, float p_184375_10_, float p_184375_11_);
++    void playSound(EntityPlayer p_184375_1_, SoundEvent p_184375_2_, SoundCategory p_184375_3_, double p_184375_4_, double p_184375_6_, double p_184375_8_, float p_184375_10_, float p_184375_11_);
+ 
+     void func_184377_a(SoundEvent p_184377_1_, BlockPos p_184377_2_);
+ 

@@ -1,0 +1,77 @@
+--- a/net/minecraft/world/gen/feature/WorldGeneratorBonusChest.java
++++ b/net/minecraft/world/gen/feature/WorldGeneratorBonusChest.java
+@@ -14,26 +14,26 @@
+ {
+     public boolean func_180709_b(World p_180709_1_, Random p_180709_2_, BlockPos p_180709_3_)
+     {
+-        for (IBlockState iblockstate = p_180709_1_.func_180495_p(p_180709_3_); (iblockstate.func_185904_a() == Material.air || iblockstate.func_185904_a() == Material.leaves) && p_180709_3_.func_177956_o() > 1; iblockstate = p_180709_1_.func_180495_p(p_180709_3_))
++        for (IBlockState iblockstate = p_180709_1_.getBlockState(p_180709_3_); (iblockstate.getMaterial() == Material.air || iblockstate.getMaterial() == Material.leaves) && p_180709_3_.getY() > 1; iblockstate = p_180709_1_.getBlockState(p_180709_3_))
+         {
+-            p_180709_3_ = p_180709_3_.func_177977_b();
++            p_180709_3_ = p_180709_3_.getBlockPosBelow();
+         }
+ 
+-        if (p_180709_3_.func_177956_o() < 1)
++        if (p_180709_3_.getY() < 1)
+         {
+             return false;
+         }
+         else
+         {
+-            p_180709_3_ = p_180709_3_.func_177984_a();
++            p_180709_3_ = p_180709_3_.getBlockPosAbove();
+ 
+             for (int i = 0; i < 4; ++i)
+             {
+                 BlockPos blockpos = p_180709_3_.func_177982_a(p_180709_2_.nextInt(4) - p_180709_2_.nextInt(4), p_180709_2_.nextInt(3) - p_180709_2_.nextInt(3), p_180709_2_.nextInt(4) - p_180709_2_.nextInt(4));
+ 
+-                if (p_180709_1_.func_175623_d(blockpos) && p_180709_1_.func_180495_p(blockpos.func_177977_b()).func_185896_q())
++                if (p_180709_1_.isEmpty(blockpos) && p_180709_1_.getBlockState(blockpos.getBlockPosBelow()).func_185896_q())
+                 {
+-                    p_180709_1_.func_180501_a(blockpos, Blocks.chest.func_176223_P(), 2);
++                    p_180709_1_.func_180501_a(blockpos, Blocks.chest.getBlockState(), 2);
+                     TileEntity tileentity = p_180709_1_.func_175625_s(blockpos);
+ 
+                     if (tileentity instanceof TileEntityChest)
+@@ -41,29 +41,29 @@
+                         ((TileEntityChest)tileentity).func_189404_a(LootTableList.field_186420_b, p_180709_2_.nextLong());
+                     }
+ 
+-                    BlockPos blockpos1 = blockpos.func_177974_f();
+-                    BlockPos blockpos2 = blockpos.func_177976_e();
+-                    BlockPos blockpos3 = blockpos.func_177978_c();
+-                    BlockPos blockpos4 = blockpos.func_177968_d();
++                    BlockPos blockpos1 = blockpos.getBlockPosEast();
++                    BlockPos blockpos2 = blockpos.getBlockPosWest();
++                    BlockPos blockpos3 = blockpos.getBlockPosNorth();
++                    BlockPos blockpos4 = blockpos.getBlockPosSouth();
+ 
+-                    if (p_180709_1_.func_175623_d(blockpos2) && p_180709_1_.func_180495_p(blockpos2.func_177977_b()).func_185896_q())
++                    if (p_180709_1_.isEmpty(blockpos2) && p_180709_1_.getBlockState(blockpos2.getBlockPosBelow()).func_185896_q())
+                     {
+-                        p_180709_1_.func_180501_a(blockpos2, Blocks.torch.func_176223_P(), 2);
++                        p_180709_1_.func_180501_a(blockpos2, Blocks.torch.getBlockState(), 2);
+                     }
+ 
+-                    if (p_180709_1_.func_175623_d(blockpos1) && p_180709_1_.func_180495_p(blockpos1.func_177977_b()).func_185896_q())
++                    if (p_180709_1_.isEmpty(blockpos1) && p_180709_1_.getBlockState(blockpos1.getBlockPosBelow()).func_185896_q())
+                     {
+-                        p_180709_1_.func_180501_a(blockpos1, Blocks.torch.func_176223_P(), 2);
++                        p_180709_1_.func_180501_a(blockpos1, Blocks.torch.getBlockState(), 2);
+                     }
+ 
+-                    if (p_180709_1_.func_175623_d(blockpos3) && p_180709_1_.func_180495_p(blockpos3.func_177977_b()).func_185896_q())
++                    if (p_180709_1_.isEmpty(blockpos3) && p_180709_1_.getBlockState(blockpos3.getBlockPosBelow()).func_185896_q())
+                     {
+-                        p_180709_1_.func_180501_a(blockpos3, Blocks.torch.func_176223_P(), 2);
++                        p_180709_1_.func_180501_a(blockpos3, Blocks.torch.getBlockState(), 2);
+                     }
+ 
+-                    if (p_180709_1_.func_175623_d(blockpos4) && p_180709_1_.func_180495_p(blockpos4.func_177977_b()).func_185896_q())
++                    if (p_180709_1_.isEmpty(blockpos4) && p_180709_1_.getBlockState(blockpos4.getBlockPosBelow()).func_185896_q())
+                     {
+-                        p_180709_1_.func_180501_a(blockpos4, Blocks.torch.func_176223_P(), 2);
++                        p_180709_1_.func_180501_a(blockpos4, Blocks.torch.getBlockState(), 2);
+                     }
+ 
+                     return true;

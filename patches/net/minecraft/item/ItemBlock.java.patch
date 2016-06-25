@@ -1,0 +1,61 @@
+--- a/net/minecraft/item/ItemBlock.java
++++ b/net/minecraft/item/ItemBlock.java
+@@ -39,12 +39,12 @@
+ 
+     public EnumActionResult func_180614_a(ItemStack p_180614_1_, EntityPlayer p_180614_2_, World p_180614_3_, BlockPos p_180614_4_, EnumHand p_180614_5_, EnumFacing p_180614_6_, float p_180614_7_, float p_180614_8_, float p_180614_9_)
+     {
+-        IBlockState iblockstate = p_180614_3_.func_180495_p(p_180614_4_);
+-        Block block = iblockstate.func_177230_c();
++        IBlockState iblockstate = p_180614_3_.getBlockState(p_180614_4_);
++        Block block = iblockstate.getBlock();
+ 
+         if (!block.func_176200_f(p_180614_3_, p_180614_4_))
+         {
+-            p_180614_4_ = p_180614_4_.func_177972_a(p_180614_6_);
++            p_180614_4_ = p_180614_4_.getBlockPosRelative(p_180614_6_);
+         }
+ 
+         if (p_180614_1_.stackSize != 0 && p_180614_2_.func_175151_a(p_180614_4_, p_180614_6_, p_180614_1_) && p_180614_3_.func_175716_a(this.blockInstance, p_180614_4_, false, p_180614_6_, (Entity)null, p_180614_1_))
+@@ -54,9 +54,9 @@
+ 
+             if (p_180614_3_.func_180501_a(p_180614_4_, iblockstate1, 11))
+             {
+-                iblockstate1 = p_180614_3_.func_180495_p(p_180614_4_);
++                iblockstate1 = p_180614_3_.getBlockState(p_180614_4_);
+ 
+-                if (iblockstate1.func_177230_c() == this.blockInstance)
++                if (iblockstate1.getBlock() == this.blockInstance)
+                 {
+                     func_179224_a(p_180614_3_, p_180614_2_, p_180614_4_, p_180614_1_);
+                     this.blockInstance.func_180633_a(p_180614_3_, p_180614_4_, iblockstate1, p_180614_2_, p_180614_1_);
+@@ -100,9 +100,9 @@
+                     NBTTagCompound nbttagcompound1 = nbttagcompound.copy();
+                     NBTTagCompound nbttagcompound2 = (NBTTagCompound)p_179224_3_.getTagCompound().getTag("BlockEntityTag");
+                     nbttagcompound.func_179237_a(nbttagcompound2);
+-                    nbttagcompound.setInteger("x", p_179224_2_.func_177958_n());
+-                    nbttagcompound.setInteger("y", p_179224_2_.func_177956_o());
+-                    nbttagcompound.setInteger("z", p_179224_2_.func_177952_p());
++                    nbttagcompound.setInteger("x", p_179224_2_.getX());
++                    nbttagcompound.setInteger("y", p_179224_2_.getY());
++                    nbttagcompound.setInteger("z", p_179224_2_.getZ());
+ 
+                     if (!nbttagcompound.equals(nbttagcompound1))
+                     {
+@@ -119,7 +119,7 @@
+ 
+     public boolean func_179222_a(World p_179222_1_, BlockPos p_179222_2_, EnumFacing p_179222_3_, EntityPlayer p_179222_4_, ItemStack p_179222_5_)
+     {
+-        Block block = p_179222_1_.func_180495_p(p_179222_2_).func_177230_c();
++        Block block = p_179222_1_.getBlockState(p_179222_2_).getBlock();
+ 
+         if (block == Blocks.snow_layer)
+         {
+@@ -127,7 +127,7 @@
+         }
+         else if (!block.func_176200_f(p_179222_1_, p_179222_2_))
+         {
+-            p_179222_2_ = p_179222_2_.func_177972_a(p_179222_3_);
++            p_179222_2_ = p_179222_2_.getBlockPosRelative(p_179222_3_);
+         }
+ 
+         return p_179222_1_.func_175716_a(this.blockInstance, p_179222_2_, false, p_179222_3_, (Entity)null, p_179222_5_);

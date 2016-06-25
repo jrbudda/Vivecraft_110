@@ -1,0 +1,11 @@
+--- a/net/minecraft/client/renderer/entity/RenderCaveSpider.java
++++ b/net/minecraft/client/renderer/entity/RenderCaveSpider.java
+@@ -20,7 +20,7 @@
+      */
+     protected void preRenderCallback(EntityCaveSpider p_77041_1_, float p_77041_2_)
+     {
+-        GlStateManager.func_179152_a(0.7F, 0.7F, 0.7F);
++        GlStateManager.scale(0.7F, 0.7F, 0.7F);
+     }
+ 
+     /**

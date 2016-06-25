@@ -1,0 +1,67 @@
+--- a/net/minecraft/client/particle/ParticleDragonBreath.java
++++ b/net/minecraft/client/particle/ParticleDragonBreath.java
+@@ -13,9 +13,9 @@
+     protected ParticleDragonBreath(World p_i46581_1_, double p_i46581_2_, double p_i46581_4_, double p_i46581_6_, double p_i46581_8_, double p_i46581_10_, double p_i46581_12_)
+     {
+         super(p_i46581_1_, p_i46581_2_, p_i46581_4_, p_i46581_6_, p_i46581_8_, p_i46581_10_, p_i46581_12_);
+-        this.field_187129_i = p_i46581_8_;
+-        this.field_187130_j = p_i46581_10_;
+-        this.field_187131_k = p_i46581_12_;
++        this.motionX = p_i46581_8_;
++        this.motionY = p_i46581_10_;
++        this.motionZ = p_i46581_12_;
+         this.particleRed = MathHelper.randomFloatClamp(this.field_187136_p, 0.7176471F, 0.8745098F);
+         this.particleGreen = MathHelper.randomFloatClamp(this.field_187136_p, 0.0F, 0.0F);
+         this.particleBlue = MathHelper.randomFloatClamp(this.field_187136_p, 0.8235294F, 0.9764706F);
+@@ -27,9 +27,9 @@
+ 
+     public void func_189213_a()
+     {
+-        this.field_187123_c = this.field_187126_f;
+-        this.field_187124_d = this.field_187127_g;
+-        this.field_187125_e = this.field_187128_h;
++        this.posX = this.prevPosX;
++        this.posY = this.prevPosY;
++        this.posZ = this.prevPosZ;
+ 
+         if (this.particleAge++ >= this.particleMaxAge)
+         {
+@@ -41,29 +41,29 @@
+ 
+             if (this.field_187132_l)
+             {
+-                this.field_187130_j = 0.0D;
++                this.motionY = 0.0D;
+                 this.field_187144_G = true;
+             }
+ 
+             if (this.field_187144_G)
+             {
+-                this.field_187130_j += 0.002D;
++                this.motionY += 0.002D;
+             }
+ 
+-            this.func_187110_a(this.field_187129_i, this.field_187130_j, this.field_187131_k);
++            this.func_187110_a(this.motionX, this.motionY, this.motionZ);
+ 
+-            if (this.field_187127_g == this.field_187124_d)
++            if (this.prevPosY == this.posY)
+             {
+-                this.field_187129_i *= 1.1D;
+-                this.field_187131_k *= 1.1D;
++                this.motionX *= 1.1D;
++                this.motionZ *= 1.1D;
+             }
+ 
+-            this.field_187129_i *= 0.9599999785423279D;
+-            this.field_187131_k *= 0.9599999785423279D;
++            this.motionX *= 0.9599999785423279D;
++            this.motionZ *= 0.9599999785423279D;
+ 
+             if (this.field_187144_G)
+             {
+-                this.field_187130_j *= 0.9599999785423279D;
++                this.motionY *= 0.9599999785423279D;
+             }
+         }
+     }

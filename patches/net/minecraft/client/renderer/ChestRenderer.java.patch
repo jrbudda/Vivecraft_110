@@ -1,0 +1,11 @@
+--- a/net/minecraft/client/renderer/ChestRenderer.java
++++ b/net/minecraft/client/renderer/ChestRenderer.java
+@@ -9,7 +9,7 @@
+     public void func_178175_a(Block p_178175_1_, float p_178175_2_)
+     {
+         GlStateManager.func_179131_c(p_178175_2_, p_178175_2_, p_178175_2_, 1.0F);
+-        GlStateManager.func_179114_b(90.0F, 0.0F, 1.0F, 0.0F);
++        GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
+         TileEntityItemStackRenderer.instance.func_179022_a(new ItemStack(p_178175_1_));
+     }
+ }

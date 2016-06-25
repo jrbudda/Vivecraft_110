@@ -1,0 +1,15 @@
+--- a/net/minecraft/client/particle/ParticleSplash.java
++++ b/net/minecraft/client/particle/ParticleSplash.java
+@@ -12,9 +12,9 @@
+ 
+         if (p_i1230_10_ == 0.0D && (p_i1230_8_ != 0.0D || p_i1230_12_ != 0.0D))
+         {
+-            this.field_187129_i = p_i1230_8_;
+-            this.field_187130_j = p_i1230_10_ + 0.1D;
+-            this.field_187131_k = p_i1230_12_;
++            this.motionX = p_i1230_8_;
++            this.motionY = p_i1230_10_ + 0.1D;
++            this.motionZ = p_i1230_12_;
+         }
+     }
+ 

@@ -1,0 +1,53 @@
+--- a/net/minecraft/block/BlockFenceGate.java
++++ b/net/minecraft/block/BlockFenceGate.java
+@@ -49,7 +49,7 @@
+     {
+         EnumFacing.Axis enumfacing$axis = ((EnumFacing)p_176221_1_.func_177229_b(field_185512_D)).func_176740_k();
+ 
+-        if (enumfacing$axis == EnumFacing.Axis.Z && (p_176221_2_.func_180495_p(p_176221_3_.func_177976_e()).func_177230_c() == Blocks.cobblestone_wall || p_176221_2_.func_180495_p(p_176221_3_.func_177974_f()).func_177230_c() == Blocks.cobblestone_wall) || enumfacing$axis == EnumFacing.Axis.X && (p_176221_2_.func_180495_p(p_176221_3_.func_177978_c()).func_177230_c() == Blocks.cobblestone_wall || p_176221_2_.func_180495_p(p_176221_3_.func_177968_d()).func_177230_c() == Blocks.cobblestone_wall))
++        if (enumfacing$axis == EnumFacing.Axis.Z && (p_176221_2_.getBlockState(p_176221_3_.getBlockPosWest()).getBlock() == Blocks.cobblestone_wall || p_176221_2_.getBlockState(p_176221_3_.getBlockPosEast()).getBlock() == Blocks.cobblestone_wall) || enumfacing$axis == EnumFacing.Axis.X && (p_176221_2_.getBlockState(p_176221_3_.getBlockPosNorth()).getBlock() == Blocks.cobblestone_wall || p_176221_2_.getBlockState(p_176221_3_.getBlockPosSouth()).getBlock() == Blocks.cobblestone_wall))
+         {
+             p_176221_1_ = p_176221_1_.func_177226_a(field_176467_M, Boolean.valueOf(true));
+         }
+@@ -69,7 +69,7 @@
+ 
+     public boolean func_176196_c(World p_176196_1_, BlockPos p_176196_2_)
+     {
+-        return p_176196_1_.func_180495_p(p_176196_2_.func_177977_b()).func_185904_a().isSolid() ? super.func_176196_c(p_176196_1_, p_176196_2_) : false;
++        return p_176196_1_.getBlockState(p_176196_2_.getBlockPosBelow()).getMaterial().isSolid() ? super.func_176196_c(p_176196_1_, p_176196_2_) : false;
+     }
+ 
+     @Nullable
+@@ -90,12 +90,12 @@
+ 
+     public boolean func_176205_b(IBlockAccess p_176205_1_, BlockPos p_176205_2_)
+     {
+-        return ((Boolean)p_176205_1_.func_180495_p(p_176205_2_).func_177229_b(field_176466_a)).booleanValue();
++        return ((Boolean)p_176205_1_.getBlockState(p_176205_2_).func_177229_b(field_176466_a)).booleanValue();
+     }
+ 
+     public IBlockState func_180642_a(World p_180642_1_, BlockPos p_180642_2_, EnumFacing p_180642_3_, float p_180642_4_, float p_180642_5_, float p_180642_6_, int p_180642_7_, EntityLivingBase p_180642_8_)
+     {
+-        return this.func_176223_P().func_177226_a(field_185512_D, p_180642_8_.func_174811_aO()).func_177226_a(field_176466_a, Boolean.valueOf(false)).func_177226_a(field_176465_b, Boolean.valueOf(false)).func_177226_a(field_176467_M, Boolean.valueOf(false));
++        return this.getBlockState().func_177226_a(field_185512_D, p_180642_8_.func_174811_aO()).func_177226_a(field_176466_a, Boolean.valueOf(false)).func_177226_a(field_176465_b, Boolean.valueOf(false)).func_177226_a(field_176467_M, Boolean.valueOf(false));
+     }
+ 
+     public boolean func_180639_a(World p_180639_1_, BlockPos p_180639_2_, IBlockState p_180639_3_, EntityPlayer p_180639_4_, EnumHand p_180639_5_, @Nullable ItemStack p_180639_6_, EnumFacing p_180639_7_, float p_180639_8_, float p_180639_9_, float p_180639_10_)
+@@ -128,7 +128,7 @@
+         {
+             boolean flag = p_189540_2_.func_175640_z(p_189540_3_);
+ 
+-            if (flag || p_189540_4_.func_176223_P().func_185897_m())
++            if (flag || p_189540_4_.getBlockState().func_185897_m())
+             {
+                 if (flag && !((Boolean)p_189540_1_.func_177229_b(field_176466_a)).booleanValue() && !((Boolean)p_189540_1_.func_177229_b(field_176465_b)).booleanValue())
+                 {
+@@ -155,7 +155,7 @@
+ 
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        return this.func_176223_P().func_177226_a(field_185512_D, EnumFacing.func_176731_b(p_176203_1_)).func_177226_a(field_176466_a, Boolean.valueOf((p_176203_1_ & 4) != 0)).func_177226_a(field_176465_b, Boolean.valueOf((p_176203_1_ & 8) != 0));
++        return this.getBlockState().func_177226_a(field_185512_D, EnumFacing.func_176731_b(p_176203_1_)).func_177226_a(field_176466_a, Boolean.valueOf((p_176203_1_ & 4) != 0)).func_177226_a(field_176465_b, Boolean.valueOf((p_176203_1_ & 8) != 0));
+     }
+ 
+     public int func_176201_c(IBlockState p_176201_1_)

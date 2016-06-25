@@ -1,0 +1,35 @@
+--- a/net/minecraft/block/BlockDaylightDetector.java
++++ b/net/minecraft/block/BlockDaylightDetector.java
+@@ -56,7 +56,7 @@
+     {
+         if (!p_180677_1_.provider.func_177495_o())
+         {
+-            IBlockState iblockstate = p_180677_1_.func_180495_p(p_180677_2_);
++            IBlockState iblockstate = p_180677_1_.getBlockState(p_180677_2_);
+             int i = p_180677_1_.func_175642_b(EnumSkyBlock.SKY, p_180677_2_) - p_180677_1_.func_175657_ab();
+             float f = p_180677_1_.getCelestialAngleRadians(1.0F);
+ 
+@@ -93,12 +93,12 @@
+             {
+                 if (this.field_176435_b)
+                 {
+-                    p_180639_1_.func_180501_a(p_180639_2_, Blocks.daylight_detector.func_176223_P().func_177226_a(field_176436_a, p_180639_3_.func_177229_b(field_176436_a)), 4);
++                    p_180639_1_.func_180501_a(p_180639_2_, Blocks.daylight_detector.getBlockState().func_177226_a(field_176436_a, p_180639_3_.func_177229_b(field_176436_a)), 4);
+                     Blocks.daylight_detector.func_180677_d(p_180639_1_, p_180639_2_);
+                 }
+                 else
+                 {
+-                    p_180639_1_.func_180501_a(p_180639_2_, Blocks.field_180402_cm.func_176223_P().func_177226_a(field_176436_a, p_180639_3_.func_177229_b(field_176436_a)), 4);
++                    p_180639_1_.func_180501_a(p_180639_2_, Blocks.field_180402_cm.getBlockState().func_177226_a(field_176436_a, p_180639_3_.func_177229_b(field_176436_a)), 4);
+                     Blocks.field_180402_cm.func_180677_d(p_180639_1_, p_180639_2_);
+                 }
+ 
+@@ -158,7 +158,7 @@
+ 
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        return this.func_176223_P().func_177226_a(field_176436_a, Integer.valueOf(p_176203_1_));
++        return this.getBlockState().func_177226_a(field_176436_a, Integer.valueOf(p_176203_1_));
+     }
+ 
+     public int func_176201_c(IBlockState p_176201_1_)

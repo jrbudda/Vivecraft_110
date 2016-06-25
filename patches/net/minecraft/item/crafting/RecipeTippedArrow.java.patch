@@ -1,0 +1,11 @@
+--- a/net/minecraft/item/crafting/RecipeTippedArrow.java
++++ b/net/minecraft/item/crafting/RecipeTippedArrow.java
+@@ -65,7 +65,7 @@
+ 
+         if (itemstack != null && itemstack.getItem() == Items.field_185156_bI)
+         {
+-            ItemStack itemstack1 = new ItemStack(Items.field_185167_i, 8);
++            ItemStack itemstack1 = new ItemStack(Items.tippedArrow, 8);
+             PotionUtils.func_185188_a(itemstack1, PotionUtils.func_185191_c(itemstack));
+             PotionUtils.func_185184_a(itemstack1, PotionUtils.func_185190_b(itemstack));
+             return itemstack1;

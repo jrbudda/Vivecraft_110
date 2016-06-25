@@ -1,0 +1,56 @@
+--- a/net/minecraft/item/ItemEndCrystal.java
++++ b/net/minecraft/item/ItemEndCrystal.java
+@@ -26,15 +26,15 @@
+ 
+     public EnumActionResult func_180614_a(ItemStack p_180614_1_, EntityPlayer p_180614_2_, World p_180614_3_, BlockPos p_180614_4_, EnumHand p_180614_5_, EnumFacing p_180614_6_, float p_180614_7_, float p_180614_8_, float p_180614_9_)
+     {
+-        IBlockState iblockstate = p_180614_3_.func_180495_p(p_180614_4_);
++        IBlockState iblockstate = p_180614_3_.getBlockState(p_180614_4_);
+ 
+-        if (iblockstate.func_177230_c() != Blocks.obsidian && iblockstate.func_177230_c() != Blocks.bedrock)
++        if (iblockstate.getBlock() != Blocks.obsidian && iblockstate.getBlock() != Blocks.bedrock)
+         {
+             return EnumActionResult.FAIL;
+         }
+         else
+         {
+-            BlockPos blockpos = p_180614_4_.func_177984_a();
++            BlockPos blockpos = p_180614_4_.getBlockPosAbove();
+ 
+             if (!p_180614_2_.func_175151_a(blockpos, p_180614_6_, p_180614_1_))
+             {
+@@ -42,9 +42,9 @@
+             }
+             else
+             {
+-                BlockPos blockpos1 = blockpos.func_177984_a();
+-                boolean flag = !p_180614_3_.func_175623_d(blockpos) && !p_180614_3_.func_180495_p(blockpos).func_177230_c().func_176200_f(p_180614_3_, blockpos);
+-                flag = flag | (!p_180614_3_.func_175623_d(blockpos1) && !p_180614_3_.func_180495_p(blockpos1).func_177230_c().func_176200_f(p_180614_3_, blockpos1));
++                BlockPos blockpos1 = blockpos.getBlockPosAbove();
++                boolean flag = !p_180614_3_.isEmpty(blockpos) && !p_180614_3_.getBlockState(blockpos).getBlock().func_176200_f(p_180614_3_, blockpos);
++                flag = flag | (!p_180614_3_.isEmpty(blockpos1) && !p_180614_3_.getBlockState(blockpos1).getBlock().func_176200_f(p_180614_3_, blockpos1));
+ 
+                 if (flag)
+                 {
+@@ -52,9 +52,9 @@
+                 }
+                 else
+                 {
+-                    double d0 = (double)blockpos.func_177958_n();
+-                    double d1 = (double)blockpos.func_177956_o();
+-                    double d2 = (double)blockpos.func_177952_p();
++                    double d0 = (double)blockpos.getX();
++                    double d1 = (double)blockpos.getY();
++                    double d2 = (double)blockpos.getZ();
+                     List<Entity> list = p_180614_3_.getEntitiesWithinAABBExcludingEntity((Entity)null, new AxisAlignedBB(d0, d1, d2, d0 + 1.0D, d1 + 2.0D, d2 + 1.0D));
+ 
+                     if (!list.isEmpty())
+@@ -65,7 +65,7 @@
+                     {
+                         if (!p_180614_3_.isRemote)
+                         {
+-                            EntityEnderCrystal entityendercrystal = new EntityEnderCrystal(p_180614_3_, (double)((float)p_180614_4_.func_177958_n() + 0.5F), (double)(p_180614_4_.func_177956_o() + 1), (double)((float)p_180614_4_.func_177952_p() + 0.5F));
++                            EntityEnderCrystal entityendercrystal = new EntityEnderCrystal(p_180614_3_, (double)((float)p_180614_4_.getX() + 0.5F), (double)(p_180614_4_.getY() + 1), (double)((float)p_180614_4_.getZ() + 0.5F));
+                             entityendercrystal.func_184517_a(false);
+                             p_180614_3_.spawnEntityInWorld(entityendercrystal);
+ 

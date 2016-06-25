@@ -1,0 +1,85 @@
+--- a/net/minecraft/client/network/NetHandlerPlayClient.java
++++ b/net/minecraft/client/network/NetHandlerPlayClient.java
+@@ -702,7 +702,7 @@
+         }
+     }
+ 
+-    public void func_184330_a(SPacketPlayerPosLook p_184330_1_)
++    public void handlePlayerPosLook(SPacketPlayerPosLook p_184330_1_)
+     {
+         PacketThreadUtil.func_180031_a(p_184330_1_, this, this.gameController);
+         EntityPlayer entityplayer = this.gameController.thePlayer;
+@@ -1334,7 +1334,7 @@
+ 
+         if (entity != null)
+         {
+-            entity.func_184201_a(packetIn.func_186969_c(), packetIn.func_149390_c());
++            entity.equipItemInSlot(packetIn.func_186969_c(), packetIn.func_149390_c());
+         }
+     }
+ 
+@@ -1429,7 +1429,7 @@
+         }
+         else if (i == 6)
+         {
+-            this.clientWorldController.func_184148_a(entityplayer, entityplayer.posX, entityplayer.posY + (double)entityplayer.getEyeHeight(), entityplayer.posZ, SoundEvents.field_187734_u, SoundCategory.PLAYERS, 0.18F, 0.45F);
++            this.clientWorldController.playSound(entityplayer, entityplayer.posX, entityplayer.posY + (double)entityplayer.getEyeHeight(), entityplayer.posZ, SoundEvents.field_187734_u, SoundCategory.PLAYERS, 0.18F, 0.45F);
+         }
+         else if (i == 7)
+         {
+@@ -1441,8 +1441,8 @@
+         }
+         else if (i == 10)
+         {
+-            this.clientWorldController.func_175688_a(EnumParticleTypes.MOB_APPEARANCE, entityplayer.posX, entityplayer.posY, entityplayer.posZ, 0.0D, 0.0D, 0.0D, new int[0]);
+-            this.clientWorldController.func_184148_a(entityplayer, entityplayer.posX, entityplayer.posY, entityplayer.posZ, SoundEvents.field_187514_aD, SoundCategory.HOSTILE, 1.0F, 1.0F);
++            this.clientWorldController.spawnParticle(EnumParticleTypes.MOB_APPEARANCE, entityplayer.posX, entityplayer.posY, entityplayer.posZ, 0.0D, 0.0D, 0.0D, new int[0]);
++            this.clientWorldController.playSound(entityplayer, entityplayer.posX, entityplayer.posY, entityplayer.posZ, SoundEvents.field_187514_aD, SoundCategory.HOSTILE, 1.0F, 1.0F);
+         }
+     }
+ 
+@@ -1700,7 +1700,7 @@
+     public void func_184327_a(SPacketSoundEffect p_184327_1_)
+     {
+         PacketThreadUtil.func_180031_a(p_184327_1_, this, this.gameController);
+-        this.gameController.theWorld.func_184148_a(this.gameController.thePlayer, p_184327_1_.func_149207_d(), p_184327_1_.func_149211_e(), p_184327_1_.func_149210_f(), p_184327_1_.func_186978_a(), p_184327_1_.func_186977_b(), p_184327_1_.func_149208_g(), p_184327_1_.func_149209_h());
++        this.gameController.theWorld.playSound(this.gameController.thePlayer, p_184327_1_.func_149207_d(), p_184327_1_.func_149211_e(), p_184327_1_.func_149210_f(), p_184327_1_.func_186978_a(), p_184327_1_.func_186977_b(), p_184327_1_.func_149208_g(), p_184327_1_.func_149209_h());
+     }
+ 
+     public void func_184329_a(SPacketCustomSound p_184329_1_)
+@@ -1855,7 +1855,7 @@
+     public void func_184323_a(SPacketMoveVehicle p_184323_1_)
+     {
+         PacketThreadUtil.func_180031_a(p_184323_1_, this, this.gameController);
+-        Entity entity = this.gameController.thePlayer.func_184208_bv();
++        Entity entity = this.gameController.thePlayer.getMovementEntity();
+ 
+         if (entity != this.gameController.thePlayer && entity.func_184186_bw())
+         {
+@@ -1906,7 +1906,7 @@
+         else if ("MC|BOpen".equals(packetIn.func_149169_c()))
+         {
+             EnumHand enumhand = (EnumHand)packetIn.func_180735_b().func_179257_a(EnumHand.class);
+-            ItemStack itemstack = enumhand == EnumHand.OFF_HAND ? this.gameController.thePlayer.func_184592_cb() : this.gameController.thePlayer.func_184614_ca();
++            ItemStack itemstack = enumhand == EnumHand.OFF_HAND ? this.gameController.thePlayer.getOffhandItem() : this.gameController.thePlayer.getMainHandItem();
+ 
+             if (itemstack != null && itemstack.getItem() == Items.written_book)
+             {
+@@ -2086,7 +2086,7 @@
+ 
+             try
+             {
+-                this.clientWorldController.func_175682_a(packetIn.func_179749_a(), packetIn.func_179750_b(), packetIn.func_149220_d(), packetIn.func_149226_e(), packetIn.func_149225_f(), d0, d2, d4, packetIn.func_179748_k());
++                this.clientWorldController.spawnParticle(packetIn.func_179749_a(), packetIn.func_179750_b(), packetIn.func_149220_d(), packetIn.func_149226_e(), packetIn.func_149225_f(), d0, d2, d4, packetIn.func_179748_k());
+             }
+             catch (Throwable var17)
+             {
+@@ -2106,7 +2106,7 @@
+ 
+                 try
+                 {
+-                    this.clientWorldController.func_175682_a(packetIn.func_179749_a(), packetIn.func_179750_b(), packetIn.func_149220_d() + d1, packetIn.func_149226_e() + d3, packetIn.func_149225_f() + d5, d6, d7, d8, packetIn.func_179748_k());
++                    this.clientWorldController.spawnParticle(packetIn.func_179749_a(), packetIn.func_179750_b(), packetIn.func_149220_d() + d1, packetIn.func_149226_e() + d3, packetIn.func_149225_f() + d5, d6, d7, d8, packetIn.func_179748_k());
+                 }
+                 catch (Throwable var16)
+                 {

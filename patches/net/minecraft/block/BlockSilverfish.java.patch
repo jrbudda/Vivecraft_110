@@ -1,0 +1,89 @@
+--- a/net/minecraft/block/BlockSilverfish.java
++++ b/net/minecraft/block/BlockSilverfish.java
+@@ -38,8 +38,8 @@
+ 
+     public static boolean func_176377_d(IBlockState p_176377_0_)
+     {
+-        Block block = p_176377_0_.func_177230_c();
+-        return p_176377_0_ == Blocks.stone.func_176223_P().func_177226_a(BlockStone.field_176247_a, BlockStone.EnumType.STONE) || block == Blocks.cobblestone || block == Blocks.stonebrick;
++        Block block = p_176377_0_.getBlock();
++        return p_176377_0_ == Blocks.stone.getBlockState().func_177226_a(BlockStone.field_176247_a, BlockStone.EnumType.STONE) || block == Blocks.cobblestone || block == Blocks.stonebrick;
+     }
+ 
+     protected ItemStack func_180643_i(IBlockState p_180643_1_)
+@@ -71,7 +71,7 @@
+         if (!p_180653_1_.isRemote && p_180653_1_.getGameRules().getGameRuleBooleanValue("doTileDrops"))
+         {
+             EntitySilverfish entitysilverfish = new EntitySilverfish(p_180653_1_);
+-            entitysilverfish.setLocationAndAngles((double)p_180653_2_.func_177958_n() + 0.5D, (double)p_180653_2_.func_177956_o(), (double)p_180653_2_.func_177952_p() + 0.5D, 0.0F, 0.0F);
++            entitysilverfish.setLocationAndAngles((double)p_180653_2_.getX() + 0.5D, (double)p_180653_2_.getY(), (double)p_180653_2_.getZ() + 0.5D, 0.0F, 0.0F);
+             p_180653_1_.spawnEntityInWorld(entitysilverfish);
+             entitysilverfish.spawnExplosionParticle();
+         }
+@@ -79,7 +79,7 @@
+ 
+     public ItemStack func_185473_a(World p_185473_1_, BlockPos p_185473_2_, IBlockState p_185473_3_)
+     {
+-        return new ItemStack(this, 1, p_185473_3_.func_177230_c().func_176201_c(p_185473_3_));
++        return new ItemStack(this, 1, p_185473_3_.getBlock().func_176201_c(p_185473_3_));
+     }
+ 
+     /**
+@@ -95,7 +95,7 @@
+ 
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        return this.func_176223_P().func_177226_a(field_176378_a, BlockSilverfish.EnumType.func_176879_a(p_176203_1_));
++        return this.getBlockState().func_177226_a(field_176378_a, BlockSilverfish.EnumType.func_176879_a(p_176203_1_));
+     }
+ 
+     public int func_176201_c(IBlockState p_176201_1_)
+@@ -114,42 +114,42 @@
+         {
+             public IBlockState func_176883_d()
+             {
+-                return Blocks.stone.func_176223_P().func_177226_a(BlockStone.field_176247_a, BlockStone.EnumType.STONE);
++                return Blocks.stone.getBlockState().func_177226_a(BlockStone.field_176247_a, BlockStone.EnumType.STONE);
+             }
+         },
+         COBBLESTONE(1, "cobblestone", "cobble")
+         {
+             public IBlockState func_176883_d()
+             {
+-                return Blocks.cobblestone.func_176223_P();
++                return Blocks.cobblestone.getBlockState();
+             }
+         },
+         STONEBRICK(2, "stone_brick", "brick")
+         {
+             public IBlockState func_176883_d()
+             {
+-                return Blocks.stonebrick.func_176223_P().func_177226_a(BlockStoneBrick.field_176249_a, BlockStoneBrick.EnumType.DEFAULT);
++                return Blocks.stonebrick.getBlockState().func_177226_a(BlockStoneBrick.field_176249_a, BlockStoneBrick.EnumType.DEFAULT);
+             }
+         },
+         MOSSY_STONEBRICK(3, "mossy_brick", "mossybrick")
+         {
+             public IBlockState func_176883_d()
+             {
+-                return Blocks.stonebrick.func_176223_P().func_177226_a(BlockStoneBrick.field_176249_a, BlockStoneBrick.EnumType.MOSSY);
++                return Blocks.stonebrick.getBlockState().func_177226_a(BlockStoneBrick.field_176249_a, BlockStoneBrick.EnumType.MOSSY);
+             }
+         },
+         CRACKED_STONEBRICK(4, "cracked_brick", "crackedbrick")
+         {
+             public IBlockState func_176883_d()
+             {
+-                return Blocks.stonebrick.func_176223_P().func_177226_a(BlockStoneBrick.field_176249_a, BlockStoneBrick.EnumType.CRACKED);
++                return Blocks.stonebrick.getBlockState().func_177226_a(BlockStoneBrick.field_176249_a, BlockStoneBrick.EnumType.CRACKED);
+             }
+         },
+         CHISELED_STONEBRICK(5, "chiseled_brick", "chiseledbrick")
+         {
+             public IBlockState func_176883_d()
+             {
+-                return Blocks.stonebrick.func_176223_P().func_177226_a(BlockStoneBrick.field_176249_a, BlockStoneBrick.EnumType.CHISELED);
++                return Blocks.stonebrick.getBlockState().func_177226_a(BlockStoneBrick.field_176249_a, BlockStoneBrick.EnumType.CHISELED);
+             }
+         };
+ 

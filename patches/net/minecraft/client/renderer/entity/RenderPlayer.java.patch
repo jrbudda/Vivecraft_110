@@ -1,0 +1,52 @@
+--- a/net/minecraft/client/renderer/entity/RenderPlayer.java
++++ b/net/minecraft/client/renderer/entity/RenderPlayer.java
+@@ -86,8 +86,8 @@
+         }
+         else
+         {
+-            ItemStack itemstack = p_177137_1_.func_184614_ca();
+-            ItemStack itemstack1 = p_177137_1_.func_184592_cb();
++            ItemStack itemstack = p_177137_1_.getMainHandItem();
++            ItemStack itemstack1 = p_177137_1_.getOffhandItem();
+             modelplayer.func_178719_a(true);
+             modelplayer.field_178720_f.showModel = p_177137_1_.func_175148_a(EnumPlayerModelParts.HAT);
+             modelplayer.field_178730_v.showModel = p_177137_1_.func_175148_a(EnumPlayerModelParts.JACKET);
+@@ -166,7 +166,7 @@
+     protected void preRenderCallback(AbstractClientPlayer p_77041_1_, float p_77041_2_)
+     {
+         float f = 0.9375F;
+-        GlStateManager.func_179152_a(0.9375F, 0.9375F, 0.9375F);
++        GlStateManager.scale(0.9375F, 0.9375F, 0.9375F);
+     }
+ 
+     protected void func_188296_a(AbstractClientPlayer p_188296_1_, double p_188296_2_, double p_188296_4_, double p_188296_6_, String p_188296_8_, double p_188296_9_)
+@@ -242,16 +242,16 @@
+     {
+         if (p_77043_1_.isEntityAlive() && p_77043_1_.isPlayerSleeping())
+         {
+-            GlStateManager.func_179114_b(p_77043_1_.getBedOrientationInDegrees(), 0.0F, 1.0F, 0.0F);
+-            GlStateManager.func_179114_b(this.getDeathMaxRotation(p_77043_1_), 0.0F, 0.0F, 1.0F);
+-            GlStateManager.func_179114_b(270.0F, 0.0F, 1.0F, 0.0F);
++            GlStateManager.rotate(p_77043_1_.getBedOrientationInDegrees(), 0.0F, 1.0F, 0.0F);
++            GlStateManager.rotate(this.getDeathMaxRotation(p_77043_1_), 0.0F, 0.0F, 1.0F);
++            GlStateManager.rotate(270.0F, 0.0F, 1.0F, 0.0F);
+         }
+         else if (p_77043_1_.func_184613_cA())
+         {
+             super.rotateCorpse(p_77043_1_, p_77043_2_, p_77043_3_, p_77043_4_);
+             float f = (float)p_77043_1_.func_184599_cB() + p_77043_4_;
+             float f1 = MathHelper.clamp_float(f * f / 100.0F, 0.0F, 1.0F);
+-            GlStateManager.func_179114_b(f1 * (-90.0F - p_77043_1_.rotationPitch), 1.0F, 0.0F, 0.0F);
++            GlStateManager.rotate(f1 * (-90.0F - p_77043_1_.rotationPitch), 1.0F, 0.0F, 0.0F);
+             Vec3d vec3d = p_77043_1_.getLook(p_77043_4_);
+             double d0 = p_77043_1_.motionX * p_77043_1_.motionX + p_77043_1_.motionZ * p_77043_1_.motionZ;
+             double d1 = vec3d.xCoord * vec3d.xCoord + vec3d.zCoord * vec3d.zCoord;
+@@ -260,7 +260,7 @@
+             {
+                 double d2 = (p_77043_1_.motionX * vec3d.xCoord + p_77043_1_.motionZ * vec3d.zCoord) / (Math.sqrt(d0) * Math.sqrt(d1));
+                 double d3 = p_77043_1_.motionX * vec3d.zCoord - p_77043_1_.motionZ * vec3d.xCoord;
+-                GlStateManager.func_179114_b((float)(Math.signum(d3) * Math.acos(d2)) * 180.0F / (float)Math.PI, 0.0F, 1.0F, 0.0F);
++                GlStateManager.rotate((float)(Math.signum(d3) * Math.acos(d2)) * 180.0F / (float)Math.PI, 0.0F, 1.0F, 0.0F);
+             }
+         }
+         else

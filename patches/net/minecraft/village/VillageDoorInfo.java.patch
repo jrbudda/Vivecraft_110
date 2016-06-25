@@ -1,0 +1,22 @@
+--- a/net/minecraft/village/VillageDoorInfo.java
++++ b/net/minecraft/village/VillageDoorInfo.java
+@@ -26,7 +26,7 @@
+     {
+         this.field_179859_a = p_i45872_1_;
+         this.field_179858_c = p_i45872_2_;
+-        this.field_179857_b = p_i45872_1_.func_177967_a(p_i45872_2_, 2);
++        this.field_179857_b = p_i45872_1_.getBlockPosRelative(p_i45872_2_, 2);
+         this.lastActivityTimestamp = p_i45872_3_;
+     }
+ 
+@@ -50,8 +50,8 @@
+ 
+     public boolean func_179850_c(BlockPos p_179850_1_)
+     {
+-        int i = p_179850_1_.func_177958_n() - this.field_179859_a.func_177958_n();
+-        int j = p_179850_1_.func_177952_p() - this.field_179859_a.func_177956_o();
++        int i = p_179850_1_.getX() - this.field_179859_a.getX();
++        int j = p_179850_1_.getZ() - this.field_179859_a.getY();
+         return i * this.field_179858_c.getFrontOffsetX() + j * this.field_179858_c.getFrontOffsetZ() >= 0;
+     }
+ 

@@ -1,0 +1,25 @@
+--- a/net/minecraft/world/gen/feature/WorldGenDeadBush.java
++++ b/net/minecraft/world/gen/feature/WorldGenDeadBush.java
+@@ -11,18 +11,18 @@
+ {
+     public boolean func_180709_b(World p_180709_1_, Random p_180709_2_, BlockPos p_180709_3_)
+     {
+-        for (IBlockState iblockstate = p_180709_1_.func_180495_p(p_180709_3_); (iblockstate.func_185904_a() == Material.air || iblockstate.func_185904_a() == Material.leaves) && p_180709_3_.func_177956_o() > 0; iblockstate = p_180709_1_.func_180495_p(p_180709_3_))
++        for (IBlockState iblockstate = p_180709_1_.getBlockState(p_180709_3_); (iblockstate.getMaterial() == Material.air || iblockstate.getMaterial() == Material.leaves) && p_180709_3_.getY() > 0; iblockstate = p_180709_1_.getBlockState(p_180709_3_))
+         {
+-            p_180709_3_ = p_180709_3_.func_177977_b();
++            p_180709_3_ = p_180709_3_.getBlockPosBelow();
+         }
+ 
+         for (int i = 0; i < 4; ++i)
+         {
+             BlockPos blockpos = p_180709_3_.func_177982_a(p_180709_2_.nextInt(8) - p_180709_2_.nextInt(8), p_180709_2_.nextInt(4) - p_180709_2_.nextInt(4), p_180709_2_.nextInt(8) - p_180709_2_.nextInt(8));
+ 
+-            if (p_180709_1_.func_175623_d(blockpos) && Blocks.deadbush.func_180671_f(p_180709_1_, blockpos, Blocks.deadbush.func_176223_P()))
++            if (p_180709_1_.isEmpty(blockpos) && Blocks.deadbush.func_180671_f(p_180709_1_, blockpos, Blocks.deadbush.getBlockState()))
+             {
+-                p_180709_1_.func_180501_a(blockpos, Blocks.deadbush.func_176223_P(), 2);
++                p_180709_1_.func_180501_a(blockpos, Blocks.deadbush.getBlockState(), 2);
+             }
+         }
+ 

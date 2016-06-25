@@ -1,0 +1,59 @@
+--- a/net/minecraft/util/math/AxisAlignedBB.java
++++ b/net/minecraft/util/math/AxisAlignedBB.java
+@@ -25,12 +25,12 @@
+ 
+     public AxisAlignedBB(BlockPos p_i46612_1_)
+     {
+-        this((double)p_i46612_1_.func_177958_n(), (double)p_i46612_1_.func_177956_o(), (double)p_i46612_1_.func_177952_p(), (double)(p_i46612_1_.func_177958_n() + 1), (double)(p_i46612_1_.func_177956_o() + 1), (double)(p_i46612_1_.func_177952_p() + 1));
++        this((double)p_i46612_1_.getX(), (double)p_i46612_1_.getY(), (double)p_i46612_1_.getZ(), (double)(p_i46612_1_.getX() + 1), (double)(p_i46612_1_.getY() + 1), (double)(p_i46612_1_.getZ() + 1));
+     }
+ 
+     public AxisAlignedBB(BlockPos p_i45554_1_, BlockPos p_i45554_2_)
+     {
+-        this((double)p_i45554_1_.func_177958_n(), (double)p_i45554_1_.func_177956_o(), (double)p_i45554_1_.func_177952_p(), (double)p_i45554_2_.func_177958_n(), (double)p_i45554_2_.func_177956_o(), (double)p_i45554_2_.func_177952_p());
++        this((double)p_i45554_1_.getX(), (double)p_i45554_1_.getY(), (double)p_i45554_1_.getZ(), (double)p_i45554_2_.getX(), (double)p_i45554_2_.getY(), (double)p_i45554_2_.getZ());
+     }
+ 
+     public AxisAlignedBB(Vec3d p_i47144_1_, Vec3d p_i47144_2_)
+@@ -38,7 +38,7 @@
+         this(p_i47144_1_.xCoord, p_i47144_1_.yCoord, p_i47144_1_.zCoord, p_i47144_2_.xCoord, p_i47144_2_.yCoord, p_i47144_2_.zCoord);
+     }
+ 
+-    public AxisAlignedBB func_186666_e(double p_186666_1_)
++    public AxisAlignedBB setMaxY(double p_186666_1_)
+     {
+         return new AxisAlignedBB(this.minX, this.minY, this.minZ, this.maxX, p_186666_1_, this.maxZ);
+     }
+@@ -134,7 +134,7 @@
+         return new AxisAlignedBB(d0, d1, d2, d3, d4, d5);
+     }
+ 
+-    public AxisAlignedBB func_186662_g(double p_186662_1_)
++    public AxisAlignedBB expand(double p_186662_1_)
+     {
+         return this.expand(p_186662_1_, p_186662_1_, p_186662_1_);
+     }
+@@ -158,9 +158,9 @@
+         return new AxisAlignedBB(this.minX + x, this.minY + y, this.minZ + z, this.maxX + x, this.maxY + y, this.maxZ + z);
+     }
+ 
+-    public AxisAlignedBB func_186670_a(BlockPos p_186670_1_)
++    public AxisAlignedBB offset(BlockPos p_186670_1_)
+     {
+-        return new AxisAlignedBB(this.minX + (double)p_186670_1_.func_177958_n(), this.minY + (double)p_186670_1_.func_177956_o(), this.minZ + (double)p_186670_1_.func_177952_p(), this.maxX + (double)p_186670_1_.func_177958_n(), this.maxY + (double)p_186670_1_.func_177956_o(), this.maxZ + (double)p_186670_1_.func_177952_p());
++        return new AxisAlignedBB(this.minX + (double)p_186670_1_.getX(), this.minY + (double)p_186670_1_.getY(), this.minZ + (double)p_186670_1_.getZ(), this.maxX + (double)p_186670_1_.getX(), this.maxY + (double)p_186670_1_.getY(), this.maxZ + (double)p_186670_1_.getZ());
+     }
+ 
+     /**
+@@ -308,9 +308,9 @@
+         return (d0 + d1 + d2) / 3.0D;
+     }
+ 
+-    public AxisAlignedBB func_186664_h(double p_186664_1_)
++    public AxisAlignedBB contract(double p_186664_1_)
+     {
+-        return this.func_186662_g(-p_186664_1_);
++        return this.expand(-p_186664_1_);
+     }
+ 
+     @Nullable

@@ -1,0 +1,29 @@
+--- a/net/minecraft/client/renderer/BlockModelShapes.java
++++ b/net/minecraft/client/renderer/BlockModelShapes.java
+@@ -74,7 +74,7 @@
+ 
+     public TextureAtlasSprite func_178122_a(IBlockState p_178122_1_)
+     {
+-        Block block = p_178122_1_.func_177230_c();
++        Block block = p_178122_1_.getBlock();
+         IBakedModel ibakedmodel = this.func_178125_b(p_178122_1_);
+ 
+         if (ibakedmodel == null || ibakedmodel == this.field_178128_c.func_174951_a())
+@@ -254,7 +254,7 @@
+                     map.remove(BlockStem.field_176484_a);
+                 }
+ 
+-                return new ModelResourceLocation((ResourceLocation)Block.blockRegistry.func_177774_c(p_178132_1_.func_177230_c()), this.func_178131_a(map));
++                return new ModelResourceLocation((ResourceLocation)Block.blockRegistry.func_177774_c(p_178132_1_.getBlock()), this.func_178131_a(map));
+             }
+         });
+         this.func_178121_a(Blocks.melon_stem, new StateMapperBase()
+@@ -268,7 +268,7 @@
+                     map.remove(BlockStem.field_176484_a);
+                 }
+ 
+-                return new ModelResourceLocation((ResourceLocation)Block.blockRegistry.func_177774_c(p_178132_1_.func_177230_c()), this.func_178131_a(map));
++                return new ModelResourceLocation((ResourceLocation)Block.blockRegistry.func_177774_c(p_178132_1_.getBlock()), this.func_178131_a(map));
+             }
+         });
+         this.func_178121_a(Blocks.dirt, new StateMapperBase()

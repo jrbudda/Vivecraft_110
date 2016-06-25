@@ -1,0 +1,11 @@
+--- a/net/minecraft/client/renderer/entity/RenderGhast.java
++++ b/net/minecraft/client/renderer/entity/RenderGhast.java
+@@ -32,7 +32,7 @@
+         float f = 1.0F;
+         float f1 = 4.5F;
+         float f2 = 4.5F;
+-        GlStateManager.func_179152_a(4.5F, 4.5F, 4.5F);
++        GlStateManager.scale(4.5F, 4.5F, 4.5F);
+         GlStateManager.func_179131_c(1.0F, 1.0F, 1.0F, 1.0F);
+     }
+ }

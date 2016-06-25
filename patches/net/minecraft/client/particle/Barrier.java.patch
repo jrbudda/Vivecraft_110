@@ -1,0 +1,28 @@
+--- a/net/minecraft/client/particle/Barrier.java
++++ b/net/minecraft/client/particle/Barrier.java
+@@ -16,9 +16,9 @@
+         this.particleRed = 1.0F;
+         this.particleGreen = 1.0F;
+         this.particleBlue = 1.0F;
+-        this.field_187129_i = 0.0D;
+-        this.field_187130_j = 0.0D;
+-        this.field_187131_k = 0.0D;
++        this.motionX = 0.0D;
++        this.motionY = 0.0D;
++        this.motionZ = 0.0D;
+         this.particleGravity = 0.0F;
+         this.particleMaxAge = 80;
+     }
+@@ -35,9 +35,9 @@
+         float f2 = this.field_187119_C.getMinV();
+         float f3 = this.field_187119_C.getMaxV();
+         float f4 = 0.5F;
+-        float f5 = (float)(this.field_187123_c + (this.field_187126_f - this.field_187123_c) * (double)p_180434_3_ - interpPosX);
+-        float f6 = (float)(this.field_187124_d + (this.field_187127_g - this.field_187124_d) * (double)p_180434_3_ - interpPosY);
+-        float f7 = (float)(this.field_187125_e + (this.field_187128_h - this.field_187125_e) * (double)p_180434_3_ - interpPosZ);
++        float f5 = (float)(this.posX + (this.prevPosX - this.posX) * (double)p_180434_3_ - interpPosX);
++        float f6 = (float)(this.posY + (this.prevPosY - this.posY) * (double)p_180434_3_ - interpPosY);
++        float f7 = (float)(this.posZ + (this.prevPosZ - this.posZ) * (double)p_180434_3_ - interpPosZ);
+         int i = this.func_189214_a(p_180434_3_);
+         int j = i >> 16 & 65535;
+         int k = i & 65535;

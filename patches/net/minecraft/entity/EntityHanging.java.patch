@@ -1,0 +1,67 @@
+--- a/net/minecraft/entity/EntityHanging.java
++++ b/net/minecraft/entity/EntityHanging.java
+@@ -63,9 +63,9 @@
+     {
+         if (this.field_174860_b != null)
+         {
+-            double d0 = (double)this.field_174861_a.func_177958_n() + 0.5D;
+-            double d1 = (double)this.field_174861_a.func_177956_o() + 0.5D;
+-            double d2 = (double)this.field_174861_a.func_177952_p() + 0.5D;
++            double d0 = (double)this.field_174861_a.getX() + 0.5D;
++            double d1 = (double)this.field_174861_a.getY() + 0.5D;
++            double d2 = (double)this.field_174861_a.getZ() + 0.5D;
+             double d3 = 0.46875D;
+             double d4 = this.func_190202_a(this.getWidthPixels());
+             double d5 = this.func_190202_a(this.getHeightPixels());
+@@ -94,7 +94,7 @@
+             d6 = d6 / 32.0D;
+             d7 = d7 / 32.0D;
+             d8 = d8 / 32.0D;
+-            this.func_174826_a(new AxisAlignedBB(d0 - d6, d1 - d7, d2 - d8, d0 + d6, d1 + d7, d2 + d8));
++            this.setBoundingBox(new AxisAlignedBB(d0 - d6, d1 - d7, d2 - d8, d0 + d6, d1 + d7, d2 + d8));
+         }
+     }
+ 
+@@ -129,7 +129,7 @@
+      */
+     public boolean onValidSurface()
+     {
+-        if (!this.worldObj.func_184144_a(this, this.func_174813_aQ()).isEmpty())
++        if (!this.worldObj.getCollisionBoxes(this, this.func_174813_aQ()).isEmpty())
+         {
+             return false;
+         }
+@@ -137,7 +137,7 @@
+         {
+             int i = Math.max(1, this.getWidthPixels() / 16);
+             int j = Math.max(1, this.getHeightPixels() / 16);
+-            BlockPos blockpos = this.field_174861_a.func_177972_a(this.field_174860_b.func_176734_d());
++            BlockPos blockpos = this.field_174861_a.getBlockPosRelative(this.field_174860_b.func_176734_d());
+             EnumFacing enumfacing = this.field_174860_b.func_176735_f();
+             BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
+ 
+@@ -148,9 +148,9 @@
+                     int i1 = (i - 1) / -2;
+                     int j1 = (j - 1) / -2;
+                     blockpos$mutableblockpos.func_189533_g(blockpos).func_189534_c(enumfacing, k + i1).func_189534_c(EnumFacing.UP, l + j1);
+-                    IBlockState iblockstate = this.worldObj.func_180495_p(blockpos$mutableblockpos);
++                    IBlockState iblockstate = this.worldObj.getBlockState(blockpos$mutableblockpos);
+ 
+-                    if (!iblockstate.func_185904_a().isSolid() && !BlockRedstoneDiode.func_185546_B(iblockstate))
++                    if (!iblockstate.getMaterial().isSolid() && !BlockRedstoneDiode.func_185546_B(iblockstate))
+                     {
+                         return false;
+                     }
+@@ -235,9 +235,9 @@
+     {
+         tagCompound.setByte("Facing", (byte)this.field_174860_b.func_176736_b());
+         BlockPos blockpos = this.func_174857_n();
+-        tagCompound.setInteger("TileX", blockpos.func_177958_n());
+-        tagCompound.setInteger("TileY", blockpos.func_177956_o());
+-        tagCompound.setInteger("TileZ", blockpos.func_177952_p());
++        tagCompound.setInteger("TileX", blockpos.getX());
++        tagCompound.setInteger("TileY", blockpos.getY());
++        tagCompound.setInteger("TileZ", blockpos.getZ());
+     }
+ 
+     /**

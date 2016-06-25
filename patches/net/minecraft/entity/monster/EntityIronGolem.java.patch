@@ -1,0 +1,44 @@
+--- a/net/minecraft/entity/monster/EntityIronGolem.java
++++ b/net/minecraft/entity/monster/EntityIronGolem.java
+@@ -150,11 +150,11 @@
+             int i = MathHelper.floor_double(this.posX);
+             int j = MathHelper.floor_double(this.posY - 0.20000000298023224D);
+             int k = MathHelper.floor_double(this.posZ);
+-            IBlockState iblockstate = this.worldObj.func_180495_p(new BlockPos(i, j, k));
++            IBlockState iblockstate = this.worldObj.getBlockState(new BlockPos(i, j, k));
+ 
+-            if (iblockstate.func_185904_a() != Material.air)
++            if (iblockstate.getMaterial() != Material.air)
+             {
+-                this.worldObj.func_175688_a(EnumParticleTypes.BLOCK_CRACK, this.posX + ((double)this.rand.nextFloat() - 0.5D) * (double)this.width, this.func_174813_aQ().minY + 0.1D, this.posZ + ((double)this.rand.nextFloat() - 0.5D) * (double)this.width, 4.0D * ((double)this.rand.nextFloat() - 0.5D), 0.5D, ((double)this.rand.nextFloat() - 0.5D) * 4.0D, new int[] {Block.func_176210_f(iblockstate)});
++                this.worldObj.spawnParticle(EnumParticleTypes.BLOCK_CRACK, this.posX + ((double)this.rand.nextFloat() - 0.5D) * (double)this.width, this.func_174813_aQ().minY + 0.1D, this.posZ + ((double)this.rand.nextFloat() - 0.5D) * (double)this.width, 4.0D * ((double)this.rand.nextFloat() - 0.5D), 0.5D, ((double)this.rand.nextFloat() - 0.5D) * 4.0D, new int[] {Block.func_176210_f(iblockstate)});
+             }
+         }
+     }
+@@ -202,7 +202,7 @@
+             this.func_174815_a(this, p_70652_1_);
+         }
+ 
+-        this.func_184185_a(SoundEvents.field_187596_cD, 1.0F, 1.0F);
++        this.playSound(SoundEvents.field_187596_cD, 1.0F, 1.0F);
+         return flag;
+     }
+ 
+@@ -211,7 +211,7 @@
+         if (p_70103_1_ == 4)
+         {
+             this.attackTimer = 10;
+-            this.func_184185_a(SoundEvents.field_187596_cD, 1.0F, 1.0F);
++            this.playSound(SoundEvents.field_187596_cD, 1.0F, 1.0F);
+         }
+         else if (p_70103_1_ == 11)
+         {
+@@ -251,7 +251,7 @@
+ 
+     protected void func_180429_a(BlockPos p_180429_1_, Block p_180429_2_)
+     {
+-        this.func_184185_a(SoundEvents.field_187605_cG, 1.0F, 1.0F);
++        this.playSound(SoundEvents.field_187605_cG, 1.0F, 1.0F);
+     }
+ 
+     @Nullable

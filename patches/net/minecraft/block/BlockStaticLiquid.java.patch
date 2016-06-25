@@ -1,0 +1,68 @@
+--- a/net/minecraft/block/BlockStaticLiquid.java
++++ b/net/minecraft/block/BlockStaticLiquid.java
+@@ -32,7 +32,7 @@
+     private void func_176370_f(World p_176370_1_, BlockPos p_176370_2_, IBlockState p_176370_3_)
+     {
+         BlockDynamicLiquid blockdynamicliquid = func_176361_a(this.blockMaterial);
+-        p_176370_1_.func_180501_a(p_176370_2_, blockdynamicliquid.func_176223_P().func_177226_a(field_176367_b, p_176370_3_.func_177229_b(field_176367_b)), 2);
++        p_176370_1_.func_180501_a(p_176370_2_, blockdynamicliquid.getBlockState().func_177226_a(field_176367_b, p_176370_3_.func_177229_b(field_176367_b)), 2);
+         p_176370_1_.func_175684_a(p_176370_2_, blockdynamicliquid, this.tickRate(p_176370_1_));
+     }
+ 
+@@ -52,18 +52,18 @@
+                     {
+                         blockpos = blockpos.func_177982_a(p_180650_4_.nextInt(3) - 1, 1, p_180650_4_.nextInt(3) - 1);
+ 
+-                        if (blockpos.func_177956_o() >= 0 && blockpos.func_177956_o() < 256 && !p_180650_1_.func_175667_e(blockpos))
++                        if (blockpos.getY() >= 0 && blockpos.getY() < 256 && !p_180650_1_.func_175667_e(blockpos))
+                         {
+                             return;
+                         }
+ 
+-                        Block block = p_180650_1_.func_180495_p(blockpos).func_177230_c();
++                        Block block = p_180650_1_.getBlockState(blockpos).getBlock();
+ 
+                         if (block.blockMaterial == Material.air)
+                         {
+                             if (this.func_176369_e(p_180650_1_, blockpos))
+                             {
+-                                p_180650_1_.func_175656_a(blockpos, Blocks.fire.func_176223_P());
++                                p_180650_1_.func_175656_a(blockpos, Blocks.fire.getBlockState());
+                                 return;
+                             }
+                         }
+@@ -79,14 +79,14 @@
+                     {
+                         BlockPos blockpos1 = p_180650_2_.func_177982_a(p_180650_4_.nextInt(3) - 1, 0, p_180650_4_.nextInt(3) - 1);
+ 
+-                        if (blockpos1.func_177956_o() >= 0 && blockpos1.func_177956_o() < 256 && !p_180650_1_.func_175667_e(blockpos1))
++                        if (blockpos1.getY() >= 0 && blockpos1.getY() < 256 && !p_180650_1_.func_175667_e(blockpos1))
+                         {
+                             return;
+                         }
+ 
+-                        if (p_180650_1_.func_175623_d(blockpos1.func_177984_a()) && this.func_176368_m(p_180650_1_, blockpos1))
++                        if (p_180650_1_.isEmpty(blockpos1.getBlockPosAbove()) && this.func_176368_m(p_180650_1_, blockpos1))
+                         {
+-                            p_180650_1_.func_175656_a(blockpos1.func_177984_a(), Blocks.fire.func_176223_P());
++                            p_180650_1_.func_175656_a(blockpos1.getBlockPosAbove(), Blocks.fire.getBlockState());
+                         }
+                     }
+                 }
+@@ -98,7 +98,7 @@
+     {
+         for (EnumFacing enumfacing : EnumFacing.values())
+         {
+-            if (this.func_176368_m(p_176369_1_, p_176369_2_.func_177972_a(enumfacing)))
++            if (this.func_176368_m(p_176369_1_, p_176369_2_.getBlockPosRelative(enumfacing)))
+             {
+                 return true;
+             }
+@@ -109,6 +109,6 @@
+ 
+     private boolean func_176368_m(World p_176368_1_, BlockPos p_176368_2_)
+     {
+-        return p_176368_2_.func_177956_o() >= 0 && p_176368_2_.func_177956_o() < 256 && !p_176368_1_.func_175667_e(p_176368_2_) ? false : p_176368_1_.func_180495_p(p_176368_2_).func_185904_a().getCanBurn();
++        return p_176368_2_.getY() >= 0 && p_176368_2_.getY() < 256 && !p_176368_1_.func_175667_e(p_176368_2_) ? false : p_176368_1_.getBlockState(p_176368_2_).getMaterial().getCanBurn();
+     }
+ }

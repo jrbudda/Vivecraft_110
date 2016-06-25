@@ -1,0 +1,27 @@
+--- a/net/minecraft/entity/passive/EntityOcelot.java
++++ b/net/minecraft/entity/passive/EntityOcelot.java
+@@ -317,19 +317,19 @@
+      */
+     public boolean handleLavaMovement()
+     {
+-        if (this.worldObj.checkNoEntityCollision(this.func_174813_aQ(), this) && this.worldObj.func_184144_a(this, this.func_174813_aQ()).isEmpty() && !this.worldObj.isAnyLiquid(this.func_174813_aQ()))
++        if (this.worldObj.checkNoEntityCollision(this.func_174813_aQ(), this) && this.worldObj.getCollisionBoxes(this, this.func_174813_aQ()).isEmpty() && !this.worldObj.isAnyLiquid(this.func_174813_aQ()))
+         {
+             BlockPos blockpos = new BlockPos(this.posX, this.func_174813_aQ().minY, this.posZ);
+ 
+-            if (blockpos.func_177956_o() < this.worldObj.func_181545_F())
++            if (blockpos.getY() < this.worldObj.getSpawnLevel())
+             {
+                 return false;
+             }
+ 
+-            IBlockState iblockstate = this.worldObj.func_180495_p(blockpos.func_177977_b());
+-            Block block = iblockstate.func_177230_c();
++            IBlockState iblockstate = this.worldObj.getBlockState(blockpos.getBlockPosBelow());
++            Block block = iblockstate.getBlock();
+ 
+-            if (block == Blocks.grass || iblockstate.func_185904_a() == Material.leaves)
++            if (block == Blocks.grass || iblockstate.getMaterial() == Material.leaves)
+             {
+                 return true;
+             }

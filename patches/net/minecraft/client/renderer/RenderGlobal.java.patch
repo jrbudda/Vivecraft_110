@@ -1,0 +1,532 @@
+--- a/net/minecraft/client/renderer/RenderGlobal.java
++++ b/net/minecraft/client/renderer/RenderGlobal.java
+@@ -391,12 +391,12 @@
+         else
+         {
+             this.starGLCallList = GLAllocation.generateDisplayLists(1);
+-            GlStateManager.func_179094_E();
++            GlStateManager.push();
+             GlStateManager.func_187423_f(this.starGLCallList, 4864);
+             this.func_180444_a(vertexbuffer);
+             tessellator.draw();
+             GlStateManager.func_187415_K();
+-            GlStateManager.func_179121_F();
++            GlStateManager.pop();
+         }
+     }
+ 
+@@ -542,7 +542,7 @@
+ 
+             if (this.theWorld != null)
+             {
+-                Entity entity = this.mc.func_175606_aa();
++                Entity entity = this.mc.getRenderViewEntity();
+ 
+                 if (entity != null)
+                 {
+@@ -583,12 +583,12 @@
+             double d1 = p_180446_1_.prevPosY + (p_180446_1_.posY - p_180446_1_.prevPosY) * (double)p_180446_3_;
+             double d2 = p_180446_1_.prevPosZ + (p_180446_1_.posZ - p_180446_1_.prevPosZ) * (double)p_180446_3_;
+             this.theWorld.theProfiler.startSection("prepare");
+-            TileEntityRendererDispatcher.instance.func_190056_a(this.theWorld, this.mc.getTextureManager(), this.mc.fontRendererObj, this.mc.func_175606_aa(), this.mc.objectMouseOver, p_180446_3_);
+-            this.field_175010_j.func_180597_a(this.theWorld, this.mc.fontRendererObj, this.mc.func_175606_aa(), this.mc.pointedEntity, this.mc.gameSettings, p_180446_3_);
++            TileEntityRendererDispatcher.instance.func_190056_a(this.theWorld, this.mc.getTextureManager(), this.mc.fontRendererObj, this.mc.getRenderViewEntity(), this.mc.objectMouseOver, p_180446_3_);
++            this.field_175010_j.func_180597_a(this.theWorld, this.mc.fontRendererObj, this.mc.getRenderViewEntity(), this.mc.pointedEntity, this.mc.gameSettings, p_180446_3_);
+             this.countEntitiesTotal = 0;
+             this.countEntitiesRendered = 0;
+             this.countEntitiesHidden = 0;
+-            Entity entity = this.mc.func_175606_aa();
++            Entity entity = this.mc.getRenderViewEntity();
+             double d3 = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * (double)p_180446_3_;
+             double d4 = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * (double)p_180446_3_;
+             double d5 = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * (double)p_180446_3_;
+@@ -619,8 +619,8 @@
+ 
+             for (RenderGlobal.ContainerLocalRenderInformation renderglobal$containerlocalrenderinformation : this.glRenderLists)
+             {
+-                Chunk chunk = this.theWorld.func_175726_f(renderglobal$containerlocalrenderinformation.field_178036_a.func_178568_j());
+-                ClassInheritanceMultiMap<Entity> classinheritancemultimap = chunk.func_177429_s()[renderglobal$containerlocalrenderinformation.field_178036_a.func_178568_j().func_177956_o() / 16];
++                Chunk chunk = this.theWorld.getChunk(renderglobal$containerlocalrenderinformation.field_178036_a.func_178568_j());
++                ClassInheritanceMultiMap<Entity> classinheritancemultimap = chunk.func_177429_s()[renderglobal$containerlocalrenderinformation.field_178036_a.func_178568_j().getY() / 16];
+ 
+                 if (!classinheritancemultimap.isEmpty())
+                 {
+@@ -630,9 +630,9 @@
+ 
+                         if (flag)
+                         {
+-                            boolean flag1 = this.mc.func_175606_aa() instanceof EntityLivingBase ? ((EntityLivingBase)this.mc.func_175606_aa()).isPlayerSleeping() : false;
++                            boolean flag1 = this.mc.getRenderViewEntity() instanceof EntityLivingBase ? ((EntityLivingBase)this.mc.getRenderViewEntity()).isPlayerSleeping() : false;
+ 
+-                            if ((entity2 != this.mc.func_175606_aa() || this.mc.gameSettings.thirdPersonView != 0 || flag1) && (entity2.posY < 0.0D || entity2.posY >= 256.0D || this.theWorld.func_175667_e(blockpos$pooledmutableblockpos.func_189535_a(entity2))))
++                            if ((entity2 != this.mc.getRenderViewEntity() || this.mc.gameSettings.thirdPersonView != 0 || flag1) && (entity2.posY < 0.0D || entity2.posY >= 256.0D || this.theWorld.func_175667_e(blockpos$pooledmutableblockpos.func_189535_a(entity2))))
+                             {
+                                 ++this.countEntitiesRendered;
+                                 this.field_175010_j.func_188388_a(entity2, p_180446_3_, false);
+@@ -735,17 +735,17 @@
+ 
+                     if (tileentitychest.adjacentChestXNeg != null)
+                     {
+-                        blockpos = blockpos.func_177972_a(EnumFacing.WEST);
++                        blockpos = blockpos.getBlockPosRelative(EnumFacing.WEST);
+                         tileentity1 = this.theWorld.func_175625_s(blockpos);
+                     }
+                     else if (tileentitychest.adjacentChestZNeg != null)
+                     {
+-                        blockpos = blockpos.func_177972_a(EnumFacing.NORTH);
++                        blockpos = blockpos.getBlockPosRelative(EnumFacing.NORTH);
+                         tileentity1 = this.theWorld.func_175625_s(blockpos);
+                     }
+                 }
+ 
+-                Block block = this.theWorld.func_180495_p(blockpos).func_177230_c();
++                Block block = this.theWorld.getBlockState(blockpos).getBlock();
+ 
+                 if (tileentity1 != null && (block instanceof BlockChest || block instanceof BlockEnderChest || block instanceof BlockSign || block instanceof BlockSkull))
+                 {
+@@ -882,7 +882,7 @@
+                 }
+                 else
+                 {
+-                    if (p_174970_6_ && this.theWorld.func_180495_p(blockpos1).func_185914_p())
++                    if (p_174970_6_ && this.theWorld.getBlockState(blockpos1).func_185914_p())
+                     {
+                         flag1 = false;
+                     }
+@@ -893,7 +893,7 @@
+             }
+             else
+             {
+-                int i = blockpos1.func_177956_o() > 0 ? 248 : 8;
++                int i = blockpos1.getY() > 0 ? 248 : 8;
+ 
+                 for (int j = -this.renderDistanceChunks; j <= this.renderDistanceChunks; ++j)
+                 {
+@@ -978,12 +978,12 @@
+     private Set<EnumFacing> func_174978_c(BlockPos p_174978_1_)
+     {
+         VisGraph visgraph = new VisGraph();
+-        BlockPos blockpos = new BlockPos(p_174978_1_.func_177958_n() >> 4 << 4, p_174978_1_.func_177956_o() >> 4 << 4, p_174978_1_.func_177952_p() >> 4 << 4);
+-        Chunk chunk = this.theWorld.func_175726_f(blockpos);
++        BlockPos blockpos = new BlockPos(p_174978_1_.getX() >> 4 << 4, p_174978_1_.getY() >> 4 << 4, p_174978_1_.getZ() >> 4 << 4);
++        Chunk chunk = this.theWorld.getChunk(blockpos);
+ 
+         for (BlockPos.MutableBlockPos blockpos$mutableblockpos : BlockPos.func_177975_b(blockpos, blockpos.func_177982_a(15, 15, 15)))
+         {
+-            if (chunk.func_177435_g(blockpos$mutableblockpos).func_185914_p())
++            if (chunk.getBlockState(blockpos$mutableblockpos).func_185914_p())
+             {
+                 visgraph.func_178606_a(blockpos$mutableblockpos);
+             }
+@@ -995,7 +995,7 @@
+     private RenderChunk func_181562_a(BlockPos p_181562_1_, RenderChunk p_181562_2_, EnumFacing p_181562_3_)
+     {
+         BlockPos blockpos = p_181562_2_.func_181701_a(p_181562_3_);
+-        return MathHelper.abs_int(p_181562_1_.func_177958_n() - blockpos.func_177958_n()) > this.renderDistanceChunks * 16 ? null : (blockpos.func_177956_o() >= 0 && blockpos.func_177956_o() < 256 ? (MathHelper.abs_int(p_181562_1_.func_177952_p() - blockpos.func_177952_p()) > this.renderDistanceChunks * 16 ? null : this.field_175008_n.func_178161_a(blockpos)) : null);
++        return MathHelper.abs_int(p_181562_1_.getX() - blockpos.getX()) > this.renderDistanceChunks * 16 ? null : (blockpos.getY() >= 0 && blockpos.getY() < 256 ? (MathHelper.abs_int(p_181562_1_.getZ() - blockpos.getZ()) > this.renderDistanceChunks * 16 ? null : this.field_175008_n.func_178161_a(blockpos)) : null);
+     }
+ 
+     private void func_174984_a(double p_174984_1_, double p_174984_3_, double p_174984_5_)
+@@ -1180,9 +1180,9 @@
+             {
+                 BlockPos blockpos = (BlockPos)iterator.next();
+                 iterator.remove();
+-                int i = blockpos.func_177958_n();
+-                int j = blockpos.func_177956_o();
+-                int k = blockpos.func_177952_p();
++                int i = blockpos.getX();
++                int j = blockpos.getY();
++                int k = blockpos.getZ();
+                 this.func_184385_a(i - 1, j - 1, k - 1, i + 1, j + 1, k + 1, false);
+             }
+         }
+@@ -1202,31 +1202,31 @@
+ 
+         for (int i = 0; i < 6; ++i)
+         {
+-            GlStateManager.func_179094_E();
++            GlStateManager.push();
+ 
+             if (i == 1)
+             {
+-                GlStateManager.func_179114_b(90.0F, 1.0F, 0.0F, 0.0F);
++                GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
+             }
+ 
+             if (i == 2)
+             {
+-                GlStateManager.func_179114_b(-90.0F, 1.0F, 0.0F, 0.0F);
++                GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
+             }
+ 
+             if (i == 3)
+             {
+-                GlStateManager.func_179114_b(180.0F, 1.0F, 0.0F, 0.0F);
++                GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
+             }
+ 
+             if (i == 4)
+             {
+-                GlStateManager.func_179114_b(90.0F, 0.0F, 0.0F, 1.0F);
++                GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
+             }
+ 
+             if (i == 5)
+             {
+-                GlStateManager.func_179114_b(-90.0F, 0.0F, 0.0F, 1.0F);
++                GlStateManager.rotate(-90.0F, 0.0F, 0.0F, 1.0F);
+             }
+ 
+             vertexbuffer.func_181668_a(7, DefaultVertexFormats.field_181709_i);
+@@ -1235,7 +1235,7 @@
+             vertexbuffer.func_181662_b(100.0D, -100.0D, 100.0D).func_187315_a(16.0D, 16.0D).func_181669_b(40, 40, 40, 255).func_181675_d();
+             vertexbuffer.func_181662_b(100.0D, -100.0D, -100.0D).func_187315_a(16.0D, 0.0D).func_181669_b(40, 40, 40, 255).func_181675_d();
+             tessellator.draw();
+-            GlStateManager.func_179121_F();
++            GlStateManager.pop();
+         }
+ 
+         GlStateManager.func_179132_a(true);
+@@ -1252,7 +1252,7 @@
+         else if (this.mc.theWorld.provider.isSurfaceWorld())
+         {
+             GlStateManager.func_179090_x();
+-            Vec3d vec3d = this.theWorld.getSkyColor(this.mc.func_175606_aa(), p_174976_1_);
++            Vec3d vec3d = this.theWorld.getSkyColor(this.mc.getRenderViewEntity(), p_174976_1_);
+             float f = (float)vec3d.xCoord;
+             float f1 = (float)vec3d.yCoord;
+             float f2 = (float)vec3d.zCoord;
+@@ -1299,10 +1299,10 @@
+             {
+                 GlStateManager.func_179090_x();
+                 GlStateManager.func_179103_j(7425);
+-                GlStateManager.func_179094_E();
+-                GlStateManager.func_179114_b(90.0F, 1.0F, 0.0F, 0.0F);
+-                GlStateManager.func_179114_b(MathHelper.sin(this.theWorld.getCelestialAngleRadians(p_174976_1_)) < 0.0F ? 180.0F : 0.0F, 0.0F, 0.0F, 1.0F);
+-                GlStateManager.func_179114_b(90.0F, 0.0F, 0.0F, 1.0F);
++                GlStateManager.push();
++                GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
++                GlStateManager.rotate(MathHelper.sin(this.theWorld.getCelestialAngleRadians(p_174976_1_)) < 0.0F ? 180.0F : 0.0F, 0.0F, 0.0F, 1.0F);
++                GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
+                 float f6 = afloat[0];
+                 float f7 = afloat[1];
+                 float f8 = afloat[2];
+@@ -1330,17 +1330,17 @@
+                 }
+ 
+                 tessellator.draw();
+-                GlStateManager.func_179121_F();
++                GlStateManager.pop();
+                 GlStateManager.func_179103_j(7424);
+             }
+ 
+             GlStateManager.func_179098_w();
+             GlStateManager.func_187428_a(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+-            GlStateManager.func_179094_E();
++            GlStateManager.push();
+             float f16 = 1.0F - this.theWorld.getRainStrength(p_174976_1_);
+             GlStateManager.func_179131_c(1.0F, 1.0F, 1.0F, f16);
+-            GlStateManager.func_179114_b(-90.0F, 0.0F, 1.0F, 0.0F);
+-            GlStateManager.func_179114_b(this.theWorld.getCelestialAngle(p_174976_1_) * 360.0F, 1.0F, 0.0F, 0.0F);
++            GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
++            GlStateManager.rotate(this.theWorld.getCelestialAngle(p_174976_1_) * 360.0F, 1.0F, 0.0F, 0.0F);
+             float f17 = 30.0F;
+             this.renderEngine.bindTexture(locationSunPng);
+             vertexbuffer.func_181668_a(7, DefaultVertexFormats.field_181707_g);
+@@ -1390,14 +1390,14 @@
+             GlStateManager.func_179084_k();
+             GlStateManager.func_179141_d();
+             GlStateManager.func_179127_m();
+-            GlStateManager.func_179121_F();
++            GlStateManager.pop();
+             GlStateManager.func_179090_x();
+             GlStateManager.func_179124_c(0.0F, 0.0F, 0.0F);
+             double d0 = this.mc.thePlayer.func_174824_e(p_174976_1_).yCoord - this.theWorld.getHorizon();
+ 
+             if (d0 < 0.0D)
+             {
+-                GlStateManager.func_179094_E();
++                GlStateManager.push();
+                 GlStateManager.func_179109_b(0.0F, 12.0F, 0.0F);
+ 
+                 if (this.field_175005_X)
+@@ -1414,7 +1414,7 @@
+                     GlStateManager.func_179148_o(this.glSkyList2);
+                 }
+ 
+-                GlStateManager.func_179121_F();
++                GlStateManager.pop();
+                 float f18 = 1.0F;
+                 float f19 = -((float)(d0 + 65.0D));
+                 float f20 = -1.0F;
+@@ -1451,10 +1451,10 @@
+                 GlStateManager.func_179124_c(f, f1, f2);
+             }
+ 
+-            GlStateManager.func_179094_E();
++            GlStateManager.push();
+             GlStateManager.func_179109_b(0.0F, -((float)(d0 - 16.0D)), 0.0F);
+             GlStateManager.func_179148_o(this.glSkyList2);
+-            GlStateManager.func_179121_F();
++            GlStateManager.pop();
+             GlStateManager.func_179098_w();
+             GlStateManager.func_179132_a(true);
+         }
+@@ -1471,7 +1471,7 @@
+             else
+             {
+                 GlStateManager.func_179129_p();
+-                Entity entity = this.mc.func_175606_aa();
++                Entity entity = this.mc.getRenderViewEntity();
+                 float f = (float)(entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * (double)p_180447_1_);
+                 int i = 32;
+                 int j = 8;
+@@ -1538,7 +1538,7 @@
+     private void func_180445_c(float p_180445_1_, int p_180445_2_)
+     {
+         GlStateManager.func_179129_p();
+-        Entity entity = this.mc.func_175606_aa();
++        Entity entity = this.mc.getRenderViewEntity();
+         float f = (float)(entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * (double)p_180445_1_);
+         Tessellator tessellator = Tessellator.func_178181_a();
+         VertexBuffer vertexbuffer = tessellator.func_178180_c();
+@@ -1587,7 +1587,7 @@
+         int k = 8;
+         int l = 4;
+         float f21 = 9.765625E-4F;
+-        GlStateManager.func_179152_a(12.0F, 1.0F, 12.0F);
++        GlStateManager.scale(12.0F, 1.0F, 12.0F);
+ 
+         for (int i1 = 0; i1 < 2; ++i1)
+         {
+@@ -1749,7 +1749,7 @@
+             GlStateManager.func_187428_a(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+             this.renderEngine.bindTexture(field_175006_g);
+             GlStateManager.func_179132_a(false);
+-            GlStateManager.func_179094_E();
++            GlStateManager.push();
+             int i = worldborder.func_177734_a().func_177766_a();
+             float f = (float)(i >> 16 & 255) / 255.0F;
+             float f1 = (float)(i >> 8 & 255) / 255.0F;
+@@ -1844,7 +1844,7 @@
+             GlStateManager.func_179113_r();
+             GlStateManager.func_179141_d();
+             GlStateManager.func_179084_k();
+-            GlStateManager.func_179121_F();
++            GlStateManager.pop();
+             GlStateManager.func_179132_a(true);
+         }
+     }
+@@ -1858,7 +1858,7 @@
+         GlStateManager.func_179088_q();
+         GlStateManager.func_179092_a(516, 0.1F);
+         GlStateManager.func_179141_d();
+-        GlStateManager.func_179094_E();
++        GlStateManager.push();
+     }
+ 
+     private void func_174969_t()
+@@ -1868,7 +1868,7 @@
+         GlStateManager.func_179113_r();
+         GlStateManager.func_179141_d();
+         GlStateManager.func_179132_a(true);
+-        GlStateManager.func_179121_F();
++        GlStateManager.pop();
+     }
+ 
+     public void func_174981_a(Tessellator p_174981_1_, VertexBuffer p_174981_2_, Entity p_174981_3_, float p_174981_4_)
+@@ -1890,10 +1890,10 @@
+             {
+                 DestroyBlockProgress destroyblockprogress = (DestroyBlockProgress)iterator.next();
+                 BlockPos blockpos = destroyblockprogress.func_180246_b();
+-                double d3 = (double)blockpos.func_177958_n() - d0;
+-                double d4 = (double)blockpos.func_177956_o() - d1;
+-                double d5 = (double)blockpos.func_177952_p() - d2;
+-                Block block = this.theWorld.func_180495_p(blockpos).func_177230_c();
++                double d3 = (double)blockpos.getX() - d0;
++                double d4 = (double)blockpos.getY() - d1;
++                double d5 = (double)blockpos.getZ() - d2;
++                Block block = this.theWorld.getBlockState(blockpos).getBlock();
+ 
+                 if (!(block instanceof BlockChest) && !(block instanceof BlockEnderChest) && !(block instanceof BlockSign) && !(block instanceof BlockSkull))
+                 {
+@@ -1903,9 +1903,9 @@
+                     }
+                     else
+                     {
+-                        IBlockState iblockstate = this.theWorld.func_180495_p(blockpos);
++                        IBlockState iblockstate = this.theWorld.getBlockState(blockpos);
+ 
+-                        if (iblockstate.func_185904_a() != Material.air)
++                        if (iblockstate.getMaterial() != Material.air)
+                         {
+                             int i = destroyblockprogress.getPartialBlockDamage();
+                             TextureAtlasSprite textureatlassprite = this.destroyBlockIcons[i];
+@@ -1934,15 +1934,15 @@
+             GlStateManager.func_187441_d(2.0F);
+             GlStateManager.func_179090_x();
+             GlStateManager.func_179132_a(false);
+-            BlockPos blockpos = p_72731_2_.func_178782_a();
+-            IBlockState iblockstate = this.theWorld.func_180495_p(blockpos);
++            BlockPos blockpos = p_72731_2_.getBlock();
++            IBlockState iblockstate = this.theWorld.getBlockState(blockpos);
+ 
+-            if (iblockstate.func_185904_a() != Material.air && this.theWorld.func_175723_af().func_177746_a(blockpos))
++            if (iblockstate.getMaterial() != Material.air && this.theWorld.func_175723_af().func_177746_a(blockpos))
+             {
+                 double d0 = p_72731_1_.lastTickPosX + (p_72731_1_.posX - p_72731_1_.lastTickPosX) * (double)p_72731_4_;
+                 double d1 = p_72731_1_.lastTickPosY + (p_72731_1_.posY - p_72731_1_.lastTickPosY) * (double)p_72731_4_;
+                 double d2 = p_72731_1_.lastTickPosZ + (p_72731_1_.posZ - p_72731_1_.lastTickPosZ) * (double)p_72731_4_;
+-                func_189697_a(iblockstate.func_185918_c(this.theWorld, blockpos).func_186662_g(0.0020000000949949026D).offset(-d0, -d1, -d2), 0.0F, 0.0F, 0.0F, 0.4F);
++                func_189697_a(iblockstate.func_185918_c(this.theWorld, blockpos).expand(0.0020000000949949026D).offset(-d0, -d1, -d2), 0.0F, 0.0F, 0.0F, 0.4F);
+             }
+ 
+             GlStateManager.func_179132_a(true);
+@@ -2042,9 +2042,9 @@
+ 
+     public void func_184376_a(World p_184376_1_, BlockPos p_184376_2_, IBlockState p_184376_3_, IBlockState p_184376_4_, int p_184376_5_)
+     {
+-        int i = p_184376_2_.func_177958_n();
+-        int j = p_184376_2_.func_177956_o();
+-        int k = p_184376_2_.func_177952_p();
++        int i = p_184376_2_.getX();
++        int j = p_184376_2_.getY();
++        int k = p_184376_2_.getZ();
+         this.func_184385_a(i - 1, j - 1, k - 1, i + 1, j + 1, k + 1, (p_184376_5_ & 8) != 0);
+     }
+ 
+@@ -2081,13 +2081,13 @@
+                 this.mc.ingameGUI.setRecordPlayingMessage(itemrecord.getRecordNameLocal());
+             }
+ 
+-            PositionedSoundRecord positionedsoundrecord = PositionedSoundRecord.func_184372_a(p_184377_1_, (float)p_184377_2_.func_177958_n(), (float)p_184377_2_.func_177956_o(), (float)p_184377_2_.func_177952_p());
++            PositionedSoundRecord positionedsoundrecord = PositionedSoundRecord.func_184372_a(p_184377_1_, (float)p_184377_2_.getX(), (float)p_184377_2_.getY(), (float)p_184377_2_.getZ());
+             this.mapSoundPositions.put(p_184377_2_, positionedsoundrecord);
+             this.mc.getSoundHandler().playSound(positionedsoundrecord);
+         }
+     }
+ 
+-    public void func_184375_a(@Nullable EntityPlayer p_184375_1_, SoundEvent p_184375_2_, SoundCategory p_184375_3_, double p_184375_4_, double p_184375_6_, double p_184375_8_, float p_184375_10_, float p_184375_11_)
++    public void playSound(@Nullable EntityPlayer p_184375_1_, SoundEvent p_184375_2_, SoundCategory p_184375_3_, double p_184375_4_, double p_184375_6_, double p_184375_8_, float p_184375_10_, float p_184375_11_)
+     {
+     }
+ 
+@@ -2127,7 +2127,7 @@
+     @Nullable
+     private Particle func_174974_b(int p_174974_1_, boolean p_174974_2_, double p_174974_3_, double p_174974_5_, double p_174974_7_, double p_174974_9_, double p_174974_11_, double p_174974_13_, int... p_174974_15_)
+     {
+-        Entity entity = this.mc.func_175606_aa();
++        Entity entity = this.mc.getRenderViewEntity();
+ 
+         if (this.mc != null && entity != null && this.mc.effectRenderer != null)
+         {
+@@ -2178,13 +2178,13 @@
+         {
+             case 1023:
+             case 1028:
+-                Entity entity = this.mc.func_175606_aa();
++                Entity entity = this.mc.getRenderViewEntity();
+ 
+                 if (entity != null)
+                 {
+-                    double d0 = (double)p_180440_2_.func_177958_n() - entity.posX;
+-                    double d1 = (double)p_180440_2_.func_177956_o() - entity.posY;
+-                    double d2 = (double)p_180440_2_.func_177952_p() - entity.posZ;
++                    double d0 = (double)p_180440_2_.getX() - entity.posX;
++                    double d1 = (double)p_180440_2_.getY() - entity.posY;
++                    double d2 = (double)p_180440_2_.getZ() - entity.posZ;
+                     double d3 = Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
+                     double d4 = entity.posX;
+                     double d5 = entity.posY;
+@@ -2372,9 +2372,9 @@
+             case 2000:
+                 int i1 = p_180439_4_ % 3 - 1;
+                 int i = p_180439_4_ / 3 % 3 - 1;
+-                double d8 = (double)p_180439_3_.func_177958_n() + (double)i1 * 0.6D + 0.5D;
+-                double d10 = (double)p_180439_3_.func_177956_o() + 0.5D;
+-                double d12 = (double)p_180439_3_.func_177952_p() + (double)i * 0.6D + 0.5D;
++                double d8 = (double)p_180439_3_.getX() + (double)i1 * 0.6D + 0.5D;
++                double d10 = (double)p_180439_3_.getY() + 0.5D;
++                double d12 = (double)p_180439_3_.getZ() + (double)i * 0.6D + 0.5D;
+ 
+                 for (int k1 = 0; k1 < 10; ++k1)
+                 {
+@@ -2393,7 +2393,7 @@
+             case 2001:
+                 Block block = Block.getBlockById(p_180439_4_ & 4095);
+ 
+-                if (block.func_176223_P().func_185904_a() != Material.air)
++                if (block.getBlockState().getMaterial() != Material.air)
+                 {
+                     SoundType soundtype = block.func_185467_w();
+                     this.theWorld.func_184156_a(p_180439_3_, soundtype.func_185845_c(), SoundCategory.BLOCKS, (soundtype.func_185843_a() + 1.0F) / 2.0F, soundtype.func_185847_b() * 0.8F, false);
+@@ -2403,9 +2403,9 @@
+                 break;
+ 
+             case 2002:
+-                double d6 = (double)p_180439_3_.func_177958_n();
+-                double d7 = (double)p_180439_3_.func_177956_o();
+-                double d9 = (double)p_180439_3_.func_177952_p();
++                double d6 = (double)p_180439_3_.getX();
++                double d7 = (double)p_180439_3_.getY();
++                double d9 = (double)p_180439_3_.getZ();
+ 
+                 for (int j1 = 0; j1 < 8; ++j1)
+                 {
+@@ -2440,9 +2440,9 @@
+                 break;
+ 
+             case 2003:
+-                double d0 = (double)p_180439_3_.func_177958_n() + 0.5D;
+-                double d1 = (double)p_180439_3_.func_177956_o();
+-                double d2 = (double)p_180439_3_.func_177952_p() + 0.5D;
++                double d0 = (double)p_180439_3_.getX() + 0.5D;
++                double d1 = (double)p_180439_3_.getY();
++                double d2 = (double)p_180439_3_.getZ() + 0.5D;
+ 
+                 for (int j = 0; j < 8; ++j)
+                 {
+@@ -2460,11 +2460,11 @@
+             case 2004:
+                 for (int l1 = 0; l1 < 20; ++l1)
+                 {
+-                    double d15 = (double)p_180439_3_.func_177958_n() + 0.5D + ((double)this.theWorld.rand.nextFloat() - 0.5D) * 2.0D;
+-                    double d18 = (double)p_180439_3_.func_177956_o() + 0.5D + ((double)this.theWorld.rand.nextFloat() - 0.5D) * 2.0D;
+-                    double d21 = (double)p_180439_3_.func_177952_p() + 0.5D + ((double)this.theWorld.rand.nextFloat() - 0.5D) * 2.0D;
+-                    this.theWorld.func_175688_a(EnumParticleTypes.SMOKE_NORMAL, d15, d18, d21, 0.0D, 0.0D, 0.0D, new int[0]);
+-                    this.theWorld.func_175688_a(EnumParticleTypes.FLAME, d15, d18, d21, 0.0D, 0.0D, 0.0D, new int[0]);
++                    double d15 = (double)p_180439_3_.getX() + 0.5D + ((double)this.theWorld.rand.nextFloat() - 0.5D) * 2.0D;
++                    double d18 = (double)p_180439_3_.getY() + 0.5D + ((double)this.theWorld.rand.nextFloat() - 0.5D) * 2.0D;
++                    double d21 = (double)p_180439_3_.getZ() + 0.5D + ((double)this.theWorld.rand.nextFloat() - 0.5D) * 2.0D;
++                    this.theWorld.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d15, d18, d21, 0.0D, 0.0D, 0.0D, new int[0]);
++                    this.theWorld.spawnParticle(EnumParticleTypes.FLAME, d15, d18, d21, 0.0D, 0.0D, 0.0D, new int[0]);
+                 }
+ 
+                 return;
+@@ -2481,7 +2481,7 @@
+                     double d3 = (double)(MathHelper.cos(f4) * f3);
+                     double d4 = 0.01D + random.nextDouble() * 0.5D;
+                     double d5 = (double)(MathHelper.sin(f4) * f3);
+-                    Particle particle = this.func_174974_b(EnumParticleTypes.DRAGON_BREATH.func_179348_c(), false, (double)p_180439_3_.func_177958_n() + d3 * 0.1D, (double)p_180439_3_.func_177956_o() + 0.3D, (double)p_180439_3_.func_177952_p() + d5 * 0.1D, d3, d4, d5, new int[0]);
++                    Particle particle = this.func_174974_b(EnumParticleTypes.DRAGON_BREATH.func_179348_c(), false, (double)p_180439_3_.getX() + d3 * 0.1D, (double)p_180439_3_.getY() + 0.3D, (double)p_180439_3_.getZ() + d5 * 0.1D, d3, d4, d5, new int[0]);
+ 
+                     if (particle != null)
+                     {
+@@ -2493,7 +2493,7 @@
+                 break;
+ 
+             case 3000:
+-                this.theWorld.func_175682_a(EnumParticleTypes.EXPLOSION_HUGE, true, (double)p_180439_3_.func_177958_n() + 0.5D, (double)p_180439_3_.func_177956_o() + 0.5D, (double)p_180439_3_.func_177952_p() + 0.5D, 0.0D, 0.0D, 0.0D, new int[0]);
++                this.theWorld.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, true, (double)p_180439_3_.getX() + 0.5D, (double)p_180439_3_.getY() + 0.5D, (double)p_180439_3_.getZ() + 0.5D, 0.0D, 0.0D, 0.0D, new int[0]);
+                 this.theWorld.func_184156_a(p_180439_3_, SoundEvents.field_187598_bd, SoundCategory.BLOCKS, 10.0F, (1.0F + (this.theWorld.rand.nextFloat() - this.theWorld.rand.nextFloat()) * 0.2F) * 0.7F, false);
+                 break;
+ 
+@@ -2508,7 +2508,7 @@
+         {
+             DestroyBlockProgress destroyblockprogress = (DestroyBlockProgress)this.damagedBlocks.get(Integer.valueOf(p_180441_1_));
+ 
+-            if (destroyblockprogress == null || destroyblockprogress.func_180246_b().func_177958_n() != p_180441_2_.func_177958_n() || destroyblockprogress.func_180246_b().func_177956_o() != p_180441_2_.func_177956_o() || destroyblockprogress.func_180246_b().func_177952_p() != p_180441_2_.func_177952_p())
++            if (destroyblockprogress == null || destroyblockprogress.func_180246_b().getX() != p_180441_2_.getX() || destroyblockprogress.func_180246_b().getY() != p_180441_2_.getY() || destroyblockprogress.func_180246_b().getZ() != p_180441_2_.getZ())
+             {
+                 destroyblockprogress = new DestroyBlockProgress(p_180441_1_, p_180441_2_);
+                 this.damagedBlocks.put(Integer.valueOf(p_180441_1_), destroyblockprogress);

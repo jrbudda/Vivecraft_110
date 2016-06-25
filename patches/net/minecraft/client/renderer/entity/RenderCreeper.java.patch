@@ -1,0 +1,11 @@
+--- a/net/minecraft/client/renderer/entity/RenderCreeper.java
++++ b/net/minecraft/client/renderer/entity/RenderCreeper.java
+@@ -30,7 +30,7 @@
+         f = f * f;
+         float f2 = (1.0F + f * 0.4F) * f1;
+         float f3 = (1.0F + f * 0.1F) / f1;
+-        GlStateManager.func_179152_a(f2, f3, f2);
++        GlStateManager.scale(f2, f3, f2);
+     }
+ 
+     /**

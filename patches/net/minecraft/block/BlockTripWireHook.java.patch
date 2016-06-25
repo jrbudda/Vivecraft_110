@@ -1,0 +1,114 @@
+--- a/net/minecraft/block/BlockTripWireHook.java
++++ b/net/minecraft/block/BlockTripWireHook.java
+@@ -80,14 +80,14 @@
+ 
+     public boolean func_176198_a(World p_176198_1_, BlockPos p_176198_2_, EnumFacing p_176198_3_)
+     {
+-        return p_176198_3_.func_176740_k().func_176722_c() && p_176198_1_.func_180495_p(p_176198_2_.func_177972_a(p_176198_3_.func_176734_d())).func_185915_l();
++        return p_176198_3_.func_176740_k().func_176722_c() && p_176198_1_.getBlockState(p_176198_2_.getBlockPosRelative(p_176198_3_.func_176734_d())).func_185915_l();
+     }
+ 
+     public boolean func_176196_c(World p_176196_1_, BlockPos p_176196_2_)
+     {
+         for (EnumFacing enumfacing : EnumFacing.Plane.HORIZONTAL)
+         {
+-            if (p_176196_1_.func_180495_p(p_176196_2_.func_177972_a(enumfacing)).func_185915_l())
++            if (p_176196_1_.getBlockState(p_176196_2_.getBlockPosRelative(enumfacing)).func_185915_l())
+             {
+                 return true;
+             }
+@@ -98,7 +98,7 @@
+ 
+     public IBlockState func_180642_a(World p_180642_1_, BlockPos p_180642_2_, EnumFacing p_180642_3_, float p_180642_4_, float p_180642_5_, float p_180642_6_, int p_180642_7_, EntityLivingBase p_180642_8_)
+     {
+-        IBlockState iblockstate = this.func_176223_P().func_177226_a(field_176263_b, Boolean.valueOf(false)).func_177226_a(field_176265_M, Boolean.valueOf(false));
++        IBlockState iblockstate = this.getBlockState().func_177226_a(field_176263_b, Boolean.valueOf(false)).func_177226_a(field_176265_M, Boolean.valueOf(false));
+ 
+         if (p_180642_3_.func_176740_k().func_176722_c())
+         {
+@@ -121,7 +121,7 @@
+             {
+                 EnumFacing enumfacing = (EnumFacing)p_189540_1_.func_177229_b(field_176264_a);
+ 
+-                if (!p_189540_2_.func_180495_p(p_189540_3_.func_177972_a(enumfacing.func_176734_d())).func_185915_l())
++                if (!p_189540_2_.getBlockState(p_189540_3_.getBlockPosRelative(enumfacing.func_176734_d())).func_185915_l())
+                 {
+                     this.func_176226_b(p_189540_2_, p_189540_3_, p_189540_1_, 0);
+                     p_189540_2_.func_175698_g(p_189540_3_);
+@@ -142,10 +142,10 @@
+ 
+         for (int j = 1; j < 42; ++j)
+         {
+-            BlockPos blockpos = p_176260_2_.func_177967_a(enumfacing, j);
+-            IBlockState iblockstate = p_176260_1_.func_180495_p(blockpos);
++            BlockPos blockpos = p_176260_2_.getBlockPosRelative(enumfacing, j);
++            IBlockState iblockstate = p_176260_1_.getBlockState(blockpos);
+ 
+-            if (iblockstate.func_177230_c() == Blocks.tripwire_hook)
++            if (iblockstate.getBlock() == Blocks.tripwire_hook)
+             {
+                 if (iblockstate.func_177229_b(field_176264_a) == enumfacing.func_176734_d())
+                 {
+@@ -155,7 +155,7 @@
+                 break;
+             }
+ 
+-            if (iblockstate.func_177230_c() != Blocks.tripwire && j != p_176260_6_)
++            if (iblockstate.getBlock() != Blocks.tripwire && j != p_176260_6_)
+             {
+                 aiblockstate[j] = null;
+                 flag2 = false;
+@@ -182,11 +182,11 @@
+ 
+         flag2 = flag2 & i > 1;
+         flag3 = flag3 & flag2;
+-        IBlockState iblockstate1 = this.func_176223_P().func_177226_a(field_176265_M, Boolean.valueOf(flag2)).func_177226_a(field_176263_b, Boolean.valueOf(flag3));
++        IBlockState iblockstate1 = this.getBlockState().func_177226_a(field_176265_M, Boolean.valueOf(flag2)).func_177226_a(field_176263_b, Boolean.valueOf(flag3));
+ 
+         if (i > 0)
+         {
+-            BlockPos blockpos1 = p_176260_2_.func_177967_a(enumfacing, i);
++            BlockPos blockpos1 = p_176260_2_.getBlockPosRelative(enumfacing, i);
+             EnumFacing enumfacing1 = enumfacing.func_176734_d();
+             p_176260_1_.func_180501_a(blockpos1, iblockstate1.func_177226_a(field_176264_a, enumfacing1), 3);
+             this.func_176262_b(p_176260_1_, blockpos1, enumfacing1);
+@@ -209,10 +209,10 @@
+         {
+             for (int k = 1; k < i; ++k)
+             {
+-                BlockPos blockpos2 = p_176260_2_.func_177967_a(enumfacing, k);
++                BlockPos blockpos2 = p_176260_2_.getBlockPosRelative(enumfacing, k);
+                 IBlockState iblockstate2 = aiblockstate[k];
+ 
+-                if (iblockstate2 != null && p_176260_1_.func_180495_p(blockpos2).func_185904_a() != Material.air)
++                if (iblockstate2 != null && p_176260_1_.getBlockState(blockpos2).getMaterial() != Material.air)
+                 {
+                     p_176260_1_.func_180501_a(blockpos2, iblockstate2.func_177226_a(field_176265_M, Boolean.valueOf(flag2)), 3);
+                 }
+@@ -252,7 +252,7 @@
+     private void func_176262_b(World p_176262_1_, BlockPos p_176262_2_, EnumFacing p_176262_3_)
+     {
+         p_176262_1_.func_175685_c(p_176262_2_, this);
+-        p_176262_1_.func_175685_c(p_176262_2_.func_177972_a(p_176262_3_.func_176734_d()), this);
++        p_176262_1_.func_175685_c(p_176262_2_.getBlockPosRelative(p_176262_3_.func_176734_d()), this);
+     }
+ 
+     private boolean func_176261_e(World p_176261_1_, BlockPos p_176261_2_, IBlockState p_176261_3_)
+@@ -282,7 +282,7 @@
+         if (flag1)
+         {
+             p_180663_1_.func_175685_c(p_180663_2_, this);
+-            p_180663_1_.func_175685_c(p_180663_2_.func_177972_a(((EnumFacing)p_180663_3_.func_177229_b(field_176264_a)).func_176734_d()), this);
++            p_180663_1_.func_175685_c(p_180663_2_.getBlockPosRelative(((EnumFacing)p_180663_3_.func_177229_b(field_176264_a)).func_176734_d()), this);
+         }
+ 
+         super.func_180663_b(p_180663_1_, p_180663_2_, p_180663_3_);
+@@ -313,7 +313,7 @@
+ 
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        return this.func_176223_P().func_177226_a(field_176264_a, EnumFacing.func_176731_b(p_176203_1_ & 3)).func_177226_a(field_176263_b, Boolean.valueOf((p_176203_1_ & 8) > 0)).func_177226_a(field_176265_M, Boolean.valueOf((p_176203_1_ & 4) > 0));
++        return this.getBlockState().func_177226_a(field_176264_a, EnumFacing.func_176731_b(p_176203_1_ & 3)).func_177226_a(field_176263_b, Boolean.valueOf((p_176203_1_ & 8) > 0)).func_177226_a(field_176265_M, Boolean.valueOf((p_176203_1_ & 4) > 0));
+     }
+ 
+     public int func_176201_c(IBlockState p_176201_1_)

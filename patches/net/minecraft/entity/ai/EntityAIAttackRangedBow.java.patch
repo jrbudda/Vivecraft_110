@@ -1,0 +1,11 @@
+--- a/net/minecraft/entity/ai/EntityAIAttackRangedBow.java
++++ b/net/minecraft/entity/ai/EntityAIAttackRangedBow.java
+@@ -42,7 +42,7 @@
+ 
+     protected boolean func_188498_f()
+     {
+-        return this.field_188499_a.func_184614_ca() != null && this.field_188499_a.func_184614_ca().getItem() == Items.bow;
++        return this.field_188499_a.getMainHandItem() != null && this.field_188499_a.getMainHandItem().getItem() == Items.bow;
+     }
+ 
+     /**

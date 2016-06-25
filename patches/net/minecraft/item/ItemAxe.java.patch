@@ -1,0 +1,11 @@
+--- a/net/minecraft/item/ItemAxe.java
++++ b/net/minecraft/item/ItemAxe.java
+@@ -22,7 +22,7 @@
+ 
+     public float getStrVsBlock(ItemStack p_150893_1_, IBlockState p_150893_2_)
+     {
+-        Material material = p_150893_2_.func_185904_a();
++        Material material = p_150893_2_.getMaterial();
+         return material != Material.wood && material != Material.plants && material != Material.vine ? super.getStrVsBlock(p_150893_1_, p_150893_2_) : this.efficiencyOnProperMaterial;
+     }
+ }

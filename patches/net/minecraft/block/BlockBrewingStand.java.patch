@@ -1,0 +1,26 @@
+--- a/net/minecraft/block/BlockBrewingStand.java
++++ b/net/minecraft/block/BlockBrewingStand.java
+@@ -122,10 +122,10 @@
+ 
+     public void func_180655_c(IBlockState p_180655_1_, World p_180655_2_, BlockPos p_180655_3_, Random p_180655_4_)
+     {
+-        double d0 = (double)((float)p_180655_3_.func_177958_n() + 0.4F + p_180655_4_.nextFloat() * 0.2F);
+-        double d1 = (double)((float)p_180655_3_.func_177956_o() + 0.7F + p_180655_4_.nextFloat() * 0.3F);
+-        double d2 = (double)((float)p_180655_3_.func_177952_p() + 0.4F + p_180655_4_.nextFloat() * 0.2F);
+-        p_180655_2_.func_175688_a(EnumParticleTypes.SMOKE_NORMAL, d0, d1, d2, 0.0D, 0.0D, 0.0D, new int[0]);
++        double d0 = (double)((float)p_180655_3_.getX() + 0.4F + p_180655_4_.nextFloat() * 0.2F);
++        double d1 = (double)((float)p_180655_3_.getY() + 0.7F + p_180655_4_.nextFloat() * 0.3F);
++        double d2 = (double)((float)p_180655_3_.getZ() + 0.4F + p_180655_4_.nextFloat() * 0.2F);
++        p_180655_2_.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0, d1, d2, 0.0D, 0.0D, 0.0D, new int[0]);
+     }
+ 
+     public void func_180663_b(World p_180663_1_, BlockPos p_180663_2_, IBlockState p_180663_3_)
+@@ -168,7 +168,7 @@
+ 
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        IBlockState iblockstate = this.func_176223_P();
++        IBlockState iblockstate = this.getBlockState();
+ 
+         for (int i = 0; i < 3; ++i)
+         {

@@ -1,0 +1,20 @@
+--- a/net/minecraft/block/BlockDirt.java
++++ b/net/minecraft/block/BlockDirt.java
+@@ -38,7 +38,7 @@
+     {
+         if (p_176221_1_.func_177229_b(field_176386_a) == BlockDirt.DirtType.PODZOL)
+         {
+-            Block block = p_176221_2_.func_180495_p(p_176221_3_.func_177984_a()).func_177230_c();
++            Block block = p_176221_2_.getBlockState(p_176221_3_.getBlockPosAbove()).getBlock();
+             p_176221_1_ = p_176221_1_.func_177226_a(field_176385_b, Boolean.valueOf(block == Blocks.snow || block == Blocks.snow_layer));
+         }
+ 
+@@ -62,7 +62,7 @@
+ 
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        return this.func_176223_P().func_177226_a(field_176386_a, BlockDirt.DirtType.func_176924_a(p_176203_1_));
++        return this.getBlockState().func_177226_a(field_176386_a, BlockDirt.DirtType.func_176924_a(p_176203_1_));
+     }
+ 
+     public int func_176201_c(IBlockState p_176201_1_)

@@ -1,0 +1,68 @@
+--- a/net/minecraft/client/renderer/entity/RenderMinecart.java
++++ b/net/minecraft/client/renderer/entity/RenderMinecart.java
+@@ -33,7 +33,7 @@
+      */
+     public void doRender(T p_76986_1_, double p_76986_2_, double p_76986_4_, double p_76986_6_, float p_76986_8_, float p_76986_9_)
+     {
+-        GlStateManager.func_179094_E();
++        GlStateManager.push();
+         this.func_180548_c(p_76986_1_);
+         long i = (long)p_76986_1_.getEntityId() * 493286711L;
+         i = i * i * 4392167121L + i * 98761L;
+@@ -77,8 +77,8 @@
+         }
+ 
+         GlStateManager.func_179109_b((float)p_76986_2_, (float)p_76986_4_ + 0.375F, (float)p_76986_6_);
+-        GlStateManager.func_179114_b(180.0F - p_76986_8_, 0.0F, 1.0F, 0.0F);
+-        GlStateManager.func_179114_b(-f3, 0.0F, 0.0F, 1.0F);
++        GlStateManager.rotate(180.0F - p_76986_8_, 0.0F, 1.0F, 0.0F);
++        GlStateManager.rotate(-f3, 0.0F, 0.0F, 1.0F);
+         float f5 = (float)p_76986_1_.getRollingAmplitude() - p_76986_9_;
+         float f6 = p_76986_1_.getDamage() - p_76986_9_;
+ 
+@@ -89,7 +89,7 @@
+ 
+         if (f5 > 0.0F)
+         {
+-            GlStateManager.func_179114_b(MathHelper.sin(f5) * f5 * f6 / 10.0F * (float)p_76986_1_.getRollingDirection(), 1.0F, 0.0F, 0.0F);
++            GlStateManager.rotate(MathHelper.sin(f5) * f5 * f6 / 10.0F * (float)p_76986_1_.getRollingDirection(), 1.0F, 0.0F, 0.0F);
+         }
+ 
+         int j = p_76986_1_.getDisplayTileOffset();
+@@ -104,20 +104,20 @@
+ 
+         if (iblockstate.func_185901_i() != EnumBlockRenderType.INVISIBLE)
+         {
+-            GlStateManager.func_179094_E();
++            GlStateManager.push();
+             this.bindTexture(TextureMap.locationBlocksTexture);
+             float f4 = 0.75F;
+-            GlStateManager.func_179152_a(0.75F, 0.75F, 0.75F);
++            GlStateManager.scale(0.75F, 0.75F, 0.75F);
+             GlStateManager.func_179109_b(-0.5F, (float)(j - 8) / 16.0F, 0.5F);
+             this.func_188319_a(p_76986_1_, p_76986_9_, iblockstate);
+-            GlStateManager.func_179121_F();
++            GlStateManager.pop();
+             GlStateManager.func_179131_c(1.0F, 1.0F, 1.0F, 1.0F);
+             this.func_180548_c(p_76986_1_);
+         }
+ 
+-        GlStateManager.func_179152_a(-1.0F, -1.0F, 1.0F);
++        GlStateManager.scale(-1.0F, -1.0F, 1.0F);
+         this.modelMinecart.render(p_76986_1_, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
+-        GlStateManager.func_179121_F();
++        GlStateManager.pop();
+ 
+         if (this.field_188301_f)
+         {
+@@ -138,8 +138,8 @@
+ 
+     protected void func_188319_a(T p_188319_1_, float p_188319_2_, IBlockState p_188319_3_)
+     {
+-        GlStateManager.func_179094_E();
++        GlStateManager.push();
+         Minecraft.getMinecraft().func_175602_ab().func_175016_a(p_188319_3_, p_188319_1_.getBrightness(p_188319_2_));
+-        GlStateManager.func_179121_F();
++        GlStateManager.pop();
+     }
+ }

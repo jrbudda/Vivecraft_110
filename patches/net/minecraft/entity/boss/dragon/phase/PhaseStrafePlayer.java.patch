@@ -1,0 +1,11 @@
+--- a/net/minecraft/entity/boss/dragon/phase/PhaseStrafePlayer.java
++++ b/net/minecraft/entity/boss/dragon/phase/PhaseStrafePlayer.java
+@@ -47,7 +47,7 @@
+                 this.field_188692_e = new Vec3d(d0, this.field_188693_f.posY + d5, d1);
+             }
+ 
+-            double d12 = this.field_188692_e == null ? 0.0D : this.field_188692_e.func_186679_c(this.field_188661_a.posX, this.field_188661_a.posY, this.field_188661_a.posZ);
++            double d12 = this.field_188692_e == null ? 0.0D : this.field_188692_e.squareDistanceTo(this.field_188661_a.posX, this.field_188661_a.posY, this.field_188661_a.posZ);
+ 
+             if (d12 < 100.0D || d12 > 22500.0D)
+             {

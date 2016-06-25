@@ -1,0 +1,99 @@
+--- a/net/minecraft/world/gen/feature/WorldGenMegaPineTree.java
++++ b/net/minecraft/world/gen/feature/WorldGenMegaPineTree.java
+@@ -16,9 +16,9 @@
+ 
+ public class WorldGenMegaPineTree extends WorldGenHugeTrees
+ {
+-    private static final IBlockState field_181633_e = Blocks.log.func_176223_P().func_177226_a(BlockOldLog.field_176301_b, BlockPlanks.EnumType.SPRUCE);
+-    private static final IBlockState field_181634_f = Blocks.leaves.func_176223_P().func_177226_a(BlockOldLeaf.field_176239_P, BlockPlanks.EnumType.SPRUCE).func_177226_a(BlockLeaves.field_176236_b, Boolean.valueOf(false));
+-    private static final IBlockState field_181635_g = Blocks.dirt.func_176223_P().func_177226_a(BlockDirt.field_176386_a, BlockDirt.DirtType.PODZOL);
++    private static final IBlockState field_181633_e = Blocks.log.getBlockState().func_177226_a(BlockOldLog.field_176301_b, BlockPlanks.EnumType.SPRUCE);
++    private static final IBlockState field_181634_f = Blocks.leaves.getBlockState().func_177226_a(BlockOldLeaf.field_176239_P, BlockPlanks.EnumType.SPRUCE).func_177226_a(BlockLeaves.field_176236_b, Boolean.valueOf(false));
++    private static final IBlockState field_181635_g = Blocks.dirt.getBlockState().func_177226_a(BlockDirt.field_176386_a, BlockDirt.DirtType.PODZOL);
+     private final boolean field_150542_e;
+ 
+     public WorldGenMegaPineTree(boolean p_i45457_1_, boolean p_i45457_2_)
+@@ -37,36 +37,36 @@
+         }
+         else
+         {
+-            this.func_150541_c(p_180709_1_, p_180709_3_.func_177958_n(), p_180709_3_.func_177952_p(), p_180709_3_.func_177956_o() + i, 0, p_180709_2_);
++            this.func_150541_c(p_180709_1_, p_180709_3_.getX(), p_180709_3_.getZ(), p_180709_3_.getY() + i, 0, p_180709_2_);
+ 
+             for (int j = 0; j < i; ++j)
+             {
+-                IBlockState iblockstate = p_180709_1_.func_180495_p(p_180709_3_.func_177981_b(j));
++                IBlockState iblockstate = p_180709_1_.getBlockState(p_180709_3_.getBlockPosAbove(j));
+ 
+-                if (iblockstate.func_185904_a() == Material.air || iblockstate.func_185904_a() == Material.leaves)
++                if (iblockstate.getMaterial() == Material.air || iblockstate.getMaterial() == Material.leaves)
+                 {
+-                    this.func_175903_a(p_180709_1_, p_180709_3_.func_177981_b(j), this.woodMetadata);
++                    this.func_175903_a(p_180709_1_, p_180709_3_.getBlockPosAbove(j), this.woodMetadata);
+                 }
+ 
+                 if (j < i - 1)
+                 {
+-                    iblockstate = p_180709_1_.func_180495_p(p_180709_3_.func_177982_a(1, j, 0));
++                    iblockstate = p_180709_1_.getBlockState(p_180709_3_.func_177982_a(1, j, 0));
+ 
+-                    if (iblockstate.func_185904_a() == Material.air || iblockstate.func_185904_a() == Material.leaves)
++                    if (iblockstate.getMaterial() == Material.air || iblockstate.getMaterial() == Material.leaves)
+                     {
+                         this.func_175903_a(p_180709_1_, p_180709_3_.func_177982_a(1, j, 0), this.woodMetadata);
+                     }
+ 
+-                    iblockstate = p_180709_1_.func_180495_p(p_180709_3_.func_177982_a(1, j, 1));
++                    iblockstate = p_180709_1_.getBlockState(p_180709_3_.func_177982_a(1, j, 1));
+ 
+-                    if (iblockstate.func_185904_a() == Material.air || iblockstate.func_185904_a() == Material.leaves)
++                    if (iblockstate.getMaterial() == Material.air || iblockstate.getMaterial() == Material.leaves)
+                     {
+                         this.func_175903_a(p_180709_1_, p_180709_3_.func_177982_a(1, j, 1), this.woodMetadata);
+                     }
+ 
+-                    iblockstate = p_180709_1_.func_180495_p(p_180709_3_.func_177982_a(0, j, 1));
++                    iblockstate = p_180709_1_.getBlockState(p_180709_3_.func_177982_a(0, j, 1));
+ 
+-                    if (iblockstate.func_185904_a() == Material.air || iblockstate.func_185904_a() == Material.leaves)
++                    if (iblockstate.getMaterial() == Material.air || iblockstate.getMaterial() == Material.leaves)
+                     {
+                         this.func_175903_a(p_180709_1_, p_180709_3_.func_177982_a(0, j, 1), this.woodMetadata);
+                     }
+@@ -93,10 +93,10 @@
+ 
+     public void func_180711_a(World p_180711_1_, Random p_180711_2_, BlockPos p_180711_3_)
+     {
+-        this.func_175933_b(p_180711_1_, p_180711_3_.func_177976_e().func_177978_c());
+-        this.func_175933_b(p_180711_1_, p_180711_3_.func_177965_g(2).func_177978_c());
+-        this.func_175933_b(p_180711_1_, p_180711_3_.func_177976_e().func_177970_e(2));
+-        this.func_175933_b(p_180711_1_, p_180711_3_.func_177965_g(2).func_177970_e(2));
++        this.func_175933_b(p_180711_1_, p_180711_3_.getBlockPosWest().getBlockPosNorth());
++        this.func_175933_b(p_180711_1_, p_180711_3_.getBlockPosEast(2).getBlockPosNorth());
++        this.func_175933_b(p_180711_1_, p_180711_3_.getBlockPosWest().getBlockPosSouth(2));
++        this.func_175933_b(p_180711_1_, p_180711_3_.getBlockPosEast(2).getBlockPosSouth(2));
+ 
+         for (int i = 0; i < 5; ++i)
+         {
+@@ -129,9 +129,9 @@
+     {
+         for (int i = 2; i >= -3; --i)
+         {
+-            BlockPos blockpos = p_175934_2_.func_177981_b(i);
+-            IBlockState iblockstate = p_175934_1_.func_180495_p(blockpos);
+-            Block block = iblockstate.func_177230_c();
++            BlockPos blockpos = p_175934_2_.getBlockPosAbove(i);
++            IBlockState iblockstate = p_175934_1_.getBlockState(blockpos);
++            Block block = iblockstate.getBlock();
+ 
+             if (block == Blocks.grass || block == Blocks.dirt)
+             {
+@@ -139,7 +139,7 @@
+                 break;
+             }
+ 
+-            if (iblockstate.func_185904_a() != Material.air && i < 0)
++            if (iblockstate.getMaterial() != Material.air && i < 0)
+             {
+                 break;
+             }

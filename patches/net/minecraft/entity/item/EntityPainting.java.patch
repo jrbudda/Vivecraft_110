@@ -1,0 +1,29 @@
+--- a/net/minecraft/entity/item/EntityPainting.java
++++ b/net/minecraft/entity/item/EntityPainting.java
+@@ -112,7 +112,7 @@
+     {
+         if (this.worldObj.getGameRules().getGameRuleBooleanValue("doEntityDrops"))
+         {
+-            this.func_184185_a(SoundEvents.field_187691_dJ, 1.0F, 1.0F);
++            this.playSound(SoundEvents.field_187691_dJ, 1.0F, 1.0F);
+ 
+             if (p_110128_1_ instanceof EntityPlayer)
+             {
+@@ -130,7 +130,7 @@
+ 
+     public void func_184523_o()
+     {
+-        this.func_184185_a(SoundEvents.field_187694_dK, 1.0F, 1.0F);
++        this.playSound(SoundEvents.field_187694_dK, 1.0F, 1.0F);
+     }
+ 
+     /**
+@@ -144,7 +144,7 @@
+     public void func_180426_a(double p_180426_1_, double p_180426_3_, double p_180426_5_, float p_180426_7_, float p_180426_8_, int p_180426_9_, boolean p_180426_10_)
+     {
+         BlockPos blockpos = this.field_174861_a.func_177963_a(p_180426_1_ - this.posX, p_180426_3_ - this.posY, p_180426_5_ - this.posZ);
+-        this.setPosition((double)blockpos.func_177958_n(), (double)blockpos.func_177956_o(), (double)blockpos.func_177952_p());
++        this.setPosition((double)blockpos.getX(), (double)blockpos.getY(), (double)blockpos.getZ());
+     }
+ 
+     public static enum EnumArt

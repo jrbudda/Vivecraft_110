@@ -1,0 +1,36 @@
+--- a/net/minecraft/client/renderer/tileentity/TileEntityPistonRenderer.java
++++ b/net/minecraft/client/renderer/tileentity/TileEntityPistonRenderer.java
+@@ -26,9 +26,9 @@
+     {
+         BlockPos blockpos = p_180535_1_.func_174877_v();
+         IBlockState iblockstate = p_180535_1_.func_174927_b();
+-        Block block = iblockstate.func_177230_c();
++        Block block = iblockstate.getBlock();
+ 
+-        if (iblockstate.func_185904_a() != Material.air && p_180535_1_.func_145860_a(p_180535_8_) < 1.0F)
++        if (iblockstate.getMaterial() != Material.air && p_180535_1_.func_145860_a(p_180535_8_) < 1.0F)
+         {
+             Tessellator tessellator = Tessellator.func_178181_a();
+             VertexBuffer vertexbuffer = tessellator.func_178180_c();
+@@ -48,7 +48,7 @@
+             }
+ 
+             vertexbuffer.func_181668_a(7, DefaultVertexFormats.field_176600_a);
+-            vertexbuffer.func_178969_c((double)((float)p_180535_2_ - (float)blockpos.func_177958_n() + p_180535_1_.func_174929_b(p_180535_8_)), (double)((float)p_180535_4_ - (float)blockpos.func_177956_o() + p_180535_1_.func_174928_c(p_180535_8_)), (double)((float)p_180535_6_ - (float)blockpos.func_177952_p() + p_180535_1_.func_174926_d(p_180535_8_)));
++            vertexbuffer.func_178969_c((double)((float)p_180535_2_ - (float)blockpos.getX() + p_180535_1_.func_174929_b(p_180535_8_)), (double)((float)p_180535_4_ - (float)blockpos.getY() + p_180535_1_.func_174928_c(p_180535_8_)), (double)((float)p_180535_6_ - (float)blockpos.getZ() + p_180535_1_.func_174926_d(p_180535_8_)));
+             World world = this.func_178459_a();
+ 
+             if (block == Blocks.piston_head && p_180535_1_.func_145860_a(p_180535_8_) < 0.5F)
+@@ -59,10 +59,10 @@
+             else if (p_180535_1_.shouldPistonHeadBeRendered() && !p_180535_1_.isExtending())
+             {
+                 BlockPistonExtension.EnumPistonType blockpistonextension$enumpistontype = block == Blocks.sticky_piston ? BlockPistonExtension.EnumPistonType.STICKY : BlockPistonExtension.EnumPistonType.DEFAULT;
+-                IBlockState iblockstate1 = Blocks.piston_head.func_176223_P().func_177226_a(BlockPistonExtension.field_176325_b, blockpistonextension$enumpistontype).func_177226_a(BlockPistonExtension.field_176387_N, iblockstate.func_177229_b(BlockPistonBase.field_176387_N));
++                IBlockState iblockstate1 = Blocks.piston_head.getBlockState().func_177226_a(BlockPistonExtension.field_176325_b, blockpistonextension$enumpistontype).func_177226_a(BlockPistonExtension.field_176387_N, iblockstate.func_177229_b(BlockPistonBase.field_176387_N));
+                 iblockstate1 = iblockstate1.func_177226_a(BlockPistonExtension.field_176327_M, Boolean.valueOf(p_180535_1_.func_145860_a(p_180535_8_) >= 0.5F));
+                 this.func_188186_a(blockpos, iblockstate1, vertexbuffer, world, true);
+-                vertexbuffer.func_178969_c((double)((float)p_180535_2_ - (float)blockpos.func_177958_n()), (double)((float)p_180535_4_ - (float)blockpos.func_177956_o()), (double)((float)p_180535_6_ - (float)blockpos.func_177952_p()));
++                vertexbuffer.func_178969_c((double)((float)p_180535_2_ - (float)blockpos.getX()), (double)((float)p_180535_4_ - (float)blockpos.getY()), (double)((float)p_180535_6_ - (float)blockpos.getZ()));
+                 iblockstate = iblockstate.func_177226_a(BlockPistonBase.field_176320_b, Boolean.valueOf(true));
+                 this.func_188186_a(blockpos, iblockstate, vertexbuffer, world, true);
+             }

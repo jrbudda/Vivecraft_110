@@ -1,0 +1,11 @@
+--- a/net/minecraft/client/renderer/entity/RenderSkeleton.java
++++ b/net/minecraft/client/renderer/entity/RenderSkeleton.java
+@@ -38,7 +38,7 @@
+     {
+         if (p_77041_1_.func_189771_df() == SkeletonType.WITHER)
+         {
+-            GlStateManager.func_179152_a(1.2F, 1.2F, 1.2F);
++            GlStateManager.scale(1.2F, 1.2F, 1.2F);
+         }
+     }
+ 

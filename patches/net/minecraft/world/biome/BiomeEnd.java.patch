@@ -1,0 +1,13 @@
+--- a/net/minecraft/world/biome/BiomeEnd.java
++++ b/net/minecraft/world/biome/BiomeEnd.java
+@@ -13,8 +13,8 @@
+         this.spawnableWaterCreatureList.clear();
+         this.spawnableCaveCreatureList.clear();
+         this.spawnableMonsterList.add(new Biome.SpawnListEntry(EntityEnderman.class, 10, 4, 4));
+-        this.topBlock = Blocks.dirt.func_176223_P();
+-        this.fillerBlock = Blocks.dirt.func_176223_P();
++        this.topBlock = Blocks.dirt.getBlockState();
++        this.fillerBlock = Blocks.dirt.getBlockState();
+         this.theBiomeDecorator = new BiomeEndDecorator();
+     }
+ 

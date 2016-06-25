@@ -1,0 +1,24 @@
+--- a/net/minecraft/init/Items.java
++++ b/net/minecraft/init/Items.java
+@@ -21,8 +21,8 @@
+     public static final Item apple;
+     public static final ItemBow bow;
+     public static final Item arrow;
+-    public static final Item field_185166_h;
+-    public static final Item field_185167_i;
++    public static final Item spectralArrow;
++    public static final Item tippedArrow;
+     public static final Item coal;
+     public static final Item diamond;
+     public static final Item iron_ingot;
+@@ -249,8 +249,8 @@
+             apple = func_179554_a("apple");
+             bow = (ItemBow)func_179554_a("bow");
+             arrow = func_179554_a("arrow");
+-            field_185166_h = func_179554_a("spectral_arrow");
+-            field_185167_i = func_179554_a("tipped_arrow");
++            spectralArrow = func_179554_a("spectral_arrow");
++            tippedArrow = func_179554_a("tipped_arrow");
+             coal = func_179554_a("coal");
+             diamond = func_179554_a("diamond");
+             iron_ingot = func_179554_a("iron_ingot");

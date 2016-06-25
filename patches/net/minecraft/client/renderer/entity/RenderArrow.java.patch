@@ -1,0 +1,50 @@
+--- a/net/minecraft/client/renderer/entity/RenderArrow.java
++++ b/net/minecraft/client/renderer/entity/RenderArrow.java
+@@ -24,11 +24,11 @@
+     {
+         this.func_180548_c(p_76986_1_);
+         GlStateManager.func_179131_c(1.0F, 1.0F, 1.0F, 1.0F);
+-        GlStateManager.func_179094_E();
++        GlStateManager.push();
+         GlStateManager.func_179140_f();
+         GlStateManager.func_179109_b((float)p_76986_2_, (float)p_76986_4_, (float)p_76986_6_);
+-        GlStateManager.func_179114_b(p_76986_1_.prevRotationYaw + (p_76986_1_.rotationYaw - p_76986_1_.prevRotationYaw) * p_76986_9_ - 90.0F, 0.0F, 1.0F, 0.0F);
+-        GlStateManager.func_179114_b(p_76986_1_.prevRotationPitch + (p_76986_1_.rotationPitch - p_76986_1_.prevRotationPitch) * p_76986_9_, 0.0F, 0.0F, 1.0F);
++        GlStateManager.rotate(p_76986_1_.prevRotationYaw + (p_76986_1_.rotationYaw - p_76986_1_.prevRotationYaw) * p_76986_9_ - 90.0F, 0.0F, 1.0F, 0.0F);
++        GlStateManager.rotate(p_76986_1_.prevRotationPitch + (p_76986_1_.rotationPitch - p_76986_1_.prevRotationPitch) * p_76986_9_, 0.0F, 0.0F, 1.0F);
+         Tessellator tessellator = Tessellator.func_178181_a();
+         VertexBuffer vertexbuffer = tessellator.func_178180_c();
+         int i = 0;
+@@ -47,11 +47,11 @@
+         if (f9 > 0.0F)
+         {
+             float f10 = -MathHelper.sin(f9 * 3.0F) * f9;
+-            GlStateManager.func_179114_b(f10, 0.0F, 0.0F, 1.0F);
++            GlStateManager.rotate(f10, 0.0F, 0.0F, 1.0F);
+         }
+ 
+-        GlStateManager.func_179114_b(45.0F, 1.0F, 0.0F, 0.0F);
+-        GlStateManager.func_179152_a(0.05625F, 0.05625F, 0.05625F);
++        GlStateManager.rotate(45.0F, 1.0F, 0.0F, 0.0F);
++        GlStateManager.scale(0.05625F, 0.05625F, 0.05625F);
+         GlStateManager.func_179109_b(-4.0F, 0.0F, 0.0F);
+ 
+         if (this.field_188301_f)
+@@ -77,7 +77,7 @@
+ 
+         for (int j = 0; j < 4; ++j)
+         {
+-            GlStateManager.func_179114_b(90.0F, 1.0F, 0.0F, 0.0F);
++            GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
+             GlStateManager.func_187432_a(0.0F, 0.0F, 0.05625F);
+             vertexbuffer.func_181668_a(7, DefaultVertexFormats.field_181707_g);
+             vertexbuffer.func_181662_b(-8.0D, -2.0D, 0.0D).func_187315_a(0.0D, 0.0D).func_181675_d();
+@@ -95,7 +95,7 @@
+ 
+         GlStateManager.func_179101_C();
+         GlStateManager.func_179145_e();
+-        GlStateManager.func_179121_F();
++        GlStateManager.pop();
+         super.doRender(p_76986_1_, p_76986_2_, p_76986_4_, p_76986_6_, p_76986_8_, p_76986_9_);
+     }
+ }

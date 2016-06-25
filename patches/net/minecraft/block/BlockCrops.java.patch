@@ -1,0 +1,86 @@
+--- a/net/minecraft/block/BlockCrops.java
++++ b/net/minecraft/block/BlockCrops.java
+@@ -39,7 +39,7 @@
+ 
+     protected boolean func_185514_i(IBlockState p_185514_1_)
+     {
+-        return p_185514_1_.func_177230_c() == Blocks.farmland;
++        return p_185514_1_.getBlock() == Blocks.farmland;
+     }
+ 
+     protected PropertyInteger func_185524_e()
+@@ -59,7 +59,7 @@
+ 
+     public IBlockState func_185528_e(int p_185528_1_)
+     {
+-        return this.func_176223_P().func_177226_a(this.func_185524_e(), Integer.valueOf(p_185528_1_));
++        return this.getBlockState().func_177226_a(this.func_185524_e(), Integer.valueOf(p_185528_1_));
+     }
+ 
+     public boolean func_185525_y(IBlockState p_185525_1_)
+@@ -71,7 +71,7 @@
+     {
+         super.func_180650_b(p_180650_1_, p_180650_2_, p_180650_3_, p_180650_4_);
+ 
+-        if (p_180650_1_.func_175671_l(p_180650_2_.func_177984_a()) >= 9)
++        if (p_180650_1_.func_175671_l(p_180650_2_.getBlockPosAbove()) >= 9)
+         {
+             int i = this.func_185527_x(p_180650_3_);
+ 
+@@ -108,16 +108,16 @@
+     protected static float func_180672_a(Block p_180672_0_, World p_180672_1_, BlockPos p_180672_2_)
+     {
+         float f = 1.0F;
+-        BlockPos blockpos = p_180672_2_.func_177977_b();
++        BlockPos blockpos = p_180672_2_.getBlockPosBelow();
+ 
+         for (int i = -1; i <= 1; ++i)
+         {
+             for (int j = -1; j <= 1; ++j)
+             {
+                 float f1 = 0.0F;
+-                IBlockState iblockstate = p_180672_1_.func_180495_p(blockpos.func_177982_a(i, 0, j));
++                IBlockState iblockstate = p_180672_1_.getBlockState(blockpos.func_177982_a(i, 0, j));
+ 
+-                if (iblockstate.func_177230_c() == Blocks.farmland)
++                if (iblockstate.getBlock() == Blocks.farmland)
+                 {
+                     f1 = 1.0F;
+ 
+@@ -136,12 +136,12 @@
+             }
+         }
+ 
+-        BlockPos blockpos1 = p_180672_2_.func_177978_c();
+-        BlockPos blockpos2 = p_180672_2_.func_177968_d();
+-        BlockPos blockpos3 = p_180672_2_.func_177976_e();
+-        BlockPos blockpos4 = p_180672_2_.func_177974_f();
+-        boolean flag = p_180672_0_ == p_180672_1_.func_180495_p(blockpos3).func_177230_c() || p_180672_0_ == p_180672_1_.func_180495_p(blockpos4).func_177230_c();
+-        boolean flag1 = p_180672_0_ == p_180672_1_.func_180495_p(blockpos1).func_177230_c() || p_180672_0_ == p_180672_1_.func_180495_p(blockpos2).func_177230_c();
++        BlockPos blockpos1 = p_180672_2_.getBlockPosNorth();
++        BlockPos blockpos2 = p_180672_2_.getBlockPosSouth();
++        BlockPos blockpos3 = p_180672_2_.getBlockPosWest();
++        BlockPos blockpos4 = p_180672_2_.getBlockPosEast();
++        boolean flag = p_180672_0_ == p_180672_1_.getBlockState(blockpos3).getBlock() || p_180672_0_ == p_180672_1_.getBlockState(blockpos4).getBlock();
++        boolean flag1 = p_180672_0_ == p_180672_1_.getBlockState(blockpos1).getBlock() || p_180672_0_ == p_180672_1_.getBlockState(blockpos2).getBlock();
+ 
+         if (flag && flag1)
+         {
+@@ -149,7 +149,7 @@
+         }
+         else
+         {
+-            boolean flag2 = p_180672_0_ == p_180672_1_.func_180495_p(blockpos3.func_177978_c()).func_177230_c() || p_180672_0_ == p_180672_1_.func_180495_p(blockpos4.func_177978_c()).func_177230_c() || p_180672_0_ == p_180672_1_.func_180495_p(blockpos4.func_177968_d()).func_177230_c() || p_180672_0_ == p_180672_1_.func_180495_p(blockpos3.func_177968_d()).func_177230_c();
++            boolean flag2 = p_180672_0_ == p_180672_1_.getBlockState(blockpos3.getBlockPosNorth()).getBlock() || p_180672_0_ == p_180672_1_.getBlockState(blockpos4.getBlockPosNorth()).getBlock() || p_180672_0_ == p_180672_1_.getBlockState(blockpos4.getBlockPosSouth()).getBlock() || p_180672_0_ == p_180672_1_.getBlockState(blockpos3.getBlockPosSouth()).getBlock();
+ 
+             if (flag2)
+             {
+@@ -162,7 +162,7 @@
+ 
+     public boolean func_180671_f(World p_180671_1_, BlockPos p_180671_2_, IBlockState p_180671_3_)
+     {
+-        return (p_180671_1_.func_175699_k(p_180671_2_) >= 8 || p_180671_1_.func_175678_i(p_180671_2_)) && this.func_185514_i(p_180671_1_.func_180495_p(p_180671_2_.func_177977_b()));
++        return (p_180671_1_.func_175699_k(p_180671_2_) >= 8 || p_180671_1_.func_175678_i(p_180671_2_)) && this.func_185514_i(p_180671_1_.getBlockState(p_180671_2_.getBlockPosBelow()));
+     }
+ 
+     protected Item getSeed()

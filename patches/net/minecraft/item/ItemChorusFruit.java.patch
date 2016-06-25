@@ -1,0 +1,22 @@
+--- a/net/minecraft/item/ItemChorusFruit.java
++++ b/net/minecraft/item/ItemChorusFruit.java
+@@ -37,15 +37,15 @@
+                 double d4 = MathHelper.clamp_double(p_77654_3_.posY + (double)(p_77654_3_.getRNG().nextInt(16) - 8), 0.0D, (double)(p_77654_2_.getActualHeight() - 1));
+                 double d5 = p_77654_3_.posZ + (p_77654_3_.getRNG().nextDouble() - 0.5D) * 16.0D;
+ 
+-                if (p_77654_3_.func_184218_aH())
++                if (p_77654_3_.isRiding())
+                 {
+-                    p_77654_3_.func_184210_p();
++                    p_77654_3_.dismount();
+                 }
+ 
+                 if (p_77654_3_.func_184595_k(d3, d4, d5))
+                 {
+-                    p_77654_2_.func_184148_a((EntityPlayer)null, d0, d1, d2, SoundEvents.field_187544_ad, SoundCategory.PLAYERS, 1.0F, 1.0F);
+-                    p_77654_3_.func_184185_a(SoundEvents.field_187544_ad, 1.0F, 1.0F);
++                    p_77654_2_.playSound((EntityPlayer)null, d0, d1, d2, SoundEvents.field_187544_ad, SoundCategory.PLAYERS, 1.0F, 1.0F);
++                    p_77654_3_.playSound(SoundEvents.field_187544_ad, 1.0F, 1.0F);
+                     break;
+                 }
+             }

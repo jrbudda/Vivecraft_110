@@ -1,0 +1,59 @@
+--- a/net/minecraft/entity/monster/EntitySilverfish.java
++++ b/net/minecraft/entity/monster/EntitySilverfish.java
+@@ -100,7 +100,7 @@
+ 
+     protected void func_180429_a(BlockPos p_180429_1_, Block p_180429_2_)
+     {
+-        this.func_184185_a(SoundEvents.field_187852_fb, 0.15F, 1.0F);
++        this.playSound(SoundEvents.field_187852_fb, 0.15F, 1.0F);
+     }
+ 
+     /**
+@@ -140,7 +140,7 @@
+ 
+     public float func_180484_a(BlockPos p_180484_1_)
+     {
+-        return this.worldObj.func_180495_p(p_180484_1_.func_177977_b()).func_177230_c() == Blocks.stone ? 10.0F : super.func_180484_a(p_180484_1_);
++        return this.worldObj.getBlockState(p_180484_1_.getBlockPosBelow()).getBlock() == Blocks.stone ? 10.0F : super.func_180484_a(p_180484_1_);
+     }
+ 
+     /**
+@@ -209,8 +209,8 @@
+                 if (random.nextInt(10) == 0)
+                 {
+                     this.field_179483_b = EnumFacing.func_176741_a(random);
+-                    BlockPos blockpos = (new BlockPos(this.field_179485_a.posX, this.field_179485_a.posY + 0.5D, this.field_179485_a.posZ)).func_177972_a(this.field_179483_b);
+-                    IBlockState iblockstate = this.field_179485_a.worldObj.func_180495_p(blockpos);
++                    BlockPos blockpos = (new BlockPos(this.field_179485_a.posX, this.field_179485_a.posY + 0.5D, this.field_179485_a.posZ)).getBlockPosRelative(this.field_179483_b);
++                    IBlockState iblockstate = this.field_179485_a.worldObj.getBlockState(blockpos);
+ 
+                     if (BlockSilverfish.func_176377_d(iblockstate))
+                     {
+@@ -238,12 +238,12 @@
+             else
+             {
+                 World world = this.field_179485_a.worldObj;
+-                BlockPos blockpos = (new BlockPos(this.field_179485_a.posX, this.field_179485_a.posY + 0.5D, this.field_179485_a.posZ)).func_177972_a(this.field_179483_b);
+-                IBlockState iblockstate = world.func_180495_p(blockpos);
++                BlockPos blockpos = (new BlockPos(this.field_179485_a.posX, this.field_179485_a.posY + 0.5D, this.field_179485_a.posZ)).getBlockPosRelative(this.field_179483_b);
++                IBlockState iblockstate = world.getBlockState(blockpos);
+ 
+                 if (BlockSilverfish.func_176377_d(iblockstate))
+                 {
+-                    world.func_180501_a(blockpos, Blocks.monster_egg.func_176223_P().func_177226_a(BlockSilverfish.field_176378_a, BlockSilverfish.EnumType.func_176878_a(iblockstate)), 3);
++                    world.func_180501_a(blockpos, Blocks.monster_egg.getBlockState().func_177226_a(BlockSilverfish.field_176378_a, BlockSilverfish.EnumType.func_176878_a(iblockstate)), 3);
+                     this.field_179485_a.spawnExplosionParticle();
+                     this.field_179485_a.setDead();
+                 }
+@@ -291,9 +291,9 @@
+                         for (int k = 0; k <= 10 && k >= -10; k = k <= 0 ? 1 - k : 0 - k)
+                         {
+                             BlockPos blockpos1 = blockpos.func_177982_a(j, i, k);
+-                            IBlockState iblockstate = world.func_180495_p(blockpos1);
++                            IBlockState iblockstate = world.getBlockState(blockpos1);
+ 
+-                            if (iblockstate.func_177230_c() == Blocks.monster_egg)
++                            if (iblockstate.getBlock() == Blocks.monster_egg)
+                             {
+                                 if (world.getGameRules().getGameRuleBooleanValue("mobGriefing"))
+                                 {

@@ -1,0 +1,105 @@
+--- a/net/minecraft/block/BlockBed.java
++++ b/net/minecraft/block/BlockBed.java
+@@ -49,10 +49,10 @@
+         {
+             if (p_180639_3_.func_177229_b(field_176472_a) != BlockBed.EnumPartType.HEAD)
+             {
+-                p_180639_2_ = p_180639_2_.func_177972_a((EnumFacing)p_180639_3_.func_177229_b(field_185512_D));
+-                p_180639_3_ = p_180639_1_.func_180495_p(p_180639_2_);
++                p_180639_2_ = p_180639_2_.getBlockPosRelative((EnumFacing)p_180639_3_.func_177229_b(field_185512_D));
++                p_180639_3_ = p_180639_1_.getBlockState(p_180639_2_);
+ 
+-                if (p_180639_3_.func_177230_c() != this)
++                if (p_180639_3_.getBlock() != this)
+                 {
+                     return true;
+                 }
+@@ -99,14 +99,14 @@
+             else
+             {
+                 p_180639_1_.func_175698_g(p_180639_2_);
+-                BlockPos blockpos = p_180639_2_.func_177972_a(((EnumFacing)p_180639_3_.func_177229_b(field_185512_D)).func_176734_d());
++                BlockPos blockpos = p_180639_2_.getBlockPosRelative(((EnumFacing)p_180639_3_.func_177229_b(field_185512_D)).func_176734_d());
+ 
+-                if (p_180639_1_.func_180495_p(blockpos).func_177230_c() == this)
++                if (p_180639_1_.getBlockState(blockpos).getBlock() == this)
+                 {
+                     p_180639_1_.func_175698_g(blockpos);
+                 }
+ 
+-                p_180639_1_.newExplosion((Entity)null, (double)p_180639_2_.func_177958_n() + 0.5D, (double)p_180639_2_.func_177956_o() + 0.5D, (double)p_180639_2_.func_177952_p() + 0.5D, 5.0F, true, true);
++                p_180639_1_.newExplosion((Entity)null, (double)p_180639_2_.getX() + 0.5D, (double)p_180639_2_.getY() + 0.5D, (double)p_180639_2_.getZ() + 0.5D, 5.0F, true, true);
+                 return true;
+             }
+         }
+@@ -142,12 +142,12 @@
+ 
+         if (p_189540_1_.func_177229_b(field_176472_a) == BlockBed.EnumPartType.HEAD)
+         {
+-            if (p_189540_2_.func_180495_p(p_189540_3_.func_177972_a(enumfacing.func_176734_d())).func_177230_c() != this)
++            if (p_189540_2_.getBlockState(p_189540_3_.getBlockPosRelative(enumfacing.func_176734_d())).getBlock() != this)
+             {
+                 p_189540_2_.func_175698_g(p_189540_3_);
+             }
+         }
+-        else if (p_189540_2_.func_180495_p(p_189540_3_.func_177972_a(enumfacing)).func_177230_c() != this)
++        else if (p_189540_2_.getBlockState(p_189540_3_.getBlockPosRelative(enumfacing)).getBlock() != this)
+         {
+             p_189540_2_.func_175698_g(p_189540_3_);
+ 
+@@ -172,10 +172,10 @@
+     @Nullable
+     public static BlockPos func_176468_a(World p_176468_0_, BlockPos p_176468_1_, int p_176468_2_)
+     {
+-        EnumFacing enumfacing = (EnumFacing)p_176468_0_.func_180495_p(p_176468_1_).func_177229_b(field_185512_D);
+-        int i = p_176468_1_.func_177958_n();
+-        int j = p_176468_1_.func_177956_o();
+-        int k = p_176468_1_.func_177952_p();
++        EnumFacing enumfacing = (EnumFacing)p_176468_0_.getBlockState(p_176468_1_).func_177229_b(field_185512_D);
++        int i = p_176468_1_.getX();
++        int j = p_176468_1_.getY();
++        int k = p_176468_1_.getZ();
+ 
+         for (int l = 0; l <= 1; ++l)
+         {
+@@ -208,7 +208,7 @@
+ 
+     protected static boolean func_176469_d(World p_176469_0_, BlockPos p_176469_1_)
+     {
+-        return p_176469_0_.func_180495_p(p_176469_1_.func_177977_b()).func_185896_q() && !p_176469_0_.func_180495_p(p_176469_1_).func_185904_a().isSolid() && !p_176469_0_.func_180495_p(p_176469_1_.func_177984_a()).func_185904_a().isSolid();
++        return p_176469_0_.getBlockState(p_176469_1_.getBlockPosBelow()).func_185896_q() && !p_176469_0_.getBlockState(p_176469_1_).getMaterial().isSolid() && !p_176469_0_.getBlockState(p_176469_1_.getBlockPosAbove()).getMaterial().isSolid();
+     }
+ 
+     public void func_180653_a(World p_180653_1_, BlockPos p_180653_2_, IBlockState p_180653_3_, float p_180653_4_, int p_180653_5_)
+@@ -238,9 +238,9 @@
+     {
+         if (p_176208_4_.capabilities.isCreativeMode && p_176208_3_.func_177229_b(field_176472_a) == BlockBed.EnumPartType.HEAD)
+         {
+-            BlockPos blockpos = p_176208_2_.func_177972_a(((EnumFacing)p_176208_3_.func_177229_b(field_185512_D)).func_176734_d());
++            BlockPos blockpos = p_176208_2_.getBlockPosRelative(((EnumFacing)p_176208_3_.func_177229_b(field_185512_D)).func_176734_d());
+ 
+-            if (p_176208_1_.func_180495_p(blockpos).func_177230_c() == this)
++            if (p_176208_1_.getBlockState(blockpos).getBlock() == this)
+             {
+                 p_176208_1_.func_175698_g(blockpos);
+             }
+@@ -250,16 +250,16 @@
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+         EnumFacing enumfacing = EnumFacing.func_176731_b(p_176203_1_);
+-        return (p_176203_1_ & 8) > 0 ? this.func_176223_P().func_177226_a(field_176472_a, BlockBed.EnumPartType.HEAD).func_177226_a(field_185512_D, enumfacing).func_177226_a(field_176471_b, Boolean.valueOf((p_176203_1_ & 4) > 0)) : this.func_176223_P().func_177226_a(field_176472_a, BlockBed.EnumPartType.FOOT).func_177226_a(field_185512_D, enumfacing);
++        return (p_176203_1_ & 8) > 0 ? this.getBlockState().func_177226_a(field_176472_a, BlockBed.EnumPartType.HEAD).func_177226_a(field_185512_D, enumfacing).func_177226_a(field_176471_b, Boolean.valueOf((p_176203_1_ & 4) > 0)) : this.getBlockState().func_177226_a(field_176472_a, BlockBed.EnumPartType.FOOT).func_177226_a(field_185512_D, enumfacing);
+     }
+ 
+     public IBlockState func_176221_a(IBlockState p_176221_1_, IBlockAccess p_176221_2_, BlockPos p_176221_3_)
+     {
+         if (p_176221_1_.func_177229_b(field_176472_a) == BlockBed.EnumPartType.FOOT)
+         {
+-            IBlockState iblockstate = p_176221_2_.func_180495_p(p_176221_3_.func_177972_a((EnumFacing)p_176221_1_.func_177229_b(field_185512_D)));
++            IBlockState iblockstate = p_176221_2_.getBlockState(p_176221_3_.getBlockPosRelative((EnumFacing)p_176221_1_.func_177229_b(field_185512_D)));
+ 
+-            if (iblockstate.func_177230_c() == this)
++            if (iblockstate.getBlock() == this)
+             {
+                 p_176221_1_ = p_176221_1_.func_177226_a(field_176471_b, iblockstate.func_177229_b(field_176471_b));
+             }

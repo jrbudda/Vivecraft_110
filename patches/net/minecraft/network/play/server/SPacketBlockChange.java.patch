@@ -1,0 +1,11 @@
+--- a/net/minecraft/network/play/server/SPacketBlockChange.java
++++ b/net/minecraft/network/play/server/SPacketBlockChange.java
+@@ -21,7 +21,7 @@
+     public SPacketBlockChange(World p_i46965_1_, BlockPos p_i46965_2_)
+     {
+         this.field_179828_a = p_i46965_2_;
+-        this.field_148883_d = p_i46965_1_.func_180495_p(p_i46965_2_);
++        this.field_148883_d = p_i46965_1_.getBlockState(p_i46965_2_);
+     }
+ 
+     /**

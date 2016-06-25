@@ -1,0 +1,51 @@
+--- a/net/minecraft/block/BlockSapling.java
++++ b/net/minecraft/block/BlockSapling.java
+@@ -57,7 +57,7 @@
+         {
+             super.func_180650_b(p_180650_1_, p_180650_2_, p_180650_3_, p_180650_4_);
+ 
+-            if (p_180650_1_.func_175671_l(p_180650_2_.func_177984_a()) >= 9 && p_180650_4_.nextInt(7) == 0)
++            if (p_180650_1_.func_175671_l(p_180650_2_.getBlockPosAbove()) >= 9 && p_180650_4_.nextInt(7) == 0)
+             {
+                 this.func_176478_d(p_180650_1_, p_180650_2_, p_180650_3_, p_180650_4_);
+             }
+@@ -114,8 +114,8 @@
+                 break;
+ 
+             case JUNGLE:
+-                IBlockState iblockstate = Blocks.log.func_176223_P().func_177226_a(BlockOldLog.field_176301_b, BlockPlanks.EnumType.JUNGLE);
+-                IBlockState iblockstate1 = Blocks.leaves.func_176223_P().func_177226_a(BlockOldLeaf.field_176239_P, BlockPlanks.EnumType.JUNGLE).func_177226_a(BlockLeaves.field_176236_b, Boolean.valueOf(false));
++                IBlockState iblockstate = Blocks.log.getBlockState().func_177226_a(BlockOldLog.field_176301_b, BlockPlanks.EnumType.JUNGLE);
++                IBlockState iblockstate1 = Blocks.leaves.getBlockState().func_177226_a(BlockOldLeaf.field_176239_P, BlockPlanks.EnumType.JUNGLE).func_177226_a(BlockLeaves.field_176236_b, Boolean.valueOf(false));
+                 label269:
+ 
+                 for (i = 0; i >= -1; --i)
+@@ -167,7 +167,7 @@
+             case OAK:
+         }
+ 
+-        IBlockState iblockstate2 = Blocks.air.func_176223_P();
++        IBlockState iblockstate2 = Blocks.air.getBlockState();
+ 
+         if (flag)
+         {
+@@ -204,8 +204,8 @@
+ 
+     public boolean func_176477_a(World p_176477_1_, BlockPos p_176477_2_, BlockPlanks.EnumType p_176477_3_)
+     {
+-        IBlockState iblockstate = p_176477_1_.func_180495_p(p_176477_2_);
+-        return iblockstate.func_177230_c() == this && iblockstate.func_177229_b(field_176480_a) == p_176477_3_;
++        IBlockState iblockstate = p_176477_1_.getBlockState(p_176477_2_);
++        return iblockstate.getBlock() == this && iblockstate.func_177229_b(field_176480_a) == p_176477_3_;
+     }
+ 
+     public int func_180651_a(IBlockState p_180651_1_)
+@@ -241,7 +241,7 @@
+ 
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        return this.func_176223_P().func_177226_a(field_176480_a, BlockPlanks.EnumType.func_176837_a(p_176203_1_ & 7)).func_177226_a(field_176479_b, Integer.valueOf((p_176203_1_ & 8) >> 3));
++        return this.getBlockState().func_177226_a(field_176480_a, BlockPlanks.EnumType.func_176837_a(p_176203_1_ & 7)).func_177226_a(field_176479_b, Integer.valueOf((p_176203_1_ & 8) >> 3));
+     }
+ 
+     public int func_176201_c(IBlockState p_176201_1_)

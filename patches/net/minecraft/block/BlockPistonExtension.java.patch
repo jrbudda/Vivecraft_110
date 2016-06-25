@@ -1,0 +1,53 @@
+--- a/net/minecraft/block/BlockPistonExtension.java
++++ b/net/minecraft/block/BlockPistonExtension.java
+@@ -112,8 +112,8 @@
+     {
+         if (p_176208_4_.capabilities.isCreativeMode)
+         {
+-            BlockPos blockpos = p_176208_2_.func_177972_a(((EnumFacing)p_176208_3_.func_177229_b(field_176387_N)).func_176734_d());
+-            Block block = p_176208_1_.func_180495_p(blockpos).func_177230_c();
++            BlockPos blockpos = p_176208_2_.getBlockPosRelative(((EnumFacing)p_176208_3_.func_177229_b(field_176387_N)).func_176734_d());
++            Block block = p_176208_1_.getBlockState(blockpos).getBlock();
+ 
+             if (block == Blocks.piston || block == Blocks.sticky_piston)
+             {
+@@ -128,12 +128,12 @@
+     {
+         super.func_180663_b(p_180663_1_, p_180663_2_, p_180663_3_);
+         EnumFacing enumfacing = ((EnumFacing)p_180663_3_.func_177229_b(field_176387_N)).func_176734_d();
+-        p_180663_2_ = p_180663_2_.func_177972_a(enumfacing);
+-        IBlockState iblockstate = p_180663_1_.func_180495_p(p_180663_2_);
++        p_180663_2_ = p_180663_2_.getBlockPosRelative(enumfacing);
++        IBlockState iblockstate = p_180663_1_.getBlockState(p_180663_2_);
+ 
+-        if ((iblockstate.func_177230_c() == Blocks.piston || iblockstate.func_177230_c() == Blocks.sticky_piston) && ((Boolean)iblockstate.func_177229_b(BlockPistonBase.field_176320_b)).booleanValue())
++        if ((iblockstate.getBlock() == Blocks.piston || iblockstate.getBlock() == Blocks.sticky_piston) && ((Boolean)iblockstate.func_177229_b(BlockPistonBase.field_176320_b)).booleanValue())
+         {
+-            iblockstate.func_177230_c().func_176226_b(p_180663_1_, p_180663_2_, iblockstate, 0);
++            iblockstate.getBlock().func_176226_b(p_180663_1_, p_180663_2_, iblockstate, 0);
+             p_180663_1_.func_175698_g(p_180663_2_);
+         }
+     }
+@@ -169,10 +169,10 @@
+     public void func_189540_a(IBlockState p_189540_1_, World p_189540_2_, BlockPos p_189540_3_, Block p_189540_4_)
+     {
+         EnumFacing enumfacing = (EnumFacing)p_189540_1_.func_177229_b(field_176387_N);
+-        BlockPos blockpos = p_189540_3_.func_177972_a(enumfacing.func_176734_d());
+-        IBlockState iblockstate = p_189540_2_.func_180495_p(blockpos);
++        BlockPos blockpos = p_189540_3_.getBlockPosRelative(enumfacing.func_176734_d());
++        IBlockState iblockstate = p_189540_2_.getBlockState(blockpos);
+ 
+-        if (iblockstate.func_177230_c() != Blocks.piston && iblockstate.func_177230_c() != Blocks.sticky_piston)
++        if (iblockstate.getBlock() != Blocks.piston && iblockstate.getBlock() != Blocks.sticky_piston)
+         {
+             p_189540_2_.func_175698_g(p_189540_3_);
+         }
+@@ -201,7 +201,7 @@
+ 
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        return this.func_176223_P().func_177226_a(field_176387_N, func_176322_b(p_176203_1_)).func_177226_a(field_176325_b, (p_176203_1_ & 8) > 0 ? BlockPistonExtension.EnumPistonType.STICKY : BlockPistonExtension.EnumPistonType.DEFAULT);
++        return this.getBlockState().func_177226_a(field_176387_N, func_176322_b(p_176203_1_)).func_177226_a(field_176325_b, (p_176203_1_ & 8) > 0 ? BlockPistonExtension.EnumPistonType.STICKY : BlockPistonExtension.EnumPistonType.DEFAULT);
+     }
+ 
+     public int func_176201_c(IBlockState p_176201_1_)

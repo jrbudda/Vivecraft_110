@@ -1,0 +1,282 @@
+--- a/net/minecraft/block/Block.java
++++ b/net/minecraft/block/Block.java
+@@ -89,7 +89,7 @@
+      */
+     public float slipperiness;
+     protected final BlockStateContainer field_176227_L;
+-    private IBlockState field_176228_M;
++    private IBlockState blockState;
+     private String unlocalizedName;
+ 
+     public static int getIdFromBlock(Block blockIn)
+@@ -99,7 +99,7 @@
+ 
+     public static int func_176210_f(IBlockState p_176210_0_)
+     {
+-        Block block = p_176210_0_.func_177230_c();
++        Block block = p_176210_0_.getBlock();
+         return getIdFromBlock(block) + (block.func_176201_c(p_176210_0_) << 12);
+     }
+ 
+@@ -145,7 +145,7 @@
+     @Deprecated
+     public boolean func_185481_k(IBlockState p_185481_1_)
+     {
+-        return p_185481_1_.func_185904_a().isOpaque() && p_185481_1_.func_185917_h();
++        return p_185481_1_.getMaterial().isOpaque() && p_185481_1_.func_185917_h();
+     }
+ 
+     @Deprecated
+@@ -207,7 +207,7 @@
+     @Deprecated
+     public IBlockState func_176203_a(int p_176203_1_)
+     {
+-        return this.func_176223_P();
++        return this.getBlockState();
+     }
+ 
+     public int func_176201_c(IBlockState p_176201_1_)
+@@ -250,7 +250,7 @@
+         this.field_181083_K = p_i46399_2_;
+         this.field_176227_L = this.func_180661_e();
+         this.func_180632_j(this.field_176227_L.func_177621_b());
+-        this.fullBlock = this.func_176223_P().func_185914_p();
++        this.fullBlock = this.getBlockState().func_185914_p();
+         this.lightOpacity = this.fullBlock ? 255 : 0;
+         this.translucent = !p_i46399_1_.blocksLight();
+     }
+@@ -304,18 +304,18 @@
+      */
+     public boolean isBlockNormalCube(IBlockState p_149637_1_)
+     {
+-        return p_149637_1_.func_185904_a().blocksMovement() && p_149637_1_.func_185917_h();
++        return p_149637_1_.getMaterial().blocksMovement() && p_149637_1_.func_185917_h();
+     }
+ 
+     @Deprecated
+     public boolean isNormalCube(IBlockState p_149721_1_)
+     {
+-        return p_149721_1_.func_185904_a().isOpaque() && p_149721_1_.func_185917_h() && !p_149721_1_.func_185897_m();
++        return p_149721_1_.getMaterial().isOpaque() && p_149721_1_.func_185917_h() && !p_149721_1_.func_185897_m();
+     }
+ 
+     public boolean func_176214_u()
+     {
+-        return this.blockMaterial.blocksMovement() && this.func_176223_P().func_185917_h();
++        return this.blockMaterial.blocksMovement() && this.getBlockState().func_185917_h();
+     }
+ 
+     @Deprecated
+@@ -405,10 +405,10 @@
+     {
+         int i = p_185484_2_.func_175626_b(p_185484_3_, p_185484_1_.func_185906_d());
+ 
+-        if (i == 0 && p_185484_1_.func_177230_c() instanceof BlockSlab)
++        if (i == 0 && p_185484_1_.getBlock() instanceof BlockSlab)
+         {
+-            p_185484_3_ = p_185484_3_.func_177977_b();
+-            p_185484_1_ = p_185484_2_.func_180495_p(p_185484_3_);
++            p_185484_3_ = p_185484_3_.getBlockPosBelow();
++            p_185484_1_ = p_185484_2_.getBlockState(p_185484_3_);
+             return p_185484_2_.func_175626_b(p_185484_3_, p_185484_1_.func_185906_d());
+         }
+         else
+@@ -471,18 +471,18 @@
+                 }
+         }
+ 
+-        return !p_176225_2_.func_180495_p(p_176225_3_.func_177972_a(p_176225_4_)).func_185914_p();
++        return !p_176225_2_.getBlockState(p_176225_3_.getBlockPosRelative(p_176225_4_)).func_185914_p();
+     }
+ 
+     public boolean func_176212_b(IBlockAccess p_176212_1_, BlockPos p_176212_2_, EnumFacing p_176212_3_)
+     {
+-        return p_176212_1_.func_180495_p(p_176212_2_).func_185904_a().isSolid();
++        return p_176212_1_.getBlockState(p_176212_2_).getMaterial().isSolid();
+     }
+ 
+     @Deprecated
+     public AxisAlignedBB func_180640_a(IBlockState p_180640_1_, World p_180640_2_, BlockPos p_180640_3_)
+     {
+-        return p_180640_1_.func_185900_c(p_180640_2_, p_180640_3_).func_186670_a(p_180640_3_);
++        return p_180640_1_.func_185900_c(p_180640_2_, p_180640_3_).offset(p_180640_3_);
+     }
+ 
+     @Deprecated
+@@ -495,7 +495,7 @@
+     {
+         if (p_185492_3_ != field_185506_k)
+         {
+-            AxisAlignedBB axisalignedbb = p_185492_3_.func_186670_a(p_185492_0_);
++            AxisAlignedBB axisalignedbb = p_185492_3_.offset(p_185492_0_);
+ 
+             if (p_185492_1_.intersectsWith(axisalignedbb))
+             {
+@@ -586,7 +586,7 @@
+     public float func_180647_a(IBlockState p_180647_1_, EntityPlayer p_180647_2_, World p_180647_3_, BlockPos p_180647_4_)
+     {
+         float f = p_180647_1_.func_185887_b(p_180647_3_, p_180647_4_);
+-        return f < 0.0F ? 0.0F : (!p_180647_2_.func_184823_b(p_180647_1_) ? p_180647_2_.func_184813_a(p_180647_1_) / f / 100.0F : p_180647_2_.func_184813_a(p_180647_1_) / f / 30.0F);
++        return f < 0.0F ? 0.0F : (!p_180647_2_.canHarvest(p_180647_1_) ? p_180647_2_.func_184813_a(p_180647_1_) / f / 100.0F : p_180647_2_.func_184813_a(p_180647_1_) / f / 30.0F);
+     }
+ 
+     public final void func_176226_b(World p_176226_1_, BlockPos p_176226_2_, IBlockState p_176226_3_, int p_176226_4_)
+@@ -623,7 +623,7 @@
+             double d0 = (double)(p_180635_0_.rand.nextFloat() * 0.5F) + 0.25D;
+             double d1 = (double)(p_180635_0_.rand.nextFloat() * 0.5F) + 0.25D;
+             double d2 = (double)(p_180635_0_.rand.nextFloat() * 0.5F) + 0.25D;
+-            EntityItem entityitem = new EntityItem(p_180635_0_, (double)p_180635_1_.func_177958_n() + d0, (double)p_180635_1_.func_177956_o() + d1, (double)p_180635_1_.func_177952_p() + d2, p_180635_2_);
++            EntityItem entityitem = new EntityItem(p_180635_0_, (double)p_180635_1_.getX() + d0, (double)p_180635_1_.getY() + d1, (double)p_180635_1_.getZ() + d2, p_180635_2_);
+             entityitem.func_174869_p();
+             p_180635_0_.spawnEntityInWorld(entityitem);
+         }
+@@ -637,7 +637,7 @@
+             {
+                 int i = EntityXPOrb.getXPSplit(p_180637_3_);
+                 p_180637_3_ -= i;
+-                p_180637_1_.spawnEntityInWorld(new EntityXPOrb(p_180637_1_, (double)p_180637_2_.func_177958_n() + 0.5D, (double)p_180637_2_.func_177956_o() + 0.5D, (double)p_180637_2_.func_177952_p() + 0.5D, i));
++                p_180637_1_.spawnEntityInWorld(new EntityXPOrb(p_180637_1_, (double)p_180637_2_.getX() + 0.5D, (double)p_180637_2_.getY() + 0.5D, (double)p_180637_2_.getZ() + 0.5D, i));
+             }
+         }
+     }
+@@ -665,10 +665,10 @@
+     @Nullable
+     protected RayTraceResult func_185503_a(BlockPos p_185503_1_, Vec3d p_185503_2_, Vec3d p_185503_3_, AxisAlignedBB p_185503_4_)
+     {
+-        Vec3d vec3d = p_185503_2_.func_178786_a((double)p_185503_1_.func_177958_n(), (double)p_185503_1_.func_177956_o(), (double)p_185503_1_.func_177952_p());
+-        Vec3d vec3d1 = p_185503_3_.func_178786_a((double)p_185503_1_.func_177958_n(), (double)p_185503_1_.func_177956_o(), (double)p_185503_1_.func_177952_p());
++        Vec3d vec3d = p_185503_2_.subtractVector((double)p_185503_1_.getX(), (double)p_185503_1_.getY(), (double)p_185503_1_.getZ());
++        Vec3d vec3d1 = p_185503_3_.subtractVector((double)p_185503_1_.getX(), (double)p_185503_1_.getY(), (double)p_185503_1_.getZ());
+         RayTraceResult raytraceresult = p_185503_4_.calculateIntercept(vec3d, vec3d1);
+-        return raytraceresult == null ? null : new RayTraceResult(raytraceresult.hitVec.addVector((double)p_185503_1_.func_177958_n(), (double)p_185503_1_.func_177956_o(), (double)p_185503_1_.func_177952_p()), raytraceresult.field_178784_b, p_185503_1_);
++        return raytraceresult == null ? null : new RayTraceResult(raytraceresult.hitVec.addVector((double)p_185503_1_.getX(), (double)p_185503_1_.getY(), (double)p_185503_1_.getZ()), raytraceresult.sideHit, p_185503_1_);
+     }
+ 
+     public void func_180652_a(World p_180652_1_, BlockPos p_180652_2_, Explosion p_180652_3_)
+@@ -692,7 +692,7 @@
+ 
+     public boolean func_176196_c(World p_176196_1_, BlockPos p_176196_2_)
+     {
+-        return p_176196_1_.func_180495_p(p_176196_2_).func_177230_c().blockMaterial.isReplaceable();
++        return p_176196_1_.getBlockState(p_176196_2_).getBlock().blockMaterial.isReplaceable();
+     }
+ 
+     public boolean func_180639_a(World p_180639_1_, BlockPos p_180639_2_, IBlockState p_180639_3_, EntityPlayer p_180639_4_, EnumHand p_180639_5_, @Nullable ItemStack p_180639_6_, EnumFacing p_180639_7_, float p_180639_8_, float p_180639_9_, float p_180639_10_)
+@@ -767,7 +767,7 @@
+ 
+     protected boolean canSilkHarvest()
+     {
+-        return this.func_176223_P().func_185917_h() && !this.isBlockContainer;
++        return this.getBlockState().func_185917_h() && !this.isBlockContainer;
+     }
+ 
+     @Nullable
+@@ -956,12 +956,12 @@
+ 
+     protected final void func_180632_j(IBlockState p_180632_1_)
+     {
+-        this.field_176228_M = p_180632_1_;
++        this.blockState = p_180632_1_;
+     }
+ 
+-    public final IBlockState func_176223_P()
++    public final IBlockState getBlockState()
+     {
+-        return this.field_176228_M;
++        return this.blockState;
+     }
+ 
+     public Block.EnumOffsetType func_176218_Q()
+@@ -1040,7 +1040,7 @@
+         func_176219_a(50, "torch", (new BlockTorch()).setHardness(0.0F).setLightLevel(0.9375F).setStepSound(SoundType.field_185848_a).setUnlocalizedName("torch"));
+         func_176219_a(51, "fire", (new BlockFire()).setHardness(0.0F).setLightLevel(1.0F).setStepSound(SoundType.field_185854_g).setUnlocalizedName("fire").disableStats());
+         func_176219_a(52, "mob_spawner", (new BlockMobSpawner()).setHardness(5.0F).setStepSound(SoundType.field_185852_e).setUnlocalizedName("mobSpawner").disableStats());
+-        func_176219_a(53, "oak_stairs", (new BlockStairs(block1.func_176223_P().func_177226_a(BlockPlanks.field_176383_a, BlockPlanks.EnumType.OAK))).setUnlocalizedName("stairsWood"));
++        func_176219_a(53, "oak_stairs", (new BlockStairs(block1.getBlockState().func_177226_a(BlockPlanks.field_176383_a, BlockPlanks.EnumType.OAK))).setUnlocalizedName("stairsWood"));
+         func_176219_a(54, "chest", (new BlockChest(BlockChest.Type.BASIC)).setHardness(2.5F).setStepSound(SoundType.field_185848_a).setUnlocalizedName("chest"));
+         func_176219_a(55, "redstone_wire", (new BlockRedstoneWire()).setHardness(0.0F).setStepSound(SoundType.field_185851_d).setUnlocalizedName("redstoneDust").disableStats());
+         func_176219_a(56, "diamond_ore", (new BlockOre()).setHardness(3.0F).setResistance(5.0F).setStepSound(SoundType.field_185851_d).setUnlocalizedName("oreDiamond"));
+@@ -1055,7 +1055,7 @@
+         func_176219_a(64, "wooden_door", (new BlockDoor(Material.wood)).setHardness(3.0F).setStepSound(SoundType.field_185848_a).setUnlocalizedName("doorOak").disableStats());
+         func_176219_a(65, "ladder", (new BlockLadder()).setHardness(0.4F).setStepSound(SoundType.field_185857_j).setUnlocalizedName("ladder"));
+         func_176219_a(66, "rail", (new BlockRail()).setHardness(0.7F).setStepSound(SoundType.field_185852_e).setUnlocalizedName("rail"));
+-        func_176219_a(67, "stone_stairs", (new BlockStairs(block.func_176223_P())).setUnlocalizedName("stairsStone"));
++        func_176219_a(67, "stone_stairs", (new BlockStairs(block.getBlockState())).setUnlocalizedName("stairsStone"));
+         func_176219_a(68, "wall_sign", (new BlockWallSign()).setHardness(1.0F).setStepSound(SoundType.field_185848_a).setUnlocalizedName("sign").disableStats());
+         func_176219_a(69, "lever", (new BlockLever()).setHardness(0.5F).setStepSound(SoundType.field_185848_a).setUnlocalizedName("lever"));
+         func_176219_a(70, "stone_pressure_plate", (new BlockPressurePlate(Material.rock, BlockPressurePlate.Sensitivity.MOBS)).setHardness(0.5F).setStepSound(SoundType.field_185851_d).setUnlocalizedName("pressurePlateStone"));
+@@ -1099,14 +1099,14 @@
+         func_176219_a(105, "melon_stem", (new BlockStem(block9)).setHardness(0.0F).setStepSound(SoundType.field_185848_a).setUnlocalizedName("pumpkinStem"));
+         func_176219_a(106, "vine", (new BlockVine()).setHardness(0.2F).setStepSound(SoundType.field_185850_c).setUnlocalizedName("vine"));
+         func_176219_a(107, "fence_gate", (new BlockFenceGate(BlockPlanks.EnumType.OAK)).setHardness(2.0F).setResistance(5.0F).setStepSound(SoundType.field_185848_a).setUnlocalizedName("fenceGate"));
+-        func_176219_a(108, "brick_stairs", (new BlockStairs(block5.func_176223_P())).setUnlocalizedName("stairsBrick"));
+-        func_176219_a(109, "stone_brick_stairs", (new BlockStairs(block8.func_176223_P().func_177226_a(BlockStoneBrick.field_176249_a, BlockStoneBrick.EnumType.DEFAULT))).setUnlocalizedName("stairsStoneBrickSmooth"));
++        func_176219_a(108, "brick_stairs", (new BlockStairs(block5.getBlockState())).setUnlocalizedName("stairsBrick"));
++        func_176219_a(109, "stone_brick_stairs", (new BlockStairs(block8.getBlockState().func_177226_a(BlockStoneBrick.field_176249_a, BlockStoneBrick.EnumType.DEFAULT))).setUnlocalizedName("stairsStoneBrickSmooth"));
+         func_176219_a(110, "mycelium", (new BlockMycelium()).setHardness(0.6F).setStepSound(SoundType.field_185850_c).setUnlocalizedName("mycel"));
+         func_176219_a(111, "waterlily", (new BlockLilyPad()).setHardness(0.0F).setStepSound(SoundType.field_185850_c).setUnlocalizedName("waterlily"));
+         Block block10 = (new BlockNetherBrick()).setHardness(2.0F).setResistance(10.0F).setStepSound(SoundType.field_185851_d).setUnlocalizedName("netherBrick").setCreativeTab(CreativeTabs.tabBlock);
+         func_176219_a(112, "nether_brick", block10);
+         func_176219_a(113, "nether_brick_fence", (new BlockFence(Material.rock, MapColor.netherrackColor)).setHardness(2.0F).setResistance(10.0F).setStepSound(SoundType.field_185851_d).setUnlocalizedName("netherFence"));
+-        func_176219_a(114, "nether_brick_stairs", (new BlockStairs(block10.func_176223_P())).setUnlocalizedName("stairsNetherBrick"));
++        func_176219_a(114, "nether_brick_stairs", (new BlockStairs(block10.getBlockState())).setUnlocalizedName("stairsNetherBrick"));
+         func_176219_a(115, "nether_wart", (new BlockNetherWart()).setUnlocalizedName("netherStalk"));
+         func_176219_a(116, "enchanting_table", (new BlockEnchantmentTable()).setHardness(5.0F).setResistance(2000.0F).setUnlocalizedName("enchantmentTable"));
+         func_176219_a(117, "brewing_stand", (new BlockBrewingStand()).setHardness(0.5F).setLightLevel(0.125F).setUnlocalizedName("brewingStand"));
+@@ -1120,15 +1120,15 @@
+         func_176219_a(125, "double_wooden_slab", (new BlockDoubleWoodSlab()).setHardness(2.0F).setResistance(5.0F).setStepSound(SoundType.field_185848_a).setUnlocalizedName("woodSlab"));
+         func_176219_a(126, "wooden_slab", (new BlockHalfWoodSlab()).setHardness(2.0F).setResistance(5.0F).setStepSound(SoundType.field_185848_a).setUnlocalizedName("woodSlab"));
+         func_176219_a(127, "cocoa", (new BlockCocoa()).setHardness(0.2F).setResistance(5.0F).setStepSound(SoundType.field_185848_a).setUnlocalizedName("cocoa"));
+-        func_176219_a(128, "sandstone_stairs", (new BlockStairs(block2.func_176223_P().func_177226_a(BlockSandStone.field_176297_a, BlockSandStone.EnumType.SMOOTH))).setUnlocalizedName("stairsSandStone"));
++        func_176219_a(128, "sandstone_stairs", (new BlockStairs(block2.getBlockState().func_177226_a(BlockSandStone.field_176297_a, BlockSandStone.EnumType.SMOOTH))).setUnlocalizedName("stairsSandStone"));
+         func_176219_a(129, "emerald_ore", (new BlockOre()).setHardness(3.0F).setResistance(5.0F).setStepSound(SoundType.field_185851_d).setUnlocalizedName("oreEmerald"));
+         func_176219_a(130, "ender_chest", (new BlockEnderChest()).setHardness(22.5F).setResistance(1000.0F).setStepSound(SoundType.field_185851_d).setUnlocalizedName("enderChest").setLightLevel(0.5F));
+         func_176219_a(131, "tripwire_hook", (new BlockTripWireHook()).setUnlocalizedName("tripWireSource"));
+         func_176219_a(132, "tripwire", (new BlockTripWire()).setUnlocalizedName("tripWire"));
+         func_176219_a(133, "emerald_block", (new Block(Material.iron, MapColor.emeraldColor)).setHardness(5.0F).setResistance(10.0F).setStepSound(SoundType.field_185852_e).setUnlocalizedName("blockEmerald").setCreativeTab(CreativeTabs.tabBlock));
+-        func_176219_a(134, "spruce_stairs", (new BlockStairs(block1.func_176223_P().func_177226_a(BlockPlanks.field_176383_a, BlockPlanks.EnumType.SPRUCE))).setUnlocalizedName("stairsWoodSpruce"));
+-        func_176219_a(135, "birch_stairs", (new BlockStairs(block1.func_176223_P().func_177226_a(BlockPlanks.field_176383_a, BlockPlanks.EnumType.BIRCH))).setUnlocalizedName("stairsWoodBirch"));
+-        func_176219_a(136, "jungle_stairs", (new BlockStairs(block1.func_176223_P().func_177226_a(BlockPlanks.field_176383_a, BlockPlanks.EnumType.JUNGLE))).setUnlocalizedName("stairsWoodJungle"));
++        func_176219_a(134, "spruce_stairs", (new BlockStairs(block1.getBlockState().func_177226_a(BlockPlanks.field_176383_a, BlockPlanks.EnumType.SPRUCE))).setUnlocalizedName("stairsWoodSpruce"));
++        func_176219_a(135, "birch_stairs", (new BlockStairs(block1.getBlockState().func_177226_a(BlockPlanks.field_176383_a, BlockPlanks.EnumType.BIRCH))).setUnlocalizedName("stairsWoodBirch"));
++        func_176219_a(136, "jungle_stairs", (new BlockStairs(block1.getBlockState().func_177226_a(BlockPlanks.field_176383_a, BlockPlanks.EnumType.JUNGLE))).setUnlocalizedName("stairsWoodJungle"));
+         func_176219_a(137, "command_block", (new BlockCommandBlock(MapColor.brownColor)).setBlockUnbreakable().setResistance(6000000.0F).setUnlocalizedName("commandBlock"));
+         func_176219_a(138, "beacon", (new BlockBeacon()).setUnlocalizedName("beacon").setLightLevel(1.0F));
+         func_176219_a(139, "cobblestone_wall", (new BlockWall(block)).setUnlocalizedName("cobbleWall"));
+@@ -1149,15 +1149,15 @@
+         func_176219_a(154, "hopper", (new BlockHopper()).setHardness(3.0F).setResistance(8.0F).setStepSound(SoundType.field_185852_e).setUnlocalizedName("hopper"));
+         Block block11 = (new BlockQuartz()).setStepSound(SoundType.field_185851_d).setHardness(0.8F).setUnlocalizedName("quartzBlock");
+         func_176219_a(155, "quartz_block", block11);
+-        func_176219_a(156, "quartz_stairs", (new BlockStairs(block11.func_176223_P().func_177226_a(BlockQuartz.field_176335_a, BlockQuartz.EnumType.DEFAULT))).setUnlocalizedName("stairsQuartz"));
++        func_176219_a(156, "quartz_stairs", (new BlockStairs(block11.getBlockState().func_177226_a(BlockQuartz.field_176335_a, BlockQuartz.EnumType.DEFAULT))).setUnlocalizedName("stairsQuartz"));
+         func_176219_a(157, "activator_rail", (new BlockRailPowered()).setHardness(0.7F).setStepSound(SoundType.field_185852_e).setUnlocalizedName("activatorRail"));
+         func_176219_a(158, "dropper", (new BlockDropper()).setHardness(3.5F).setStepSound(SoundType.field_185851_d).setUnlocalizedName("dropper"));
+         func_176219_a(159, "stained_hardened_clay", (new BlockColored(Material.rock)).setHardness(1.25F).setResistance(7.0F).setStepSound(SoundType.field_185851_d).setUnlocalizedName("clayHardenedStained"));
+         func_176219_a(160, "stained_glass_pane", (new BlockStainedGlassPane()).setHardness(0.3F).setStepSound(SoundType.field_185853_f).setUnlocalizedName("thinStainedGlass"));
+         func_176219_a(161, "leaves2", (new BlockNewLeaf()).setUnlocalizedName("leaves"));
+         func_176219_a(162, "log2", (new BlockNewLog()).setUnlocalizedName("log"));
+-        func_176219_a(163, "acacia_stairs", (new BlockStairs(block1.func_176223_P().func_177226_a(BlockPlanks.field_176383_a, BlockPlanks.EnumType.ACACIA))).setUnlocalizedName("stairsWoodAcacia"));
+-        func_176219_a(164, "dark_oak_stairs", (new BlockStairs(block1.func_176223_P().func_177226_a(BlockPlanks.field_176383_a, BlockPlanks.EnumType.DARK_OAK))).setUnlocalizedName("stairsWoodDarkOak"));
++        func_176219_a(163, "acacia_stairs", (new BlockStairs(block1.getBlockState().func_177226_a(BlockPlanks.field_176383_a, BlockPlanks.EnumType.ACACIA))).setUnlocalizedName("stairsWoodAcacia"));
++        func_176219_a(164, "dark_oak_stairs", (new BlockStairs(block1.getBlockState().func_177226_a(BlockPlanks.field_176383_a, BlockPlanks.EnumType.DARK_OAK))).setUnlocalizedName("stairsWoodDarkOak"));
+         func_176219_a(165, "slime", (new BlockSlime()).setUnlocalizedName("slime").setStepSound(SoundType.field_185859_l));
+         func_176219_a(166, "barrier", (new BlockBarrier()).setUnlocalizedName("barrier"));
+         func_176219_a(167, "iron_trapdoor", (new BlockTrapDoor(Material.iron)).setHardness(5.0F).setStepSound(SoundType.field_185852_e).setUnlocalizedName("ironTrapdoor").disableStats());
+@@ -1174,7 +1174,7 @@
+         func_176219_a(178, "daylight_detector_inverted", new BlockDaylightDetector(true));
+         Block block12 = (new BlockRedSandstone()).setStepSound(SoundType.field_185851_d).setHardness(0.8F).setUnlocalizedName("redSandStone");
+         func_176219_a(179, "red_sandstone", block12);
+-        func_176219_a(180, "red_sandstone_stairs", (new BlockStairs(block12.func_176223_P().func_177226_a(BlockRedSandstone.field_176336_a, BlockRedSandstone.EnumType.SMOOTH))).setUnlocalizedName("stairsRedSandStone"));
++        func_176219_a(180, "red_sandstone_stairs", (new BlockStairs(block12.getBlockState().func_177226_a(BlockRedSandstone.field_176336_a, BlockRedSandstone.EnumType.SMOOTH))).setUnlocalizedName("stairsRedSandStone"));
+         func_176219_a(181, "double_stone_slab2", (new BlockDoubleStoneSlabNew()).setHardness(2.0F).setResistance(10.0F).setStepSound(SoundType.field_185851_d).setUnlocalizedName("stoneSlab2"));
+         func_176219_a(182, "stone_slab2", (new BlockHalfStoneSlabNew()).setHardness(2.0F).setResistance(10.0F).setStepSound(SoundType.field_185851_d).setUnlocalizedName("stoneSlab2"));
+         func_176219_a(183, "spruce_fence_gate", (new BlockFenceGate(BlockPlanks.EnumType.SPRUCE)).setHardness(2.0F).setResistance(5.0F).setStepSound(SoundType.field_185848_a).setUnlocalizedName("spruceFenceGate"));
+@@ -1198,7 +1198,7 @@
+         Block block13 = (new Block(Material.rock)).setHardness(1.5F).setResistance(10.0F).setStepSound(SoundType.field_185851_d).setCreativeTab(CreativeTabs.tabBlock).setUnlocalizedName("purpurBlock");
+         func_176219_a(201, "purpur_block", block13);
+         func_176219_a(202, "purpur_pillar", (new BlockRotatedPillar(Material.rock)).setHardness(1.5F).setResistance(10.0F).setStepSound(SoundType.field_185851_d).setCreativeTab(CreativeTabs.tabBlock).setUnlocalizedName("purpurPillar"));
+-        func_176219_a(203, "purpur_stairs", (new BlockStairs(block13.func_176223_P())).setUnlocalizedName("stairsPurpur"));
++        func_176219_a(203, "purpur_stairs", (new BlockStairs(block13.getBlockState())).setUnlocalizedName("stairsPurpur"));
+         func_176219_a(204, "purpur_double_slab", (new BlockPurpurSlab.Double()).setHardness(2.0F).setResistance(10.0F).setStepSound(SoundType.field_185851_d).setUnlocalizedName("purpurSlab"));
+         func_176219_a(205, "purpur_slab", (new BlockPurpurSlab.Half()).setHardness(2.0F).setResistance(10.0F).setStepSound(SoundType.field_185851_d).setUnlocalizedName("purpurSlab"));
+         func_176219_a(206, "end_bricks", (new Block(Material.rock)).setStepSound(SoundType.field_185851_d).setHardness(0.8F).setCreativeTab(CreativeTabs.tabBlock).setUnlocalizedName("endBricks"));

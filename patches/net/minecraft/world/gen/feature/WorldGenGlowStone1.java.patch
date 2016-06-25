@@ -1,0 +1,46 @@
+--- a/net/minecraft/world/gen/feature/WorldGenGlowStone1.java
++++ b/net/minecraft/world/gen/feature/WorldGenGlowStone1.java
+@@ -11,29 +11,29 @@
+ {
+     public boolean func_180709_b(World p_180709_1_, Random p_180709_2_, BlockPos p_180709_3_)
+     {
+-        if (!p_180709_1_.func_175623_d(p_180709_3_))
++        if (!p_180709_1_.isEmpty(p_180709_3_))
+         {
+             return false;
+         }
+-        else if (p_180709_1_.func_180495_p(p_180709_3_.func_177984_a()).func_177230_c() != Blocks.netherrack)
++        else if (p_180709_1_.getBlockState(p_180709_3_.getBlockPosAbove()).getBlock() != Blocks.netherrack)
+         {
+             return false;
+         }
+         else
+         {
+-            p_180709_1_.func_180501_a(p_180709_3_, Blocks.glowstone.func_176223_P(), 2);
++            p_180709_1_.func_180501_a(p_180709_3_, Blocks.glowstone.getBlockState(), 2);
+ 
+             for (int i = 0; i < 1500; ++i)
+             {
+                 BlockPos blockpos = p_180709_3_.func_177982_a(p_180709_2_.nextInt(8) - p_180709_2_.nextInt(8), -p_180709_2_.nextInt(12), p_180709_2_.nextInt(8) - p_180709_2_.nextInt(8));
+ 
+-                if (p_180709_1_.func_180495_p(blockpos).func_185904_a() == Material.air)
++                if (p_180709_1_.getBlockState(blockpos).getMaterial() == Material.air)
+                 {
+                     int j = 0;
+ 
+                     for (EnumFacing enumfacing : EnumFacing.values())
+                     {
+-                        if (p_180709_1_.func_180495_p(blockpos.func_177972_a(enumfacing)).func_177230_c() == Blocks.glowstone)
++                        if (p_180709_1_.getBlockState(blockpos.getBlockPosRelative(enumfacing)).getBlock() == Blocks.glowstone)
+                         {
+                             ++j;
+                         }
+@@ -46,7 +46,7 @@
+ 
+                     if (j == 1)
+                     {
+-                        p_180709_1_.func_180501_a(blockpos, Blocks.glowstone.func_176223_P(), 2);
++                        p_180709_1_.func_180501_a(blockpos, Blocks.glowstone.getBlockState(), 2);
+                     }
+                 }
+             }

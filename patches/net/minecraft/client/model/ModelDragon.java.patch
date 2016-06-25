@@ -1,0 +1,58 @@
+--- a/net/minecraft/client/model/ModelDragon.java
++++ b/net/minecraft/client/model/ModelDragon.java
+@@ -137,14 +137,14 @@
+      */
+     public void render(Entity p_78088_1_, float p_78088_2_, float p_78088_3_, float p_78088_4_, float p_78088_5_, float p_78088_6_, float p_78088_7_)
+     {
+-        GlStateManager.func_179094_E();
++        GlStateManager.push();
+         EntityDragon entitydragon = (EntityDragon)p_78088_1_;
+         float f = entitydragon.prevAnimTime + (entitydragon.animTime - entitydragon.prevAnimTime) * this.partialTicks;
+         this.jaw.rotateAngleX = (float)(Math.sin((double)(f * ((float)Math.PI * 2F))) + 1.0D) * 0.2F;
+         float f1 = (float)(Math.sin((double)(f * ((float)Math.PI * 2F) - 1.0F)) + 1.0D);
+         f1 = (f1 * f1 + f1 * 2.0F) * 0.05F;
+         GlStateManager.func_179109_b(0.0F, f1 - 2.0F, -3.0F);
+-        GlStateManager.func_179114_b(f1 * 2.0F, 1.0F, 0.0F, 0.0F);
++        GlStateManager.rotate(f1 * 2.0F, 1.0F, 0.0F, 0.0F);
+         float f2 = -30.0F;
+         float f4 = 0.0F;
+         float f5 = 1.5F;
+@@ -179,9 +179,9 @@
+         this.head.rotateAngleX = this.updateRotations((double)entitydragon.func_184667_a(6, adouble, adouble2)) * 0.017453292F * 1.5F * 5.0F;
+         this.head.rotateAngleZ = -this.updateRotations(adouble2[0] - (double)f7) * 0.017453292F;
+         this.head.render(p_78088_7_);
+-        GlStateManager.func_179094_E();
++        GlStateManager.push();
+         GlStateManager.func_179109_b(0.0F, 1.0F, 0.0F);
+-        GlStateManager.func_179114_b(-f6 * 1.5F, 0.0F, 0.0F, 1.0F);
++        GlStateManager.rotate(-f6 * 1.5F, 0.0F, 0.0F, 1.0F);
+         GlStateManager.func_179109_b(0.0F, -1.0F, 0.0F);
+         this.body.rotateAngleZ = 0.0F;
+         this.body.render(p_78088_7_);
+@@ -203,7 +203,7 @@
+             this.wing.render(p_78088_7_);
+             this.frontLeg.render(p_78088_7_);
+             this.rearLeg.render(p_78088_7_);
+-            GlStateManager.func_179152_a(-1.0F, 1.0F, 1.0F);
++            GlStateManager.scale(-1.0F, 1.0F, 1.0F);
+ 
+             if (j == 0)
+             {
+@@ -211,7 +211,7 @@
+             }
+         }
+ 
+-        GlStateManager.func_179121_F();
++        GlStateManager.pop();
+         GlStateManager.func_187407_a(GlStateManager.CullFace.BACK);
+         GlStateManager.func_179129_p();
+         float f10 = -((float)Math.sin((double)(f * ((float)Math.PI * 2F)))) * 0.0F;
+@@ -237,7 +237,7 @@
+             this.spine.render(p_78088_7_);
+         }
+ 
+-        GlStateManager.func_179121_F();
++        GlStateManager.pop();
+     }
+ 
+     /**

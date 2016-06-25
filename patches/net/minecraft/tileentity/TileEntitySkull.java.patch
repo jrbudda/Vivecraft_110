@@ -1,0 +1,20 @@
+--- a/net/minecraft/tileentity/TileEntitySkull.java
++++ b/net/minecraft/tileentity/TileEntitySkull.java
+@@ -194,7 +194,7 @@
+ 
+     public void func_189668_a(Mirror p_189668_1_)
+     {
+-        if (this.worldObj != null && this.worldObj.func_180495_p(this.func_174877_v()).func_177229_b(BlockSkull.field_176418_a) == EnumFacing.UP)
++        if (this.worldObj != null && this.worldObj.getBlockState(this.func_174877_v()).func_177229_b(BlockSkull.field_176418_a) == EnumFacing.UP)
+         {
+             this.skullRotation = p_189668_1_.func_185802_a(this.skullRotation, 16);
+         }
+@@ -202,7 +202,7 @@
+ 
+     public void func_189667_a(Rotation p_189667_1_)
+     {
+-        if (this.worldObj != null && this.worldObj.func_180495_p(this.func_174877_v()).func_177229_b(BlockSkull.field_176418_a) == EnumFacing.UP)
++        if (this.worldObj != null && this.worldObj.getBlockState(this.func_174877_v()).func_177229_b(BlockSkull.field_176418_a) == EnumFacing.UP)
+         {
+             this.skullRotation = p_189667_1_.func_185833_a(this.skullRotation, 16);
+         }

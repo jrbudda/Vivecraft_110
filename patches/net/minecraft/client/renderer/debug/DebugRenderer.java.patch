@@ -1,0 +1,31 @@
+--- a/net/minecraft/client/renderer/debug/DebugRenderer.java
++++ b/net/minecraft/client/renderer/debug/DebugRenderer.java
+@@ -70,22 +70,22 @@
+             double d0 = entityplayer.lastTickPosX + (entityplayer.posX - entityplayer.lastTickPosX) * (double)p_190076_7_;
+             double d1 = entityplayer.lastTickPosY + (entityplayer.posY - entityplayer.lastTickPosY) * (double)p_190076_7_;
+             double d2 = entityplayer.lastTickPosZ + (entityplayer.posZ - entityplayer.lastTickPosZ) * (double)p_190076_7_;
+-            GlStateManager.func_179094_E();
++            GlStateManager.push();
+             GlStateManager.func_179109_b((float)(p_190076_1_ - d0), (float)(p_190076_3_ - d1) + 0.07F, (float)(p_190076_5_ - d2));
+             GlStateManager.func_187432_a(0.0F, 1.0F, 0.0F);
+-            GlStateManager.func_179152_a(0.02F, -0.02F, 0.02F);
++            GlStateManager.scale(0.02F, -0.02F, 0.02F);
+             RenderManager rendermanager = minecraft.func_175598_ae();
+-            GlStateManager.func_179114_b(-rendermanager.playerViewY, 0.0F, 1.0F, 0.0F);
+-            GlStateManager.func_179114_b((float)(rendermanager.options.thirdPersonView == 2 ? 1 : -1) * rendermanager.playerViewX, 1.0F, 0.0F, 0.0F);
++            GlStateManager.rotate(-rendermanager.playerViewY, 0.0F, 1.0F, 0.0F);
++            GlStateManager.rotate((float)(rendermanager.options.thirdPersonView == 2 ? 1 : -1) * rendermanager.playerViewX, 1.0F, 0.0F, 0.0F);
+             GlStateManager.func_179140_f();
+             GlStateManager.func_179098_w();
+             GlStateManager.func_179126_j();
+             GlStateManager.func_179132_a(true);
+-            GlStateManager.func_179152_a(-1.0F, 1.0F, 1.0F);
++            GlStateManager.scale(-1.0F, 1.0F, 1.0F);
+             fontrenderer.drawString(p_190076_0_, -fontrenderer.getStringWidth(p_190076_0_) / 2, 0, p_190076_8_);
+             GlStateManager.func_179145_e();
+             GlStateManager.func_179131_c(1.0F, 1.0F, 1.0F, 1.0F);
+-            GlStateManager.func_179121_F();
++            GlStateManager.pop();
+         }
+     }
+ 

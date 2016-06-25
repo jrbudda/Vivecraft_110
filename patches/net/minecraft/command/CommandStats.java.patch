@@ -1,0 +1,20 @@
+--- a/net/minecraft/command/CommandStats.java
++++ b/net/minecraft/command/CommandStats.java
+@@ -129,7 +129,7 @@
+ 
+                     if (tileentity == null)
+                     {
+-                        throw new CommandException("commands.stats.noCompatibleBlock", new Object[] {Integer.valueOf(blockpos.func_177958_n()), Integer.valueOf(blockpos.func_177956_o()), Integer.valueOf(blockpos.func_177952_p())});
++                        throw new CommandException("commands.stats.noCompatibleBlock", new Object[] {Integer.valueOf(blockpos.getX()), Integer.valueOf(blockpos.getY()), Integer.valueOf(blockpos.getZ())});
+                     }
+ 
+                     if (tileentity instanceof TileEntityCommandBlock)
+@@ -140,7 +140,7 @@
+                     {
+                         if (!(tileentity instanceof TileEntitySign))
+                         {
+-                            throw new CommandException("commands.stats.noCompatibleBlock", new Object[] {Integer.valueOf(blockpos.func_177958_n()), Integer.valueOf(blockpos.func_177956_o()), Integer.valueOf(blockpos.func_177952_p())});
++                            throw new CommandException("commands.stats.noCompatibleBlock", new Object[] {Integer.valueOf(blockpos.getX()), Integer.valueOf(blockpos.getY()), Integer.valueOf(blockpos.getZ())});
+                         }
+ 
+                         commandresultstats = ((TileEntitySign)tileentity).func_174880_d();

@@ -1,0 +1,371 @@
+--- a/net/minecraft/util/math/BlockPos.java
++++ b/net/minecraft/util/math/BlockPos.java
+@@ -13,8 +13,8 @@
+ @Immutable
+ public class BlockPos extends Vec3i
+ {
+-    private static final Logger field_185335_c = LogManager.getLogger();
+-    public static final BlockPos field_177992_a = new BlockPos(0, 0, 0);
++    private static final Logger logger = LogManager.getLogger();
++    public static final BlockPos createDefault = new BlockPos(0, 0, 0);
+     private static final int field_177990_b = 1 + MathHelper.calculateLogBaseTwo(MathHelper.roundUpToPowerOfTwo(30000000));
+     private static final int field_177991_c = field_177990_b;
+     private static final int field_177989_d = 64 - field_177990_b - field_177991_c;
+@@ -46,107 +46,107 @@
+ 
+     public BlockPos(Vec3i p_i46034_1_)
+     {
+-        this(p_i46034_1_.func_177958_n(), p_i46034_1_.func_177956_o(), p_i46034_1_.func_177952_p());
++        this(p_i46034_1_.getX(), p_i46034_1_.getY(), p_i46034_1_.getZ());
+     }
+ 
+     public BlockPos func_177963_a(double p_177963_1_, double p_177963_3_, double p_177963_5_)
+     {
+-        return p_177963_1_ == 0.0D && p_177963_3_ == 0.0D && p_177963_5_ == 0.0D ? this : new BlockPos((double)this.func_177958_n() + p_177963_1_, (double)this.func_177956_o() + p_177963_3_, (double)this.func_177952_p() + p_177963_5_);
++        return p_177963_1_ == 0.0D && p_177963_3_ == 0.0D && p_177963_5_ == 0.0D ? this : new BlockPos((double)this.getX() + p_177963_1_, (double)this.getY() + p_177963_3_, (double)this.getZ() + p_177963_5_);
+     }
+ 
+     public BlockPos func_177982_a(int p_177982_1_, int p_177982_2_, int p_177982_3_)
+     {
+-        return p_177982_1_ == 0 && p_177982_2_ == 0 && p_177982_3_ == 0 ? this : new BlockPos(this.func_177958_n() + p_177982_1_, this.func_177956_o() + p_177982_2_, this.func_177952_p() + p_177982_3_);
++        return p_177982_1_ == 0 && p_177982_2_ == 0 && p_177982_3_ == 0 ? this : new BlockPos(this.getX() + p_177982_1_, this.getY() + p_177982_2_, this.getZ() + p_177982_3_);
+     }
+ 
+     public BlockPos func_177971_a(Vec3i p_177971_1_)
+     {
+-        return p_177971_1_.func_177958_n() == 0 && p_177971_1_.func_177956_o() == 0 && p_177971_1_.func_177952_p() == 0 ? this : new BlockPos(this.func_177958_n() + p_177971_1_.func_177958_n(), this.func_177956_o() + p_177971_1_.func_177956_o(), this.func_177952_p() + p_177971_1_.func_177952_p());
++        return p_177971_1_.getX() == 0 && p_177971_1_.getY() == 0 && p_177971_1_.getZ() == 0 ? this : new BlockPos(this.getX() + p_177971_1_.getX(), this.getY() + p_177971_1_.getY(), this.getZ() + p_177971_1_.getZ());
+     }
+ 
+     public BlockPos func_177973_b(Vec3i p_177973_1_)
+     {
+-        return p_177973_1_.func_177958_n() == 0 && p_177973_1_.func_177956_o() == 0 && p_177973_1_.func_177952_p() == 0 ? this : new BlockPos(this.func_177958_n() - p_177973_1_.func_177958_n(), this.func_177956_o() - p_177973_1_.func_177956_o(), this.func_177952_p() - p_177973_1_.func_177952_p());
++        return p_177973_1_.getX() == 0 && p_177973_1_.getY() == 0 && p_177973_1_.getZ() == 0 ? this : new BlockPos(this.getX() - p_177973_1_.getX(), this.getY() - p_177973_1_.getY(), this.getZ() - p_177973_1_.getZ());
+     }
+ 
+-    public BlockPos func_177984_a()
++    public BlockPos getBlockPosAbove()
+     {
+-        return this.func_177981_b(1);
++        return this.getBlockPosAbove(1);
+     }
+ 
+-    public BlockPos func_177981_b(int p_177981_1_)
++    public BlockPos getBlockPosAbove(int p_177981_1_)
+     {
+-        return this.func_177967_a(EnumFacing.UP, p_177981_1_);
++        return this.getBlockPosRelative(EnumFacing.UP, p_177981_1_);
+     }
+ 
+-    public BlockPos func_177977_b()
++    public BlockPos getBlockPosBelow()
+     {
+-        return this.func_177979_c(1);
++        return this.getBlockPosBelow(1);
+     }
+ 
+-    public BlockPos func_177979_c(int p_177979_1_)
++    public BlockPos getBlockPosBelow(int p_177979_1_)
+     {
+-        return this.func_177967_a(EnumFacing.DOWN, p_177979_1_);
++        return this.getBlockPosRelative(EnumFacing.DOWN, p_177979_1_);
+     }
+ 
+-    public BlockPos func_177978_c()
++    public BlockPos getBlockPosNorth()
+     {
+-        return this.func_177964_d(1);
++        return this.getBlockPosNorth(1);
+     }
+ 
+-    public BlockPos func_177964_d(int p_177964_1_)
++    public BlockPos getBlockPosNorth(int p_177964_1_)
+     {
+-        return this.func_177967_a(EnumFacing.NORTH, p_177964_1_);
++        return this.getBlockPosRelative(EnumFacing.NORTH, p_177964_1_);
+     }
+ 
+-    public BlockPos func_177968_d()
++    public BlockPos getBlockPosSouth()
+     {
+-        return this.func_177970_e(1);
++        return this.getBlockPosSouth(1);
+     }
+ 
+-    public BlockPos func_177970_e(int p_177970_1_)
++    public BlockPos getBlockPosSouth(int p_177970_1_)
+     {
+-        return this.func_177967_a(EnumFacing.SOUTH, p_177970_1_);
++        return this.getBlockPosRelative(EnumFacing.SOUTH, p_177970_1_);
+     }
+ 
+-    public BlockPos func_177976_e()
++    public BlockPos getBlockPosWest()
+     {
+-        return this.func_177985_f(1);
++        return this.getBlockPosWest(1);
+     }
+ 
+-    public BlockPos func_177985_f(int p_177985_1_)
++    public BlockPos getBlockPosWest(int p_177985_1_)
+     {
+-        return this.func_177967_a(EnumFacing.WEST, p_177985_1_);
++        return this.getBlockPosRelative(EnumFacing.WEST, p_177985_1_);
+     }
+ 
+-    public BlockPos func_177974_f()
++    public BlockPos getBlockPosEast()
+     {
+-        return this.func_177965_g(1);
++        return this.getBlockPosEast(1);
+     }
+ 
+-    public BlockPos func_177965_g(int p_177965_1_)
++    public BlockPos getBlockPosEast(int p_177965_1_)
+     {
+-        return this.func_177967_a(EnumFacing.EAST, p_177965_1_);
++        return this.getBlockPosRelative(EnumFacing.EAST, p_177965_1_);
+     }
+ 
+-    public BlockPos func_177972_a(EnumFacing p_177972_1_)
++    public BlockPos getBlockPosRelative(EnumFacing p_177972_1_)
+     {
+-        return this.func_177967_a(p_177972_1_, 1);
++        return this.getBlockPosRelative(p_177972_1_, 1);
+     }
+ 
+-    public BlockPos func_177967_a(EnumFacing p_177967_1_, int p_177967_2_)
++    public BlockPos getBlockPosRelative(EnumFacing p_177967_1_, int p_177967_2_)
+     {
+-        return p_177967_2_ == 0 ? this : new BlockPos(this.func_177958_n() + p_177967_1_.getFrontOffsetX() * p_177967_2_, this.func_177956_o() + p_177967_1_.getFrontOffsetY() * p_177967_2_, this.func_177952_p() + p_177967_1_.getFrontOffsetZ() * p_177967_2_);
++        return p_177967_2_ == 0 ? this : new BlockPos(this.getX() + p_177967_1_.getFrontOffsetX() * p_177967_2_, this.getY() + p_177967_1_.getFrontOffsetY() * p_177967_2_, this.getZ() + p_177967_1_.getFrontOffsetZ() * p_177967_2_);
+     }
+ 
+     public BlockPos func_177955_d(Vec3i p_177955_1_)
+     {
+-        return new BlockPos(this.func_177956_o() * p_177955_1_.func_177952_p() - this.func_177952_p() * p_177955_1_.func_177956_o(), this.func_177952_p() * p_177955_1_.func_177958_n() - this.func_177958_n() * p_177955_1_.func_177952_p(), this.func_177958_n() * p_177955_1_.func_177956_o() - this.func_177956_o() * p_177955_1_.func_177958_n());
++        return new BlockPos(this.getY() * p_177955_1_.getZ() - this.getZ() * p_177955_1_.getY(), this.getZ() * p_177955_1_.getX() - this.getX() * p_177955_1_.getZ(), this.getX() * p_177955_1_.getY() - this.getY() * p_177955_1_.getX());
+     }
+ 
+     public long func_177986_g()
+     {
+-        return ((long)this.func_177958_n() & field_177994_h) << field_177988_g | ((long)this.func_177956_o() & field_177995_i) << field_177987_f | ((long)this.func_177952_p() & field_177993_j) << 0;
++        return ((long)this.getX() & field_177994_h) << field_177988_g | ((long)this.getY() & field_177995_i) << field_177987_f | ((long)this.getZ() & field_177993_j) << 0;
+     }
+ 
+     public static BlockPos func_177969_a(long p_177969_0_)
+@@ -157,10 +157,10 @@
+         return new BlockPos(i, j, k);
+     }
+ 
+-    public static Iterable<BlockPos> func_177980_a(BlockPos p_177980_0_, BlockPos p_177980_1_)
++    public static Iterable<BlockPos> getBlocksBetween(BlockPos p_177980_0_, BlockPos p_177980_1_)
+     {
+-        final BlockPos blockpos = new BlockPos(Math.min(p_177980_0_.func_177958_n(), p_177980_1_.func_177958_n()), Math.min(p_177980_0_.func_177956_o(), p_177980_1_.func_177956_o()), Math.min(p_177980_0_.func_177952_p(), p_177980_1_.func_177952_p()));
+-        final BlockPos blockpos1 = new BlockPos(Math.max(p_177980_0_.func_177958_n(), p_177980_1_.func_177958_n()), Math.max(p_177980_0_.func_177956_o(), p_177980_1_.func_177956_o()), Math.max(p_177980_0_.func_177952_p(), p_177980_1_.func_177952_p()));
++        final BlockPos blockpos = new BlockPos(Math.min(p_177980_0_.getX(), p_177980_1_.getX()), Math.min(p_177980_0_.getY(), p_177980_1_.getY()), Math.min(p_177980_0_.getZ(), p_177980_1_.getZ()));
++        final BlockPos blockpos1 = new BlockPos(Math.max(p_177980_0_.getX(), p_177980_1_.getX()), Math.max(p_177980_0_.getY(), p_177980_1_.getY()), Math.max(p_177980_0_.getZ(), p_177980_1_.getZ()));
+         return new Iterable<BlockPos>()
+         {
+             public Iterator<BlockPos> iterator()
+@@ -181,23 +181,23 @@
+                         }
+                         else
+                         {
+-                            int i = this.field_179309_b.func_177958_n();
+-                            int j = this.field_179309_b.func_177956_o();
+-                            int k = this.field_179309_b.func_177952_p();
++                            int i = this.field_179309_b.getX();
++                            int j = this.field_179309_b.getY();
++                            int k = this.field_179309_b.getZ();
+ 
+-                            if (i < blockpos1.func_177958_n())
++                            if (i < blockpos1.getX())
+                             {
+                                 ++i;
+                             }
+-                            else if (j < blockpos1.func_177956_o())
++                            else if (j < blockpos1.getY())
+                             {
+-                                i = blockpos.func_177958_n();
++                                i = blockpos.getX();
+                                 ++j;
+                             }
+-                            else if (k < blockpos1.func_177952_p())
++                            else if (k < blockpos1.getZ())
+                             {
+-                                i = blockpos.func_177958_n();
+-                                j = blockpos.func_177956_o();
++                                i = blockpos.getX();
++                                j = blockpos.getY();
+                                 ++k;
+                             }
+ 
+@@ -217,8 +217,8 @@
+ 
+     public static Iterable<BlockPos.MutableBlockPos> func_177975_b(BlockPos p_177975_0_, BlockPos p_177975_1_)
+     {
+-        final BlockPos blockpos = new BlockPos(Math.min(p_177975_0_.func_177958_n(), p_177975_1_.func_177958_n()), Math.min(p_177975_0_.func_177956_o(), p_177975_1_.func_177956_o()), Math.min(p_177975_0_.func_177952_p(), p_177975_1_.func_177952_p()));
+-        final BlockPos blockpos1 = new BlockPos(Math.max(p_177975_0_.func_177958_n(), p_177975_1_.func_177958_n()), Math.max(p_177975_0_.func_177956_o(), p_177975_1_.func_177956_o()), Math.max(p_177975_0_.func_177952_p(), p_177975_1_.func_177952_p()));
++        final BlockPos blockpos = new BlockPos(Math.min(p_177975_0_.getX(), p_177975_1_.getX()), Math.min(p_177975_0_.getY(), p_177975_1_.getY()), Math.min(p_177975_0_.getZ(), p_177975_1_.getZ()));
++        final BlockPos blockpos1 = new BlockPos(Math.max(p_177975_0_.getX(), p_177975_1_.getX()), Math.max(p_177975_0_.getY(), p_177975_1_.getY()), Math.max(p_177975_0_.getZ(), p_177975_1_.getZ()));
+         return new Iterable<BlockPos.MutableBlockPos>()
+         {
+             public Iterator<BlockPos.MutableBlockPos> iterator()
+@@ -230,7 +230,7 @@
+                     {
+                         if (this.field_179314_b == null)
+                         {
+-                            this.field_179314_b = new BlockPos.MutableBlockPos(blockpos.func_177958_n(), blockpos.func_177956_o(), blockpos.func_177952_p());
++                            this.field_179314_b = new BlockPos.MutableBlockPos(blockpos.getX(), blockpos.getY(), blockpos.getZ());
+                             return this.field_179314_b;
+                         }
+                         else if (this.field_179314_b.equals(blockpos1))
+@@ -239,29 +239,29 @@
+                         }
+                         else
+                         {
+-                            int i = this.field_179314_b.func_177958_n();
+-                            int j = this.field_179314_b.func_177956_o();
+-                            int k = this.field_179314_b.func_177952_p();
++                            int i = this.field_179314_b.getX();
++                            int j = this.field_179314_b.getY();
++                            int k = this.field_179314_b.getZ();
+ 
+-                            if (i < blockpos1.func_177958_n())
++                            if (i < blockpos1.getX())
+                             {
+                                 ++i;
+                             }
+-                            else if (j < blockpos1.func_177956_o())
++                            else if (j < blockpos1.getY())
+                             {
+-                                i = blockpos.func_177958_n();
++                                i = blockpos.getX();
+                                 ++j;
+                             }
+-                            else if (k < blockpos1.func_177952_p())
++                            else if (k < blockpos1.getZ())
+                             {
+-                                i = blockpos.func_177958_n();
+-                                j = blockpos.func_177956_o();
++                                i = blockpos.getX();
++                                j = blockpos.getY();
+                                 ++k;
+                             }
+ 
+-                            this.field_179314_b.field_177997_b = i;
+-                            this.field_179314_b.field_177998_c = j;
+-                            this.field_179314_b.field_177996_d = k;
++                            this.field_179314_b.posX = i;
++                            this.field_179314_b.posY = j;
++                            this.field_179314_b.posZ = k;
+                             return this.field_179314_b;
+                         }
+                     }
+@@ -272,9 +272,9 @@
+ 
+     public static class MutableBlockPos extends BlockPos
+     {
+-        protected int field_177997_b;
+-        protected int field_177998_c;
+-        protected int field_177996_d;
++        protected int posX;
++        protected int posY;
++        protected int posZ;
+ 
+         public MutableBlockPos()
+         {
+@@ -283,37 +283,37 @@
+ 
+         public MutableBlockPos(BlockPos p_i46587_1_)
+         {
+-            this(p_i46587_1_.func_177958_n(), p_i46587_1_.func_177956_o(), p_i46587_1_.func_177952_p());
++            this(p_i46587_1_.getX(), p_i46587_1_.getY(), p_i46587_1_.getZ());
+         }
+ 
+         public MutableBlockPos(int p_i46024_1_, int p_i46024_2_, int p_i46024_3_)
+         {
+             super(0, 0, 0);
+-            this.field_177997_b = p_i46024_1_;
+-            this.field_177998_c = p_i46024_2_;
+-            this.field_177996_d = p_i46024_3_;
++            this.posX = p_i46024_1_;
++            this.posY = p_i46024_2_;
++            this.posZ = p_i46024_3_;
+         }
+ 
+-        public int func_177958_n()
++        public int getX()
+         {
+-            return this.field_177997_b;
++            return this.posX;
+         }
+ 
+-        public int func_177956_o()
++        public int getY()
+         {
+-            return this.field_177998_c;
++            return this.posY;
+         }
+ 
+-        public int func_177952_p()
++        public int getZ()
+         {
+-            return this.field_177996_d;
++            return this.posZ;
+         }
+ 
+         public BlockPos.MutableBlockPos func_181079_c(int p_181079_1_, int p_181079_2_, int p_181079_3_)
+         {
+-            this.field_177997_b = p_181079_1_;
+-            this.field_177998_c = p_181079_2_;
+-            this.field_177996_d = p_181079_3_;
++            this.posX = p_181079_1_;
++            this.posY = p_181079_2_;
++            this.posZ = p_181079_3_;
+             return this;
+         }
+ 
+@@ -329,7 +329,7 @@
+ 
+         public BlockPos.MutableBlockPos func_189533_g(Vec3i p_189533_1_)
+         {
+-            return this.func_181079_c(p_189533_1_.func_177958_n(), p_189533_1_.func_177956_o(), p_189533_1_.func_177952_p());
++            return this.func_181079_c(p_189533_1_.getX(), p_189533_1_.getY(), p_189533_1_.getZ());
+         }
+ 
+         public BlockPos.MutableBlockPos func_189536_c(EnumFacing p_189536_1_)
+@@ -339,12 +339,12 @@
+ 
+         public BlockPos.MutableBlockPos func_189534_c(EnumFacing p_189534_1_, int p_189534_2_)
+         {
+-            return this.func_181079_c(this.field_177997_b + p_189534_1_.getFrontOffsetX() * p_189534_2_, this.field_177998_c + p_189534_1_.getFrontOffsetY() * p_189534_2_, this.field_177996_d + p_189534_1_.getFrontOffsetZ() * p_189534_2_);
++            return this.func_181079_c(this.posX + p_189534_1_.getFrontOffsetX() * p_189534_2_, this.posY + p_189534_1_.getFrontOffsetY() * p_189534_2_, this.posZ + p_189534_1_.getFrontOffsetZ() * p_189534_2_);
+         }
+ 
+         public void func_185336_p(int p_185336_1_)
+         {
+-            this.field_177998_c = p_185336_1_;
++            this.posY = p_185336_1_;
+         }
+ 
+         public BlockPos func_185334_h()
+@@ -375,7 +375,7 @@
+ 
+         public static BlockPos.PooledMutableBlockPos func_185342_g(Vec3i p_185342_0_)
+         {
+-            return func_185339_c(p_185342_0_.func_177958_n(), p_185342_0_.func_177956_o(), p_185342_0_.func_177952_p());
++            return func_185339_c(p_185342_0_.getX(), p_185342_0_.getY(), p_185342_0_.getZ());
+         }
+ 
+         public static BlockPos.PooledMutableBlockPos func_185339_c(int p_185339_0_, int p_185339_1_, int p_185339_2_)
+@@ -415,7 +415,7 @@
+         {
+             if (this.field_185350_f)
+             {
+-                BlockPos.field_185335_c.error("PooledMutableBlockPosition modified after it was released.", new Throwable());
++                BlockPos.logger.error("PooledMutableBlockPosition modified after it was released.", new Throwable());
+                 this.field_185350_f = false;
+             }
+ 

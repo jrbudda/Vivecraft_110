@@ -1,0 +1,44 @@
+--- a/net/minecraft/entity/item/EntityMinecartTNT.java
++++ b/net/minecraft/entity/item/EntityMinecartTNT.java
+@@ -43,7 +43,7 @@
+ 
+     public IBlockState func_180457_u()
+     {
+-        return Blocks.tnt.func_176223_P();
++        return Blocks.tnt.getBlockState();
+     }
+ 
+     /**
+@@ -56,7 +56,7 @@
+         if (this.minecartTNTFuse > 0)
+         {
+             --this.minecartTNTFuse;
+-            this.worldObj.func_175688_a(EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY + 0.5D, this.posZ, 0.0D, 0.0D, 0.0D, new int[0]);
++            this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY + 0.5D, this.posZ, 0.0D, 0.0D, 0.0D, new int[0]);
+         }
+         else if (this.minecartTNTFuse == 0)
+         {
+@@ -176,7 +176,7 @@
+ 
+             if (!this.func_174814_R())
+             {
+-                this.worldObj.func_184148_a((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.field_187904_gd, SoundCategory.BLOCKS, 1.0F, 1.0F);
++                this.worldObj.playSound((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.field_187904_gd, SoundCategory.BLOCKS, 1.0F, 1.0F);
+             }
+         }
+     }
+@@ -196,12 +196,12 @@
+ 
+     public float func_180428_a(Explosion p_180428_1_, World p_180428_2_, BlockPos p_180428_3_, IBlockState p_180428_4_)
+     {
+-        return !this.isIgnited() || !BlockRailBase.func_176563_d(p_180428_4_) && !BlockRailBase.func_176562_d(p_180428_2_, p_180428_3_.func_177984_a()) ? super.func_180428_a(p_180428_1_, p_180428_2_, p_180428_3_, p_180428_4_) : 0.0F;
++        return !this.isIgnited() || !BlockRailBase.func_176563_d(p_180428_4_) && !BlockRailBase.func_176562_d(p_180428_2_, p_180428_3_.getBlockPosAbove()) ? super.func_180428_a(p_180428_1_, p_180428_2_, p_180428_3_, p_180428_4_) : 0.0F;
+     }
+ 
+     public boolean func_174816_a(Explosion p_174816_1_, World p_174816_2_, BlockPos p_174816_3_, IBlockState p_174816_4_, float p_174816_5_)
+     {
+-        return !this.isIgnited() || !BlockRailBase.func_176563_d(p_174816_4_) && !BlockRailBase.func_176562_d(p_174816_2_, p_174816_3_.func_177984_a()) ? super.func_174816_a(p_174816_1_, p_174816_2_, p_174816_3_, p_174816_4_, p_174816_5_) : false;
++        return !this.isIgnited() || !BlockRailBase.func_176563_d(p_174816_4_) && !BlockRailBase.func_176562_d(p_174816_2_, p_174816_3_.getBlockPosAbove()) ? super.func_174816_a(p_174816_1_, p_174816_2_, p_174816_3_, p_174816_4_, p_174816_5_) : false;
+     }
+ 
+     /**

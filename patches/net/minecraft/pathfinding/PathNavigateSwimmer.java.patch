@@ -1,0 +1,10 @@
+--- a/net/minecraft/pathfinding/PathNavigateSwimmer.java
++++ b/net/minecraft/pathfinding/PathNavigateSwimmer.java
+@@ -76,6 +76,6 @@
+ 
+     public boolean func_188555_b(BlockPos p_188555_1_)
+     {
+-        return !this.worldObj.func_180495_p(p_188555_1_).func_185913_b();
++        return !this.worldObj.getBlockState(p_188555_1_).func_185913_b();
+     }
+ }

@@ -1,0 +1,30 @@
+--- a/net/minecraft/client/renderer/entity/layers/LayerCreeperCharge.java
++++ b/net/minecraft/client/renderer/entity/layers/LayerCreeperCharge.java
+@@ -24,11 +24,11 @@
+             boolean flag = p_177141_1_.isInvisible();
+             GlStateManager.func_179132_a(!flag);
+             this.field_177170_b.bindTexture(field_177172_a);
+-            GlStateManager.func_179128_n(5890);
+-            GlStateManager.func_179096_D();
++            GlStateManager.matrixMode(5890);
++            GlStateManager.loadIdentity();
+             float f = (float)p_177141_1_.ticksExisted + p_177141_4_;
+             GlStateManager.func_179109_b(f * 0.01F, f * 0.01F, 0.0F);
+-            GlStateManager.func_179128_n(5888);
++            GlStateManager.matrixMode(5888);
+             GlStateManager.func_179147_l();
+             float f1 = 0.5F;
+             GlStateManager.func_179131_c(0.5F, 0.5F, 0.5F, 1.0F);
+@@ -36,9 +36,9 @@
+             GlStateManager.func_187401_a(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
+             this.field_177171_c.func_178686_a(this.field_177170_b.func_177087_b());
+             this.field_177171_c.render(p_177141_1_, p_177141_2_, p_177141_3_, p_177141_5_, p_177141_6_, p_177141_7_, p_177141_8_);
+-            GlStateManager.func_179128_n(5890);
+-            GlStateManager.func_179096_D();
+-            GlStateManager.func_179128_n(5888);
++            GlStateManager.matrixMode(5890);
++            GlStateManager.loadIdentity();
++            GlStateManager.matrixMode(5888);
+             GlStateManager.func_179145_e();
+             GlStateManager.func_179084_k();
+             GlStateManager.func_179132_a(flag);

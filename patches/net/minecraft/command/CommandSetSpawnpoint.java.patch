@@ -1,0 +1,11 @@
+--- a/net/minecraft/command/CommandSetSpawnpoint.java
++++ b/net/minecraft/command/CommandSetSpawnpoint.java
+@@ -41,7 +41,7 @@
+             if (entityplayermp.worldObj != null)
+             {
+                 entityplayermp.func_180473_a(blockpos, true);
+-                notifyOperators(p_184881_2_, this, "commands.spawnpoint.success", new Object[] {entityplayermp.getCommandSenderName(), Integer.valueOf(blockpos.func_177958_n()), Integer.valueOf(blockpos.func_177956_o()), Integer.valueOf(blockpos.func_177952_p())});
++                notifyOperators(p_184881_2_, this, "commands.spawnpoint.success", new Object[] {entityplayermp.getCommandSenderName(), Integer.valueOf(blockpos.getX()), Integer.valueOf(blockpos.getY()), Integer.valueOf(blockpos.getZ())});
+             }
+         }
+     }

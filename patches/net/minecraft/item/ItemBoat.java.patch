@@ -1,0 +1,36 @@
+--- a/net/minecraft/item/ItemBoat.java
++++ b/net/minecraft/item/ItemBoat.java
+@@ -56,7 +56,7 @@
+         {
+             Vec3d vec3d2 = player.getLook(1.0F);
+             boolean flag = false;
+-            List<Entity> list = worldIn.getEntitiesWithinAABBExcludingEntity(player, player.func_174813_aQ().addCoord(vec3d2.xCoord * 5.0D, vec3d2.yCoord * 5.0D, vec3d2.zCoord * 5.0D).func_186662_g(1.0D));
++            List<Entity> list = worldIn.getEntitiesWithinAABBExcludingEntity(player, player.func_174813_aQ().addCoord(vec3d2.xCoord * 5.0D, vec3d2.yCoord * 5.0D, vec3d2.zCoord * 5.0D).expand(1.0D));
+ 
+             for (int i = 0; i < list.size(); ++i)
+             {
+@@ -64,7 +64,7 @@
+ 
+                 if (entity.canBeCollidedWith())
+                 {
+-                    AxisAlignedBB axisalignedbb = entity.func_174813_aQ().func_186662_g((double)entity.getCollisionBorderSize());
++                    AxisAlignedBB axisalignedbb = entity.func_174813_aQ().expand((double)entity.getCollisionBorderSize());
+ 
+                     if (axisalignedbb.isVecInside(vec3d))
+                     {
+@@ -83,13 +83,13 @@
+             }
+             else
+             {
+-                Block block = worldIn.func_180495_p(raytraceresult.func_178782_a()).func_177230_c();
++                Block block = worldIn.getBlockState(raytraceresult.getBlock()).getBlock();
+                 boolean flag1 = block == Blocks.water || block == Blocks.flowing_water;
+                 EntityBoat entityboat = new EntityBoat(worldIn, raytraceresult.hitVec.xCoord, flag1 ? raytraceresult.hitVec.yCoord - 0.12D : raytraceresult.hitVec.yCoord, raytraceresult.hitVec.zCoord);
+                 entityboat.func_184458_a(this.field_185057_a);
+                 entityboat.rotationYaw = player.rotationYaw;
+ 
+-                if (!worldIn.func_184144_a(entityboat, entityboat.func_174813_aQ().func_186662_g(-0.1D)).isEmpty())
++                if (!worldIn.getCollisionBoxes(entityboat, entityboat.func_174813_aQ().expand(-0.1D)).isEmpty())
+                 {
+                     return new ActionResult(EnumActionResult.FAIL, itemStackIn);
+                 }

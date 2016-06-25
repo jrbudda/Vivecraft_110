@@ -1,0 +1,11 @@
+--- a/net/minecraft/client/renderer/block/statemap/StateMap.java
++++ b/net/minecraft/client/renderer/block/statemap/StateMap.java
+@@ -32,7 +32,7 @@
+ 
+         if (this.field_178142_a == null)
+         {
+-            s = ((ResourceLocation)Block.blockRegistry.func_177774_c(p_178132_1_.func_177230_c())).toString();
++            s = ((ResourceLocation)Block.blockRegistry.func_177774_c(p_178132_1_.getBlock())).toString();
+         }
+         else
+         {

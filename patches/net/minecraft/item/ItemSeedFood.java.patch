@@ -1,0 +1,14 @@
+--- a/net/minecraft/item/ItemSeedFood.java
++++ b/net/minecraft/item/ItemSeedFood.java
+@@ -24,9 +24,9 @@
+ 
+     public EnumActionResult func_180614_a(ItemStack p_180614_1_, EntityPlayer p_180614_2_, World p_180614_3_, BlockPos p_180614_4_, EnumHand p_180614_5_, EnumFacing p_180614_6_, float p_180614_7_, float p_180614_8_, float p_180614_9_)
+     {
+-        if (p_180614_6_ == EnumFacing.UP && p_180614_2_.func_175151_a(p_180614_4_.func_177972_a(p_180614_6_), p_180614_6_, p_180614_1_) && p_180614_3_.func_180495_p(p_180614_4_).func_177230_c() == this.soilId && p_180614_3_.func_175623_d(p_180614_4_.func_177984_a()))
++        if (p_180614_6_ == EnumFacing.UP && p_180614_2_.func_175151_a(p_180614_4_.getBlockPosRelative(p_180614_6_), p_180614_6_, p_180614_1_) && p_180614_3_.getBlockState(p_180614_4_).getBlock() == this.soilId && p_180614_3_.isEmpty(p_180614_4_.getBlockPosAbove()))
+         {
+-            p_180614_3_.func_180501_a(p_180614_4_.func_177984_a(), this.field_150908_b.func_176223_P(), 11);
++            p_180614_3_.func_180501_a(p_180614_4_.getBlockPosAbove(), this.field_150908_b.getBlockState(), 11);
+             --p_180614_1_.stackSize;
+             return EnumActionResult.SUCCESS;
+         }

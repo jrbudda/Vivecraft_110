@@ -1,0 +1,126 @@
+--- a/net/minecraft/pathfinding/WalkNodeProcessor.java
++++ b/net/minecraft/pathfinding/WalkNodeProcessor.java
+@@ -45,7 +45,7 @@
+             i = (int)this.field_186326_b.func_174813_aQ().minY;
+             BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos(MathHelper.floor_double(this.field_186326_b.posX), i, MathHelper.floor_double(this.field_186326_b.posZ));
+ 
+-            for (Block block = this.field_176169_a.func_180495_p(blockpos$mutableblockpos).func_177230_c(); block == Blocks.flowing_water || block == Blocks.water; block = this.field_176169_a.func_180495_p(blockpos$mutableblockpos).func_177230_c())
++            for (Block block = this.field_176169_a.getBlockState(blockpos$mutableblockpos).getBlock(); block == Blocks.flowing_water || block == Blocks.water; block = this.field_176169_a.getBlockState(blockpos$mutableblockpos).getBlock())
+             {
+                 ++i;
+                 blockpos$mutableblockpos.func_181079_c(MathHelper.floor_double(this.field_186326_b.posX), i, MathHelper.floor_double(this.field_186326_b.posZ));
+@@ -59,16 +59,16 @@
+         {
+             BlockPos blockpos;
+ 
+-            for (blockpos = new BlockPos(this.field_186326_b); (this.field_176169_a.func_180495_p(blockpos).func_185904_a() == Material.air || this.field_176169_a.func_180495_p(blockpos).func_177230_c().func_176205_b(this.field_176169_a, blockpos)) && blockpos.func_177956_o() > 0; blockpos = blockpos.func_177977_b())
++            for (blockpos = new BlockPos(this.field_186326_b); (this.field_176169_a.getBlockState(blockpos).getMaterial() == Material.air || this.field_176169_a.getBlockState(blockpos).getBlock().func_176205_b(this.field_176169_a, blockpos)) && blockpos.getY() > 0; blockpos = blockpos.getBlockPosBelow())
+             {
+                 ;
+             }
+ 
+-            i = blockpos.func_177984_a().func_177956_o();
++            i = blockpos.getBlockPosAbove().getY();
+         }
+ 
+         BlockPos blockpos2 = new BlockPos(this.field_186326_b);
+-        PathNodeType pathnodetype1 = this.func_186331_a(this.field_186326_b, blockpos2.func_177958_n(), i, blockpos2.func_177952_p());
++        PathNodeType pathnodetype1 = this.func_186331_a(this.field_186326_b, blockpos2.getX(), i, blockpos2.getZ());
+ 
+         if (this.field_186326_b.func_184643_a(pathnodetype1) < 0.0F)
+         {
+@@ -84,12 +84,12 @@
+ 
+                 if (this.field_186326_b.func_184643_a(pathnodetype) >= 0.0F)
+                 {
+-                    return this.func_176159_a(blockpos1.func_177958_n(), blockpos1.func_177956_o(), blockpos1.func_177952_p());
++                    return this.func_176159_a(blockpos1.getX(), blockpos1.getY(), blockpos1.getZ());
+                 }
+             }
+         }
+ 
+-        return this.func_176159_a(blockpos2.func_177958_n(), i, blockpos2.func_177952_p());
++        return this.func_176159_a(blockpos2.getX(), i, blockpos2.getZ());
+     }
+ 
+     public PathPoint func_186325_a(double p_186325_1_, double p_186325_3_, double p_186325_5_)
+@@ -108,8 +108,8 @@
+             j = MathHelper.floor_float(Math.max(1.0F, this.field_186326_b.stepHeight));
+         }
+ 
+-        BlockPos blockpos = (new BlockPos(p_186320_2_.xCoord, p_186320_2_.yCoord, p_186320_2_.zCoord)).func_177977_b();
+-        double d0 = (double)p_186320_2_.yCoord - (1.0D - this.field_176169_a.func_180495_p(blockpos).func_185900_c(this.field_176169_a, blockpos).maxY);
++        BlockPos blockpos = (new BlockPos(p_186320_2_.xCoord, p_186320_2_.yCoord, p_186320_2_.zCoord)).getBlockPosBelow();
++        double d0 = (double)p_186320_2_.yCoord - (1.0D - this.field_176169_a.getBlockState(blockpos).func_185900_c(this.field_176169_a, blockpos).maxY);
+         PathPoint pathpoint = this.func_186332_a(p_186320_2_.xCoord, p_186320_2_.yCoord, p_186320_2_.zCoord + 1, j, d0, EnumFacing.SOUTH);
+         PathPoint pathpoint1 = this.func_186332_a(p_186320_2_.xCoord - 1, p_186320_2_.yCoord, p_186320_2_.zCoord, j, d0, EnumFacing.WEST);
+         PathPoint pathpoint2 = this.func_186332_a(p_186320_2_.xCoord + 1, p_186320_2_.yCoord, p_186320_2_.zCoord, j, d0, EnumFacing.EAST);
+@@ -188,8 +188,8 @@
+     {
+         PathPoint pathpoint = null;
+         BlockPos blockpos = new BlockPos(p_186332_1_, p_186332_2_, p_186332_3_);
+-        BlockPos blockpos1 = blockpos.func_177977_b();
+-        double d0 = (double)p_186332_2_ - (1.0D - this.field_176169_a.func_180495_p(blockpos1).func_185900_c(this.field_176169_a, blockpos1).maxY);
++        BlockPos blockpos1 = blockpos.getBlockPosBelow();
++        double d0 = (double)p_186332_2_ - (1.0D - this.field_176169_a.getBlockState(blockpos1).func_185900_c(this.field_176169_a, blockpos1).maxY);
+ 
+         if (d0 - p_186332_5_ > 1.125D)
+         {
+@@ -223,7 +223,7 @@
+                         double d2 = (double)(p_186332_1_ - p_186332_7_.getFrontOffsetX()) + 0.5D;
+                         double d3 = (double)(p_186332_3_ - p_186332_7_.getFrontOffsetZ()) + 0.5D;
+                         AxisAlignedBB axisalignedbb = new AxisAlignedBB(d2 - d1, (double)p_186332_2_ + 0.001D, d3 - d1, d2 + d1, (double)((float)p_186332_2_ + this.field_186326_b.height), d3 + d1);
+-                        AxisAlignedBB axisalignedbb1 = this.field_176169_a.func_180495_p(blockpos).func_185900_c(this.field_176169_a, blockpos);
++                        AxisAlignedBB axisalignedbb1 = this.field_176169_a.getBlockState(blockpos).func_185900_c(this.field_176169_a, blockpos);
+                         AxisAlignedBB axisalignedbb2 = axisalignedbb.addCoord(0.0D, axisalignedbb1.maxY - 0.002D, 0.0D);
+ 
+                         if (this.field_186326_b.worldObj.func_184143_b(axisalignedbb2))
+@@ -317,7 +317,7 @@
+                         pathnodetype1 = PathNodeType.BLOCKED;
+                     }
+ 
+-                    if (pathnodetype1 == PathNodeType.RAIL && !(p_186319_1_.func_180495_p(blockpos).func_177230_c() instanceof BlockRailBase) && !(p_186319_1_.func_180495_p(blockpos.func_177977_b()).func_177230_c() instanceof BlockRailBase))
++                    if (pathnodetype1 == PathNodeType.RAIL && !(p_186319_1_.getBlockState(blockpos).getBlock() instanceof BlockRailBase) && !(p_186319_1_.getBlockState(blockpos.getBlockPosBelow()).getBlock() instanceof BlockRailBase))
+                     {
+                         pathnodetype1 = PathNodeType.FENCE;
+                     }
+@@ -366,7 +366,7 @@
+ 
+     private PathNodeType func_186329_a(EntityLiving p_186329_1_, BlockPos p_186329_2_)
+     {
+-        return this.func_186331_a(p_186329_1_, p_186329_2_.func_177958_n(), p_186329_2_.func_177956_o(), p_186329_2_.func_177952_p());
++        return this.func_186331_a(p_186329_1_, p_186329_2_.getX(), p_186329_2_.getY(), p_186329_2_.getZ());
+     }
+ 
+     private PathNodeType func_186331_a(EntityLiving p_186331_1_, int p_186331_2_, int p_186331_3_, int p_186331_4_)
+@@ -380,7 +380,7 @@
+ 
+         if (pathnodetype == PathNodeType.OPEN && p_186330_3_ >= 1)
+         {
+-            Block block = p_186330_1_.func_180495_p(new BlockPos(p_186330_2_, p_186330_3_ - 1, p_186330_4_)).func_177230_c();
++            Block block = p_186330_1_.getBlockState(new BlockPos(p_186330_2_, p_186330_3_ - 1, p_186330_4_)).getBlock();
+             PathNodeType pathnodetype1 = this.func_189553_b(p_186330_1_, p_186330_2_, p_186330_3_ - 1, p_186330_4_);
+             pathnodetype = pathnodetype1 != PathNodeType.WALKABLE && pathnodetype1 != PathNodeType.OPEN && pathnodetype1 != PathNodeType.WATER && pathnodetype1 != PathNodeType.LAVA ? PathNodeType.WALKABLE : PathNodeType.OPEN;
+ 
+@@ -405,7 +405,7 @@
+                 {
+                     if (j != 0 || i != 0)
+                     {
+-                        Block block1 = p_186330_1_.func_180495_p(blockpos$pooledmutableblockpos.func_181079_c(j + p_186330_2_, p_186330_3_, i + p_186330_4_)).func_177230_c();
++                        Block block1 = p_186330_1_.getBlockState(blockpos$pooledmutableblockpos.func_181079_c(j + p_186330_2_, p_186330_3_, i + p_186330_4_)).getBlock();
+ 
+                         if (block1 == Blocks.cactus)
+                         {
+@@ -427,9 +427,9 @@
+     private PathNodeType func_189553_b(IBlockAccess p_189553_1_, int p_189553_2_, int p_189553_3_, int p_189553_4_)
+     {
+         BlockPos blockpos = new BlockPos(p_189553_2_, p_189553_3_, p_189553_4_);
+-        IBlockState iblockstate = p_189553_1_.func_180495_p(blockpos);
+-        Block block = iblockstate.func_177230_c();
+-        Material material = iblockstate.func_185904_a();
++        IBlockState iblockstate = p_189553_1_.getBlockState(blockpos);
++        Block block = iblockstate.getBlock();
++        Material material = iblockstate.getMaterial();
+         return material == Material.air ? PathNodeType.OPEN : (block != Blocks.trapdoor && block != Blocks.field_180400_cw && block != Blocks.waterlily ? (block == Blocks.fire ? PathNodeType.DAMAGE_FIRE : (block == Blocks.cactus ? PathNodeType.DAMAGE_CACTUS : (block instanceof BlockDoor && material == Material.wood && !((Boolean)iblockstate.func_177229_b(BlockDoor.field_176519_b)).booleanValue() ? PathNodeType.DOOR_WOOD_CLOSED : (block instanceof BlockDoor && material == Material.iron && !((Boolean)iblockstate.func_177229_b(BlockDoor.field_176519_b)).booleanValue() ? PathNodeType.DOOR_IRON_CLOSED : (block instanceof BlockDoor && ((Boolean)iblockstate.func_177229_b(BlockDoor.field_176519_b)).booleanValue() ? PathNodeType.DOOR_OPEN : (block instanceof BlockRailBase ? PathNodeType.RAIL : (!(block instanceof BlockFence) && !(block instanceof BlockWall) && (!(block instanceof BlockFenceGate) || ((Boolean)iblockstate.func_177229_b(BlockFenceGate.field_176466_a)).booleanValue()) ? (material == Material.water ? PathNodeType.WATER : (material == Material.lava ? PathNodeType.LAVA : (block.func_176205_b(p_189553_1_, blockpos) ? PathNodeType.OPEN : PathNodeType.BLOCKED))) : PathNodeType.FENCE))))))) : PathNodeType.TRAPDOOR);
+     }
+ }

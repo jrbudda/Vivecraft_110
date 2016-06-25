@@ -1,0 +1,35 @@
+--- a/net/minecraft/block/BlockBasePressurePlate.java
++++ b/net/minecraft/block/BlockBasePressurePlate.java
+@@ -74,12 +74,12 @@
+ 
+     public boolean func_176196_c(World p_176196_1_, BlockPos p_176196_2_)
+     {
+-        return this.func_176577_m(p_176196_1_, p_176196_2_.func_177977_b());
++        return this.func_176577_m(p_176196_1_, p_176196_2_.getBlockPosBelow());
+     }
+ 
+     public void func_189540_a(IBlockState p_189540_1_, World p_189540_2_, BlockPos p_189540_3_, Block p_189540_4_)
+     {
+-        if (!this.func_176577_m(p_189540_2_, p_189540_3_.func_177977_b()))
++        if (!this.func_176577_m(p_189540_2_, p_189540_3_.getBlockPosBelow()))
+         {
+             this.func_176226_b(p_189540_2_, p_189540_3_, p_189540_1_, 0);
+             p_189540_2_.func_175698_g(p_189540_3_);
+@@ -88,7 +88,7 @@
+ 
+     private boolean func_176577_m(World p_176577_1_, BlockPos p_176577_2_)
+     {
+-        return p_176577_1_.func_180495_p(p_176577_2_).func_185896_q() || p_176577_1_.func_180495_p(p_176577_2_).func_177230_c() instanceof BlockFence;
++        return p_176577_1_.getBlockState(p_176577_2_).func_185896_q() || p_176577_1_.getBlockState(p_176577_2_).getBlock() instanceof BlockFence;
+     }
+ 
+     public void func_180645_a(World p_180645_1_, BlockPos p_180645_2_, IBlockState p_180645_3_, Random p_180645_4_)
+@@ -167,7 +167,7 @@
+     protected void func_176578_d(World p_176578_1_, BlockPos p_176578_2_)
+     {
+         p_176578_1_.func_175685_c(p_176578_2_, this);
+-        p_176578_1_.func_175685_c(p_176578_2_.func_177977_b(), this);
++        p_176578_1_.func_175685_c(p_176578_2_.getBlockPosBelow(), this);
+     }
+ 
+     public int func_180656_a(IBlockState p_180656_1_, IBlockAccess p_180656_2_, BlockPos p_180656_3_, EnumFacing p_180656_4_)

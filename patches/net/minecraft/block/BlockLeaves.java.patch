@@ -1,0 +1,89 @@
+--- a/net/minecraft/block/BlockLeaves.java
++++ b/net/minecraft/block/BlockLeaves.java
+@@ -37,9 +37,9 @@
+     {
+         int i = 1;
+         int j = 2;
+-        int k = p_180663_2_.func_177958_n();
+-        int l = p_180663_2_.func_177956_o();
+-        int i1 = p_180663_2_.func_177952_p();
++        int k = p_180663_2_.getX();
++        int l = p_180663_2_.getY();
++        int i1 = p_180663_2_.getZ();
+ 
+         if (p_180663_1_.func_175707_a(new BlockPos(k - 2, l - 2, i1 - 2), new BlockPos(k + 2, l + 2, i1 + 2)))
+         {
+@@ -50,9 +50,9 @@
+                     for (int l1 = -1; l1 <= 1; ++l1)
+                     {
+                         BlockPos blockpos = p_180663_2_.func_177982_a(j1, k1, l1);
+-                        IBlockState iblockstate = p_180663_1_.func_180495_p(blockpos);
++                        IBlockState iblockstate = p_180663_1_.getBlockState(blockpos);
+ 
+-                        if (iblockstate.func_185904_a() == Material.leaves && !((Boolean)iblockstate.func_177229_b(field_176236_b)).booleanValue())
++                        if (iblockstate.getMaterial() == Material.leaves && !((Boolean)iblockstate.func_177229_b(field_176236_b)).booleanValue())
+                         {
+                             p_180663_1_.func_180501_a(blockpos, iblockstate.func_177226_a(field_176236_b, Boolean.valueOf(true)), 4);
+                         }
+@@ -70,9 +70,9 @@
+             {
+                 int i = 4;
+                 int j = 5;
+-                int k = p_180650_2_.func_177958_n();
+-                int l = p_180650_2_.func_177956_o();
+-                int i1 = p_180650_2_.func_177952_p();
++                int k = p_180650_2_.getX();
++                int l = p_180650_2_.getY();
++                int i1 = p_180650_2_.getZ();
+                 int j1 = 32;
+                 int k1 = 1024;
+                 int l1 = 16;
+@@ -92,12 +92,12 @@
+                         {
+                             for (int k2 = -4; k2 <= 4; ++k2)
+                             {
+-                                IBlockState iblockstate = p_180650_1_.func_180495_p(blockpos$mutableblockpos.func_181079_c(k + i2, l + j2, i1 + k2));
+-                                Block block = iblockstate.func_177230_c();
++                                IBlockState iblockstate = p_180650_1_.getBlockState(blockpos$mutableblockpos.func_181079_c(k + i2, l + j2, i1 + k2));
++                                Block block = iblockstate.getBlock();
+ 
+                                 if (block != Blocks.log && block != Blocks.log2)
+                                 {
+-                                    if (iblockstate.func_185904_a() == Material.leaves)
++                                    if (iblockstate.getMaterial() == Material.leaves)
+                                     {
+                                         this.field_150128_a[(i2 + 16) * 1024 + (j2 + 16) * 32 + k2 + 16] = -2;
+                                     }
+@@ -176,18 +176,18 @@
+ 
+     public void func_180655_c(IBlockState p_180655_1_, World p_180655_2_, BlockPos p_180655_3_, Random p_180655_4_)
+     {
+-        if (p_180655_2_.func_175727_C(p_180655_3_.func_177984_a()) && !p_180655_2_.func_180495_p(p_180655_3_.func_177977_b()).func_185896_q() && p_180655_4_.nextInt(15) == 1)
++        if (p_180655_2_.func_175727_C(p_180655_3_.getBlockPosAbove()) && !p_180655_2_.getBlockState(p_180655_3_.getBlockPosBelow()).func_185896_q() && p_180655_4_.nextInt(15) == 1)
+         {
+-            double d0 = (double)((float)p_180655_3_.func_177958_n() + p_180655_4_.nextFloat());
+-            double d1 = (double)p_180655_3_.func_177956_o() - 0.05D;
+-            double d2 = (double)((float)p_180655_3_.func_177952_p() + p_180655_4_.nextFloat());
+-            p_180655_2_.func_175688_a(EnumParticleTypes.DRIP_WATER, d0, d1, d2, 0.0D, 0.0D, 0.0D, new int[0]);
++            double d0 = (double)((float)p_180655_3_.getX() + p_180655_4_.nextFloat());
++            double d1 = (double)p_180655_3_.getY() - 0.05D;
++            double d2 = (double)((float)p_180655_3_.getZ() + p_180655_4_.nextFloat());
++            p_180655_2_.spawnParticle(EnumParticleTypes.DRIP_WATER, d0, d1, d2, 0.0D, 0.0D, 0.0D, new int[0]);
+         }
+     }
+ 
+     private void func_176235_d(World p_176235_1_, BlockPos p_176235_2_)
+     {
+-        this.func_176226_b(p_176235_1_, p_176235_2_, p_176235_1_.func_180495_p(p_176235_2_), 0);
++        this.func_176226_b(p_176235_1_, p_176235_2_, p_176235_1_.getBlockState(p_176235_2_), 0);
+         p_176235_1_.func_175698_g(p_176235_2_);
+     }
+ 
+@@ -279,6 +279,6 @@
+ 
+     public boolean func_176225_a(IBlockState p_176225_1_, IBlockAccess p_176225_2_, BlockPos p_176225_3_, EnumFacing p_176225_4_)
+     {
+-        return !this.field_185686_c && p_176225_2_.func_180495_p(p_176225_3_.func_177972_a(p_176225_4_)).func_177230_c() == this ? false : super.func_176225_a(p_176225_1_, p_176225_2_, p_176225_3_, p_176225_4_);
++        return !this.field_185686_c && p_176225_2_.getBlockState(p_176225_3_.getBlockPosRelative(p_176225_4_)).getBlock() == this ? false : super.func_176225_a(p_176225_1_, p_176225_2_, p_176225_3_, p_176225_4_);
+     }
+ }

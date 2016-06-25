@@ -1,0 +1,25 @@
+--- a/net/minecraft/enchantment/EnchantmentFrostWalker.java
++++ b/net/minecraft/enchantment/EnchantmentFrostWalker.java
+@@ -62,16 +62,16 @@
+             {
+                 if (blockpos$mutableblockpos1.func_177957_d(p_185266_0_.posX, p_185266_0_.posY, p_185266_0_.posZ) <= (double)(f * f))
+                 {
+-                    blockpos$mutableblockpos.func_181079_c(blockpos$mutableblockpos1.func_177958_n(), blockpos$mutableblockpos1.func_177956_o() + 1, blockpos$mutableblockpos1.func_177952_p());
+-                    IBlockState iblockstate = p_185266_1_.func_180495_p(blockpos$mutableblockpos);
++                    blockpos$mutableblockpos.func_181079_c(blockpos$mutableblockpos1.getX(), blockpos$mutableblockpos1.getY() + 1, blockpos$mutableblockpos1.getZ());
++                    IBlockState iblockstate = p_185266_1_.getBlockState(blockpos$mutableblockpos);
+ 
+-                    if (iblockstate.func_185904_a() == Material.air)
++                    if (iblockstate.getMaterial() == Material.air)
+                     {
+-                        IBlockState iblockstate1 = p_185266_1_.func_180495_p(blockpos$mutableblockpos1);
++                        IBlockState iblockstate1 = p_185266_1_.getBlockState(blockpos$mutableblockpos1);
+ 
+-                        if (iblockstate1.func_185904_a() == Material.water && ((Integer)iblockstate1.func_177229_b(BlockLiquid.field_176367_b)).intValue() == 0 && p_185266_1_.func_175716_a(Blocks.field_185778_de, blockpos$mutableblockpos1, false, EnumFacing.DOWN, (Entity)null, (ItemStack)null))
++                        if (iblockstate1.getMaterial() == Material.water && ((Integer)iblockstate1.func_177229_b(BlockLiquid.field_176367_b)).intValue() == 0 && p_185266_1_.func_175716_a(Blocks.field_185778_de, blockpos$mutableblockpos1, false, EnumFacing.DOWN, (Entity)null, (ItemStack)null))
+                         {
+-                            p_185266_1_.func_175656_a(blockpos$mutableblockpos1, Blocks.field_185778_de.func_176223_P());
++                            p_185266_1_.func_175656_a(blockpos$mutableblockpos1, Blocks.field_185778_de.getBlockState());
+                             p_185266_1_.func_175684_a(blockpos$mutableblockpos1.func_185334_h(), Blocks.field_185778_de, MathHelper.getRandomIntegerInRange(p_185266_0_.getRNG(), 60, 120));
+                         }
+                     }

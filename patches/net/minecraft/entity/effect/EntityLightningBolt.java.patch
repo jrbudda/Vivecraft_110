@@ -1,0 +1,48 @@
+--- a/net/minecraft/entity/effect/EntityLightningBolt.java
++++ b/net/minecraft/entity/effect/EntityLightningBolt.java
+@@ -43,18 +43,18 @@
+ 
+         if (!p_i46780_8_ && !p_i46780_1_.isRemote && p_i46780_1_.getGameRules().getGameRuleBooleanValue("doFireTick") && (p_i46780_1_.func_175659_aa() == EnumDifficulty.NORMAL || p_i46780_1_.func_175659_aa() == EnumDifficulty.HARD) && p_i46780_1_.func_175697_a(blockpos, 10))
+         {
+-            if (p_i46780_1_.func_180495_p(blockpos).func_185904_a() == Material.air && Blocks.fire.func_176196_c(p_i46780_1_, blockpos))
++            if (p_i46780_1_.getBlockState(blockpos).getMaterial() == Material.air && Blocks.fire.func_176196_c(p_i46780_1_, blockpos))
+             {
+-                p_i46780_1_.func_175656_a(blockpos, Blocks.fire.func_176223_P());
++                p_i46780_1_.func_175656_a(blockpos, Blocks.fire.getBlockState());
+             }
+ 
+             for (int i = 0; i < 4; ++i)
+             {
+                 BlockPos blockpos1 = blockpos.func_177982_a(this.rand.nextInt(3) - 1, this.rand.nextInt(3) - 1, this.rand.nextInt(3) - 1);
+ 
+-                if (p_i46780_1_.func_180495_p(blockpos1).func_185904_a() == Material.air && Blocks.fire.func_176196_c(p_i46780_1_, blockpos1))
++                if (p_i46780_1_.getBlockState(blockpos1).getMaterial() == Material.air && Blocks.fire.func_176196_c(p_i46780_1_, blockpos1))
+                 {
+-                    p_i46780_1_.func_175656_a(blockpos1, Blocks.fire.func_176223_P());
++                    p_i46780_1_.func_175656_a(blockpos1, Blocks.fire.getBlockState());
+                 }
+             }
+         }
+@@ -74,8 +74,8 @@
+ 
+         if (this.lightningState == 2)
+         {
+-            this.worldObj.func_184148_a((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.field_187754_de, SoundCategory.WEATHER, 10000.0F, 0.8F + this.rand.nextFloat() * 0.2F);
+-            this.worldObj.func_184148_a((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.field_187752_dd, SoundCategory.WEATHER, 2.0F, 0.5F + this.rand.nextFloat() * 0.2F);
++            this.worldObj.playSound((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.field_187754_de, SoundCategory.WEATHER, 10000.0F, 0.8F + this.rand.nextFloat() * 0.2F);
++            this.worldObj.playSound((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.field_187752_dd, SoundCategory.WEATHER, 2.0F, 0.5F + this.rand.nextFloat() * 0.2F);
+         }
+ 
+         --this.lightningState;
+@@ -96,9 +96,9 @@
+                     this.boltVertex = this.rand.nextLong();
+                     BlockPos blockpos = new BlockPos(this);
+ 
+-                    if (this.worldObj.getGameRules().getGameRuleBooleanValue("doFireTick") && this.worldObj.func_175697_a(blockpos, 10) && this.worldObj.func_180495_p(blockpos).func_185904_a() == Material.air && Blocks.fire.func_176196_c(this.worldObj, blockpos))
++                    if (this.worldObj.getGameRules().getGameRuleBooleanValue("doFireTick") && this.worldObj.func_175697_a(blockpos, 10) && this.worldObj.getBlockState(blockpos).getMaterial() == Material.air && Blocks.fire.func_176196_c(this.worldObj, blockpos))
+                     {
+-                        this.worldObj.func_175656_a(blockpos, Blocks.fire.func_176223_P());
++                        this.worldObj.func_175656_a(blockpos, Blocks.fire.getBlockState());
+                     }
+                 }
+             }

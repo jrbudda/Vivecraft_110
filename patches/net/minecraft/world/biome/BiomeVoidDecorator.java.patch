@@ -1,0 +1,42 @@
+--- a/net/minecraft/world/biome/BiomeVoidDecorator.java
++++ b/net/minecraft/world/biome/BiomeVoidDecorator.java
+@@ -11,29 +11,29 @@
+     {
+         BlockPos blockpos = p_180292_1_.func_175694_M();
+         int i = 16;
+-        double d0 = blockpos.func_177951_i(p_180292_4_.func_177982_a(8, blockpos.func_177956_o(), 8));
++        double d0 = blockpos.func_177951_i(p_180292_4_.func_177982_a(8, blockpos.getY(), 8));
+ 
+         if (d0 <= 1024.0D)
+         {
+-            BlockPos blockpos1 = new BlockPos(blockpos.func_177958_n() - 16, blockpos.func_177956_o() - 1, blockpos.func_177952_p() - 16);
+-            BlockPos blockpos2 = new BlockPos(blockpos.func_177958_n() + 16, blockpos.func_177956_o() - 1, blockpos.func_177952_p() + 16);
++            BlockPos blockpos1 = new BlockPos(blockpos.getX() - 16, blockpos.getY() - 1, blockpos.getZ() - 16);
++            BlockPos blockpos2 = new BlockPos(blockpos.getX() + 16, blockpos.getY() - 1, blockpos.getZ() + 16);
+             BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos(blockpos1);
+ 
+-            for (int j = p_180292_4_.func_177952_p(); j < p_180292_4_.func_177952_p() + 16; ++j)
++            for (int j = p_180292_4_.getZ(); j < p_180292_4_.getZ() + 16; ++j)
+             {
+-                for (int k = p_180292_4_.func_177958_n(); k < p_180292_4_.func_177958_n() + 16; ++k)
++                for (int k = p_180292_4_.getX(); k < p_180292_4_.getX() + 16; ++k)
+                 {
+-                    if (j >= blockpos1.func_177952_p() && j <= blockpos2.func_177952_p() && k >= blockpos1.func_177958_n() && k <= blockpos2.func_177958_n())
++                    if (j >= blockpos1.getZ() && j <= blockpos2.getZ() && k >= blockpos1.getX() && k <= blockpos2.getX())
+                     {
+-                        blockpos$mutableblockpos.func_181079_c(k, blockpos$mutableblockpos.func_177956_o(), j);
++                        blockpos$mutableblockpos.func_181079_c(k, blockpos$mutableblockpos.getY(), j);
+ 
+-                        if (blockpos.func_177958_n() == k && blockpos.func_177952_p() == j)
++                        if (blockpos.getX() == k && blockpos.getZ() == j)
+                         {
+-                            p_180292_1_.func_180501_a(blockpos$mutableblockpos, Blocks.cobblestone.func_176223_P(), 2);
++                            p_180292_1_.func_180501_a(blockpos$mutableblockpos, Blocks.cobblestone.getBlockState(), 2);
+                         }
+                         else
+                         {
+-                            p_180292_1_.func_180501_a(blockpos$mutableblockpos, Blocks.stone.func_176223_P(), 2);
++                            p_180292_1_.func_180501_a(blockpos$mutableblockpos, Blocks.stone.getBlockState(), 2);
+                         }
+                     }
+                 }

@@ -1,0 +1,49 @@
+--- a/net/minecraft/item/ItemDoor.java
++++ b/net/minecraft/item/ItemDoor.java
+@@ -31,12 +31,12 @@
+         }
+         else
+         {
+-            IBlockState iblockstate = p_180614_3_.func_180495_p(p_180614_4_);
+-            Block block = iblockstate.func_177230_c();
++            IBlockState iblockstate = p_180614_3_.getBlockState(p_180614_4_);
++            Block block = iblockstate.getBlock();
+ 
+             if (!block.func_176200_f(p_180614_3_, p_180614_4_))
+             {
+-                p_180614_4_ = p_180614_4_.func_177972_a(p_180614_6_);
++                p_180614_4_ = p_180614_4_.getBlockPosRelative(p_180614_6_);
+             }
+ 
+             if (p_180614_2_.func_175151_a(p_180614_4_, p_180614_6_, p_180614_1_) && this.field_179236_a.func_176196_c(p_180614_3_, p_180614_4_))
+@@ -60,12 +60,12 @@
+ 
+     public static void func_179235_a(World p_179235_0_, BlockPos p_179235_1_, EnumFacing p_179235_2_, Block p_179235_3_, boolean p_179235_4_)
+     {
+-        BlockPos blockpos = p_179235_1_.func_177972_a(p_179235_2_.func_176746_e());
+-        BlockPos blockpos1 = p_179235_1_.func_177972_a(p_179235_2_.func_176735_f());
+-        int i = (p_179235_0_.func_180495_p(blockpos1).func_185915_l() ? 1 : 0) + (p_179235_0_.func_180495_p(blockpos1.func_177984_a()).func_185915_l() ? 1 : 0);
+-        int j = (p_179235_0_.func_180495_p(blockpos).func_185915_l() ? 1 : 0) + (p_179235_0_.func_180495_p(blockpos.func_177984_a()).func_185915_l() ? 1 : 0);
+-        boolean flag = p_179235_0_.func_180495_p(blockpos1).func_177230_c() == p_179235_3_ || p_179235_0_.func_180495_p(blockpos1.func_177984_a()).func_177230_c() == p_179235_3_;
+-        boolean flag1 = p_179235_0_.func_180495_p(blockpos).func_177230_c() == p_179235_3_ || p_179235_0_.func_180495_p(blockpos.func_177984_a()).func_177230_c() == p_179235_3_;
++        BlockPos blockpos = p_179235_1_.getBlockPosRelative(p_179235_2_.func_176746_e());
++        BlockPos blockpos1 = p_179235_1_.getBlockPosRelative(p_179235_2_.func_176735_f());
++        int i = (p_179235_0_.getBlockState(blockpos1).func_185915_l() ? 1 : 0) + (p_179235_0_.getBlockState(blockpos1.getBlockPosAbove()).func_185915_l() ? 1 : 0);
++        int j = (p_179235_0_.getBlockState(blockpos).func_185915_l() ? 1 : 0) + (p_179235_0_.getBlockState(blockpos.getBlockPosAbove()).func_185915_l() ? 1 : 0);
++        boolean flag = p_179235_0_.getBlockState(blockpos1).getBlock() == p_179235_3_ || p_179235_0_.getBlockState(blockpos1.getBlockPosAbove()).getBlock() == p_179235_3_;
++        boolean flag1 = p_179235_0_.getBlockState(blockpos).getBlock() == p_179235_3_ || p_179235_0_.getBlockState(blockpos.getBlockPosAbove()).getBlock() == p_179235_3_;
+ 
+         if ((!flag || flag1) && j <= i)
+         {
+@@ -79,9 +79,9 @@
+             p_179235_4_ = true;
+         }
+ 
+-        BlockPos blockpos2 = p_179235_1_.func_177984_a();
++        BlockPos blockpos2 = p_179235_1_.getBlockPosAbove();
+         boolean flag2 = p_179235_0_.func_175640_z(p_179235_1_) || p_179235_0_.func_175640_z(blockpos2);
+-        IBlockState iblockstate = p_179235_3_.func_176223_P().func_177226_a(BlockDoor.field_176520_a, p_179235_2_).func_177226_a(BlockDoor.field_176521_M, p_179235_4_ ? BlockDoor.EnumHingePosition.RIGHT : BlockDoor.EnumHingePosition.LEFT).func_177226_a(BlockDoor.field_176522_N, Boolean.valueOf(flag2)).func_177226_a(BlockDoor.field_176519_b, Boolean.valueOf(flag2));
++        IBlockState iblockstate = p_179235_3_.getBlockState().func_177226_a(BlockDoor.field_176520_a, p_179235_2_).func_177226_a(BlockDoor.field_176521_M, p_179235_4_ ? BlockDoor.EnumHingePosition.RIGHT : BlockDoor.EnumHingePosition.LEFT).func_177226_a(BlockDoor.field_176522_N, Boolean.valueOf(flag2)).func_177226_a(BlockDoor.field_176519_b, Boolean.valueOf(flag2));
+         p_179235_0_.func_180501_a(p_179235_1_, iblockstate.func_177226_a(BlockDoor.field_176523_O, BlockDoor.EnumDoorHalf.LOWER), 2);
+         p_179235_0_.func_180501_a(blockpos2, iblockstate.func_177226_a(BlockDoor.field_176523_O, BlockDoor.EnumDoorHalf.UPPER), 2);
+         p_179235_0_.func_175685_c(p_179235_1_, p_179235_3_);

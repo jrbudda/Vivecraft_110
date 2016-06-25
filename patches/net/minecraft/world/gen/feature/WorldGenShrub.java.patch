@@ -1,0 +1,49 @@
+--- a/net/minecraft/world/gen/feature/WorldGenShrub.java
++++ b/net/minecraft/world/gen/feature/WorldGenShrub.java
+@@ -22,35 +22,35 @@
+ 
+     public boolean func_180709_b(World p_180709_1_, Random p_180709_2_, BlockPos p_180709_3_)
+     {
+-        for (IBlockState iblockstate = p_180709_1_.func_180495_p(p_180709_3_); (iblockstate.func_185904_a() == Material.air || iblockstate.func_185904_a() == Material.leaves) && p_180709_3_.func_177956_o() > 0; iblockstate = p_180709_1_.func_180495_p(p_180709_3_))
++        for (IBlockState iblockstate = p_180709_1_.getBlockState(p_180709_3_); (iblockstate.getMaterial() == Material.air || iblockstate.getMaterial() == Material.leaves) && p_180709_3_.getY() > 0; iblockstate = p_180709_1_.getBlockState(p_180709_3_))
+         {
+-            p_180709_3_ = p_180709_3_.func_177977_b();
++            p_180709_3_ = p_180709_3_.getBlockPosBelow();
+         }
+ 
+-        Block block = p_180709_1_.func_180495_p(p_180709_3_).func_177230_c();
++        Block block = p_180709_1_.getBlockState(p_180709_3_).getBlock();
+ 
+         if (block == Blocks.dirt || block == Blocks.grass)
+         {
+-            p_180709_3_ = p_180709_3_.func_177984_a();
++            p_180709_3_ = p_180709_3_.getBlockPosAbove();
+             this.func_175903_a(p_180709_1_, p_180709_3_, this.field_150527_b);
+ 
+-            for (int i = p_180709_3_.func_177956_o(); i <= p_180709_3_.func_177956_o() + 2; ++i)
++            for (int i = p_180709_3_.getY(); i <= p_180709_3_.getY() + 2; ++i)
+             {
+-                int j = i - p_180709_3_.func_177956_o();
++                int j = i - p_180709_3_.getY();
+                 int k = 2 - j;
+ 
+-                for (int l = p_180709_3_.func_177958_n() - k; l <= p_180709_3_.func_177958_n() + k; ++l)
++                for (int l = p_180709_3_.getX() - k; l <= p_180709_3_.getX() + k; ++l)
+                 {
+-                    int i1 = l - p_180709_3_.func_177958_n();
++                    int i1 = l - p_180709_3_.getX();
+ 
+-                    for (int j1 = p_180709_3_.func_177952_p() - k; j1 <= p_180709_3_.func_177952_p() + k; ++j1)
++                    for (int j1 = p_180709_3_.getZ() - k; j1 <= p_180709_3_.getZ() + k; ++j1)
+                     {
+-                        int k1 = j1 - p_180709_3_.func_177952_p();
++                        int k1 = j1 - p_180709_3_.getZ();
+ 
+                         if (Math.abs(i1) != k || Math.abs(k1) != k || p_180709_2_.nextInt(2) != 0)
+                         {
+                             BlockPos blockpos = new BlockPos(l, i, j1);
+-                            Material material = p_180709_1_.func_180495_p(blockpos).func_185904_a();
++                            Material material = p_180709_1_.getBlockState(blockpos).getMaterial();
+ 
+                             if (material == Material.air || material == Material.leaves)
+                             {
