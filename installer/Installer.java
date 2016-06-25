@@ -47,15 +47,15 @@ public class Installer extends JPanel  implements PropertyChangeListener
     public static String winredist2010_32url = "http://download.microsoft.com/download/C/6/D/C6D0FD4E-9E53-4897-9B91-836EBA2AACD3/vcredist_x86.exe";
 
     /* DO NOT RENAME THESE STRING CONSTS - THEY ARE USED IN (AND THE VALUES UPDATED BY) THE AUTOMATED BUILD SCRIPTS */
-    private static final String MINECRAFT_VERSION = "1.7.10";
-    private static final String MC_VERSION        = "1.7.10";
-    private static final String MC_MD5            = "e6b7a531b95d0c172acb704d1f54d1b3";
+    private static final String MINECRAFT_VERSION = "1.10";
+    private static final String MC_VERSION        = "1.10";
+    private static final String MC_MD5            = "752390ee40cdcd6429818cf6efa25067";
     private static final String OF_LIB_PATH       = "libraries/optifine/OptiFine/";
-    private static final String OF_FILE_NAME      = "1.7.10_HD_U_D1";
-    private static final String OF_JSON_NAME      = "1.7.10_HD_U_D1";
-    private static final String OF_MD5            = "57c724fe8335c82aef8d54c101043e60";
+    private static final String OF_FILE_NAME      = "1.10_HD_U_B7";
+    private static final String OF_JSON_NAME      = "1.10_HD_U_B7";
+    private static final String OF_MD5            = "b5559b17ced8e0bb1b71956c23fab208";
     private static final String OF_VERSION_EXT    = ".jar";
-    private static final String FORGE_VERSION     = "10.13.4.1614";
+    private static final String FORGE_VERSION     = "112.18.0.1986";
     /* END OF DO NOT RENAME */
 
     private String mc_url = "https://s3.amazonaws.com/Minecraft.Download/versions/" + MINECRAFT_VERSION + "/" + MINECRAFT_VERSION +".jar";
@@ -472,7 +472,7 @@ public class Installer extends JPanel  implements PropertyChangeListener
                 InputStream version_json;
                 if(useForge.isSelected() /*&& forgeVersion.getSelectedItem() != forgeNotFound*/ ) {
                     String filename;
-                    if( useHydra.isSelected() ) {
+                    if(!useHydra.isSelected() ) {
                         filename = "version-forge.json";
                         mod="-forge";
                     } else {
@@ -495,7 +495,7 @@ public class Installer extends JPanel  implements PropertyChangeListener
                     };
                 } else {
                     String filename;
-                    if( useHydra.isSelected() ) {
+                    if(!useHydra.isSelected() ) {
                         filename = "version.json";
                     } else {
                         filename = "version-nohydra.json";
@@ -1148,6 +1148,7 @@ public class Installer extends JPanel  implements PropertyChangeListener
         //Create forge: no/yes buttons
         useForge = new JCheckBox("Install with Forge " + FORGE_VERSION,false);
         forgeVersion = new JComboBox();
+		useForge.setEnabled(false);
         if (!ALLOW_FORGE_INSTALL)
             useForge.setEnabled(false);
         useForge.setToolTipText(
@@ -1176,7 +1177,7 @@ public class Installer extends JPanel  implements PropertyChangeListener
         useHydra = new JCheckBox("Razer Hydra support",false);
         useHydra.setAlignmentX(LEFT_ALIGNMENT);
         if (!ALLOW_HYDRA_INSTALL)
-            useHydra.setEnabled(false);
+        useHydra.setEnabled(false);
         useHydra.setToolTipText(
                 "<html>" +
                 "If checked, installs the additional Razor Hydra native library required for Razor Hydra<br>" +

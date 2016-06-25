@@ -1,0 +1,79 @@
+Using mcp dir: E:\Vivecraft\110\Vivecraft_110\mcp931
+Using base dir: E:\Vivecraft\110\Vivecraft_110
+Refreshing dependencies...
+Updating json: copying installer\1.10.json to E:\Vivecraft\110\Vivecraft_110\mcp931\jars\versions\1.10\1.10.json
+Checking Optifine...
+Optifine md5: b5559b17ced8e0bb1b71956c23fab208
+MD5 good!
+File Exists: OptiFine-1.10_HD_U_B7.jar
+File Exists: launchwrapper-1.12.jar
+File Exists: json-20140107.jar
+File Exists: JRift-0.8.0.0.1.jar
+File Exists: netty-1.6.jar
+File Exists: oshi-core-1.1.jar
+File Exists: jna-3.4.0.jar
+File Exists: platform-3.4.0.jar
+File Exists: icu4j-core-mojang-51.2.jar
+File Exists: jopt-simple-4.6.jar
+File Exists: codecjorbis-20101023.jar
+File Exists: codecwav-20101023.jar
+File Exists: libraryjavasound-20101123.jar
+File Exists: librarylwjglopenal-20100824.jar
+File Exists: soundsystem-20120107.jar
+File Exists: netty-all-4.0.23.Final.jar
+File Exists: guava-17.0.jar
+File Exists: commons-lang3-3.3.2.jar
+File Exists: commons-io-2.4.jar
+File Exists: commons-codec-1.9.jar
+File Exists: jinput-2.0.5.jar
+File Exists: jutils-1.0.0.jar
+File Exists: gson-2.2.4.jar
+File Exists: authlib-1.5.22.jar
+File Exists: realms-1.9.0.jar
+File Exists: commons-compress-1.8.1.jar
+File Exists: httpclient-4.3.3.jar
+File Exists: commons-logging-1.1.3.jar
+File Exists: httpcore-4.3.2.jar
+File Exists: fastutil-7.0.12_mojang.jar
+File Exists: log4j-api-2.0-beta9.jar
+File Exists: log4j-core-2.0-beta9.jar
+File Exists: lwjgl-2.9.4-nightly-20150209.jar
+File Exists: lwjgl_util-2.9.4-nightly-20150209.jar
+File Exists: lwjgl-platform-2.9.4-nightly-20150209-natives-windows.jar
+    Extracting native library OpenAL32.dll
+    Extracting native library OpenAL64.dll
+    Extracting native library lwjgl.dll
+    Extracting native library lwjgl64.dll
+File: org.lwjgl.lwjgl:lwjgl:2.9.2-nightly-20140822
+Skipping due to rules
+File: org.lwjgl.lwjgl:lwjgl_util:2.9.2-nightly-20140822
+Skipping due to rules
+File: org.lwjgl.lwjgl:lwjgl-platform:2.9.2-nightly-20140822
+Skipping due to rules
+File Exists: jinput-platform-2.0.5-natives-windows.jar
+    Extracting native library jinput-dx8.dll
+    Extracting native library jinput-dx8_64.dll
+    Extracting native library jinput-raw.dll
+    Extracting native library jinput-raw_64.dll
+    Extracting native library jinput-wintab.dll
+JRift: 
+JRiftLibrary: 
+Updating Minecraft.java with Vivecraft version: [Vivecraft 1.10 Vivecraft-jrbudda1alpha] E:\Vivecraft\110\Vivecraft_110\mcp931\src\minecraft\net\minecraft\client\Minecraft.java
+Recompiling...
+Reobfuscating...
+Creating Installer...
+Updating installer versions...
+Recompiling Installer.java...
+Adding .\Installer$1.class...
+Adding .\Installer$2.class...
+Adding .\Installer$FileSelectAction.class...
+Adding .\Installer$InstallTask$1.class...
+Adding .\Installer$InstallTask.class...
+Adding .\Installer.class...
+Adding org\json\JSONArray.class...
+Adding org\json\JSONException.class...
+Adding org\json\JSONObject$1.class...
+Adding org\json\JSONObject$Null.class...
+Adding org\json\JSONObject.class...
+Adding org\json\JSONString.class...
+Adding org\json\JSONTokener.class...
