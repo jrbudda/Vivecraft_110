@@ -344,7 +344,6 @@ def download_deps( mcp_dir, download_mc, forgedep=False ):
         jar_file = os.path.join(versions,mc_version+".jar")
         jar_url = repo + "versions/"+mc_version+"/"+mc_version+".jar"
         download_file( jar_url, jar_file, mc_file_md5 )
-        print 'Used url: ' + jar_url
         shutil.copy(jar_file,os.path.join(flat_lib_dir, os.path.basename(jar_file))) 
         
         if mc_file_md5 == "":
@@ -518,11 +517,11 @@ def main(mcp_dir):
 
     os.chdir( base_dir )
 
-    # Create original nofix decompile src dir
-    org_no_fix_src_dir = os.path.join(mcp_dir, "src",".minecraft_orig_nofix")
-    if os.path.exists( org_no_fix_src_dir ):
-        shutil.rmtree( org_no_fix_src_dir, True )
-    shutil.copytree( src_dir, org_no_fix_src_dir )
+    # Create original decompile src dir
+    org_src_dir = os.path.join(mcp_dir, "src",".minecraft_orig")
+    if os.path.exists( org_src_dir ):
+        shutil.rmtree( org_src_dir, True )
+    shutil.copytree( src_dir, org_src_dir )
 
     if nocompilefixpatch == False:
         compile_error_patching_done = False
@@ -553,12 +552,10 @@ def main(mcp_dir):
             updatemd5( None, True, True, False )
             os.chdir( base_dir )
 
-            
-    # Create original (fixed) decompile src dir       
-    org_src_dir = os.path.join(mcp_dir, "src",".minecraft_orig")
-    if os.path.exists( org_src_dir ):
-        shutil.rmtree( org_src_dir, True )
-    shutil.copytree( src_dir, org_src_dir )                
+            # Now re-create the .minecraft_orig with the new buildable state
+            if os.path.exists( org_src_dir ):
+                shutil.rmtree( org_src_dir, True )
+                shutil.copytree( src_dir, org_src_dir )
                 
     if nopatch == False:
         # Patch stage 2: Now apply our main Minecrift patches, only

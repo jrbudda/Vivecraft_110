@@ -3,7 +3,7 @@
   "time": "2016-06-08T09:48:15-04:00",
   "releaseTime": "2016-06-08T09:06:18-04:00",
   "type": "release",
-  "minecraftArguments": "--username ${auth_player_name} --version ${version_name} --gameDir ${game_directory} --assetsDir ${assets_root} --assetIndex ${assets_index_name} --uuid ${auth_uuid} --accessToken ${auth_access_token} --userType ${user_type} --versionType ${version_type}",
+   "minecraftArguments": "--username ${auth_player_name} --version ${version_name} --gameDir ${game_directory} --assetsDir ${assets_root} --assetIndex ${assets_index_name} --uuid ${auth_uuid} --accessToken ${auth_access_token} --userProperties ${user_properties} --userType ${user_type}  --tweakClass optifine.OptiFineTweaker",
   "libraries": [
     {
       "name": "optifine:OptiFine:1.10_HD_U_B7"
@@ -18,6 +18,12 @@
     {
       "name": "de.fruitfly.ovr:JRift:0.8.0.0.1",
 	    "url": "http://repo.minecraft-vr.com/"
+    },
+	{
+      "name": "net.java.dev.jna:jna:3.4.0"
+    },
+    {
+      "name": "net.java.dev.jna:platform:3.4.0"
     },
     {
       "name": "com.mojang:netty:1.6",

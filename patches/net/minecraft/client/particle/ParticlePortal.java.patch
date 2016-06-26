@@ -36,14 +36,14 @@
 +        this.posY = this.prevPosY;
 +        this.posZ = this.prevPosZ;
          float f = (float)this.particleAge / (float)this.particleMaxAge;
-         float f1 = -f + f * f * 2.0F;
-         float f2 = 1.0F - f1;
--        this.field_187126_f = this.portalPosX + this.field_187129_i * (double)f2;
--        this.field_187127_g = this.portalPosY + this.field_187130_j * (double)f2 + (double)(1.0F - f);
--        this.field_187128_h = this.portalPosZ + this.field_187131_k * (double)f2;
-+        this.prevPosX = this.portalPosX + this.motionX * (double)f2;
-+        this.prevPosY = this.portalPosY + this.motionY * (double)f2 + (double)(1.0F - f);
-+        this.prevPosZ = this.portalPosZ + this.motionZ * (double)f2;
+         f = -f + f * f * 2.0F;
+         f = 1.0F - f;
+-        this.field_187126_f = this.portalPosX + this.field_187129_i * (double)f;
+-        this.field_187127_g = this.portalPosY + this.field_187130_j * (double)f + (double)(1.0F - f);
+-        this.field_187128_h = this.portalPosZ + this.field_187131_k * (double)f;
++        this.prevPosX = this.portalPosX + this.motionX * (double)f;
++        this.prevPosY = this.portalPosY + this.motionY * (double)f + (double)(1.0F - f);
++        this.prevPosZ = this.portalPosZ + this.motionZ * (double)f;
  
          if (this.particleAge++ >= this.particleMaxAge)
          {
