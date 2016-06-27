@@ -1,12 +1,47 @@
 package com.mtbs3d.minecrift.utils;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 public class Utils
 {
+	public static Field getDeclaredField(Class clazz, String unObfuscatedName, String obfuscatedName, String srgName)
+	{
+		Field field = null;
+		String s = clazz.getName();
+
+		try
+		{
+			field = clazz.getDeclaredField(unObfuscatedName);
+		}
+		catch (NoSuchFieldException e)
+		{
+			try
+			{
+				field = clazz.getDeclaredField(obfuscatedName);
+			}
+			catch (NoSuchFieldException e1)
+			{
+				try
+				{
+					field = clazz.getDeclaredField(srgName);
+				}
+				catch (NoSuchFieldException e2)
+				{
+					e.printStackTrace();
+					e1.printStackTrace();
+					e2.printStackTrace();
+				};
+			};
+		}
+
+		return field;
+	}
+	
     /* With thanks to http://ramblingsrobert.wordpress.com/2011/04/13/java-word-wrap-algorithm/ */
     public static void wordWrap(String in, int length, ArrayList<String> wrapped)
     {
+    	
         String newLine = "\n";
         String wrappedLine;
         boolean quickExit = false;
