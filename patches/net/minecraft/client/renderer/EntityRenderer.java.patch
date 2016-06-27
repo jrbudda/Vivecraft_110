@@ -132,7 +132,7 @@
      /** A reference to the Minecraft object. */
      private final Minecraft mc;
      private final IResourceManager resourceManager;
-@@ -2085,4 +2158,1833 @@
+@@ -2085,4 +2158,1830 @@
          GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
          GlStateManager.popMatrix();
      }
@@ -268,10 +268,10 @@
 +							entity.rotationYaw =  (float)yaw;
 +							entity.rotationPitch = (float)pitch;
 +
-+						}	 else if(i.getItem() == Items.snowball ||
-+								i.getItem() == Items.egg  ||
-+								i.getItem() == Items.spawn_egg  ||
-+								i.getItem() == Items.potionitem  
++						}	 else if(i.getItem() == Items.SNOWBALL ||
++								i.getItem() == Items.EGG  ||
++								i.getItem() == Items.SPAWN_EGG  ||
++								i.getItem() == Items.POTIONITEM  
 +								) {
 +							//use r_hand aim
 +							entity.rotationYaw =  -mc.roomScale.getControllerMainYaw_World();
@@ -310,8 +310,8 @@
 +					new Vec3d(camX + var21, camY + var22, camZ + var23),
 +					new Vec3d(camX - camXOffset + var21, camY - camYOffset + var22, camZ - camZOffset + var23));
 +
-+			BlockPos bp = var24.getBlock();
-+			if (var24 != null && this.mc.theWorld.isBlockNormalCubeDefault(bp.getX(), bp.getY(), bp.getZ(), true))
++			BlockPos bp = var24.getBlockPos();
++			if (var24 != null && this.mc.theWorld.isBlockNormalCube(bp, true))
 +			{
 +				double var25 = var24.hitVec.distanceTo(new Vec3d(camX, camY, camZ)) - MIN_DISTANCE;
 +
@@ -560,7 +560,7 @@
 +		GL11.glPushMatrix();
 +		GL11.glLoadIdentity();
 +
-+		GL11.glColor4f(rgb.r, rgb.g, rgb.b, fadeAlpha);
++		GL11.glColor4f(rgb.red, rgb.green, rgb.blue, fadeAlpha);
 +
 +		GL11.glBegin(GL11.GL_QUADS);
 +
@@ -644,7 +644,7 @@
 +					maxreach, maxreach, maxreach)
 +					.offset(aimsourcecopy2.xCoord, aimsourcecopy2.yCoord,  aimsourcecopy2.zCoord).expand(1, 1, 1);
 +			
-+			List entitiesWithinCrosshairDist = this.mc.theWorld.getEntitiesWithinAABBExcludingEntity(this.mc.renderViewEntity, bb);
++			List entitiesWithinCrosshairDist = this.mc.theWorld.getEntitiesWithinAABBExcludingEntity(this.mc.getRenderViewEntity(), bb);
 +			
 +			double reach = maxreach;
 +			double dist = 0;
@@ -656,7 +656,7 @@
 +				if (entity.canBeCollidedWith())
 +				{
 +					float borderSize = entity.getCollisionBorderSize();
-+					AxisAlignedBB boundingBox = entity.boundingBox.expand((double)borderSize, (double)borderSize, (double)borderSize);
++					AxisAlignedBB boundingBox = entity.getCollisionBoundingBox().expand((double)borderSize, (double)borderSize, (double)borderSize);
 +					RayTraceResult collision = boundingBox.calculateIntercept(aimsourcecopy2, crossVec);
 +	
 +					if (boundingBox.isVecInside(aimsourcecopy2))
@@ -717,7 +717,7 @@
 +			crossZ = (float)(crossVec.zCoord - (centerEyePosToCrossDirection.zCoord*SLIGHTLY_CLOSER) - interpolatedPlayerPos.zCoord);
 +	
 +			// VIVE START - teleport movement
-+			if (!mc.vrPlayer.getFreeMoveMode() && mc.gameSettings.keyBindForward.getIsKeyPressed()) { mc.vrPlayer.updateTeleportDestinations(this, mc, mc.getRenderViewEntity());}
++			if (!mc.vrPlayer.getFreeMoveMode() && mc.gameSettings.keyBindForward.isKeyDown()) { mc.vrPlayer.updateTeleportDestinations(this, mc, mc.getRenderViewEntity());}
 +			// VIVE END - teleport movement
 +	
 +			/** END MINECRIFT */    
@@ -742,7 +742,7 @@
 +		GL11.glPopMatrix();
 +		GL11.glPushMatrix();
 +		/** MINECRIFT */
-+		if (this.mc.objectMouseOver != null && var4.isInsideOfMaterial(Material.water) && var4 instanceof EntityPlayer && renderOutline)     // Minecrift
++		if (this.mc.objectMouseOver != null && var4.isInsideOfMaterial(Material.WATER) && var4 instanceof EntityPlayer && renderOutline)     // Minecrift
 +		{
 +			var18 = (EntityPlayer)var4;
 +			GL11.glDisable(GL11.GL_ALPHA_TEST);
@@ -762,9 +762,9 @@
 +		GL11.glDepthMask(false);
 +
 +		Tessellator var2 = Tessellator.getInstance();
-+		var2.startDrawing(GL11.GL_LINE_STRIP);
-+		var2.addVertex(start.xCoord, start.yCoord, start.zCoord);
-+		var2.addVertex(end.xCoord, end.yCoord, end.zCoord);
++//		var2.startDrawing(GL11.GL_LINE_STRIP);
++//		var2.addVertex(start.xCoord, start.yCoord, start.zCoord);
++//		var2.addVertex(end.xCoord, end.yCoord, end.zCoord);
 +		var2.draw();
 +
 +		GL11.glDepthMask(true);
@@ -964,7 +964,6 @@
 +
 +				if (this.mc.currentScreen != null /*&& !this.blankGUIUntilWorldValid*/)
 +				{
-+
 +					final int mouseX1 = mouseX = this.mc.currentScreen.getMouseX();
 +					final int mouseY1 = mouseY = this.mc.currentScreen.getMouseY();
 +
@@ -1040,126 +1039,124 @@
 +
 +	private void renderTeleportArc(OpenVRPlayer vrPlayer) {
 +
-+		if ( vrPlayer.vrMovementStyle.showBeam && vrPlayer.movementTeleportProgress > 0.0f
-+				&& vrPlayer.movementTeleportArcSteps > 1)
-+		{
-+			mc.mcProfiler.startSection("teleportArc");
-+
-+		
-+			GL11.glEnable(GL11.GL_BLEND);
-+			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-+			GL11.glDisable(GL11.GL_TEXTURE_2D);
-+			GL11.glDisable(GL11.GL_LIGHTING);
-+			GL11.glEnable(GL11.GL_DEPTH_TEST);
-+
-+			Tessellator tes = Tessellator.getInstance();
-+			
-+			tes.startDrawingQuads();
-+
-+				double VOffset = vrPlayer.lastTeleportArcDisplayOffset;
-+	
-+				boolean validLocation = (vrPlayer.movementTeleportDestination.xCoord != 0
-+						|| vrPlayer.movementTeleportDestination.yCoord != 0
-+						|| vrPlayer.movementTeleportDestination.zCoord != 0);
-+	
-+				int validLineR = 205;
-+				int validLineG = 169;
-+				int validLineB = 205;
-+				if (!validLocation)
-+				{
-+					// invalid location
-+					tes.setColorRGBA(83, 75, 83, 128);
-+				}
-+				else
-+				{
-+					tes.setColorRGBA(validLineR, validLineG, validLineB, 128);
-+					VOffset = this.mc.stereoProvider.getCurrentTimeSecs()*vrPlayer.vrMovementStyle.textureScrollSpeed * 0.6;
-+					vrPlayer.lastTeleportArcDisplayOffset = VOffset;
-+				}
-+	
-+				float segmentHalfWidth = vrPlayer.vrMovementStyle.beamHalfWidth * 0.15f;
-+				int segments = vrPlayer.movementTeleportArcSteps - 1;
-+				if (vrPlayer.vrMovementStyle.beamGrow)
-+				{
-+					segments = (int) ((double) segments * vrPlayer.movementTeleportProgress);
-+				}
-+				double segmentProgress = 1.0 / (double) segments;
-+	
-+				Vec3d up = new Vec3d(0,1,0);
-+	
-+				for (int i=0;i<segments;i++)
-+				{
-+					double progress = ((double)i / (double)segments) + VOffset * segmentProgress;
-+					int progressBase = (int)MathHelper.floor_double(progress);
-+					progress -= (float) progressBase;
-+	
-+					Vec3d start = mc.vrPlayer.getInterpolatedArcPosition((float)(progress - segmentProgress * 0.4f));
-+					start.xCoord -= interpolatedPlayerPos.xCoord;
-+					start.yCoord -= interpolatedPlayerPos.yCoord;
-+					start.zCoord -= interpolatedPlayerPos.zCoord;
-+	
-+					Vec3d end = mc.vrPlayer.getInterpolatedArcPosition((float)progress);
-+					end.xCoord -= interpolatedPlayerPos.xCoord;
-+					end.yCoord -= interpolatedPlayerPos.yCoord;
-+					end.zCoord -= interpolatedPlayerPos.zCoord;
-+	
-+					float shift = (float)progress * 2.0f;
-+					renderBox(tes, start, end, -segmentHalfWidth, segmentHalfWidth, (-1.0f + shift ) * segmentHalfWidth, (1.0f + shift) * segmentHalfWidth, up);
-+				}
-+				
-+			tes.draw();
-+
-+			if (validLocation){ //draw landing splash
-+				Vec3d circlePos = new Vec3d(vrPlayer.movementTeleportDestination.xCoord, vrPlayer.movementTeleportDestination.yCoord, vrPlayer.movementTeleportDestination.zCoord) ;
-+
-+				int side = 1; //vrPlayer.movementTeleportDestinationSideHit;
-+
-+				float o = 0.01f;
-+
-+				circlePos.xCoord -= interpolatedPlayerPos.xCoord;
-+				circlePos.yCoord -= interpolatedPlayerPos.yCoord;
-+				circlePos.zCoord -= interpolatedPlayerPos.zCoord;
-+
-+				if (side ==0)   circlePos.yCoord -= o;
-+				if (side ==1)   circlePos.yCoord += o;
-+				if (side ==2)   circlePos.zCoord -= o;
-+				if (side ==3)   circlePos.zCoord += o;
-+				if (side ==4)   circlePos.xCoord -= o;
-+				if (side ==5)   circlePos.xCoord += o;						
-+
-+				renderCircle(circlePos, 0.2f, 32, validLineR, validLineG, validLineB, 64,side);
-+				if (side ==0)   circlePos.yCoord -= o;
-+				if (side ==1)   circlePos.yCoord += o;
-+				if (side ==2)   circlePos.zCoord -= o;
-+				if (side ==3)   circlePos.zCoord += o;
-+				if (side ==4)   circlePos.xCoord -= o;
-+				if (side ==5)   circlePos.xCoord += o;
-+				renderCircle(circlePos, 0.15f, 32, validLineR, validLineG, validLineB, 128,side);
-+				if (side ==0)   circlePos.yCoord -= o;
-+				if (side ==1)   circlePos.yCoord += o;
-+				if (side ==2)   circlePos.zCoord -= o;
-+				if (side ==3)   circlePos.zCoord += o;
-+				if (side ==4)   circlePos.xCoord -= o;
-+				if (side ==5)   circlePos.xCoord += o;
-+				renderCircle(circlePos, 0.1f, 32, validLineR, validLineG, validLineB, 128,side);
-+			}
-+
-+			mc.mcProfiler.endSection(); // teleport arc
-+		}
++//		if ( vrPlayer.vrMovementStyle.showBeam && vrPlayer.movementTeleportProgress > 0.0f
++//				&& vrPlayer.movementTeleportArcSteps > 1)
++//		{
++//			mc.mcProfiler.startSection("teleportArc");
++//
++//		
++//			GL11.glEnable(GL11.GL_BLEND);
++//			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
++//			GL11.glDisable(GL11.GL_TEXTURE_2D);
++//			GL11.glDisable(GL11.GL_LIGHTING);
++//			GL11.glEnable(GL11.GL_DEPTH_TEST);
++//
++//			Tessellator tes = Tessellator.getInstance();
++//			
++//				double VOffset = vrPlayer.lastTeleportArcDisplayOffset;
++//	
++//				boolean validLocation = (vrPlayer.movementTeleportDestination.xCoord != 0
++//						|| vrPlayer.movementTeleportDestination.yCoord != 0
++//						|| vrPlayer.movementTeleportDestination.zCoord != 0);
++//	
++//				int validLineR = 205;
++//				int validLineG = 169;
++//				int validLineB = 205;
++//				if (!validLocation)
++//				{
++//					// invalid location
++//					tes.getBuffer().color(83, 75, 83, 128);
++//				}
++//				else
++//				{
++//					tes.getBuffer().color(validLineR, validLineG, validLineB, 128);
++//					VOffset = this.mc.stereoProvider.getCurrentTimeSecs()*vrPlayer.vrMovementStyle.textureScrollSpeed * 0.6;
++//					vrPlayer.lastTeleportArcDisplayOffset = VOffset;
++//				}
++//	
++//				float segmentHalfWidth = vrPlayer.vrMovementStyle.beamHalfWidth * 0.15f;
++//				int segments = vrPlayer.movementTeleportArcSteps - 1;
++//				if (vrPlayer.vrMovementStyle.beamGrow)
++//				{
++//					segments = (int) ((double) segments * vrPlayer.movementTeleportProgress);
++//				}
++//				double segmentProgress = 1.0 / (double) segments;
++//	
++//				Vec3d up = new Vec3d(0,1,0);
++//	
++//				for (int i=0;i<segments;i++)
++//				{
++//					double progress = ((double)i / (double)segments) + VOffset * segmentProgress;
++//					int progressBase = (int)MathHelper.floor_double(progress);
++//					progress -= (float) progressBase;
++//	
++//					Vec3d start = mc.vrPlayer.getInterpolatedArcPosition((float)(progress - segmentProgress * 0.4f));
++//					start.xCoord -= interpolatedPlayerPos.xCoord;
++//					start.yCoord -= interpolatedPlayerPos.yCoord;
++//					start.zCoord -= interpolatedPlayerPos.zCoord;
++//	
++//					Vec3d end = mc.vrPlayer.getInterpolatedArcPosition((float)progress);
++//					end.xCoord -= interpolatedPlayerPos.xCoord;
++//					end.yCoord -= interpolatedPlayerPos.yCoord;
++//					end.zCoord -= interpolatedPlayerPos.zCoord;
++//	
++//					float shift = (float)progress * 2.0f;
++//					renderBox(tes, start, end, -segmentHalfWidth, segmentHalfWidth, (-1.0f + shift ) * segmentHalfWidth, (1.0f + shift) * segmentHalfWidth, up);
++//				}
++//				
++//			tes.draw();
++//
++//			if (validLocation){ //draw landing splash
++//				Vec3d circlePos = new Vec3d(vrPlayer.movementTeleportDestination.xCoord, vrPlayer.movementTeleportDestination.yCoord, vrPlayer.movementTeleportDestination.zCoord) ;
++//
++//				int side = 1; //vrPlayer.movementTeleportDestinationSideHit;
++//
++//				float o = 0.01f;
++//
++//				circlePos.xCoord -= interpolatedPlayerPos.xCoord;
++//				circlePos.yCoord -= interpolatedPlayerPos.yCoord;
++//				circlePos.zCoord -= interpolatedPlayerPos.zCoord;
++//
++//				if (side ==0)   circlePos.yCoord -= o;
++//				if (side ==1)   circlePos.yCoord += o;
++//				if (side ==2)   circlePos.zCoord -= o;
++//				if (side ==3)   circlePos.zCoord += o;
++//				if (side ==4)   circlePos.xCoord -= o;
++//				if (side ==5)   circlePos.xCoord += o;						
++//
++//				renderCircle(circlePos, 0.2f, 32, validLineR, validLineG, validLineB, 64,side);
++//				if (side ==0)   circlePos.yCoord -= o;
++//				if (side ==1)   circlePos.yCoord += o;
++//				if (side ==2)   circlePos.zCoord -= o;
++//				if (side ==3)   circlePos.zCoord += o;
++//				if (side ==4)   circlePos.xCoord -= o;
++//				if (side ==5)   circlePos.xCoord += o;
++//				renderCircle(circlePos, 0.15f, 32, validLineR, validLineG, validLineB, 128,side);
++//				if (side ==0)   circlePos.yCoord -= o;
++//				if (side ==1)   circlePos.yCoord += o;
++//				if (side ==2)   circlePos.zCoord -= o;
++//				if (side ==3)   circlePos.zCoord += o;
++//				if (side ==4)   circlePos.xCoord -= o;
++//				if (side ==5)   circlePos.xCoord += o;
++//				renderCircle(circlePos, 0.1f, 32, validLineR, validLineG, validLineB, 128,side);
++//			}
++//
++//			mc.mcProfiler.endSection(); // teleport arc
++//		}
 +	}
 +
 +	public Vec3d getCameraPos_Render(){
-+		Vec3d out = mc.roomScale.getEyePos_World(mc.currentEye).subtract(mc.getRenderViewEntity().getEyeLocation(1));
++		Vec3d out = mc.roomScale.getEyePos_World(mc.currentEye).subtract(mc.getRenderViewEntity().getPositionEyes(1));
 +		return out;
 +	}
 +	
 +	public Vec3d getMainHandPos_Render(){
-+		Vec3d out =  mc.roomScale.getControllerMainPos_World().subtract(mc.getRenderViewEntity().getEyeLocation(1));
++		Vec3d out =  mc.roomScale.getControllerMainPos_World().subtract(mc.getRenderViewEntity().getPositionEyes(1));
 +		return out;
 +	}
 +	
 +	public Vec3d getOffHandPos_Render(){
-+		Vec3d out =  mc.roomScale.getControllerOffhandPos_World().subtract(mc.getRenderViewEntity().getEyeLocation(1));
++		Vec3d out =  mc.roomScale.getControllerOffhandPos_World().subtract(mc.getRenderViewEntity().getPositionEyes(1));
 +		return out;
 +	}
 +	
@@ -1234,7 +1231,7 @@
 +					else //just hand
 +						renderItemInFirstPersonForController(nano, 1, null);
 +					
-+				this.disableLightmap((double) nano);
++				this.disableLightmap();
 +			
 +					//	TP energy
 +				if (mc.vrSettings.vrLimitedSurvivalTeleport && !mc.vrPlayer.getFreeMoveMode() && mc.playerController.isNotCreative() && mc.vrPlayer.vrMovementStyle.arcAiming && !mc.bowTracker.isActive(mc.thePlayer)){
@@ -1318,9 +1315,9 @@
 +		
 +				for (int c=0;c<2;c++)
 +				{
-+					tes.startDrawingQuads();
++					tes.getBuffer().begin(7, DefaultVertexFormats.POSITION);
 +		
-+					tes.setColorRGBA(255 - 127 * c,255 - 127 * c,255 - 127 * c,255);
++					tes.getBuffer().color(255 - 127 * c,255 - 127 * c,255 - 127 * c,255);
 +					
 +					Vec3d controllerPos = mc.roomScale.getEyePos_World(mc.currentEye).subtract(mc.roomScale.getControllerPos_World(c));
 +					
@@ -1423,7 +1420,7 @@
 +				right.yCoord * minX,
 +				right.zCoord * minX);
 +	
-+		right = right.multiply(maxX);
++		right = right.scale(maxX);
 +		
 +	
 +		Vec3d down = new Vec3d(
@@ -1431,7 +1428,7 @@
 +				up.yCoord * minY,
 +				up.zCoord * minY);
 +	
-+		up = up.multiply(maxY);
++		up = up.scale(maxY);
 +
 +	
 +		Vec3d backRightBottom    = start.addVector(   right.xCoord+down.xCoord,   right.yCoord+down.yCoord,   right.zCoord+down.zCoord);
@@ -1487,7 +1484,7 @@
 +		GL11.glEnable(GL11.GL_LIGHT0);
 +		GL11.glEnable(GL11.GL_CULL_FACE);
 +	
-+		Minecraft.getMinecraft().renderEngine.bindTexture(Gui.optionsBackground);
++		Minecraft.getMinecraft().renderEngine.bindTexture(Gui.OPTIONS_BACKGROUND);
 +		
 +	//	float yo = -camRelY;
 +		float s = 3f;
@@ -1694,10 +1691,10 @@
 +						forward.yCoord * segmentLength + right.yCoord * segmentHalfWidth,
 +						forward.zCoord * segmentLength + right.zCoord * segmentHalfWidth);
 +	
-+				tes.addVertexWithUV(BL.xCoord, BL.yCoord, BL.zCoord, 0, 0+VOffset);       // top
-+				tes.addVertexWithUV(FL.xCoord, FL.yCoord, FL.zCoord, 0, textureVStripHeight+VOffset);
-+				tes.addVertexWithUV(FR.xCoord, FR.yCoord, FR.zCoord, 1, textureVStripHeight+VOffset);
-+				tes.addVertexWithUV(BR.xCoord, BR.yCoord, BR.zCoord, 1, 0+VOffset);
++//				tes.addVertexWithUV(BL.xCoord, BL.yCoord, BL.zCoord, 0, 0+VOffset);       // top
++//				tes.addVertexWithUV(FL.xCoord, FL.yCoord, FL.zCoord, 0, textureVStripHeight+VOffset);
++//				tes.addVertexWithUV(FR.xCoord, FR.yCoord, FR.zCoord, 1, textureVStripHeight+VOffset);
++//				tes.addVertexWithUV(BR.xCoord, BR.yCoord, BR.zCoord, 1, 0+VOffset);
 +	
 +				// render again at 90 degrees
 +				Vec3d SFL = segmentOrigin.addVector(forward.xCoord * segmentLength - up.xCoord * segmentHalfWidth,
@@ -1709,10 +1706,10 @@
 +	
 +				if (vrPlayer.vrMovementStyle.renderVerticalStrip)
 +				{
-+					tes.addVertexWithUV(SBL.xCoord, SBL.yCoord, SBL.zCoord, 0, 0 + VOffset);       // top
-+					tes.addVertexWithUV(SFL.xCoord, SFL.yCoord, SFL.zCoord, 0, textureVStripHeight + VOffset);
-+					tes.addVertexWithUV(SFR.xCoord, SFR.yCoord, SFR.zCoord, 1, textureVStripHeight + VOffset);
-+					tes.addVertexWithUV(SBR.xCoord, SBR.yCoord, SBR.zCoord, 1, 0 + VOffset);
++//					tes.addVertexWithUV(SBL.xCoord, SBL.yCoord, SBL.zCoord, 0, 0 + VOffset);       // top
++//					tes.addVertexWithUV(SFL.xCoord, SFL.yCoord, SFL.zCoord, 0, textureVStripHeight + VOffset);
++//					tes.addVertexWithUV(SFR.xCoord, SFR.yCoord, SFR.zCoord, 1, textureVStripHeight + VOffset);
++//					tes.addVertexWithUV(SBR.xCoord, SBR.yCoord, SBR.zCoord, 1, 0 + VOffset);
 +				}
 +	
 +				BL=FL;
@@ -1799,7 +1796,7 @@
 +		//            //END VIVE
 +		//            int var7 = MathHelper.floor_double(this.posZ + (double)var4);
 +	
-+		if ( this.mc.thePlayer.worldObj.getBlock((int)campos.xCoord, (int)campos.yCoord, (int)campos.zCoord).isNormalCube())
++		if ( this.mc.thePlayer.worldObj.getBlockPos((int)campos.xCoord, (int)campos.yCoord, (int)campos.zCoord).isNormalCube())
 +		{
 +			return true;
 +		}
@@ -1859,7 +1856,7 @@
 +					GL11.glRotatef(45, 0, 0, 1);
 +				}
 +				
-+				this.mc.getTextureManager().bindTexture(Gui.icons);
++				this.mc.getTextureManager().bindTexture(Gui.ICONS);
 +				
 +				GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
 +				GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);

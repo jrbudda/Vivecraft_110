@@ -297,22 +297,17 @@ public class GuiSelectSettingsProfile extends BaseGuiSettings implements GuiYesN
             GuiSelectSettingsProfile.this.drawDefaultBackground();
         }
 
-        protected void drawSlot(int p_148126_1_, int p_148126_2_, int p_148126_3_, int p_148126_4_, Tessellator p_148126_5_, int p_148126_6_, int p_148126_7_)
-        {
+		@Override
+		protected void drawSlot(int entryID, int insideLeft, int yPos, int insideSlotHeight, int mouseXIn,
+				int mouseYIn) {
             int colour = 16777215; // White
-            String var9 = GuiSelectSettingsProfile.this.getProfileNameFromIndex(p_148126_1_);
+            String var9 = GuiSelectSettingsProfile.this.getProfileNameFromIndex(entryID);
             if (var9.equals(VRSettings.getCurrentProfile())) {
                 colour = 16777120; // Yellow if current profile
             }
 
-            GuiSelectSettingsProfile.this.drawString(GuiSelectSettingsProfile.this.fontRendererObj, var9, p_148126_2_ + 2, p_148126_3_ + 1, colour);
-        }
+            GuiSelectSettingsProfile.this.drawString(GuiSelectSettingsProfile.this.fontRendererObj, var9, insideLeft + 2, yPos + 1, colour);
 
-		@Override
-		protected void func_180791_a(int p_180791_1_, int p_180791_2_, int p_180791_3_, int p_180791_4_,
-				int p_180791_5_, int p_180791_6_) {
-			// TODO Auto-generated method stub
-			
 		}
     }
 }

@@ -100,13 +100,13 @@ public class BowTracker {
 
 		controllersDot = 180 / Math.PI * Math.acos(leftforeward.dot(rightAim));
 
-		pressed = Minecraft.getMinecraft().gameSettings.keyBindAttack.getIsKeyPressed();
+		pressed = Minecraft.getMinecraft().gameSettings.keyBindAttack.isKeyDown();
 
 		float notchDistThreshold = (float) (0.3 * Minecraft.getMinecraft().vrSettings.vrWorldScale);
 		
-		boolean infiniteAmmo = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantments.infinity, bow) > 0;
+		boolean infiniteAmmo = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, bow) > 0;
 		
-		if( controllersDist <= notchDistThreshold && controllersDot <= notchDotThreshold && (infiniteAmmo || player.inventory.hasItemStack(new ItemStack(Items.arrow))))
+		if( controllersDist <= notchDistThreshold && controllersDot <= notchDotThreshold && (infiniteAmmo || player.inventory.hasItemStack(new ItemStack(Items.ARROW))))
 		{
 			//can draw
 			canDraw = true;
@@ -125,7 +125,7 @@ public class BowTracker {
 		if (!isDrawing && canDraw  && pressed && !lastpressed) {
 			//draw     	    	
 			isDrawing = true;
-			Minecraft.getMinecraft().playerController.sendUseItem(player, player.worldObj, bow,EnumHand.MAIN_HAND);//server
+			Minecraft.getMinecraft().playerController.processRightClick(player, player.worldObj, bow,EnumHand.MAIN_HAND);//server
 		}
 
 		if(isDrawing && !pressed && lastpressed && getDrawPercent() > 0.0) {

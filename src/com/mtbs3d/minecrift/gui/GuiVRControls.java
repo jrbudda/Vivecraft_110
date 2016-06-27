@@ -92,7 +92,7 @@ public class GuiVRControls extends BaseGuiSettings {
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         this.buttonId = null;
-      if (mouseButton != 0 || !this.guiList.func_148179_a(mouseX, mouseY, mouseButton))
+      if (mouseButton != 0 || !this.guiList.mouseClicked(mouseX, mouseY, mouseButton))
         {
             try {
 				super.mouseClicked(mouseX, mouseY, mouseButton);
@@ -109,7 +109,7 @@ public class GuiVRControls extends BaseGuiSettings {
      */
     protected void mouseReleased(int mouseX, int mouseY, int state)
     {
-        if (state != 0 || !this.guiList.func_148181_b(mouseX, mouseY, state))
+        if (state != 0 || !this.guiList.mouseClicked(mouseX, mouseY, state))
         {
             super.mouseReleased(mouseX, mouseY, state);
         }

@@ -1,6 +1,6 @@
 --- a/net/minecraft/client/Minecraft.java
 +++ b/net/minecraft/client/Minecraft.java
-@@ -13,10 +13,32 @@
+@@ -13,10 +13,34 @@
  import com.mojang.authlib.minecraft.MinecraftSessionService;
  import com.mojang.authlib.properties.PropertyMap;
  import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
@@ -22,6 +22,8 @@
 +import de.fruitfly.ovr.enums.EyeType;
 +import de.fruitfly.ovr.structs.FovPort;
 +import de.fruitfly.ovr.structs.GLConfig;
++import de.fruitfly.ovr.structs.RenderTextureInfo;
++import de.fruitfly.ovr.structs.RenderTextureSet;
 +import de.fruitfly.ovr.structs.Sizei;
 +
  import java.awt.image.BufferedImage;
@@ -33,7 +35,7 @@
  import java.net.Proxy;
  import java.net.SocketAddress;
  import java.nio.ByteBuffer;
-@@ -25,8 +47,11 @@
+@@ -25,8 +49,11 @@
  import java.text.DecimalFormat;
  import java.text.MessageFormat;
  import java.text.SimpleDateFormat;
@@ -45,7 +47,7 @@
  import java.util.Iterator;
  import java.util.List;
  import java.util.Queue;
-@@ -42,6 +67,7 @@
+@@ -42,6 +69,7 @@
  import net.minecraft.block.state.IBlockState;
  import net.minecraft.client.audio.MusicTicker;
  import net.minecraft.client.audio.SoundHandler;
@@ -53,7 +55,7 @@
  import net.minecraft.client.entity.EntityPlayerSP;
  import net.minecraft.client.gui.FontRenderer;
  import net.minecraft.client.gui.GuiChat;
-@@ -112,12 +138,14 @@
+@@ -112,12 +140,14 @@
  import net.minecraft.client.settings.GameSettings;
  import net.minecraft.client.settings.KeyBinding;
  import net.minecraft.client.shader.Framebuffer;
@@ -68,7 +70,7 @@
  import net.minecraft.entity.item.EntityArmorStand;
  import net.minecraft.entity.item.EntityBoat;
  import net.minecraft.entity.item.EntityEnderCrystal;
-@@ -174,6 +202,7 @@
+@@ -174,6 +204,7 @@
  import net.minecraft.util.text.Style;
  import net.minecraft.util.text.TextComponentString;
  import net.minecraft.util.text.TextFormatting;
@@ -76,7 +78,7 @@
  import net.minecraft.world.EnumDifficulty;
  import net.minecraft.world.WorldProviderEnd;
  import net.minecraft.world.WorldProviderHell;
-@@ -187,13 +216,19 @@
+@@ -187,13 +218,19 @@
  import org.apache.commons.lang3.Validate;
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
@@ -96,7 +98,7 @@
  import org.lwjgl.opengl.GLContext;
  import org.lwjgl.opengl.OpenGLException;
  import org.lwjgl.opengl.PixelFormat;
-@@ -201,6 +236,115 @@
+@@ -201,6 +238,115 @@
  
  public class Minecraft implements IThreadListener, ISnooperInfo
  {
@@ -212,7 +214,7 @@
      private static final Logger LOGGER = LogManager.getLogger();
      private static final ResourceLocation LOCATION_MOJANG_PNG = new ResourceLocation("textures/gui/title/mojang.png");
      public static final boolean IS_RUNNING_ON_MAC = Util.getOSType() == Util.EnumOS.OSX;
-@@ -216,7 +360,7 @@
+@@ -216,7 +362,7 @@
      private ServerData currentServerData;
  
      /** The RenderEngine instance used by Minecraft */
@@ -221,7 +223,7 @@
  
      /**
       * Set to 'this' in Minecraft constructor; used by some settings get methods
-@@ -349,7 +493,9 @@
+@@ -349,7 +495,9 @@
      private ItemColors itemColors;
      private Framebuffer framebufferMc;
      private TextureMap textureMapBlocks;
@@ -232,7 +234,38 @@
      private MusicTicker mcMusicTicker;
      private ResourceLocation mojangLogo;
      private final MinecraftSessionService sessionService;
-@@ -1048,7 +1194,8 @@
+@@ -400,8 +548,10 @@
+         LOGGER.info("Setting user: {}", new Object[] {this.session.getUsername()});
+         LOGGER.debug("(Session ID is {})", new Object[] {this.session.getSessionID()});
+         this.isDemo = gameConfig.gameInfo.isDemo;
+-        this.displayWidth = gameConfig.displayInfo.width > 0 ? gameConfig.displayInfo.width : 1;
+-        this.displayHeight = gameConfig.displayInfo.height > 0 ? gameConfig.displayInfo.height : 1;
++		/** MINECRIFT **/
++		displayWidth = 1280;
++		displayHeight = 720;
++		/** END MINECRIFT **/
+         this.tempDisplayWidth = gameConfig.displayInfo.width;
+         this.tempDisplayHeight = gameConfig.displayInfo.height;
+         this.fullscreen = gameConfig.displayInfo.fullscreen;
+@@ -417,6 +567,17 @@
+         ImageIO.setUseCache(false);
+         Bootstrap.register();
+         this.dataFixer = DataFixesManager.createFixer();
++        
++		/** MINECRIFT **/
++		VRSettings.initSettings(this, this.mcDataDir);
++		renderTexProvider = new TextureSelector();
++		mirrorTexProvider    = new TextureSelector();
++		if (!vrSettings.badStereoProviderPluginID.isEmpty()) {
++			vrSettings.stereoProviderPluginID = vrSettings.badStereoProviderPluginID;
++			vrSettings.badStereoProviderPluginID = "";
++			vrSettings.saveOptions();
++		}
++		/** END MINECRIFT **/
+     }
+ 
+     public void run()
+@@ -1048,7 +1209,8 @@
      /**
       * Checks for an OpenGL error. If there is one, prints the error ID and error string.
       */
@@ -242,7 +275,16 @@
      {
          int i = GlStateManager.glGetError();
  
-@@ -1576,11 +1723,11 @@
+@@ -1333,7 +1495,7 @@
+     /**
+      * Parameter appears to be unused
+      */
+-    private void displayDebugInfo(long elapsedTicksTime)
++    public void displayDebugInfo(long elapsedTicksTime)
+     {
+         if (this.mcProfiler.profilingEnabled)
+         {
+@@ -1576,11 +1738,11 @@
      }
  
      @SuppressWarnings("incomplete-switch")
@@ -256,7 +298,7 @@
      {
          if (!this.playerController.getIsHittingBlock())
          {
-@@ -2458,6 +2605,9 @@
+@@ -2458,6 +2620,9 @@
       */
      public void loadWorld(WorldClient worldClientIn)
      {
@@ -266,7 +308,7 @@
          this.loadWorld(worldClientIn, "");
      }
  
-@@ -2623,7 +2773,7 @@
+@@ -2623,7 +2788,7 @@
      /**
       * Called when user clicked he's mouse middle button (pick block)
       */
@@ -275,7 +317,7 @@
      {
          if (this.objectMouseOver != null && this.objectMouseOver.typeOfHit != RayTraceResult.Type.MISS)
          {
-@@ -3414,4 +3564,1062 @@
+@@ -3414,4 +3579,1062 @@
      {
          return this.thePlayer != null && this.thePlayer.hasReducedDebug() || this.gameSettings.reducedDebugInfo;
      }

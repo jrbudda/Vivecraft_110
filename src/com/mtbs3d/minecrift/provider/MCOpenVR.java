@@ -1102,13 +1102,13 @@ public class MCOpenVR
         }
 		
 		// if you start teleporting, close any UI
-		if (gui && !sleeping && mc.gameSettings.keyBindForward.getIsKeyPressed() && !(mc.currentScreen instanceof GuiWinGame))
+		if (gui && !sleeping && mc.gameSettings.keyBindForward.isKeyDown() && !(mc.currentScreen instanceof GuiWinGame))
 		{
 			mc.thePlayer.closeScreen();
 		}
 
 		//handle movementtoggle
-		if (mc.gameSettings.keyBindPickBlock.getIsKeyPressed()) {
+		if (mc.gameSettings.keyBindPickBlock.isKeyDown()) {
 			if(mc.vrSettings.vrAllowLocoModeSwotch){
 				moveModeSwitchcount++;
 				if (moveModeSwitchcount >= 20 * 4) {
@@ -1124,26 +1124,25 @@ public class MCOpenVR
 			moveModeSwitchcount = 0;
 		}
 
-		if(!mc.gameSettings.keyBindInventory.getIsKeyPressed()){
+		if(!mc.gameSettings.keyBindInventory.isKeyDown()){
 			startedOpeningInventory = 0;
 		}
 
 		//GuiContainer.java only listens directly to the keyboard to close.
-		if(gui && !(mc.currentScreen instanceof GuiWinGame) && mc.gameSettings.keyBindInventory.getIsKeyPressed()){ //inventory will repeat open/close while button is held down. TODO: fix.
+		if(gui && !(mc.currentScreen instanceof GuiWinGame) && mc.gameSettings.keyBindInventory.isKeyDown()){ //inventory will repeat open/close while button is held down. TODO: fix.
 			if((getCurrentTimeSecs() - startedOpeningInventory) > 0.5) mc.thePlayer.closeScreen();
 			mc.gameSettings.keyBindInventory.unpressKey(); //minecraft.java will open a new window otherwise.
 		}
 
 		if(pressedLAppMenu  && !lastpressedLAppMenu) { //handle menu directly
 				
-			if(mc.gameSettings.keyBindSneak.getIsKeyPressed()){				
+			if(mc.gameSettings.keyBindSneak.isKeyDown()){				
 				setKeyboardOverlayShowing(!keyboardShowing, null);			
 			} else{
 				if(gui || keyboardShowing){
 
 					if(mc.currentScreen instanceof GuiWinGame){ //from 'esc' key on guiwingame since we cant push it.
-						
-						mc.thePlayer.sendQueue.addToSendQueue(new CPacketClientStatus(CPacketClientStatus.State.PERFORM_RESPAWN));
+    					mc.thePlayer.connection.sendPacket(new CPacketClientStatus(CPacketClientStatus.State.PERFORM_RESPAWN));
 						mc.displayGuiScreen((GuiScreen)null);		
 					}else {
 						mc.thePlayer.closeScreen();
@@ -1493,9 +1492,9 @@ public class MCOpenVR
 			if(appearOverBlock && mc.objectMouseOver !=null){	
 
 				guiScale =(float) (Math.sqrt(mc.vrSettings.vrWorldScale) * 2);
-				guiPos_World =new Vector3f((float) mc.objectMouseOver.getBlock().getX() + 0.5f,
-						(float) mc.objectMouseOver.getBlock().getX() + 1.7f,
-						(float) mc.objectMouseOver.getBlock().getX() + 0.5f);
+				guiPos_World =new Vector3f((float) mc.objectMouseOver.getBlockPos().getX() + 0.5f,
+						(float) mc.objectMouseOver.getBlockPos().getX() + 1.7f,
+						(float) mc.objectMouseOver.getBlockPos().getX() + 0.5f);
 				
 				Vec3d pos = mc.roomScale.getHMDPos_World();
 				Vector3f look = new Vector3f();
@@ -1606,14 +1605,14 @@ public class MCOpenVR
 		for (int i=0;i<samples;i++)
 		{
 			int sample = ( ( controllerVelocitySampleCount[controller] - 1 ) - i ) % maxControllerVelocitySamples;
-			velocity = velocity.addVector(controllerVelocitySamples[controller][sample]);
+			velocity = velocity.add(controllerVelocitySamples[controller][sample]);
 //			velocity.xCoord += controllerVelocitySamples[controller][sample].xCoord;
 //			velocity.yCoord += controllerVelocitySamples[controller][sample].yCoord;
 //			velocity.zCoord += controllerVelocitySamples[controller][sample].zCoord;
 		}
 		if (samples>0)
 		{
-			velocity = velocity.multiply(1/samples);
+			velocity = velocity.scale(1/samples);
 //			velocity.xCoord /= (float) samples;
 //			velocity.yCoord /= (float) samples;
 //			velocity.zCoord /= (float) samples;

@@ -141,7 +141,8 @@ public class GuiVRControlsList extends GuiListExtended
             this.labelWidth = GuiVRControlsList.this.mc.fontRendererObj.getStringWidth(this.labelText);
         }
 
-        public void drawEntry(int p_148279_1_, int p_148279_2_, int p_148279_3_, int p_148279_4_, int p_148279_5_, Tessellator p_148279_6_, int p_148279_7_, int p_148279_8_, boolean p_148279_9_)
+		@Override
+        public void drawEntry(int p_148279_1_, int p_148279_2_, int p_148279_3_, int p_148279_4_, int p_148279_5_,  int p_148279_7_, int p_148279_8_, boolean p_148279_9_)
         {
             GuiVRControlsList.this.mc.fontRendererObj.drawString(this.labelText, GuiVRControlsList.this.mc.currentScreen.width / 2 - this.labelWidth / 2, p_148279_3_ + p_148279_5_ - GuiVRControlsList.this.mc.fontRendererObj.FONT_HEIGHT - 1, 16777215);
         }
@@ -153,18 +154,14 @@ public class GuiVRControlsList extends GuiListExtended
 
         public void mouseReleased(int p_148277_1_, int p_148277_2_, int p_148277_3_, int p_148277_4_, int p_148277_5_, int p_148277_6_) {}
 
+
+
 		@Override
-		public void func_178011_a(int p_178011_1_, int p_178011_2_, int p_178011_3_) {
+		public void setSelected(int p_178011_1_, int p_178011_2_, int p_178011_3_) {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
-		public void func_180790_a(int p_180790_1_, int p_180790_2_, int p_180790_3_, int p_180790_4_, int p_180790_5_,
-				int p_180790_6_, int p_180790_7_, boolean p_180790_8_) {
-			// TODO Auto-generated method stub
-			
-		}
     }
 
     public class MappingEntry implements GuiListExtended.IGuiListEntry
@@ -185,8 +182,9 @@ public class GuiVRControlsList extends GuiListExtended
             myi = this.possibilites.indexOf(myKey.FunctionDesc);    
             btnKey =new GuiButton(0, 0, 0, 18, 18, "");
         }
-
-        public void drawEntry(int p_148279_1_, int x, int y, int p_148279_4_, int p_148279_5_, Tessellator p_148279_6_, int p_148279_7_, int p_148279_8_, boolean p_148279_9_)
+        
+		@Override
+        public void drawEntry(int p_148279_1_, int x, int y, int p_148279_4_, int p_148279_5_, int p_148279_7_, int p_148279_8_, boolean p_148279_9_)
         {
 
         	GuiVRControlsList.this.mc.fontRendererObj.drawString(myKey.Button.toString().replace("BUTTON_", ""), x + 40  - GuiVRControlsList.this.maxListLabelWidth, y + p_148279_5_ / 2 - GuiVRControlsList.this.mc.fontRendererObj.FONT_HEIGHT / 2, 16777215);
@@ -250,17 +248,13 @@ public class GuiVRControlsList extends GuiListExtended
             this(p_i45030_2_);
         }
 
+
 		@Override
-		public void func_178011_a(int p_178011_1_, int p_178011_2_, int p_178011_3_) {
+		public void setSelected(int p_178011_1_, int p_178011_2_, int p_178011_3_) {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
-		public void func_180790_a(int p_180790_1_, int p_180790_2_, int p_180790_3_, int p_180790_4_, int p_180790_5_,
-				int p_180790_6_, int p_180790_7_, boolean p_180790_8_) {
-			// TODO Auto-generated method stub
-			
-		}
+
     }
 }
