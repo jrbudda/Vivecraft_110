@@ -1,0 +1,13 @@
+--- a/net/minecraft/client/renderer/texture/TextureMap.java
++++ b/net/minecraft/client/renderer/texture/TextureMap.java
+@@ -672,8 +672,9 @@
+     {
+         Map map = new HashMap();
+ 
+-        for (Entry entry : p_detectMinimumSpriteSize_1_.entrySet())
++        for (Object e : p_detectMinimumSpriteSize_1_.entrySet())
+         {
++        	Entry entry = (Entry)e;
+             TextureAtlasSprite textureatlassprite = (TextureAtlasSprite)entry.getValue();
+             ResourceLocation resourcelocation = new ResourceLocation(textureatlassprite.getIconName());
+             ResourceLocation resourcelocation1 = this.completeResourceLocation(resourcelocation);

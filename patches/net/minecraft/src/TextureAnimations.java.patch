@@ -1,0 +1,11 @@
+--- a/net/minecraft/src/TextureAnimations.java
++++ b/net/minecraft/src/TextureAnimations.java
+@@ -71,7 +71,7 @@
+ 
+             if (atextureanimation != null)
+             {
+-                list.addAll(Arrays.<E>asList(atextureanimation));
++                list.addAll(Arrays.asList(atextureanimation));
+             }
+         }
+ 

@@ -12,6 +12,7 @@ import jopenvr.JOpenVRLibrary;
 import jopenvr.OpenVRUtil;
 import jopenvr.Texture_t;
 import jopenvr.VRTextureBounds_t;
+import net.minecraft.client.Minecraft.renderPass;
 import net.minecraft.client.gui.GuiScreen;
 
 import java.nio.IntBuffer;
@@ -24,7 +25,7 @@ import org.lwjgl.opengl.GL11;
 public class OpenVRStereoRenderer implements IStereoProvider
 {
 	// TextureIDs of framebuffers for each eye
-	private int LeftEyeTextureId;
+	private int LeftEyeTextureId, RightEyeTextureId;
 
 	private HiddenAreaMesh_t[] hiddenMeshes = new HiddenAreaMesh_t[2];
 	private float[][] hiddenMesheVertecies = new float[2][];
@@ -56,36 +57,29 @@ public class OpenVRStereoRenderer implements IStereoProvider
 		for (int i = 0; i < 2; i++) {
 			hiddenMeshes[i] = MCOpenVR.vrsystem.GetHiddenAreaMesh.apply(i);
 			hiddenMeshes[i].read();
-
-			hiddenMesheVertecies[i] = new float[hiddenMeshes[i].unTriangleCount * 3 * 2];
-			Pointer arrptr = new Memory(hiddenMeshes[i].unTriangleCount * 3 * 2);
-			hiddenMeshes[i].pVertexData.getPointer().read(0, hiddenMesheVertecies[i], 0, hiddenMesheVertecies[i].length);
-
-			for (int ix = 0;ix < hiddenMesheVertecies[i].length;ix+=2) {
-				hiddenMesheVertecies[i][ix] = hiddenMesheVertecies[i][ix] * info.LeftFovTextureResolution.w * renderScaleFactor;
-				hiddenMesheVertecies[i][ix + 1] = hiddenMesheVertecies[i][ix +1] * info.LeftFovTextureResolution.h * renderScaleFactor;
+			int tc = hiddenMeshes[i].unTriangleCount;
+			if(tc >0){
+				hiddenMesheVertecies[i] = new float[hiddenMeshes[i].unTriangleCount * 3 * 2];
+				Pointer arrptr = new Memory(hiddenMeshes[i].unTriangleCount * 3 * 2);
+				hiddenMeshes[i].pVertexData.getPointer().read(0, hiddenMesheVertecies[i], 0, hiddenMesheVertecies[i].length);
+	
+				for (int ix = 0;ix < hiddenMesheVertecies[i].length;ix+=2) {
+					hiddenMesheVertecies[i][ix] = hiddenMesheVertecies[i][ix] * info.LeftFovTextureResolution.w * renderScaleFactor;
+					hiddenMesheVertecies[i][ix + 1] = hiddenMesheVertecies[i][ix +1] * info.LeftFovTextureResolution.h * renderScaleFactor;
+				}
 			}
 		}
-
-		//		Pointer pointers = new Memory(k_pch_SteamVR_Section.length()+1);
-		//		pointers.setString(0, k_pch_SteamVR_Section);
-		//		Pointer pointerk = new Memory(k_pch_SteamVR_RenderTargetMultiplier_Float.length()+1);
-		//		pointerk.setString(0, k_pch_SteamVR_RenderTargetMultiplier_Float);
-		//		IntByReference err = new IntByReference();
-		//		float test = vrSettings.GetFloat.apply(pointers, pointerk, 99.9f, err);
-		//		vrSettings.SetFloat.apply(pointers, pointerk, renderScaleFactor, err);
-		//		float test2 = vrSettings.GetFloat.apply(pointers, pointerk, 99.9f, err);
 
 		return info;
 	}
 
 	@Override
 	public Matrix4f getProjectionMatrix(FovPort fov,
-			EyeType eyeType,
+			int eyeType,
 			float nearClip,
 			float farClip)
 	{
-		if ( eyeType == EyeType.ovrEye_Left )
+		if ( eyeType == 0 )
 		{
 			HmdMatrix44_t mat = MCOpenVR.vrsystem.GetProjectionMatrix.apply(JOpenVRLibrary.EVREye.EVREye_Eye_Left, nearClip, farClip, JOpenVRLibrary.EGraphicsAPIConvention.EGraphicsAPIConvention_API_OpenGL);
 			MCOpenVR.hmdProjectionLeftEye = new Matrix4f();
@@ -134,6 +128,7 @@ public class OpenVRStereoRenderer implements IStereoProvider
 	{
 		return true;
 	}
+	
 	@Override
 	public double getCurrentTimeSecs()
 	{
@@ -166,13 +161,29 @@ public class OpenVRStereoRenderer implements IStereoProvider
 		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, lwidth, lheight, 0, GL11.GL_RGBA, GL11.GL_INT, (java.nio.ByteBuffer) null);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, boundTextureId);
 
-		MCOpenVR.texType.handle = LeftEyeTextureId;
-		MCOpenVR.texType.eColorSpace = JOpenVRLibrary.EColorSpace.EColorSpace_ColorSpace_Gamma;
-		MCOpenVR.texType.eType = JOpenVRLibrary.EGraphicsAPIConvention.EGraphicsAPIConvention_API_OpenGL;
-		MCOpenVR.texType.write();
+		MCOpenVR.texType0.handle = LeftEyeTextureId;
+		MCOpenVR.texType0.eColorSpace = JOpenVRLibrary.EColorSpace.EColorSpace_ColorSpace_Gamma;
+		MCOpenVR.texType0.eType = JOpenVRLibrary.EGraphicsAPIConvention.EGraphicsAPIConvention_API_OpenGL;
+		MCOpenVR.texType0.write();
+		
+		// generate right eye texture
+		RightEyeTextureId = GL11.glGenTextures();
+		boundTextureId = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, RightEyeTextureId);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, lwidth, lheight, 0, GL11.GL_RGBA, GL11.GL_INT, (java.nio.ByteBuffer) null);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, boundTextureId);
+
+		MCOpenVR.texType1.handle = RightEyeTextureId;
+		MCOpenVR.texType1.eColorSpace = JOpenVRLibrary.EColorSpace.EColorSpace_ColorSpace_Gamma;
+		MCOpenVR.texType1.eType = JOpenVRLibrary.EGraphicsAPIConvention.EGraphicsAPIConvention_API_OpenGL;
+		MCOpenVR.texType1.write();
 
 		RenderTextureSet textureSet = new RenderTextureSet();
 		textureSet.leftEyeTextureIds.add(LeftEyeTextureId);
+		textureSet.rightEyeTextureIds.add(RightEyeTextureId);
 		return textureSet;
 	}
 
@@ -186,29 +197,26 @@ public class OpenVRStereoRenderer implements IStereoProvider
 	}
 
 	@Override
-	public boolean endFrame(EyeType eye)
+	public boolean endFrame(renderPass eye)
 	{
-
-		GL11.glFinish();
-		int ret = 0;
-		if(eye == EyeType.ovrEye_Left){
-			ret = MCOpenVR.vrCompositor.Submit.apply(
-				JOpenVRLibrary.EVREye.EVREye_Eye_Left,
-				MCOpenVR.texType, MCOpenVR.texBounds,
-				JOpenVRLibrary.EVRSubmitFlags.EVRSubmitFlags_Submit_Default);
-		}else{
-			ret = MCOpenVR.vrCompositor.Submit.apply(
-				JOpenVRLibrary.EVREye.EVREye_Eye_Right,
-				MCOpenVR.texType, MCOpenVR.texBounds,
-				JOpenVRLibrary.EVRSubmitFlags.EVRSubmitFlags_Submit_Default);
-		}
-		//System.out.println("vsync="+JOpenVRLibrary.VR_IVRCompositor_GetVSync(vrCompositor));
 		return true;
 	}
 
 	
 	public void endFrame() {
-		if(MCOpenVR.vrCompositor !=null) MCOpenVR.vrCompositor.PostPresentHandoff.apply();
+		if(MCOpenVR.vrCompositor.Submit == null) return;
+		
+		MCOpenVR.vrCompositor.Submit.apply(
+				JOpenVRLibrary.EVREye.EVREye_Eye_Left,
+				MCOpenVR.texType0, null,
+				JOpenVRLibrary.EVRSubmitFlags.EVRSubmitFlags_Submit_Default);
+
+		 MCOpenVR.vrCompositor.Submit.apply(
+				JOpenVRLibrary.EVREye.EVREye_Eye_Right,
+				MCOpenVR.texType1, null,
+				JOpenVRLibrary.EVRSubmitFlags.EVRSubmitFlags_Submit_Default);
+
+		MCOpenVR.vrCompositor.PostPresentHandoff.apply();
 	}
 
 	
@@ -218,8 +226,9 @@ public class OpenVRStereoRenderer implements IStereoProvider
 	}
 
 	@Override
-	public float[] getStencilMask(EyeType eye) {
-		return eye == EyeType.ovrEye_Left ? hiddenMesheVertecies[0] : hiddenMesheVertecies[1];
+	public float[] getStencilMask(renderPass eye) {
+		if(hiddenMesheVertecies == null || eye == renderPass.Center || eye == renderPass.Third) return null;
+		return eye == renderPass.Left? hiddenMesheVertecies[0] : hiddenMesheVertecies[1];
 	}
 
 	@Override

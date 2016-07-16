@@ -1,0 +1,11 @@
+--- a/net/minecraft/client/renderer/entity/layers/LayerArmorBase.java
++++ b/net/minecraft/client/renderer/entity/layers/LayerArmorBase.java
+@@ -113,7 +113,7 @@
+                     return;
+                 }
+ 
+-                switch (null.$SwitchMap$net$minecraft$item$ItemArmor$ArmorMaterial[itemarmor.getArmorMaterial().ordinal()])
++                switch (itemarmor.getArmorMaterial().ordinal())
+                 {
+                     case 1:
+                         int i = itemarmor.getColor(itemstack);

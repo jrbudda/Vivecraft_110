@@ -3,6 +3,13 @@ package com.mtbs3d.minecrift.utils;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
+import org.lwjgl.util.vector.Matrix3f;
+import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector3f;
+
+import net.minecraft.util.math.Vec3d;
+
 public class Utils
 {
 	public static Field getDeclaredField(Class clazz, String unObfuscatedName, String obfuscatedName, String srgName)
@@ -28,9 +35,7 @@ public class Utils
 				}
 				catch (NoSuchFieldException e2)
 				{
-					e.printStackTrace();
-					e1.printStackTrace();
-					e2.printStackTrace();
+					System.out.println("[Vivecraft] WARNING: could not reflect field :" + unObfuscatedName + "," + srgName + "," + obfuscatedName + " in " + clazz.toString());
 				};
 			};
 		}
@@ -41,7 +46,6 @@ public class Utils
     /* With thanks to http://ramblingsrobert.wordpress.com/2011/04/13/java-word-wrap-algorithm/ */
     public static void wordWrap(String in, int length, ArrayList<String> wrapped)
     {
-    	
         String newLine = "\n";
         String wrappedLine;
         boolean quickExit = false;
@@ -83,4 +87,52 @@ public class Utils
         wrapped.add(wrappedLine);
         wordWrap(in.substring(spaceIndex), length, wrapped);
     }
+    
+	public static Vector2f convertVector(Vector2 vector) {
+		return new Vector2f(vector.getX(), vector.getY());
+	}
+
+	public static Vector2 convertVector(Vector2f vector) {
+		return new Vector2(vector.getX(), vector.getY());
+	}
+
+	public static Vector3f convertVector(Vector3 vector) {
+		return new Vector3f(vector.getX(), vector.getY(), vector.getZ());
+	}
+
+	public static Vector3 convertVector(Vector3f vector) {
+		return new Vector3(vector.getX(), vector.getY(), vector.getZ());
+	}
+
+	public static Vector3 convertVector(Vec3d vector) {
+		return new Vector3((float)vector.xCoord, (float)vector.yCoord, (float)vector.zCoord);
+	}
+
+	public static Vector3f convertToVector3f(Vec3d vector) {
+		return new Vector3f((float)vector.xCoord, (float)vector.yCoord, (float)vector.zCoord);
+	}
+
+	public static Quaternion quatLerp(Quaternion start, Quaternion end, float fraction) {
+		Quaternion quat = new Quaternion();
+		quat.w = start.w + (end.w - start.w) * fraction;
+		quat.x = start.x + (end.x - start.x) * fraction;
+		quat.y = start.y + (end.y - start.y) * fraction;
+		quat.z = start.z + (end.z - start.z) * fraction;
+		return quat;
+	}
+
+	public static Matrix4f matrix3to4(Matrix3f matrix) {
+		Matrix4f mat = new Matrix4f();
+		mat.m00 = matrix.m00;
+		mat.m01 = matrix.m01;
+		mat.m02 = matrix.m02;
+		mat.m10 = matrix.m10;
+		mat.m11 = matrix.m11;
+		mat.m12 = matrix.m12;
+		mat.m20 = matrix.m20;
+		mat.m21 = matrix.m21;
+		mat.m22 = matrix.m22;
+		return mat;
+	}
+    
 }

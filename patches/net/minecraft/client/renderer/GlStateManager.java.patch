@@ -1,0 +1,11 @@
+--- a/net/minecraft/client/renderer/GlStateManager.java
++++ b/net/minecraft/client/renderer/GlStateManager.java
+@@ -388,7 +388,7 @@
+ 
+     private static GlStateManager.TexGenCoord texGenCoord(GlStateManager.TexGen texGen)
+     {
+-        switch (null.$SwitchMap$net$minecraft$client$renderer$GlStateManager$TexGen[texGen.ordinal()])
++        switch (texGen.ordinal())
+         {
+             case 1:
+                 return texGenState.s;

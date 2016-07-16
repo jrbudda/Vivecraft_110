@@ -1,0 +1,25 @@
+--- a/net/minecraft/src/Config.java
++++ b/net/minecraft/src/Config.java
+@@ -757,7 +757,7 @@
+     public static IResourcePack[] getResourcePacks()
+     {
+         ResourcePackRepository resourcepackrepository = minecraft.getResourcePackRepository();
+-        List list = resourcepackrepository.getRepositoryEntries();
++        List<ResourcePackRepository.Entry> list = resourcepackrepository.getRepositoryEntries();
+         List list1 = new ArrayList();
+ 
+         for (ResourcePackRepository.Entry resourcepackrepository$entry : list)
+@@ -1812,12 +1812,7 @@
+ 
+     public static void updateFramebufferSize()
+     {
+-        minecraft.getFramebuffer().createBindFramebuffer(minecraft.displayWidth, minecraft.displayHeight);
+-
+-        if (minecraft.entityRenderer != null)
+-        {
+-            minecraft.entityRenderer.updateShaderGroupSize(minecraft.displayWidth, minecraft.displayHeight);
+-        }
++    	Minecraft.getMinecraft().reinitFramebuffers = true; 
+     }
+ 
+     public static Object[] addObjectToArray(Object[] p_addObjectToArray_0_, Object p_addObjectToArray_1_)

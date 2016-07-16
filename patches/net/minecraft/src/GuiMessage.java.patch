@@ -1,0 +1,11 @@
+--- a/net/minecraft/src/GuiMessage.java
++++ b/net/minecraft/src/GuiMessage.java
+@@ -13,7 +13,7 @@
+     private GuiScreen parentScreen;
+     private String messageLine1;
+     private String messageLine2;
+-    private final List listLines2 = Lists.newArrayList();
++    private final List<String> listLines2 = Lists.newArrayList();
+     protected String confirmButtonText;
+     private int ticksUntilEnable;
+ 

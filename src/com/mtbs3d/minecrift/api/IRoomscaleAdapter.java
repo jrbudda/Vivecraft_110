@@ -6,8 +6,8 @@ import org.lwjgl.util.vector.Quaternion;
 
 import com.mtbs3d.minecrift.render.QuaternionHelper;
 
-import de.fruitfly.ovr.enums.EyeType;
 import de.fruitfly.ovr.util.BufferUtil;
+import net.minecraft.client.Minecraft.renderPass;
 import net.minecraft.util.math.Vec3d;
 
 /**
@@ -29,8 +29,8 @@ public interface IRoomscaleAdapter  {
 	public FloatBuffer getHMDMatrix_Room();	
 	public FloatBuffer getControllerMatrix_World(int controller);
 	
-	public Vec3d getEyePos_World(EyeType eye);
-	public Vec3d getEyePos_Room(EyeType eye);
+	public Vec3d getEyePos_World(renderPass currentPass);
+	public Vec3d getEyePos_Room(renderPass currentPass);
 	
     public boolean isControllerMainTracking();
 	public Vec3d getControllerMainPos_World(); 
@@ -48,7 +48,8 @@ public interface IRoomscaleAdapter  {
 	public float getControllerOffhandPitch_World(); //degrees
 	
 	public Vec3d getCustomControllerVector(int controller, Vec3d axis);
-	
+	public Vec3d getCustomHMDVector(Vec3d axis);
+
 	public Vec3d getRoomOriginPos_World(); //degrees
 	public Vec3d getRoomOriginUpDir_World(); //what do you do
 	

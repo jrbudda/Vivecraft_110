@@ -1,0 +1,11 @@
+--- a/net/minecraft/src/HttpPipeline.java
++++ b/net/minecraft/src/HttpPipeline.java
+@@ -10,7 +10,7 @@
+ 
+ public class HttpPipeline
+ {
+-    private static Map mapConnections = new HashMap();
++    private static Map<String,HttpPipelineConnection> mapConnections = new HashMap();
+     public static final String HEADER_USER_AGENT = "User-Agent";
+     public static final String HEADER_HOST = "Host";
+     public static final String HEADER_ACCEPT = "Accept";

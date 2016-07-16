@@ -153,12 +153,17 @@ public class KeyboardSimulator {
     }
 
     private static void doType(int[] keyCodes, int offset, int length) {
+    	try {
+			
         if (length == 0) {
             return;
         }
         robot.keyPress(keyCodes[offset]);
         doType(keyCodes, offset + 1, length - 1);
         robot.keyRelease(keyCodes[offset]);
+		} catch (Exception e) {
+			System.out.println("Cannot type keycode: " + keyCodes[offset]);
+		}
     }
 
 

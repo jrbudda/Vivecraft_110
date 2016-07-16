@@ -1,0 +1,11 @@
+--- a/net/minecraft/client/gui/GuiOverlayDebug.java
++++ b/net/minecraft/client/gui/GuiOverlayDebug.java
+@@ -106,7 +106,7 @@
+             EnumFacing enumfacing = entity.getHorizontalFacing();
+             String s = "Invalid";
+ 
+-            switch (null.$SwitchMap$net$minecraft$util$EnumFacing[enumfacing.ordinal()])
++            switch (enumfacing.ordinal())
+             {
+                 case 1:
+                     s = "Towards negative Z";

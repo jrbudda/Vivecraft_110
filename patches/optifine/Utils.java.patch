@@ -1,0 +1,29 @@
+--- a/optifine/Utils.java
++++ b/optifine/Utils.java
+@@ -36,14 +36,14 @@
+         String s = System.getProperty("user.home", ".");
+         File file1 = null;
+ 
+-        switch ($SWITCH_TABLE$optifine$Utils$OS()[getPlatform().ordinal()])
++        switch (getPlatform().ordinal())
+         {
++            case 0:
+             case 1:
+-            case 2:
+                 file1 = new File(s, '.' + applicationName + '/');
+                 break;
+ 
+-            case 3:
++            case 2:
+                 String s1 = System.getenv("APPDATA");
+ 
+                 if (s1 != null)
+@@ -57,7 +57,7 @@
+ 
+                 break;
+ 
+-            case 4:
++            case 3:
+                 file1 = new File(s, "Library/Application Support/" + applicationName);
+                 break;
+ 

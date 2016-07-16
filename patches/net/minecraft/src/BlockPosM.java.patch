@@ -1,0 +1,11 @@
+--- a/net/minecraft/src/BlockPosM.java
++++ b/net/minecraft/src/BlockPosM.java
+@@ -146,7 +146,7 @@
+         return new BlockPos(this.mx, this.my, this.mz);
+     }
+ 
+-    public static Iterable getAllInBoxMutable(BlockPos p_getAllInBoxMutable_0_, BlockPos p_getAllInBoxMutable_1_)
++    public static Iterable<BlockPosM> getAllInBoxMutableM(BlockPos p_getAllInBoxMutable_0_, BlockPos p_getAllInBoxMutable_1_)
+     {
+         final BlockPos blockpos = new BlockPos(Math.min(p_getAllInBoxMutable_0_.getX(), p_getAllInBoxMutable_1_.getX()), Math.min(p_getAllInBoxMutable_0_.getY(), p_getAllInBoxMutable_1_.getY()), Math.min(p_getAllInBoxMutable_0_.getZ(), p_getAllInBoxMutable_1_.getZ()));
+         final BlockPos blockpos1 = new BlockPos(Math.max(p_getAllInBoxMutable_0_.getX(), p_getAllInBoxMutable_1_.getX()), Math.max(p_getAllInBoxMutable_0_.getY(), p_getAllInBoxMutable_1_.getY()), Math.max(p_getAllInBoxMutable_0_.getZ(), p_getAllInBoxMutable_1_.getZ()));

@@ -1,0 +1,12 @@
+--- a/net/minecraft/client/renderer/OpenGlHelper.java
++++ b/net/minecraft/client/renderer/OpenGlHelper.java
+@@ -934,7 +934,8 @@
+ 
+     public static boolean isFramebufferEnabled()
+     {
+-        return Config.isFastRender() ? false : (Config.isAntialiasing() ? false : framebufferSupported && Minecraft.getMinecraft().gameSettings.fboEnable);
++    	return true;
++        //return Config.isFastRender() ? false : (Config.isAntialiasing() ? false : framebufferSupported && Minecraft.getMinecraft().gameSettings.fboEnable);
+     }
+ 
+     public static String getCpu()

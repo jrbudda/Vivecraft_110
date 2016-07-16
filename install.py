@@ -1,3 +1,4 @@
+
 import os, os.path, sys
 import zipfile, urllib2
 import platform
@@ -472,7 +473,7 @@ def main(mcp_dir):
     if includeForge:
         download_deps( mcp_dir, True, True ) # Forge libs
 
-    download_deps( mcp_dir, True, False ) # Vanilla libs
+    download_deps( mcp_dir, False, False ) # Vanilla libs
     if dependenciesOnly:
         sys.exit(1)
 

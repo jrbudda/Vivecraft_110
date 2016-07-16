@@ -1,0 +1,13 @@
+--- a/shadersmod/client/ShaderPackParser.java
++++ b/shadersmod/client/ShaderPackParser.java
+@@ -234,8 +234,9 @@
+         String s = "profile.";
+         List<ShaderProfile> list = new ArrayList();
+ 
+-        for (String s1 : props.keySet())
++        for (Object s7 : props.keySet())
+         {
++        	String s1 = (String) s7;
+             if (s1.startsWith(s))
+             {
+                 String s2 = s1.substring(s.length());

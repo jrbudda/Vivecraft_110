@@ -1,0 +1,35 @@
+--- a/net/minecraft/src/ConnectedTextures.java
++++ b/net/minecraft/src/ConnectedTextures.java
+@@ -1457,7 +1457,7 @@
+ 
+             if (aconnectedproperties != null)
+             {
+-                list.addAll(Arrays.<E>asList(aconnectedproperties));
++                list.addAll(Arrays.asList(aconnectedproperties));
+             }
+         }
+ 
+@@ -1467,7 +1467,7 @@
+ 
+             if (aconnectedproperties2 != null)
+             {
+-                list.addAll(Arrays.<E>asList(aconnectedproperties2));
++                list.addAll(Arrays.asList(aconnectedproperties2));
+             }
+         }
+ 
+@@ -1481,12 +1481,12 @@
+ 
+             if (connectedproperties.matchTileIcons != null)
+             {
+-                set1.addAll(Arrays.<E>asList(connectedproperties.matchTileIcons));
++                set1.addAll(Arrays.asList(connectedproperties.matchTileIcons));
+             }
+ 
+             if (connectedproperties.tileIcons != null)
+             {
+-                set.addAll(Arrays.<E>asList(connectedproperties.tileIcons));
++                set.addAll(Arrays.asList(connectedproperties.tileIcons));
+             }
+         }
+ 

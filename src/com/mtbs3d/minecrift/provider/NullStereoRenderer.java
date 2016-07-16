@@ -3,6 +3,7 @@ package com.mtbs3d.minecrift.provider;
 import com.mtbs3d.minecrift.api.IStereoProvider;
 import de.fruitfly.ovr.enums.EyeType;
 import de.fruitfly.ovr.structs.*;
+import net.minecraft.client.Minecraft.renderPass;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
@@ -43,7 +44,7 @@ public class NullStereoRenderer implements IStereoProvider
     public double getFrameTiming() { return (double)System.currentTimeMillis() / 1000d; }
     
     @Override
-    public Matrix4f getProjectionMatrix(FovPort fov, EyeType eyeType, float nearClip, float farClip) {
+    public Matrix4f getProjectionMatrix(FovPort fov, int eyeType, float nearClip, float farClip) {
         return null;
     } // VIVE included eyeType
 
@@ -93,7 +94,7 @@ public class NullStereoRenderer implements IStereoProvider
     // VIVE END
 
 	@Override
-	public boolean endFrame(EyeType eye) {
+	public boolean endFrame(renderPass eye) {
 		this.endFrame();
 		return true;
 	}
@@ -106,7 +107,7 @@ public class NullStereoRenderer implements IStereoProvider
 	}
 
 	@Override
-	public float[] getStencilMask(EyeType eye) {
+	public float[] getStencilMask(renderPass eye) {
 		// TODO Auto-generated method stub
 		return null;
 	}

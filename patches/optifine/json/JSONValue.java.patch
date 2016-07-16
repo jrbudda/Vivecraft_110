@@ -1,0 +1,21 @@
+--- a/optifine/json/JSONValue.java
++++ b/optifine/json/JSONValue.java
+@@ -165,15 +165,15 @@
+ 
+             if (c0 >= 0 && c0 <= 31 || c0 >= 127 && c0 <= 159 || c0 >= 8192 && c0 <= 8447)
+             {
+-                String s = Integer.toHexString(c0);
++                String h = Integer.toHexString(c0);
+                 sb.append("\\u");
+ 
+-                for (int j = 0; j < 4 - s.length(); ++j)
++                for (int j = 0; j < 4 - h.length(); ++j)
+                 {
+                     sb.append('0');
+                 }
+ 
+-                sb.append(s.toUpperCase());
++                sb.append(h.toUpperCase());
+             }
+             else
+             {

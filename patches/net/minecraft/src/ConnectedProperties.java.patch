@@ -1,0 +1,11 @@
+--- a/net/minecraft/src/ConnectedProperties.java
++++ b/net/minecraft/src/ConnectedProperties.java
+@@ -345,7 +345,7 @@
+         }
+     }
+ 
+-    public static IProperty getProperty(String p_getProperty_0_, Collection p_getProperty_1_)
++    public static IProperty getProperty(String p_getProperty_0_, Collection<IProperty> p_getProperty_1_)
+     {
+         for (IProperty iproperty : p_getProperty_1_)
+         {

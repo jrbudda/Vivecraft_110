@@ -7,6 +7,7 @@ package com.mtbs3d.minecrift.api;
 
 import de.fruitfly.ovr.enums.EyeType;
 import de.fruitfly.ovr.structs.*;
+import net.minecraft.client.Minecraft.renderPass;
 import net.minecraft.client.gui.GuiScreen;
 
 /**
@@ -28,7 +29,7 @@ public interface IStereoProvider
 
     public boolean providesStencilMask();
     
-    public float[] getStencilMask(EyeType eye);
+    public float[] getStencilMask(renderPass currentPass);
     
     public RenderTextureSet createRenderTexture(int width, int height);
 
@@ -43,7 +44,7 @@ public interface IStereoProvider
     public double getFrameTiming();
 
     public Matrix4f getProjectionMatrix(FovPort fov,
-                                        EyeType eyeType,  // VIVE added eyeType
+                                        int i,  // VIVE added eyeType
                                         float nearClip,
                                         float farClip);
 
@@ -59,7 +60,7 @@ public interface IStereoProvider
     public void onGuiScreenChanged(GuiScreen previousScreen, GuiScreen newScreen);
     // VIVE END - new stereo provider functions
 
-	boolean endFrame(EyeType eye);
+	boolean endFrame(renderPass currentPass);
 
 	RenderTextureInfo getRenderTextureSizes(float renderScaleFactor);
 

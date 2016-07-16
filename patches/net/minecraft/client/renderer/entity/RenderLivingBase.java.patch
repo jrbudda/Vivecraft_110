@@ -1,0 +1,20 @@
+--- a/net/minecraft/client/renderer/entity/RenderLivingBase.java
++++ b/net/minecraft/client/renderer/entity/RenderLivingBase.java
+@@ -43,7 +43,7 @@
+ 
+     public <V extends EntityLivingBase, U extends LayerRenderer<V>> boolean addLayer(U layer)
+     {
+-        return this.layerRenderers.add(layer);
++        return this.layerRenderers.add((LayerRenderer<T>) layer);
+     }
+ 
+     protected <V extends EntityLivingBase, U extends LayerRenderer<V>> boolean removeLayer(U layer)
+@@ -545,7 +545,7 @@
+             {
+                 Team.EnumVisible team$enumvisible = team.getNameTagVisibility();
+ 
+-                switch (null.$SwitchMap$net$minecraft$scoreboard$Team$EnumVisible[team$enumvisible.ordinal()])
++                switch (team$enumvisible.ordinal())
+                 {
+                     case 1:
+                         return flag;

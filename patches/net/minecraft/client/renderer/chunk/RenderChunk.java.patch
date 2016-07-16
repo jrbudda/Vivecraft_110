@@ -1,0 +1,11 @@
+--- a/net/minecraft/client/renderer/chunk/RenderChunk.java
++++ b/net/minecraft/client/renderer/chunk/RenderChunk.java
+@@ -171,7 +171,7 @@
+                 boolean flag = Reflector.ForgeBlock_canRenderInLayer.exists();
+                 boolean flag1 = Reflector.ForgeHooksClient_setRenderLayer.exists();
+ 
+-                for (BlockPosM blockposm : BlockPosM.getAllInBoxMutable(blockpos, blockpos1))
++                for (BlockPosM blockposm : BlockPosM.getAllInBoxMutableM(blockpos, blockpos1))
+                 {
+                     IBlockState iblockstate = chunkcacheof.getBlockState(blockposm);
+                     Block block = iblockstate.getBlock();

@@ -1,24 +1,10 @@
 {
-  "id": "1.10",
-  "time": "2016-06-08T09:48:15-04:00",
-  "releaseTime": "2016-06-08T09:06:18-04:00",
+  "id": "1.10.2",
+  "time": "2016-06-23T05:45:47-04:00",
+  "releaseTime": "2016-06-23T05:17:32-04:00",
   "type": "release",
   "minecraftArguments": "--username ${auth_player_name} --version ${version_name} --gameDir ${game_directory} --assetsDir ${assets_root} --assetIndex ${assets_index_name} --uuid ${auth_uuid} --accessToken ${auth_access_token} --userType ${user_type} --versionType ${version_type}",
   "libraries": [
-    {
-      "name": "optifine:OptiFine:1.10_HD_U_B7"
-    },
-	{
-      "name": "net.minecraft:launchwrapper:1.12"
-    },
-	{
-      "name": "org.json:json:20140107",
-      "url":  "http://central.maven.org/maven2/"
-    },
-    {
-      "name": "de.fruitfly.ovr:JRift:0.8.0.0.1",
-	    "url": "http://repo.minecraft-vr.com/"
-    },
     {
       "name": "com.mojang:netty:1.6",
       "downloads": {
@@ -220,12 +206,12 @@
       }
     },
     {
-      "name": "com.mojang:realms:1.9.0",
+      "name": "com.mojang:realms:1.9.3",
       "downloads": {
         "artifact": {
-          "url": "https://libraries.minecraft.net/com/mojang/realms/1.9.0/realms-1.9.0.jar",
-          "sha1": "e4237060f69ffe50e677f21a34e009ca5faf51ef",
-          "size": 1575793
+          "url": "https://libraries.minecraft.net/com/mojang/realms/1.9.3/realms-1.9.3.jar",
+          "sha1": "b291425bf7ef763452eaa894575018706339f72b",
+          "size": 1575798
         }
       }
     },
@@ -503,22 +489,22 @@
   "assets": "1.10",
   "downloads": {
     "client": {
-      "url": "https://launcher.mojang.com/mc/game/1.10/client/ba038efbc6d9e4a046927a7658413d0276895739/client.jar",
-      "sha1": "ba038efbc6d9e4a046927a7658413d0276895739",
-      "size": 8856992
+      "url": "https://launcher.mojang.com/mc/game/1.10.2/client/dc8e75ac7274ff6af462b0dcec43c307de668e40/client.jar",
+      "sha1": "dc8e75ac7274ff6af462b0dcec43c307de668e40",
+      "size": 8857653
     },
     "server": {
-      "url": "https://launcher.mojang.com/mc/game/1.10/server/a96617ffdf5dabbb718ab11a9a68e50545fc5bee/server.jar",
-      "sha1": "a96617ffdf5dabbb718ab11a9a68e50545fc5bee",
-      "size": 9459395
+      "url": "https://launcher.mojang.com/mc/game/1.10.2/server/3d501b23df53c548254f5e3f66492d178a48db63/server.jar",
+      "sha1": "3d501b23df53c548254f5e3f66492d178a48db63",
+      "size": 9459897
     }
   },
   "assetIndex": {
-    "totalSize": 121569946,
+    "totalSize": 121931230,
     "id": "1.10",
     "known": true,
-    "url": "https://launchermeta.mojang.com/mc/assets/1.10/8345361bc65bd37954eaf267b3b1817f081ac0ee/1.10.json",
-    "sha1": "8345361bc65bd37954eaf267b3b1817f081ac0ee",
-    "size": 144915
+    "url": "https://launchermeta.mojang.com/mc/assets/1.10/d3bfc4ffba1ea334c725dd91eaf4ecd402d641f7/1.10.json",
+    "sha1": "d3bfc4ffba1ea334c725dd91eaf4ecd402d641f7",
+    "size": 145627
   }
 }
