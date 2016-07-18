@@ -8,17 +8,15 @@
  import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
  import java.io.IOException;
  import java.lang.reflect.Field;
-@@ -202,8 +203,8 @@
+@@ -202,7 +203,7 @@
      public Set chunksToResortTransparency = new LinkedHashSet();
      public Set chunksToUpdateForced = new LinkedHashSet();
      private Deque visibilityDeque = new ArrayDeque();
--    private List renderInfosEntities = new ArrayList(1024);
--    private List renderInfosTileEntities = new ArrayList(1024);
+-    private List<ContainerLocalRenderInformation> renderInfosEntities = new ArrayList(1024);
 +    private List<ContainerLocalRenderInformation> renderInfosEntities = new ArrayList<ContainerLocalRenderInformation>(1024);
-+    private List<ContainerLocalRenderInformation> renderInfosTileEntities = new ArrayList(1024);
+     private List<ContainerLocalRenderInformation> renderInfosTileEntities = new ArrayList(1024);
      private List renderInfosNormal = new ArrayList(1024);
      private List renderInfosEntitiesNormal = new ArrayList(1024);
-     private List renderInfosTileEntitiesNormal = new ArrayList(1024);
 @@ -1125,8 +1126,10 @@
          this.lastViewEntityX = viewEntity.posX;
          this.lastViewEntityY = viewEntity.posY;

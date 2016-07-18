@@ -1,0 +1,64 @@
+--- a/shadersmod/client/Shaders.java
++++ b/shadersmod/client/Shaders.java
+@@ -57,6 +57,7 @@
+ import net.minecraft.util.text.TextComponentString;
+ import net.minecraft.world.World;
+ import org.lwjgl.BufferUtils;
++import org.lwjgl.opengl.ARBFragmentShader;
+ import org.lwjgl.opengl.ARBShaderObjects;
+ import org.lwjgl.opengl.ARBVertexShader;
+ import org.lwjgl.opengl.ContextCapabilities;
+@@ -1618,8 +1619,9 @@
+             needResetModels = false;
+             SMCLog.info("Reset model renderers");
+ 
+-            for (Render render : mc.getRenderManager().getEntityRenderMap().values())
++            for (Object r : mc.getRenderManager().getEntityRenderMap().values())
+             {
++            	Render render = (Render) r;
+                 if (render instanceof RenderLiving)
+                 {
+                     RenderLiving renderliving = (RenderLiving)render;
+@@ -3243,17 +3245,16 @@
+         checkGLError("end beginRender");
+     }
+ 
+-    private static void checkWorldChanged(World world)
++    private static void checkWorldChanged(World worldin)
+     {
+-        if (currentWorld != world)
++        if (currentWorld != worldin)
+         {
+-            World world = currentWorld;
+-            currentWorld = world;
++            currentWorld = worldin;
+ 
+-            if (world != null && world != null)
++            if (currentWorld != null && worldin != null)
+             {
+-                int i = world.provider.getDimensionType().getId();
+-                int j = world.provider.getDimensionType().getId();
++                int i = worldin.provider.getDimensionType().getId();
++                int j = worldin.provider.getDimensionType().getId();
+                 boolean flag = shaderPackDimensions.contains(Integer.valueOf(i));
+                 boolean flag1 = shaderPackDimensions.contains(Integer.valueOf(j));
+ 
+@@ -4217,7 +4218,6 @@
+     public static void setFog(GlStateManager.FogMode fogMode)
+     {
+         GlStateManager.setFog(fogMode);
+-        fogMode = fogMode.capabilityId;
+ 
+         if (fogEnabled)
+         {
+@@ -4382,8 +4382,9 @@
+                         Lang.loadLocaleData(inputstream, properties);
+                         inputstream.close();
+ 
+-                        for (String s4 : properties.keySet())
++                        for (Object s7 : properties.keySet())
+                         {
++                        	String s4 = (String) s7;
+                             String s5 = properties.getProperty(s4);
+                             shaderPackResources.put(s4, s5);
+                         }

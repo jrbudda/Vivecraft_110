@@ -1,0 +1,96 @@
+{
+ "inheritsFrom": "1.10.2",
+ "id": "1.10.2-Vivecraft-$VERSION",
+  "time": "1979-06-01T00:00:00-05:00", 
+  "releaseTime": "1979-06-01T00:00:00-05:00",
+  "type": "release",
+  "minecraftArguments": "--username ${auth_player_name} --version ${version_name} --gameDir ${game_directory} --assetsDir ${assets_root} --assetIndex ${assets_index_name} --uuid ${auth_uuid} --accessToken ${auth_access_token} --userType ${user_type} --versionType ${version_type} --tweakClass optifine.OptiFineTweaker --tweakClass com.mtbs3d.minecrift.tweaker.MinecriftForgeTweaker",
+   "libraries": [
+    {
+      "name": "optifine:OptiFine:1.10.2_HD_U_C2"
+    },
+  {
+   "name": "org.ow2.asm:asm-all:5.0.3"
+  }, 
+  {
+   "url": "http://central.maven.org/maven2/", 
+   "name": "org.json:json:20140107"
+  }, 
+  {
+   "name": "net.minecraft:launchwrapper:1.12"
+  }, 
+  {
+   "url": "http://automat-gh.github.io/minecrift/", 
+   "name": "com.sun:jna:4.2.1"
+  }, 
+  {
+   "url": "http://repo.minecraft-vr.com/", 
+   "name": "de.fruitfly.ovr:JRift:0.8.0.0.1"
+  }, 
+  {
+   "url": "http://repo.minecraft-vr.com/", 
+   "name": "net.aib42.mumblelink:JMumble:1.11"
+  }, 
+  {
+   "url": "http://repo.minecraft-vr.com/", 
+   "extract": {
+    "exclude": [
+     "META-INF/"
+    ]
+   }, 
+   "name": "de.fruitfly.ovr:JRiftLibrary:0.8.0.0.1", 
+   "natives": {
+    "windows": "natives-windows", 
+    "osx": "natives-osx", 
+    "linux": "natives-linux"
+   }
+  }, 
+  {
+   "url": "http://repo.minecraft-vr.com/", 
+   "extract": {
+    "exclude": [
+     "META-INF/"
+    ]
+   }, 
+   "name": "net.aib42.mumblelink:JMumbleLibrary:1.11", 
+   "natives": {
+    "windows": "natives-windows", 
+    "osx": "natives-osx", 
+    "linux": "natives-linux"
+   }
+  },
+      {
+      "name": "java3d:vecmath:1.3.1",
+      "downloads": {
+        "artifact": {
+          "url": "https://libraries.minecraft.net/java3d/vecmath/1.3.1/vecmath-1.3.1.jar",
+          "sha1": "a0ae4f51da409fa0c20fa0ca59e6bbc9413ae71d",
+          "size": 289881
+        }
+      }
+    }
+ ], 
+   "mainClass": "net.minecraft.launchwrapper.Launch",
+  "minimumLauncherVersion": 18,
+  "assets": "1.10",
+  "downloads": {
+    "client": {
+      "url": "https://launcher.mojang.com/mc/game/1.10.2/client/dc8e75ac7274ff6af462b0dcec43c307de668e40/client.jar",
+      "sha1": "dc8e75ac7274ff6af462b0dcec43c307de668e40",
+      "size": 8857653
+    },
+    "server": {
+      "url": "https://launcher.mojang.com/mc/game/1.10.2/server/3d501b23df53c548254f5e3f66492d178a48db63/server.jar",
+      "sha1": "3d501b23df53c548254f5e3f66492d178a48db63",
+      "size": 9459897
+    }
+  },
+  "assetIndex": {
+    "totalSize": 121931230,
+    "id": "1.10",
+    "known": true,
+    "url": "https://launchermeta.mojang.com/mc/assets/1.10/d3bfc4ffba1ea334c725dd91eaf4ecd402d641f7/1.10.json",
+    "sha1": "d3bfc4ffba1ea334c725dd91eaf4ecd402d641f7",
+    "size": 145627
+  }
+}

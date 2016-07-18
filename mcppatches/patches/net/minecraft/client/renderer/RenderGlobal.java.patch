@@ -1,0 +1,13 @@
+--- a/net/minecraft/client/renderer/RenderGlobal.java
++++ b/net/minecraft/client/renderer/RenderGlobal.java
+@@ -202,8 +202,8 @@
+     public Set chunksToResortTransparency = new LinkedHashSet();
+     public Set chunksToUpdateForced = new LinkedHashSet();
+     private Deque visibilityDeque = new ArrayDeque();
+-    private List renderInfosEntities = new ArrayList(1024);
+-    private List renderInfosTileEntities = new ArrayList(1024);
++    private List<ContainerLocalRenderInformation> renderInfosEntities = new ArrayList(1024);
++    private List<ContainerLocalRenderInformation> renderInfosTileEntities = new ArrayList(1024);
+     private List renderInfosNormal = new ArrayList(1024);
+     private List renderInfosEntitiesNormal = new ArrayList(1024);
+     private List renderInfosTileEntitiesNormal = new ArrayList(1024);

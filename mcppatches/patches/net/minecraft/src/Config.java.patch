@@ -1,0 +1,11 @@
+--- a/net/minecraft/src/Config.java
++++ b/net/minecraft/src/Config.java
+@@ -757,7 +757,7 @@
+     public static IResourcePack[] getResourcePacks()
+     {
+         ResourcePackRepository resourcepackrepository = minecraft.getResourcePackRepository();
+-        List list = resourcepackrepository.getRepositoryEntries();
++        List<ResourcePackRepository.Entry> list = resourcepackrepository.getRepositoryEntries();
+         List list1 = new ArrayList();
+ 
+         for (ResourcePackRepository.Entry resourcepackrepository$entry : list)

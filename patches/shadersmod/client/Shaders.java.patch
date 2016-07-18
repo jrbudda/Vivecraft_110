@@ -1,25 +1,20 @@
 --- a/shadersmod/client/Shaders.java
 +++ b/shadersmod/client/Shaders.java
-@@ -57,6 +57,7 @@
- import net.minecraft.util.text.TextComponentString;
- import net.minecraft.world.World;
- import org.lwjgl.BufferUtils;
-+import org.lwjgl.opengl.ARBFragmentShader;
- import org.lwjgl.opengl.ARBShaderObjects;
- import org.lwjgl.opengl.ARBVertexShader;
- import org.lwjgl.opengl.ContextCapabilities;
-@@ -1618,8 +1619,9 @@
-             needResetModels = false;
-             SMCLog.info("Reset model renderers");
+@@ -1231,11 +1231,10 @@
+         SMCLog.info(stringbuilder.toString());
+     }
  
--            for (Render render : mc.getRenderManager().getEntityRenderMap().values())
-+            for (Object r : mc.getRenderManager().getEntityRenderMap().values())
-             {
-+            	Render render = (Render) r;
-                 if (render instanceof RenderLiving)
-                 {
-                     RenderLiving renderliving = (RenderLiving)render;
-@@ -2894,8 +2896,8 @@
+-    public static void startup(Minecraft mc)
++    public static void startup(Minecraft mcin)
+     {
+         checkShadersModInstalled();
+-        mc = mc;
+-        mc = Minecraft.getMinecraft();
++        mc = mcin;
+         capabilities = GLContext.getCapabilities();
+         glVersionString = GL11.glGetString(GL11.GL_VERSION);
+         glVendorString = GL11.glGetString(GL11.GL_VENDOR);
+@@ -2896,8 +2895,8 @@
  
      private static void resize()
      {
@@ -30,7 +25,7 @@
          renderWidth = Math.round((float)renderDisplayWidth * configRenderResMul);
          renderHeight = Math.round((float)renderDisplayHeight * configRenderResMul);
          setupFrameBuffer();
-@@ -2936,10 +2938,12 @@
+@@ -2938,10 +2937,12 @@
              GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
              GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
              GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL14.GL_DEPTH_TEXTURE_MODE, GL11.GL_LUMINANCE);
@@ -46,7 +41,7 @@
          GL20.glDrawBuffers(dfbDrawBuffers);
          GL11.glReadBuffer(0);
          checkGLError("FT d");
-@@ -3100,7 +3104,7 @@
+@@ -3102,7 +3103,7 @@
              }
          }
  
@@ -55,24 +50,30 @@
          {
              resize();
          }
-@@ -3247,13 +3251,11 @@
+@@ -3245,16 +3246,15 @@
+         checkGLError("end beginRender");
+     }
+ 
+-    private static void checkWorldChanged(World worldin)
++    private static void checkWorldChanged(World world)
      {
-         if (currentWorld != world)
+-        if (currentWorld != worldin)
++        if (currentWorld != world)
          {
--            World world = currentWorld;
--            currentWorld = world;
+-            currentWorld = worldin;
 -
--            if (world != null && world != null)
+-            if (currentWorld != null && worldin != null)
 + 
 +            if (world != null && currentWorld != null)
              {
-                 int i = world.provider.getDimensionType().getId();
--                int j = world.provider.getDimensionType().getId();
+-                int i = worldin.provider.getDimensionType().getId();
+-                int j = worldin.provider.getDimensionType().getId();
++                int i = world.provider.getDimensionType().getId();
 +                int j = currentWorld.provider.getDimensionType().getId();
                  boolean flag = shaderPackDimensions.contains(Integer.valueOf(i));
                  boolean flag1 = shaderPackDimensions.contains(Integer.valueOf(j));
  
-@@ -3262,6 +3264,7 @@
+@@ -3263,6 +3263,7 @@
                      uninit();
                  }
              }
@@ -80,7 +81,7 @@
          }
      }
  
-@@ -3650,7 +3653,7 @@
+@@ -3651,7 +3652,7 @@
              isRenderingDfb = false;
              mc.getFramebuffer().bindFramebuffer(true);
              OpenGlHelper.glFramebufferTexture2D(OpenGlHelper.GL_FRAMEBUFFER, OpenGlHelper.GL_COLOR_ATTACHMENT0, 3553, mc.getFramebuffer().framebufferTexture, 0);
@@ -89,21 +90,11 @@
  
              if (EntityRenderer.anaglyphEnable)
              {
-@@ -4217,7 +4220,6 @@
-     public static void setFog(GlStateManager.FogMode fogMode)
-     {
-         GlStateManager.setFog(fogMode);
--        fogMode = fogMode.capabilityId;
+@@ -4384,7 +4385,7 @@
  
-         if (fogEnabled)
-         {
-@@ -4382,8 +4384,9 @@
-                         Lang.loadLocaleData(inputstream, properties);
-                         inputstream.close();
- 
--                        for (String s4 : properties.keySet())
-+                        for (Object s7 : properties.keySet())
+                         for (Object s7 : properties.keySet())
                          {
+-                        	String s4 = (String) s7;
 +                        	String s4 = (String)s7;
                              String s5 = properties.getProperty(s4);
                              shaderPackResources.put(s4, s5);
