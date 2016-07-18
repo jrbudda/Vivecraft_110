@@ -73,6 +73,11 @@ public class BowTracker {
 			return;
 		}
 
+		if(Minecraft.getMinecraft().vrSettings.seated){
+			aim = 	provider.getControllerMainDir_World();
+			return;
+		}
+		
 		ItemStack bow = player.inventory.getCurrentItem();
 
 		lastcontrollersDist = controllersDist;

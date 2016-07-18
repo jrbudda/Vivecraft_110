@@ -206,12 +206,12 @@ public class OpenVRStereoRenderer implements IStereoProvider
 	public void endFrame() {
 		if(MCOpenVR.vrCompositor.Submit == null) return;
 		
-		MCOpenVR.vrCompositor.Submit.apply(
+		int ret = MCOpenVR.vrCompositor.Submit.apply(
 				JOpenVRLibrary.EVREye.EVREye_Eye_Left,
 				MCOpenVR.texType0, null,
 				JOpenVRLibrary.EVRSubmitFlags.EVRSubmitFlags_Submit_Default);
 
-		 MCOpenVR.vrCompositor.Submit.apply(
+		int ret2 = MCOpenVR.vrCompositor.Submit.apply(
 				JOpenVRLibrary.EVREye.EVREye_Eye_Right,
 				MCOpenVR.texType1, null,
 				JOpenVRLibrary.EVRSubmitFlags.EVRSubmitFlags_Submit_Default);

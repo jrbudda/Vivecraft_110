@@ -1,11 +1,39 @@
 --- a/net/minecraft/client/gui/GuiOverlayDebug.java
 +++ b/net/minecraft/client/gui/GuiOverlayDebug.java
-@@ -106,7 +106,7 @@
+@@ -106,25 +106,30 @@
              EnumFacing enumfacing = entity.getHorizontalFacing();
              String s = "Invalid";
  
 -            switch (null.$SwitchMap$net$minecraft$util$EnumFacing[enumfacing.ordinal()])
-+            switch (enumfacing.ordinal())
++            switch (enumfacing)
              {
-                 case 1:
+-                case 1:
++                case NORTH:
                      s = "Towards negative Z";
+                     break;
+ 
+-                case 2:
++                case SOUTH:
+                     s = "Towards positive Z";
+                     break;
+ 
+-                case 3:
++                case WEST:
+                     s = "Towards negative X";
+                     break;
+ 
+-                case 4:
++                case EAST:
+                     s = "Towards positive X";
+             }
+ 
+-            List<String> list = Lists.newArrayList(new String[] {"Minecraft 1.10.2 (" + this.mc.getVersion() + "/" + ClientBrandRetriever.getClientModName() + ("release".equalsIgnoreCase(this.mc.getVersionType()) ? "" : "/" + this.mc.getVersionType()) + ")", this.mc.debug, this.mc.renderGlobal.getDebugInfoRenders(), this.mc.renderGlobal.getDebugInfoEntities(), "P: " + this.mc.effectRenderer.getStatistics() + ". T: " + this.mc.theWorld.getDebugLoadedEntities(), this.mc.theWorld.getProviderName(), "", String.format("XYZ: %.3f / %.5f / %.3f", new Object[]{Double.valueOf(this.mc.getRenderViewEntity().posX), Double.valueOf(this.mc.getRenderViewEntity().getEntityBoundingBox().minY), Double.valueOf(this.mc.getRenderViewEntity().posZ)}), String.format("Block: %d %d %d", new Object[]{Integer.valueOf(blockpos.getX()), Integer.valueOf(blockpos.getY()), Integer.valueOf(blockpos.getZ())}), String.format("Chunk: %d %d %d in %d %d %d", new Object[]{Integer.valueOf(blockpos.getX() & 15), Integer.valueOf(blockpos.getY() & 15), Integer.valueOf(blockpos.getZ() & 15), Integer.valueOf(blockpos.getX() >> 4), Integer.valueOf(blockpos.getY() >> 4), Integer.valueOf(blockpos.getZ() >> 4)}), String.format("Facing: %s (%s) (%.1f / %.1f)", new Object[]{enumfacing, s, Float.valueOf(MathHelper.wrapDegrees(entity.rotationYaw)), Float.valueOf(MathHelper.wrapDegrees(entity.rotationPitch))})});
++            List<String> list = Lists.newArrayList(new String[] {"Minecraft 1.10.2 (" +
++            this.mc.getVersion() + "/" + ClientBrandRetriever.getClientModName() +
++            ("release".equalsIgnoreCase(this.mc.getVersionType()) ? "" : "/" + this.mc.getVersionType()) +
++            ")", this.mc.debug, this.mc.renderGlobal.getDebugInfoRenders(), this.mc.renderGlobal.getDebugInfoEntities(), "P: " + 
++            this.mc.effectRenderer.getStatistics() + ". T: " +
++           this.mc.theWorld.getDebugLoadedEntities(), this.mc.theWorld.getProviderName(), "", String.format("XYZ: %.3f / %.5f / %.3f", new Object[]{Double.valueOf(this.mc.getRenderViewEntity().posX), Double.valueOf(this.mc.getRenderViewEntity().getEntityBoundingBox().minY), Double.valueOf(this.mc.getRenderViewEntity().posZ)}), String.format("Block: %d %d %d", new Object[]{Integer.valueOf(blockpos.getX()), Integer.valueOf(blockpos.getY()), Integer.valueOf(blockpos.getZ())}), String.format("Chunk: %d %d %d in %d %d %d", new Object[]{Integer.valueOf(blockpos.getX() & 15), Integer.valueOf(blockpos.getY() & 15), Integer.valueOf(blockpos.getZ() & 15), Integer.valueOf(blockpos.getX() >> 4), Integer.valueOf(blockpos.getY() >> 4), Integer.valueOf(blockpos.getZ() >> 4)}), String.format("Facing: %s (%s) (%.1f / %.1f)", new Object[]{enumfacing, s, Float.valueOf(MathHelper.wrapDegrees(entity.rotationYaw)), Float.valueOf(MathHelper.wrapDegrees(entity.rotationPitch))})});
+ 
+             if (this.mc.theWorld != null)
+             {

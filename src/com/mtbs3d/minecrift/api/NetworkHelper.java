@@ -1,24 +1,34 @@
 package com.mtbs3d.minecrift.api;
 
+import java.nio.FloatBuffer;
+
 import org.apache.commons.lang3.ArrayUtils;
+import org.lwjgl.util.vector.Matrix4f;
 
 import com.google.common.base.Charsets;
+import com.mtbs3d.minecrift.utils.Quaternion;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.CPacketCustomPayload;
 import net.minecraft.network.play.server.SPacketCustomPayload;
+import net.minecraft.util.math.Vec3d;
 
 public class NetworkHelper {
 
 	public enum PacketDiscriminators {
 		VERSION,
-		POSITIONS,
-		DAMAGE,
+		REQUESTDATA,
+		HEADDATA,
+		CONTROLLER0DATA,
+		CONTROLLER1DATA,
+		WORLDSCALE,
+		DRAW,
 		MOVEMODE
 	}
-
 	private final static String channel = "Vivecraft";
 	
 	public static CPacketCustomPayload getVivecraftClientPacket(PacketDiscriminators command, byte[] payload)
@@ -35,5 +45,71 @@ public class NetworkHelper {
 		pb.writeByte(command.ordinal());
 		pb.writeBytes(payload);
         return (new SPacketCustomPayload(channel, pb));
+	}
+	
+public static boolean serverWantsData = false;
+	
+	private static float worldScallast = 0;
+	public static void sendVRPlayerPositions(IRoomscaleAdapter player) {
+		if(!serverWantsData) return;
+		float worldScale = Minecraft.getMinecraft().vrSettings.vrWorldScale;
+		if (worldScale != worldScallast) {
+			ByteBuf payload = Unpooled.buffer();
+			payload.writeFloat(worldScale);
+			byte[] out = new byte[payload.readableBytes()];
+			payload.readBytes(out);
+			CPacketCustomPayload pack = getVivecraftClientPacket(PacketDiscriminators.WORLDSCALE,out);
+			Minecraft.getMinecraft().getConnection().sendPacket(pack);
+			
+			worldScallast = worldScale;
+		}
+		
+		{
+			FloatBuffer buffer = player.getHMDMatrix_World();
+			buffer.rewind();
+			Matrix4f matrix = new Matrix4f();
+			matrix.load(buffer);
+			matrix.transpose();
+
+			Vec3d headPosition = player.getHMDPos_World();
+			Quaternion headRotation = new Quaternion(matrix);
+			
+			ByteBuf payload = Unpooled.buffer();
+			payload.writeFloat((float)headPosition.xCoord);
+			payload.writeFloat((float)headPosition.yCoord);
+			payload.writeFloat((float)headPosition.zCoord);
+			payload.writeFloat((float)headRotation.w);
+			payload.writeFloat((float)headRotation.x);
+			payload.writeFloat((float)headRotation.y);
+			payload.writeFloat((float)headRotation.z);
+			byte[] out = new byte[payload.readableBytes()];
+			payload.readBytes(out);
+			CPacketCustomPayload pack = getVivecraftClientPacket(PacketDiscriminators.HEADDATA,out);
+			Minecraft.getMinecraft().getConnection().sendPacket(pack);
+		}	
+		
+		for (int i = 0; i < 2; i++) {
+			Vec3d controllerPosition = player.getControllerPos_World(i);
+			FloatBuffer buffer = player.getControllerMatrix_World(i);
+			buffer.rewind();
+			Matrix4f matrix = new Matrix4f();
+			matrix.load(buffer);
+			Quaternion controllerRotation = new Quaternion(matrix);
+		
+			ByteBuf payload = Unpooled.buffer();
+			payload.writeBoolean(Minecraft.getMinecraft().vrSettings.vrReverseHands);
+			payload.writeFloat((float)controllerPosition.xCoord);
+			payload.writeFloat((float)controllerPosition.yCoord);
+			payload.writeFloat((float)controllerPosition.zCoord);
+			payload.writeFloat((float)controllerRotation.w);
+			payload.writeFloat((float)controllerRotation.x);
+			payload.writeFloat((float)controllerRotation.y);
+			payload.writeFloat((float)controllerRotation.z);
+			byte[] out = new byte[payload.readableBytes()];
+			payload.readBytes(out);
+			CPacketCustomPayload pack  = getVivecraftClientPacket(i == 0? PacketDiscriminators.CONTROLLER0DATA : PacketDiscriminators.CONTROLLER1DATA,out);
+			Minecraft.getMinecraft().getConnection().sendPacket(pack);
+		}
+		
 	}
 }

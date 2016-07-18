@@ -1,6 +1,14 @@
 --- a/net/minecraft/client/renderer/RenderGlobal.java
 +++ b/net/minecraft/client/renderer/RenderGlobal.java
-@@ -202,8 +202,8 @@
+@@ -4,6 +4,7 @@
+ import com.google.common.collect.Maps;
+ import com.google.common.collect.Sets;
+ import com.google.gson.JsonSyntaxException;
++
+ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+ import java.io.IOException;
+ import java.lang.reflect.Field;
+@@ -202,8 +203,8 @@
      public Set chunksToResortTransparency = new LinkedHashSet();
      public Set chunksToUpdateForced = new LinkedHashSet();
      private Deque visibilityDeque = new ArrayDeque();
@@ -11,3 +19,67 @@
      private List renderInfosNormal = new ArrayList(1024);
      private List renderInfosEntitiesNormal = new ArrayList(1024);
      private List renderInfosTileEntitiesNormal = new ArrayList(1024);
+@@ -1125,8 +1126,10 @@
+         this.lastViewEntityX = viewEntity.posX;
+         this.lastViewEntityY = viewEntity.posY;
+         this.lastViewEntityZ = viewEntity.posZ;
++        
+         this.lastViewEntityPitch = (double)viewEntity.rotationPitch;
+         this.lastViewEntityYaw = (double)viewEntity.rotationYaw;
++        
+         boolean flag = this.debugFixedClippingHelper != null;
+         this.mc.mcProfiler.endStartSection("update");
+         Lagometer.timerVisibility.start();
+@@ -1206,8 +1209,11 @@
+ 
+                 if (set1.size() == 1)
+                 {
+-                    Vector3f vector3f = this.getViewVector(viewEntity, partialTicks);
+-                    EnumFacing enumfacing = EnumFacing.getFacingFromVector(vector3f.x, vector3f.y, vector3f.z).getOpposite();
++                	//VIVE
++                    //Vector3f vector3f = this.getViewVector(viewEntity, partialTicks);
++                	Vec3d dir = Minecraft.getMinecraft().roomScale.getHMDDir_World(); 
++                    EnumFacing enumfacing = EnumFacing.getFacingFromVector((float)dir.xCoord, (float)dir.yCoord, (float)dir.zCoord).getOpposite();
++                    //VIVE END
+                     set1.remove(enumfacing);
+                 }
+ 
+@@ -1450,22 +1456,22 @@
+         }
+     }
+ 
+-    protected Vector3f getViewVector(Entity entityIn, double partialTicks)
+-    {
+-        float f = (float)((double)entityIn.prevRotationPitch + (double)(entityIn.rotationPitch - entityIn.prevRotationPitch) * partialTicks);
+-        float f1 = (float)((double)entityIn.prevRotationYaw + (double)(entityIn.rotationYaw - entityIn.prevRotationYaw) * partialTicks);
+-
+-        if (Minecraft.getMinecraft().gameSettings.thirdPersonView == 2)
+-        {
+-            f += 180.0F;
+-        }
+-
+-        float f2 = MathHelper.cos(-f1 * 0.017453292F - (float)Math.PI);
+-        float f3 = MathHelper.sin(-f1 * 0.017453292F - (float)Math.PI);
+-        float f4 = -MathHelper.cos(-f * 0.017453292F);
+-        float f5 = MathHelper.sin(-f * 0.017453292F);
+-        return new Vector3f(f3 * f4, f5, f2 * f4);
+-    }
++//    protected Vector3f getViewVector(Entity entityIn, double partialTicks)
++//    {
++//        float f = (float)((double)entityIn.prevRotationPitch + (double)(entityIn.rotationPitch - entityIn.prevRotationPitch) * partialTicks);
++//        float f1 = (float)((double)entityIn.prevRotationYaw + (double)(entityIn.rotationYaw - entityIn.prevRotationYaw) * partialTicks);
++//
++//        if (Minecraft.getMinecraft().gameSettings.thirdPersonView == 2)
++//        {
++//            f += 180.0F;
++//        }
++//
++//        float f2 = MathHelper.cos(-f1 * 0.017453292F - (float)Math.PI);
++//        float f3 = MathHelper.sin(-f1 * 0.017453292F - (float)Math.PI);
++//        float f4 = -MathHelper.cos(-f * 0.017453292F);
++//        float f5 = MathHelper.sin(-f * 0.017453292F);
++//        return new Vector3f(f3 * f4, f5, f2 * f4);
++//    }
+ 
+     public int renderBlockLayer(BlockRenderLayer blockLayerIn, double partialTicks, int pass, Entity entityIn)
+     {

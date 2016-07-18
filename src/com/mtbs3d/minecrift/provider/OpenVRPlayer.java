@@ -66,9 +66,8 @@ public class OpenVRPlayer implements IRoomscaleAdapter
     public double movementTeleportProgress;
     public double movementTeleportDistance;
         
-    private Vec3d roomOrigin = new Vec3d(0,0,0);
-    private Vec3d lastroomOrigin = new Vec3d(0,0,0);
-    private Vec3d interPolatedRoomOrigin = new Vec3d(0,0,0);
+    public Vec3d roomOrigin = new Vec3d(0,0,0);
+    public Vec3d lastroomOrigin = new Vec3d(0,0,0);
     
     public VRMovementStyle vrMovementStyle = new VRMovementStyle();
     public Vec3d[] movementTeleportArc = new Vec3d[50];
@@ -89,16 +88,11 @@ public class OpenVRPlayer implements IRoomscaleAdapter
     {
         for (int i=0;i<50;i++)
         {
-            movementTeleportArc[i] = new Vec3d(0,0,0);
-        }
+      }
     }
    
-    public void onFrameUpdate(float nano){
-     	interPolatedRoomOrigin = getInterpolatedRoomOriginPos_World(nano);
-    }
-    
     public void setRoomOrigin(double x, double y, double z, boolean reset, boolean onframe ) { 
-	    if(!onframe){
+  	    if(!onframe){
 	    	if (reset){
 		    		//interPolatedRoomOrigin = Vec3.createVectorHelper(x, y, z);
 		    		lastroomOrigin = new Vec3d(x, y, z);
@@ -126,7 +120,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
         
         Vec3d campos = mc.roomScale.getHMDPos_Room();
         
-        campos.rotateYaw(worldRotationRadians);
+        campos = campos.rotateYaw(worldRotationRadians);
                 
         double x,y,z;
 
@@ -136,7 +130,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
           	z = mc.entityRenderer.interpolatedPlayerPos.zCoord - campos.zCoord;
         } else {
              x = player.posX - campos.xCoord;
-             y = player.getEntityBoundingBox().minY;
+             y = player.posY;
              z = player.posZ - campos.zCoord;
         }
         
@@ -176,8 +170,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
         if(mc.vrSettings.seated) freeMoveMode = true;
         
         this.checkandUpdateRotateScale(false);
-
-        
+      
        if(mc.vrSettings.vrAllowCrawling){         //experimental
 //           topofhead = (double) (mc.roomScale.getHMDPos_Room().yCoord + .05);
 //           
@@ -413,12 +406,14 @@ public class OpenVRPlayer implements IRoomscaleAdapter
     private boolean wasYMoving;
     
     private void doPlayerMoveInRoom(EntityPlayerSP player){
-    	// this needs... work...
+     	if(roomScaleMovementDelay > 0){
+    		roomScaleMovementDelay--;
+    		return;
+    	}
     	if(player.isSneaking()) {return;} //jrbudda : prevent falling off things or walking up blocks while moving in room scale.
     	if(player.isRiding()) return; //dont fall off the tracks man
     	if(player.isDead) return; //
     	if(player.isPlayerSleeping()) return; //
-    	if(this.interPolatedRoomOrigin.xCoord == 0 && this.interPolatedRoomOrigin.yCoord ==0 && this.interPolatedRoomOrigin.zCoord == 0) return;
     	
     	if(Math.abs(player.motionX) > 0.01) return;
     	if(Math.abs(player.motionZ) > 0.01) return;
@@ -440,7 +435,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
     			y,
     			z - (double) playerHalfWidth,
     			x + (double) playerHalfWidth,
-    			y - (double) player.height,
+    			y + (double) player.height,
     			z + (double) playerHalfWidth);
 
     	Vec3d torso = null;
@@ -708,7 +703,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
         boolean bFoundValidSpot = false;
 
         
-		if (collision.sideHit != EnumFacing.DOWN) 
+		if (collision.sideHit != EnumFacing.UP) 
 		{ //sides
 		//jrbudda require arc hitting top of block.	unless ladder or vine.
 			BlockPos bp = collision.getBlockPos();
@@ -815,9 +810,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
     }
 
     private boolean canStand(World w, BlockPos bp){
-    	return false; //TODO reimplement
-   // 	return w.getBlockState(bp).isCollidable() && w.getBlockState(bp.getBlockPosAbove()).isPassable() &&  w.getBlockState(bp.getBlockPosAbove(2)).isPassable();
- 
+    	return !w.getBlockState(bp).getBlock().isPassable(null, null) && w.getBlockState(bp.up()).getBlock().isPassable(null, null) &&  w.getBlockState(bp.up(2)).getBlock().isPassable(null, null);
     }
     
     // rough interpolation between arc locations
@@ -989,9 +982,10 @@ public class OpenVRPlayer implements IRoomscaleAdapter
         		// and damage the block it collides with... 
 
         		RayTraceResult col = mc.theWorld.rayTraceBlocks(lastWeaponEndAir, weaponEnd, false, false, true);
-        		BlockPos hitblock=col.getBlockPos();
+       
         		if (col != null && col.typeOfHit == Type.BLOCK)
         		{
+        	 		BlockPos hitblock=col.getBlockPos();
         			if (!(block.getMaterial() == material.AIR) && !block.getMaterial().isLiquid())
         			{
         				if(canact){
@@ -1045,7 +1039,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 
 		if(free != was){
 			CPacketCustomPayload pack =	NetworkHelper.getVivecraftClientPacket(PacketDiscriminators.MOVEMODE, freeMoveMode ?  new byte[]{1} : new byte[]{0});
-			Minecraft.getMinecraft().myNetworkManager.sendPacket(pack);
+			Minecraft.getMinecraft().getConnection().sendPacket(pack);
 		}
 	}
 
@@ -1069,7 +1063,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 	@Override
 	public Vec3d getHMDPos_World() {	
 		Vec3d out = vecMult(MCOpenVR.getCenterEyePosition(),worldScale).rotateYaw(worldRotationRadians);
-		return out.addVector(interPolatedRoomOrigin.xCoord, interPolatedRoomOrigin.yCoord, interPolatedRoomOrigin.zCoord);
+		return out.addVector(roomOrigin.xCoord, roomOrigin.yCoord, roomOrigin.zCoord);
 	}
 
 	@Override
@@ -1082,7 +1076,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 	@Override
 	public float getHMDYaw_World() {
 		Vec3d dir = getHMDDir_World();
-		 return (float)Math.toDegrees(Math.atan2(dir.xCoord, dir.zCoord));    
+		 return -(float)Math.toDegrees(Math.atan2(dir.xCoord, dir.zCoord));    
 	}
 
 	@Override
@@ -1099,7 +1093,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 	@Override
 	public Vec3d getControllerMainPos_World() {
 		Vec3d out = vecMult(MCOpenVR.getAimSource(0),worldScale).rotateYaw(worldRotationRadians);
-		return out.addVector(interPolatedRoomOrigin.xCoord, interPolatedRoomOrigin.yCoord, interPolatedRoomOrigin.zCoord);
+		return out.addVector(roomOrigin.xCoord, roomOrigin.yCoord, roomOrigin.zCoord);
 		}
 
 	@Override
@@ -1127,7 +1121,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 	@Override
 	public Vec3d getControllerOffhandPos_World() {
 		Vec3d out = vecMult(MCOpenVR.getAimSource(1),worldScale).rotateYaw(worldRotationRadians);
-		return out.addVector(interPolatedRoomOrigin.xCoord, interPolatedRoomOrigin.yCoord, interPolatedRoomOrigin.zCoord);	}
+		return out.addVector(roomOrigin.xCoord, roomOrigin.yCoord, roomOrigin.zCoord);	}
 
 	@Override
 	public Vec3d getControllerOffhandDir_World() {
@@ -1186,7 +1180,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 	@Override
 	public Vec3d getEyePos_World(renderPass eye) {
 		Vec3d out = vecMult(MCOpenVR.getEyePosition(eye),worldScale).rotateYaw(worldRotationRadians);
-		return out.addVector(interPolatedRoomOrigin.xCoord, interPolatedRoomOrigin.yCoord, interPolatedRoomOrigin.zCoord);
+		return out.addVector(roomOrigin.xCoord, roomOrigin.yCoord, roomOrigin.zCoord);
 	}
 	
 
@@ -1207,8 +1201,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 	@Override
 	public Vec3d getCustomHMDVector(Vec3d axis) {
 		Vector3f v3 = MCOpenVR.hmdRotation.transform(new Vector3f((float)axis.xCoord, (float)axis.yCoord, (float)axis.zCoord));
-		Vec3d out = new Vec3d(v3.x, v3.y, v3.z);
-		out.rotateYaw(worldRotationRadians);
+		Vec3d out = new Vec3d(v3.x, v3.y, v3.z).rotateYaw(worldRotationRadians);
 		return out;
 	}
 	

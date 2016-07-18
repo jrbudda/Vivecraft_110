@@ -1265,6 +1265,7 @@ public class VRSettings
                    	this.vrHudLockMode = HUD_LOCK_HAND;
                 	break;
                 }
+                break;
 	        case FSAA:
 	            this.useFsaa = !this.useFsaa;
 	            break;

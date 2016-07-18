@@ -1,0 +1,10 @@
+--- a/net/minecraft/client/renderer/ActiveRenderInfo.java
++++ b/net/minecraft/client/renderer/ActiveRenderInfo.java
+@@ -4,6 +4,7 @@
+ import java.nio.IntBuffer;
+ import net.minecraft.block.BlockLiquid;
+ import net.minecraft.block.state.IBlockState;
++import net.minecraft.client.Minecraft;
+ import net.minecraft.entity.Entity;
+ import net.minecraft.entity.player.EntityPlayer;
+ import net.minecraft.util.math.BlockPos;

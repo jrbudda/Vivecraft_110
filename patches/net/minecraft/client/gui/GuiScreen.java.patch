@@ -22,6 +22,15 @@
      /** Reference to the Minecraft object. */
      protected Minecraft mc;
  
+@@ -66,7 +74,7 @@
+     public boolean allowUserInput;
+ 
+     /** The FontRenderer used by GuiScreen */
+-    protected FontRenderer fontRendererObj;
++    public FontRenderer fontRendererObj;
+ 
+     /** The button that was just pressed. */
+     private GuiButton selectedButton;
 @@ -103,6 +111,10 @@
      {
          if (keyCode == 1)
@@ -33,7 +42,20 @@
              this.mc.displayGuiScreen((GuiScreen)null);
  
              if (this.mc.currentScreen == null)
-@@ -589,6 +601,24 @@
+@@ -567,6 +579,12 @@
+         {
+             while (Mouse.next())
+             {
++            	if (mc.stereoProvider.isStereo()){
++            		if(!MCOpenVR.controllerMouseValid){
++            			MCOpenVR.controllerMouseValid = true;
++            			MCOpenVR.controllerMouseTicks = 20;
++				}}
++            	
+                 this.handleMouseInput();
+             }
+         }
+@@ -589,6 +607,24 @@
          int j = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
          int k = Mouse.getEventButton();
  
@@ -58,7 +80,7 @@
          if (Mouse.getEventButtonState())
          {
              if (this.mc.gameSettings.touchscreen && this.touchValue++ > 0)
-@@ -658,7 +688,16 @@
+@@ -658,7 +694,16 @@
      {
          if (this.mc.theWorld != null)
          {
@@ -76,7 +98,7 @@
          }
          else
          {
-@@ -774,4 +813,93 @@
+@@ -774,4 +819,93 @@
      {
          this.setWorldAndResolution(mcIn, w, h);
      }

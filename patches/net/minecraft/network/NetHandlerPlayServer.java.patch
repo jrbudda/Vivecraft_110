@@ -1,0 +1,63 @@
+--- a/net/minecraft/network/NetHandlerPlayServer.java
++++ b/net/minecraft/network/NetHandlerPlayServer.java
+@@ -1,9 +1,13 @@
+ package net.minecraft.network;
+ 
++import com.google.common.base.Charsets;
+ import com.google.common.collect.Lists;
+ import com.google.common.primitives.Doubles;
+ import com.google.common.primitives.Floats;
+ import com.google.common.util.concurrent.Futures;
++import com.mtbs3d.minecrift.api.NetworkHelper;
++import com.mtbs3d.minecrift.api.NetworkHelper.PacketDiscriminators;
++
+ import io.netty.util.concurrent.Future;
+ import io.netty.util.concurrent.GenericFutureListener;
+ import java.io.IOException;
+@@ -13,6 +17,7 @@
+ import net.minecraft.block.BlockCommandBlock;
+ import net.minecraft.block.material.Material;
+ import net.minecraft.block.state.IBlockState;
++import net.minecraft.client.Minecraft;
+ import net.minecraft.crash.CrashReport;
+ import net.minecraft.crash.CrashReportCategory;
+ import net.minecraft.crash.ICrashReportDetail;
+@@ -371,8 +376,11 @@
+ 
+                 if (d10 > 0.0625D)
+                 {
+-                    flag1 = true;
+-                    LOGGER.warn("{} moved wrongly!", new Object[] {entity.getName()});
++                   
++                    //VIVE
++                	//flag1 = true;
++                    //LOGGER.warn("{} moved wrongly!", new Object[] {entity.getName()});
++                    //END VIVE
+                 }
+ 
+                 entity.setPositionAndRotation(d3, d4, d5, f, f1);
+@@ -1790,5 +1798,24 @@
+                 LOGGER.error((String)"Couldn\'t pick item", (Throwable)exception);
+             }
+         }
++        // VIVE START - client querying if server is running this mod too
++        else if ("Vivecraft".equals(packetIn.getChannelName()))
++        {
++        	
++        	PacketDiscriminators dis = PacketDiscriminators.values()[packetIn.getBufferData().getByte(0)];
++        	
++        	switch (dis){
++        	case VERSION:
++            	String ver = Minecraft.getMinecraft().minecriftVerString;
++            	sendPacket(NetworkHelper.getVivecraftServerPacket(PacketDiscriminators.VERSION,ver.getBytes(Charsets.UTF_8)));
++            	sendPacket(NetworkHelper.getVivecraftServerPacket(PacketDiscriminators.REQUESTDATA, new byte[]{}));  
++
++        		break;
++        		
++        	default:
++        		break;
++        	}
++        }
++        // VIVE END - vivecraft packets
+     }
+ }

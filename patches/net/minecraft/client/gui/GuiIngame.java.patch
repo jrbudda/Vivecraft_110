@@ -1,0 +1,137 @@
+--- a/net/minecraft/client/gui/GuiIngame.java
++++ b/net/minecraft/client/gui/GuiIngame.java
+@@ -9,6 +9,9 @@
+ import java.util.List;
+ import java.util.Random;
+ import javax.annotation.Nullable;
++
++import org.lwjgl.opengl.GL11;
++
+ import net.minecraft.block.material.Material;
+ import net.minecraft.block.state.IBlockState;
+ import net.minecraft.client.Minecraft;
+@@ -19,6 +22,8 @@
+ import net.minecraft.client.renderer.RenderItem;
+ import net.minecraft.client.renderer.Tessellator;
+ import net.minecraft.client.renderer.VertexBuffer;
++import net.minecraft.client.renderer.GlStateManager.DestFactor;
++import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+ import net.minecraft.client.renderer.texture.TextureMap;
+ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+@@ -149,6 +154,7 @@
+         this.mc.entityRenderer.setupOverlayRendering();
+         GlStateManager.enableBlend();
+ 
++        
+         if (Config.isVignetteEnabled())
+         {
+             this.renderVignette(this.mc.thePlayer.getBrightness(partialTicks), scaledresolution);
+@@ -158,7 +164,7 @@
+             GlStateManager.enableDepth();
+             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+         }
+-
++        
+         ItemStack itemstack = this.mc.thePlayer.inventory.armorItemInSlot(3);
+ 
+         if (this.mc.gameSettings.thirdPersonView == 0 && itemstack != null && itemstack.getItem() == Item.getItemFromBlock(Blocks.PUMPKIN))
+@@ -175,7 +181,7 @@
+                 this.renderPortal(f, scaledresolution);
+             }
+         }
+-
++        
+         if (this.mc.playerController.isSpectator())
+         {
+             this.spectatorGui.renderTooltip(scaledresolution, partialTicks);
+@@ -184,15 +190,21 @@
+         {
+             this.renderHotbar(scaledresolution, partialTicks);
+         }
+-
++        
+         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+         this.mc.getTextureManager().bindTexture(ICONS);
+         GlStateManager.enableBlend();
+-        this.renderAttackIndicator(partialTicks, scaledresolution);
++        
++        //VIVE NOPE
++        //this.renderAttackIndicator(partialTicks, scaledresolution);
++        //NOPE
++        
+         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
++        
+         this.mc.mcProfiler.startSection("bossHealth");
+-        this.overlayBoss.renderBossHealth();
++        	this.overlayBoss.renderBossHealth();
+         this.mc.mcProfiler.endSection();
++        
+         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+         this.mc.getTextureManager().bindTexture(ICONS);
+ 
+@@ -227,6 +239,8 @@
+         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+         int k1 = i / 2 - 91;
+ 
++
++        
+         if (this.mc.thePlayer.isRidingHorse())
+         {
+             this.renderHorseJumpBar(scaledresolution, k1);
+@@ -1106,6 +1120,11 @@
+      */
+     private void renderVignette(float lightLevel, ScaledResolution scaledRes)
+     {
++        /** MINECRIFT **/
++        if (this.mc.stereoProvider.isStereo())
++            return;
++        /** END MINECRIFT **/
++    	
+         if (Config.isVignetteEnabled())
+         {
+             lightLevel = 1.0F - lightLevel;
+@@ -1363,4 +1382,43 @@
+     {
+         return this.overlayBoss;
+     }
++
++    
++    //VIVECRAFT ADDITIONS ***********************************
++    
++	public void drawMouseMenuQuad(int mouseX, int mouseY)
++	{	
++		GlStateManager.enableBlend();
++		GlStateManager.blendFunc(SourceFactor.ONE_MINUS_DST_COLOR, DestFactor.ONE_MINUS_SRC_COLOR);
++		GlStateManager.disableDepth();
++		GlStateManager.disableLighting();
++		GlStateManager.colorMask(true, true, true, false);
++
++		this.mc.mcProfiler.endStartSection("mouse pointer");
++		this.mc.getTextureManager().bindTexture(Gui.ICONS);
++		float menuMousePointerSize = 16f * this.mc.vrSettings.menuCrosshairScale;
++		this.mc.ingameGUI.drawCentredTexturedModalRect(mouseX, mouseY, menuMousePointerSize, menuMousePointerSize, 0, 0, 15, 15);
++		
++		GlStateManager.disableBlend();
++		GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
++		GlStateManager.enableDepth();
++		GlStateManager.enableLighting();
++		GlStateManager.colorMask(true, true, true, false);
++	}
++    /**
++     * Draws a centred textured rectangle at the stored z-value. Args: x, y, width, height, u, v, texwidth, texheight
++     */
++    public void drawCentredTexturedModalRect(int centreX, int centreY, float width, float height, int u, int v, int texWidth, int texHeight)
++    {   	
++        float f = 0.00390625F;
++        float f1 = 0.00390625F;
++        Tessellator tessellator = Tessellator.getInstance();
++        tessellator.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
++        tessellator.getBuffer().pos(0, 0, 0).tex(u, v);
++        tessellator.getBuffer().pos((double)(centreX - (width / 2f)), (double)(centreY + (height / 2f)), (double)this.zLevel).tex((double)((float)(u + 0) * f), (double)((float)(v + texHeight) * f1)).endVertex();
++        tessellator.getBuffer().pos((double)(centreX + (width / 2f)), (double)(centreY + (height / 2f)), (double)this.zLevel).tex( (double)((float)(u + texWidth) * f), (double)((float)(v + texHeight) * f1)).endVertex();
++        tessellator.getBuffer().pos((double)(centreX + (width / 2f)), (double)(centreY - (height / 2f)), (double)this.zLevel).tex( (double)((float)(u + texWidth) * f), (double)((float)(v + 0) * f1)).endVertex();
++        tessellator.getBuffer().pos((double)(centreX - (width / 2f)), (double)(centreY - (height / 2f)), (double)this.zLevel).tex( (double)((float)(u + 0) * f), (double)((float)(v + 0) * f1)).endVertex();
++        tessellator.draw();
++    }
+ }

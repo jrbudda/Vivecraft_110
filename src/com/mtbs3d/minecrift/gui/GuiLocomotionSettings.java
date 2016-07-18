@@ -98,15 +98,27 @@ public class GuiLocomotionSettings extends BaseGuiSettings implements GuiEventEx
                 // VIVE START - new options
                 GuiSliderEx slider = new GuiSliderEx(var8.returnEnumOrdinal(), width, height - 20, var8, this.guivrSettings.getKeyBinding(var8), minValue, maxValue, increment, this.guivrSettings.getOptionFloatValue(var8));
                 slider.setEventHandler(this);
+                slider.enabled = getEnabledState(var8);
                 this.buttonList.add(slider);
             }
             else
             {
                 GuiSmallButtonEx smallButton = new GuiSmallButtonEx(var8.returnEnumOrdinal(), width, height - 20, var8, this.guivrSettings.getKeyBinding(var8));
                 smallButton.setEventHandler(this);
+                smallButton.enabled = getEnabledState(var8);
                 this.buttonList.add(smallButton);
             }
         }
+    }
+
+    private boolean getEnabledState(VRSettings.VrOptions var8)
+    {
+        String s = var8.getEnumString();
+
+        if(s==VRSettings.VrOptions.ALLOW_CRAWLING.getEnumString()) return false;
+        
+
+        return true;
     }
 
     /**
@@ -142,9 +154,10 @@ public class GuiLocomotionSettings extends BaseGuiSettings implements GuiEventEx
                 vr.inertiaFactor = VRSettings.INERTIA_NORMAL;
                 vr.allowPitchAffectsHeightWhileFlying = false;
                 vr.useKeyBindingForComfortYaw = false;
-                vr.movementSpeedMultiplier = 0.75f;
+                vr.movementSpeedMultiplier = 1f;
+                vr.simulateFalling = false;
                 //jrbudda//
-                vr.vrAllowCrawling = true;
+                vr.vrAllowCrawling = false;
                 vr.vrAllowLocoModeSwotch = true;
                 vr.vrFreeMove = true;
                 vr.vrLimitedSurvivalTeleport = true;

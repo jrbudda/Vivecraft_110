@@ -1,0 +1,23 @@
+--- a/net/minecraft/util/MovementInputFromOptions.java
++++ b/net/minecraft/util/MovementInputFromOptions.java
+@@ -1,5 +1,8 @@
+ package net.minecraft.util;
+ 
++import com.mtbs3d.minecrift.settings.VRSettings;
++
++import net.minecraft.client.Minecraft;
+ import net.minecraft.client.settings.GameSettings;
+ 
+ public class MovementInputFromOptions extends MovementInput
+@@ -64,5 +67,11 @@
+             this.moveStrafe = (float)((double)this.moveStrafe * 0.3D);
+             this.moveForward = (float)((double)this.moveForward * 0.3D);
+         }
++        
++        //VIVECRAFT ADDITIONS *** 
++        VRSettings vr = Minecraft.getMinecraft().vrSettings;
++        this.moveForward = this.moveForward * vr.movementSpeedMultiplier;
++        this.moveStrafe  = this.moveStrafe * vr.movementSpeedMultiplier;
++        
+     }
+ }

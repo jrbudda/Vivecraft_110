@@ -1,0 +1,20 @@
+--- a/net/minecraft/client/renderer/entity/RenderEntityItem.java
++++ b/net/minecraft/client/renderer/entity/RenderEntityItem.java
+@@ -148,7 +148,7 @@
+                 }
+ 
+                 ibakedmodel.getItemCameraTransforms().applyTransform(ItemCameraTransforms.TransformType.GROUND);
+-                this.itemRenderer.renderItem(itemstack, ibakedmodel);
++                this.itemRenderer.renderItem(0,itemstack, ibakedmodel);
+                 GlStateManager.popMatrix();
+             }
+             else
+@@ -163,7 +163,7 @@
+                 }
+ 
+                 ibakedmodel.getItemCameraTransforms().applyTransform(ItemCameraTransforms.TransformType.GROUND);
+-                this.itemRenderer.renderItem(itemstack, ibakedmodel);
++                this.itemRenderer.renderItem(0,itemstack, ibakedmodel);
+                 GlStateManager.popMatrix();
+                 GlStateManager.translate(0.0F * f, 0.0F * f1, 0.09375F * f2);
+             }

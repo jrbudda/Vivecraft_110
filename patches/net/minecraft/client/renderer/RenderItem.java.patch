@@ -1,0 +1,92 @@
+--- a/net/minecraft/client/renderer/RenderItem.java
++++ b/net/minecraft/client/renderer/RenderItem.java
+@@ -166,16 +166,25 @@
+         }
+     }
+ 
+-    public void renderItem(ItemStack stack, IBakedModel model)
++    public static boolean ismainhand = false;
++    
++    public void renderItem(float par1, ItemStack stack, IBakedModel model)
+     {
+         if (stack != null)
+         {
+             GlStateManager.pushMatrix();
+             GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+ 
++            float fade = Minecraft.getMinecraft().thePlayer.getCooledAttackStrength(par1);
++            
++            if(fade < 0.1) fade = 0.1f;
++            if(!ismainhand) fade = 1;
++            
++            
+             if (model.isBuiltInRenderer())
+             {
+-                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
++            	//VIVE do things.      	
++                GlStateManager.color(1.0F, 1.0F, 1.0F, fade );
+                 GlStateManager.enableRescaleNormal();
+                 TileEntityItemStackRenderer.instance.renderByItem(stack);
+             }
+@@ -187,7 +196,13 @@
+                     this.modelLocation = null;
+                 }
+ 
+-                this.renderModel(model, stack);
++                int c = -1;
++                
++                if(fade < 1){
++                    c =  (int)(Minecraft.getMinecraft().thePlayer.getCooledAttackStrength(0)*255) << 24 | 255 << 16 | 255 << 8 | 255;
++                }
++                              
++                this.renderModel(model,c, stack);
+ 
+                 if (stack.hasEffect() && (!Config.isCustomItems() || !CustomItems.renderCustomEffect(this, stack, model)))
+                 {
+@@ -304,7 +319,7 @@
+         if (stack != null)
+         {
+             IBakedModel ibakedmodel = this.getItemModelWithOverrides(stack, (World)null, (EntityLivingBase)null);
+-            this.renderItemModel(stack, ibakedmodel, cameraTransformType, false);
++            this.renderItemModel(0,stack, ibakedmodel, cameraTransformType, false);
+         }
+     }
+ 
+@@ -333,16 +348,16 @@
+         }
+     }
+ 
+-    public void renderItem(ItemStack stack, EntityLivingBase entitylivingbaseIn, ItemCameraTransforms.TransformType transform, boolean leftHanded)
++    public void renderItem(float par1, ItemStack stack, EntityLivingBase entitylivingbaseIn, ItemCameraTransforms.TransformType transform, boolean leftHanded)
+     {
+         if (stack != null && entitylivingbaseIn != null && stack.getItem() != null)
+         {
+             IBakedModel ibakedmodel = this.getItemModelWithOverrides(stack, entitylivingbaseIn.worldObj, entitylivingbaseIn);
+-            this.renderItemModel(stack, ibakedmodel, transform, leftHanded);
++            this.renderItemModel(par1, stack, ibakedmodel, transform, leftHanded);
+         }
+     }
+ 
+-    protected void renderItemModel(ItemStack stack, IBakedModel bakedmodel, ItemCameraTransforms.TransformType transform, boolean leftHanded)
++    protected void renderItemModel(float par1, ItemStack stack, IBakedModel bakedmodel, ItemCameraTransforms.TransformType transform, boolean leftHanded)
+     {
+         if (stack.getItem() != null)
+         {
+@@ -370,7 +385,7 @@
+                 }
+             }
+ 
+-            this.renderItem(stack, bakedmodel);
++            this.renderItem(par1, stack, bakedmodel);
+             GlStateManager.cullFace(GlStateManager.CullFace.BACK);
+             GlStateManager.popMatrix();
+             GlStateManager.disableRescaleNormal();
+@@ -415,7 +430,7 @@
+             bakedmodel.getItemCameraTransforms().applyTransform(ItemCameraTransforms.TransformType.GUI);
+         }
+ 
+-        this.renderItem(stack, bakedmodel);
++        this.renderItem(0,stack, bakedmodel);
+         GlStateManager.disableAlpha();
+         GlStateManager.disableRescaleNormal();
+         GlStateManager.disableLighting();

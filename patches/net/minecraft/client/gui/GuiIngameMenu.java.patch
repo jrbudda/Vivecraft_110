@@ -1,0 +1,108 @@
+--- a/net/minecraft/client/gui/GuiIngameMenu.java
++++ b/net/minecraft/client/gui/GuiIngameMenu.java
+@@ -1,10 +1,14 @@
+ package net.minecraft.client.gui;
+ 
+ import java.io.IOException;
++
++import com.mtbs3d.minecrift.gui.GuiQuickCommandsInGame;
++
+ import net.minecraft.client.gui.achievement.GuiAchievements;
+ import net.minecraft.client.gui.achievement.GuiStats;
+ import net.minecraft.client.multiplayer.WorldClient;
+ import net.minecraft.client.resources.I18n;
++import net.minecraft.client.settings.KeyBinding;
+ import net.minecraft.realms.RealmsBridge;
+ 
+ public class GuiIngameMenu extends GuiScreen
+@@ -19,22 +23,35 @@
+     public void initGui()
+     {
+         this.saveStep = 0;
+-        this.buttonList.clear();
+-        int i = -16;
++      	KeyBinding.unPressAllKeys();
++    	this.buttonList.clear();
++    	byte var1 = -16;   
++    	int i = -16;
+         int j = 98;
+-        this.buttonList.add(new GuiButton(1, this.width / 2 - 100, this.height / 4 + 120 + -16, I18n.format("menu.returnToMenu", new Object[0])));
++    	boolean var2 = true;
+ 
+-        if (!this.mc.isIntegratedServerRunning())
+-        {
+-            ((GuiButton)this.buttonList.get(0)).displayString = I18n.format("menu.disconnect", new Object[0]);
+-        }
++    	this.buttonList.add(new GuiButton(1, this.width / 2 - 100, this.height / 4 + 144 + var1, I18n.format("menu.returnToMenu", new Object[0])));
++
++    	if (!this.mc.isIntegratedServerRunning())
++    	{
++    		((GuiButton)this.buttonList.get(0)).displayString = I18n.format("menu.disconnect", new Object[0]);
++    	}
++
++    	this.buttonList.add(new GuiButton(4, this.width / 2 - 100, this.height / 4 + 24 + var1, I18n.format("menu.returnToGame", new Object[0])));
++    	this.buttonList.add(new GuiButton(0, this.width / 2 - 100, this.height / 4 + 96 + var1, 98, 20, I18n.format("menu.options", new Object[0])));
++    	this.buttonList.add(new GuiButton(100, this.width / 2 -100, this.height / 4 + 72 + var1,98,20, "Chat"));
++    	this.buttonList.add(new GuiButton(101, this.width / 2 + 2, this.height / 4 + 72 + var1, 98, 20, "Commands"));
++      	this.buttonList.add(new GuiButton(102, this.width / 2 - 100,this.height / 4 + 120 + var1, 49, 20, "Overlay"));
++      	this.buttonList.add(new GuiButton(103, this.width / 2 - 50,this.height / 4 + 120 + var1, 49, 20, "Profiler"));
++      	this.buttonList.add(new GuiButton(104, this.width / 2 + 2,this.height / 4 + 120 + var1, 98,	 20, "Screenshot"));
++
++    	GuiButton var3;
++    	this.buttonList.add(var3 = new GuiButton(7, this.width / 2 + 2, this.height / 4 + 96 + var1, 98, 20, I18n.format("menu.shareToLan", new Object[0])));
++    	this.buttonList.add(new GuiButton(5, this.width / 2 - 100, this.height / 4 + 48 + var1, 98, 20, I18n.format("gui.achievements", new Object[0])));
++    	this.buttonList.add(new GuiButton(6, this.width / 2 + 2, this.height / 4 + 48 + var1, 98, 20, I18n.format("gui.stats", new Object[0])));
++
++    	var3.enabled = this.mc.isSingleplayer() && !this.mc.getIntegratedServer().getPublic();
+ 
+-        this.buttonList.add(new GuiButton(4, this.width / 2 - 100, this.height / 4 + 24 + -16, I18n.format("menu.returnToGame", new Object[0])));
+-        this.buttonList.add(new GuiButton(0, this.width / 2 - 100, this.height / 4 + 96 + -16, 98, 20, I18n.format("menu.options", new Object[0])));
+-        GuiButton guibutton = this.func_189646_b(new GuiButton(7, this.width / 2 + 2, this.height / 4 + 96 + -16, 98, 20, I18n.format("menu.shareToLan", new Object[0])));
+-        guibutton.enabled = this.mc.isSingleplayer() && !this.mc.getIntegratedServer().getPublic();
+-        this.buttonList.add(new GuiButton(5, this.width / 2 - 100, this.height / 4 + 48 + -16, 98, 20, I18n.format("gui.achievements", new Object[0])));
+-        this.buttonList.add(new GuiButton(6, this.width / 2 + 2, this.height / 4 + 48 + -16, 98, 20, I18n.format("gui.stats", new Object[0])));
+     }
+ 
+     /**
+@@ -71,9 +88,6 @@
+ 
+             case 2:
+             case 3:
+-            default:
+-                break;
+-
+             case 4:
+                 this.mc.displayGuiScreen((GuiScreen)null);
+                 this.mc.setIngameFocus();
+@@ -89,6 +103,31 @@
+ 
+             case 7:
+                 this.mc.displayGuiScreen(new GuiShareToLan(this));
++            break;
++		case 100:
++            	this.mc.displayGuiScreen(new GuiChat());
++            	break;
++            case 110:
++            	this.mc.displayGuiScreen(new GuiChat());
++            	break;
++            case 101:
++            	this.mc.displayGuiScreen(new GuiQuickCommandsInGame());
++            	this.initGui();
++            	break;
++            case 102:
++            	mc.gameSettings.showDebugInfo = !mc.gameSettings.showDebugInfo;
++            	this.mc.displayGuiScreen((GuiScreen)null);
++            	break;
++            case 103:
++            	mc.gameSettings.showDebugProfilerChart = !mc.gameSettings.showDebugProfilerChart;
++            	mc.gameSettings.showDebugInfo = mc.gameSettings.showDebugProfilerChart;
++            	break;
++            case 104:
++            	this.mc.displayGuiScreen((GuiScreen)null);
++            	this.mc.grabScreenShot = 10;
++            	break;
++            default:
++
+         }
+     }
+ 
