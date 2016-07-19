@@ -1,0 +1,15 @@
+--- a/net/minecraft/client/multiplayer/PlayerControllerMP.java
++++ b/net/minecraft/client/multiplayer/PlayerControllerMP.java
+@@ -63,10 +63,10 @@
+     /**
+      * Delays the first damage on the block after the first click on the block
+      */
+-    private int blockHitDelay;
++    public int blockHitDelay;
+ 
+     /** Tells if the player is hitting a block */
+-    private boolean isHittingBlock;
++    public boolean isHittingBlock;
+ 
+     /** Current game type for the player */
+     private GameType currentGameType = GameType.SURVIVAL;

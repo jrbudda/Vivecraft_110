@@ -426,7 +426,7 @@
      {
          int i = GlStateManager.glGetError();
  
-@@ -1098,128 +1320,265 @@
+@@ -1098,128 +1320,266 @@
      /**
       * Called repeatedly from run()
       */
@@ -643,22 +643,27 @@
 +				MCOpenVR.poll(frameIndex);
 +			this.mcProfiler.endSection();
 +			
++			//I dunno where to put this.
++			if(this.stereoProvider.isStereo()){
++					bowTracker.doProcess(roomScale, thePlayer);
++			}
++			
 +			//Vivecraft - setup the player entity with the correct view for the logic tick.
 +			this.entityRenderer.doLookOverride();
 +		
 +			this.mcProfiler.startSection("tick");
 +
-+			for (int var3 = 0; var3 < this.timer.elapsedTicks; ++var3)
-+			{
-+				this.runTick();
-+				ticks++;
-+			}
-+
-+			var6 = System.nanoTime() - var5;
-+
-+			// Test to see if render config change is requested. If so,
-+			// update framebuffers
-+			setupRenderConfiguration();
++				for (int var3 = 0; var3 < this.timer.elapsedTicks; ++var3)
++				{
++					this.runTick();
++					ticks++;
++				}
++	
++				var6 = System.nanoTime() - var5;
++	
++				// Test to see if render config change is requested. If so,
++				// update framebuffers
++				setupRenderConfiguration();
 +			this.mcProfiler.endSection();
 +
 +			if (vrSettings.smoothTick) {
@@ -698,11 +703,6 @@
 +
 +			float nano = this.timer.renderPartialTicks;
 +			
-+
-+			//I dunno where to put this.
-+			if(this.stereoProvider.isStereo()){
-+					bowTracker.doProcess(roomScale, thePlayer);
-+			}
 +
 +	        //VIVECRAFT RENDERING MAIN
 +			if (minecriftDebug) print("FrameIndex: " + frameIndex);
@@ -777,8 +777,9 @@
 +			while (getSystemTime() >= this.debugUpdateTime + 1000L)
 +			{
 +				debugFPS = this.fpsCounter;
-+				//this.debug = debugFPS + " fps, " + WorldRenderer.chunksUpdated + " chunk updates";
-+			//	WorldRenderer.chunksUpdated = 0;
++	            this.debug = String.format("%d fps (%d chunk update%s) T: %s%s%s%s%s", new Object[] {Integer.valueOf(debugFPS), Integer.valueOf(RenderChunk.renderChunksUpdated), RenderChunk.renderChunksUpdated == 1 ? "" : "s", (float)this.gameSettings.limitFramerate == GameSettings.Options.FRAMERATE_LIMIT.getValueMax() ? "inf" : Integer.valueOf(this.gameSettings.limitFramerate), this.gameSettings.enableVsync ? " vsync" : "", this.gameSettings.fancyGraphics ? "" : " fast", this.gameSettings.clouds == 0 ? "" : (this.gameSettings.clouds == 1 ? " fast-clouds" : " fancy-clouds"), OpenGlHelper.useVbo() ? " vbo" : ""});
++	            RenderChunk.renderChunksUpdated = 0;
++
 +				this.debugUpdateTime += 1000L;
 +				this.fpsCounter = 0;
 +				this.usageSnooper.addMemoryStatsToSnooper();
@@ -813,7 +814,7 @@
  
      public void updateDisplay()
      {
-@@ -1333,7 +1692,7 @@
+@@ -1333,7 +1693,7 @@
      /**
       * Parameter appears to be unused
       */
@@ -822,7 +823,7 @@
      {
          if (this.mcProfiler.profilingEnabled)
          {
-@@ -1576,11 +1935,11 @@
+@@ -1576,11 +1936,11 @@
      }
  
      @SuppressWarnings("incomplete-switch")
@@ -836,7 +837,7 @@
      {
          if (!this.playerController.getIsHittingBlock())
          {
-@@ -1722,27 +2081,12 @@
+@@ -1722,27 +2082,12 @@
       */
      private void resize(int width, int height)
      {
@@ -866,7 +867,16 @@
      }
  
      /**
-@@ -2327,6 +2671,13 @@
+@@ -2255,7 +2600,7 @@
+ 
+         if (this.thePlayer.isHandActive())
+         {
+-            if (!this.gameSettings.keyBindUseItem.isKeyDown())
++            if (!this.gameSettings.keyBindUseItem.isKeyDown() && (bowTracker.isActive(thePlayer) == false || vrSettings.seated))
+             {
+                 this.playerController.onStoppedUsingItem(this.thePlayer);
+             }
+@@ -2327,6 +2672,13 @@
                      KeyBinding.onTick(i - 100);
                  }
              }
@@ -880,7 +890,7 @@
  
              long j = getSystemTime() - this.systemTime;
  
-@@ -2458,6 +2809,9 @@
+@@ -2458,6 +2810,9 @@
       */
      public void loadWorld(WorldClient worldClientIn)
      {
@@ -890,7 +900,7 @@
          this.loadWorld(worldClientIn, "");
      }
  
-@@ -2623,7 +2977,7 @@
+@@ -2623,7 +2978,7 @@
      /**
       * Called when user clicked he's mouse middle button (pick block)
       */
@@ -899,7 +909,7 @@
      {
          if (this.objectMouseOver != null && this.objectMouseOver.typeOfHit != RayTraceResult.Type.MISS)
          {
-@@ -3417,4 +3771,1124 @@
+@@ -3417,4 +3772,1124 @@
      {
          return this.thePlayer != null && this.thePlayer.hasReducedDebug() || this.gameSettings.reducedDebugInfo;
      }

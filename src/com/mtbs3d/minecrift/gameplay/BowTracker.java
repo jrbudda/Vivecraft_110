@@ -57,9 +57,8 @@ public class BowTracker {
 		if(p == null) return false;
 		if(p.isDead) return false;
 		if(p.isPlayerSleeping()) return false;
-		if(p.inventory == null) return false;
-		if(p.inventory.getCurrentItem() == null) return false;
-		return	p.inventory.getCurrentItem().getItem() instanceof ItemBow;
+		if(p.getHeldItemMainhand() == null) return false;
+		return	p.getHeldItemMainhand().getItemUseAction() == EnumAction.BOW;
 	}
 	
 	float tsNotch = 0;
@@ -74,11 +73,11 @@ public class BowTracker {
 		}
 
 		if(Minecraft.getMinecraft().vrSettings.seated){
-			aim = 	provider.getControllerMainDir_World();
+			aim = 	provider.getControllerDir_World(1);
 			return;
 		}
 		
-		ItemStack bow = player.inventory.getCurrentItem();
+		ItemStack bow = player.getHeldItemMainhand();
 
 		lastcontrollersDist = controllersDist;
 		lastcontrollersDot = controllersDot;
@@ -87,18 +86,18 @@ public class BowTracker {
 		lastcanDraw = canDraw;
 		maxDraw = Minecraft.getMinecraft().thePlayer.height * 0.25;
 
-		Vec3d rightPos = provider.getControllerMainPos_World();
-		Vec3d leftPos = provider.getControllerOffhandPos_World();
+		Vec3d rightPos = provider.getControllerPos_World(0);
+		Vec3d leftPos = provider.getControllerPos_World(1);
 		controllersDist = leftPos.distanceTo(rightPos);
 		
 		aim = rightPos.subtract(leftPos).normalize();
 
 		Vector3f forward = new Vector3f(0,0,1);
 
-		Vec3d rightaim3 = provider.getControllerMainDir_World();
+		Vec3d rightaim3 = provider.getControllerDir_World(0);
 		
 		Vector3f rightAim = new Vector3f((float)rightaim3.xCoord, (float) rightaim3.yCoord, (float) rightaim3.zCoord);
-		leftHandAim = provider.getControllerOffhandDir_World();
+		leftHandAim = provider.getControllerDir_World(1);
 	 	Vec3d l4v3 = provider.getCustomControllerVector(1, new Vec3d(0, -1, 0));
 		 
 		Vector3f leftforeward = new Vector3f((float)l4v3.xCoord, (float) l4v3.yCoord, (float) l4v3.zCoord);
@@ -109,9 +108,9 @@ public class BowTracker {
 
 		float notchDistThreshold = (float) (0.3 * Minecraft.getMinecraft().vrSettings.vrWorldScale);
 		
-		boolean infiniteAmmo = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, bow) > 0;
+		ItemStack ammo = ((ItemBow) bow.getItem()).findAmmoItemStack(player);
 		
-		if( controllersDist <= notchDistThreshold && controllersDot <= notchDotThreshold && (infiniteAmmo || player.inventory.hasItemStack(new ItemStack(Items.ARROW))))
+		if(ammo !=null && controllersDist <= notchDistThreshold && controllersDot <= notchDotThreshold)
 		{
 			//can draw
 			canDraw = true;
@@ -119,7 +118,9 @@ public class BowTracker {
 			
 			if(!isDrawing){
 				player.setItemInUseClient(bow);
-				player.setItemInUseCountClient(bow.getMaxItemUseDuration() - 1 );				
+				player.setItemInUseCountClient(bow.getMaxItemUseDuration() - 1 );
+				Minecraft.getMinecraft().playerController.processRightClick(player, player.worldObj, bow,EnumHand.MAIN_HAND);//server
+
 			}
 
 		} else if((Minecraft.getSystemTime() - tsNotch) > 500) {

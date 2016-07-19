@@ -37,60 +37,22 @@
      /** Ticks left before sprinting is disabled. */
      public int sprintingTicksLeft;
      public float renderArmYaw;
-@@ -162,8 +184,59 @@
+@@ -162,8 +184,23 @@
          this.statWriter = statFile;
          this.mc = mcIn;
          this.dimension = 0;
--    }
--
++       
 +        
-+        //VIVECRAFT
-+        hackSuperFields();
-+      //END VIVECRAFT
-+        
-+    }
-+
-+    //VIVECRAFT
-+    Field inuse, inusedur;
-+    private void hackSuperFields(){ //this will work, damnit.
-+    	inuse = Utils.getDeclaredField( this.getClass(), 
-+    			"itemInUse", 
-+    			"f", 
-+    			"field_71074_e");
-+    	
-+     	inusedur = Utils.getDeclaredField( this.getClass(), 
-+    			"itemInUseCount", 
-+    			"g", 
-+    			"field_71072_f");
-+    	
-+    	if(inuse!=null){
-+			inuse.setAccessible(true);
-+    		inusedur.setAccessible(true);
-+    	}
-+    }
+     }
+ 
++    //VIVE
 +    public void setItemInUseClient(ItemStack item){
-+    	if(this.inuse==null){
-+    		return;
-+    	} 
-+
-+    	try {
-+    		this.inuse.set(this, item);
-+    	} catch (IllegalArgumentException e) {
-+    	} catch (Exception e) {
-+    	}
++    	this.activeItemStack = item;
 +    }
 +    
 +    
 +    public void setItemInUseCountClient(int count){
-+    	if(this.inusedur==null){
-+    		return;
-+    	} 
-+
-+    	try {
-+    		this.inusedur.set(this, count);
-+    	} catch (IllegalArgumentException e) {
-+    	} catch (Exception e) {
-+    	}
++    	this.activeItemStackUseCount = count;
 +    }
 +    
 +    //END VIVECRAFT
@@ -99,7 +61,18 @@
      /**
       * Called when the entity is attacked.
       */
-@@ -1065,6 +1138,11 @@
+@@ -323,6 +360,10 @@
+ 
+             this.prevOnGround = this.onGround;
+             this.field_189811_cr = this.mc.gameSettings.autoJump;
++            
++            
++            mc.vrPlayer.IAmLookingAtMyHand = mc.vrPlayer.shouldIlookatMyHand;
++            
+         }
+     }
+ 
+@@ -1065,6 +1106,11 @@
  
          super.onLivingUpdate();
  
@@ -111,7 +84,7 @@
          if (this.onGround && this.capabilities.isFlying && !this.mc.playerController.isSpectatorMode())
          {
              this.capabilities.isFlying = false;
-@@ -1115,10 +1193,41 @@
+@@ -1115,10 +1161,41 @@
       */
      public void moveEntity(double x, double y, double z)
      {
@@ -157,7 +130,7 @@
      }
  
      public boolean func_189809_N()
-@@ -1269,4 +1378,199 @@
+@@ -1269,4 +1346,199 @@
              }
          }
      }
@@ -304,7 +277,7 @@
 +            forward *= speed;
 +
 +            
-+            Vec3d directionVec = new Vec3d(strafe, 0, forward);
++            Vec3d directionVec = new Vec3d(strafe, 0,forward);
 +	  						
 +         	//VIVE DO PITCH FLYING		
 +
@@ -314,7 +287,7 @@
 +    		if(this.capabilities.isFlying || this.inWater)
 +            if (Minecraft.getMinecraft().vrSettings.allowPitchAffectsHeightWhileFlying) {
 +            	if (vr.useLControllerForRestricedMovement) {
-+            		directionVec= directionVec.rotatePitch(con.getControllerOffhandPitch_World() * PIOVER180);		   
++            		directionVec= directionVec.rotatePitch(con.getControllerPitch_World(1) * PIOVER180);		   
 +            	} else {
 +            		directionVec=directionVec.rotatePitch(this.headPitch * PIOVER180);	
 +            	}		
@@ -322,9 +295,9 @@
 +    		
 +    		// Account for yaw
 +            if (vr.useLControllerForRestricedMovement) {
-+            	directionVec=directionVec.rotateYaw(con.getControllerOffhandYaw_World() * PIOVER180);	
++            	directionVec=directionVec.rotateYaw(-con.getControllerYaw_World(1) * PIOVER180);	
 +            } else {
-+            	directionVec=directionVec.rotateYaw(-this.rotationYaw * PIOVER180);
++            	directionVec=directionVec.rotateYaw(this.rotationYaw * PIOVER180);
 +    		}
 +    	
 +            mX = directionVec.xCoord;

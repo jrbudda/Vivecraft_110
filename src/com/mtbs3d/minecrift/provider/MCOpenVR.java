@@ -575,7 +575,7 @@ public class MCOpenVR
 		float fact = (float) (pq.dotProduct(u) / (u.xCoord*u.xCoord + u.yCoord*u.yCoord + u.zCoord*u.zCoord));
 		Vec3d w2 = pq.subtract(u.scale(fact));
 	
-		Vec3d point = w2.subtract(main);
+		Vec3d point = main.subtract(w2);
 		float linelen = (float) barStart.subtract(barEnd).lengthVector();
 		float ilen = (float) barStart.subtract(point).lengthVector();
 
@@ -599,12 +599,12 @@ public class MCOpenVR
 	private static void processGui() {
 		Vector3f controllerPos = new Vector3f();
 		//OpenVRUtil.convertMatrix4ftoTranslationVector(controllerPose[0]);
-		Vec3d con = mc.roomScale.getControllerMainPos_World();
+		Vec3d con = mc.roomScale.getControllerPos_World(0);
 		controllerPos.x	= (float) con.xCoord;
 		controllerPos.y	= (float) con.yCoord;
 		controllerPos.z	= (float) con.zCoord;
 			
-		Vec3d controllerdir = mc.roomScale.getControllerMainDir_World();
+		Vec3d controllerdir = mc.roomScale.getControllerDir_World(0);
 		Vector3f cdir = new Vector3f((float)controllerdir.xCoord,(float) controllerdir.yCoord,(float) controllerdir.zCoord);
 		Vector3f forward = new Vector3f(0,0,1);
 
@@ -1450,8 +1450,6 @@ public class MCOpenVR
 		if ( vrsystem == null || vrCompositor == null )
 			return;
 
-		mc.mcProfiler.startSection("updatePose");
-
 		vrCompositor.WaitGetPoses.apply(hmdTrackedDevicePoseReference, JOpenVRLibrary.k_unMaxTrackedDeviceCount, null, 0);
 
 		for (int nDevice = 0; nDevice < JOpenVRLibrary.k_unMaxTrackedDeviceCount; ++nDevice )
@@ -1497,7 +1495,6 @@ public class MCOpenVR
 
 		updateAim();
 
-		mc.mcProfiler.endSection();
 	}
 
 	/**

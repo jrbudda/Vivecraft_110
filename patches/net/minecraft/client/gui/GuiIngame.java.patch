@@ -91,7 +91,7 @@
          if (Config.isVignetteEnabled())
          {
              lightLevel = 1.0F - lightLevel;
-@@ -1363,4 +1382,43 @@
+@@ -1363,4 +1382,42 @@
      {
          return this.overlayBoss;
      }
@@ -107,7 +107,6 @@
 +		GlStateManager.disableLighting();
 +		GlStateManager.colorMask(true, true, true, false);
 +
-+		this.mc.mcProfiler.endStartSection("mouse pointer");
 +		this.mc.getTextureManager().bindTexture(Gui.ICONS);
 +		float menuMousePointerSize = 16f * this.mc.vrSettings.menuCrosshairScale;
 +		this.mc.ingameGUI.drawCentredTexturedModalRect(mouseX, mouseY, menuMousePointerSize, menuMousePointerSize, 0, 0, 15, 15);

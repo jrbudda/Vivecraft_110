@@ -575,7 +575,7 @@
          d0 = entity.prevPosX + (entity.posX - entity.prevPosX) * (double)partialTicks;
          d1 = entity.prevPosY + (entity.posY - entity.prevPosY) * (double)partialTicks + (double)f;
          d2 = entity.prevPosZ + (entity.posZ - entity.prevPosZ) * (double)partialTicks;
-@@ -835,189 +936,150 @@
+@@ -835,189 +936,152 @@
       */
      public void setupCameraTransform(float partialTicks, int pass)
      {
@@ -590,7 +590,8 @@
 -        {
 -            this.farPlaneDistance *= 0.83F;
 -        }
--
++		/** MINECRIFT */
+ 
 -        GlStateManager.matrixMode(5889);
 -        GlStateManager.loadIdentity();
 -        float f = 0.07F;
@@ -635,8 +636,7 @@
 -        }
 -
 -        float f1 = this.mc.thePlayer.prevTimeInPortal + (this.mc.thePlayer.timeInPortal - this.mc.thePlayer.prevTimeInPortal) * partialTicks;
-+		/** MINECRIFT */
- 
+-
 -        if (f1 > 0.0F)
 -        {
 -            int i = 20;
@@ -869,14 +869,16 @@
 +				ItemStack item = mc.thePlayer.getHeldItemMainhand();
 +	
 +				if(item != null && item.getItem()instanceof ItemBow){
-+					boolean infiniteAmmo = mc.thePlayer.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, item) > 0;
 +					int c = 0;
 +					if (mc.vrSettings.vrReverseShootingEye) c = 1;
-+				//	if ((mc.thePlayer.inventory.hasItemStack(new ItemStack(Items.ARROW)) || infiniteAmmo) && !mc.bowTracker.isNotched()) { //render the arrow in right, left hand will check for and render bow.
-+					//	renderItemInFirstPersonForController(partialTicks, c,  new ItemStack(Items.ARROW));  
-+					//} else {
-+						itemRenderer.renderItemInFirstPerson(mc.thePlayer, partialTicks, 0, EnumHand.MAIN_HAND, mc.thePlayer.getSwingProgress(partialTicks), item, 0);
-+					//}
++					
++					ItemStack ammo = ((ItemBow)item.getItem()).findAmmoItemStack(mc.thePlayer);
++					
++					if (ammo !=null  && !mc.bowTracker.isNotched()) { //render the arrow in right, left hand will check for and render bow.
++						itemRenderer.renderItemInFirstPerson(mc.thePlayer, partialTicks, 0, EnumHand.MAIN_HAND, mc.thePlayer.getSwingProgress(partialTicks), ammo, 0);
++					} else {
++						itemRenderer.renderItemInFirstPerson(mc.thePlayer, partialTicks, 0, EnumHand.MAIN_HAND, mc.thePlayer.getSwingProgress(partialTicks), null, 0);
++					}
 +					
 +				}else {
 +					itemRenderer.renderItemInFirstPerson(mc.thePlayer, partialTicks, 0, EnumHand.MAIN_HAND, mc.thePlayer.getSwingProgress(partialTicks), item, 0);
@@ -900,7 +902,7 @@
  
      public void disableLightmap()
      {
-@@ -1221,197 +1283,396 @@
+@@ -1221,197 +1285,392 @@
          return i > 200 ? 1.0F : 0.7F + MathHelper.sin(((float)i - partialTicks) * (float)Math.PI * 0.2F) * 0.3F;
      }
  
@@ -1148,10 +1150,6 @@
 +						
 +						this.mc.gameSettings.fancyGraphics = var12;
 +
-+						if (this.mc.gameSettings.ofShowFps && !this.mc.gameSettings.showDebugInfo)
-+						{
-+							Config.drawFps();
-+						}
 +					}
 +				}
 +				/** END MINECRIFT */
@@ -1486,7 +1484,7 @@
  
      private void createWorldIcon()
      {
-@@ -1461,6 +1722,9 @@
+@@ -1461,6 +1720,9 @@
          }
          else
          {
@@ -1496,7 +1494,7 @@
              Entity entity = this.mc.getRenderViewEntity();
              boolean flag = entity instanceof EntityPlayer && !this.mc.gameSettings.hideGUI;
  
-@@ -1491,210 +1755,301 @@
+@@ -1491,210 +1753,299 @@
  
      public void renderWorld(float partialTicks, long finishTimeNano)
      {
@@ -1573,14 +1571,12 @@
 +					crossZ = (float)(crossVec.zCoord - (centerEyePosToCrossDirection.zCoord*SLIGHTLY_CLOSER) -  pos.zCoord);
 +				// information for the entire frame, not individual eye pos camRelX, Y, Z
 +			}
-+	    this.mc.mcProfiler.endSection();
-+        
++       
          if (Config.isShaders())
          {
 -            Shaders.beginRender(this.mc, partialTicks, finishTimeNano);
-+        	this.mc.mcProfiler.startSection("shadersModBeginRender");	
++        	this.mc.mcProfiler.endStartSection("shadersModBeginRender");	
 +        		Shaders.beginRender(this.mc, partialTicks, finishTimeNano);
-+            this.mc.mcProfiler.endSection();
          }
  
          GlStateManager.enableDepth();
@@ -1961,7 +1957,7 @@
  
          if (!this.debugView)
          {
-@@ -1702,7 +2057,6 @@
+@@ -1702,7 +2053,6 @@
              GlStateManager.popMatrix();
              GlStateManager.pushMatrix();
              RenderHelper.enableStandardItemLighting();
@@ -1969,7 +1965,7 @@
  
              if (Reflector.ForgeHooksClient_setRenderPass.exists())
              {
-@@ -1711,6 +2065,8 @@
+@@ -1711,6 +2061,8 @@
  
              renderglobal.renderEntities(entity, icamera, partialTicks);
  
@@ -1978,7 +1974,7 @@
              if (Reflector.ForgeHooksClient_setRenderPass.exists())
              {
                  Reflector.callVoid(Reflector.ForgeHooksClient_setRenderPass, new Object[] {Integer.valueOf(-1)});
-@@ -1723,172 +2079,190 @@
+@@ -1723,172 +2075,192 @@
          GlStateManager.matrixMode(5888);
          GlStateManager.popMatrix();
  
@@ -2290,7 +2286,9 @@
 +        
 +        
 +		this.mc.mcProfiler.endStartSection("renderGui");
-+			if(!mc.bowTracker.isDrawing) renderGuiLayer(partialTicks);  
++			//if(!mc.bowTracker.isDrawing) 
++				
++				renderGuiLayer(partialTicks);  
 +        
 +	        boolean forgeHands = ReflectorForge.renderFirstPersonHand(this.mc.renderGlobal, partialTicks, pass);
 +	        
@@ -2327,7 +2325,7 @@
      }
  
      private void renderCloudsCheck(RenderGlobal renderGlobalIn, float partialTicks, int pass)
-@@ -1896,19 +2270,19 @@
+@@ -1896,19 +2268,19 @@
          if (this.mc.gameSettings.renderDistanceChunks >= 4 && !Config.isCloudsOff() && Shaders.shouldRenderClouds(this.mc.gameSettings))
          {
              this.mc.mcProfiler.endStartSection("clouds");
@@ -2356,7 +2354,7 @@
          }
      }
  
-@@ -2206,7 +2580,7 @@
+@@ -2206,7 +2578,7 @@
              double d0 = MathHelper.sin(world.getCelestialAngleRadians(partialTicks)) > 0.0F ? -1.0D : 1.0D;
              Vec3d vec3d2 = new Vec3d(d0, 0.0D, 0.0D);
              float f5 = (float)entity.getLook(partialTicks).dotProduct(vec3d2);
@@ -2365,7 +2363,7 @@
              if (f5 < 0.0F)
              {
                  f5 = 0.0F;
-@@ -2372,7 +2746,7 @@
+@@ -2372,7 +2744,7 @@
              this.fogColorBlue = Reflector.callFloat(object, Reflector.EntityViewRenderEvent_FogColors_getBlue, new Object[0]);
          }
  
@@ -2374,7 +2372,7 @@
      }
  
      /**
-@@ -2733,49 +3107,6 @@
+@@ -2733,49 +3105,6 @@
          }
      }
  
@@ -2424,7 +2422,7 @@
      public boolean setFxaaShader(int p_setFxaaShader_1_)
      {
          if (!OpenGlHelper.isFramebufferEnabled())
-@@ -2858,4 +3189,2122 @@
+@@ -2858,4 +3187,2125 @@
          GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
          GlStateManager.popMatrix();
      }
@@ -2514,9 +2512,9 @@
 +				entity.rotationPitch = (float)mc.roomScale.getHMDPitch_World();
 +			} else { //default to looking 'at' the crosshair position.
 +				if(crossVec != null){
-+					Vec3d playerToCrosshair = interpolatedPlayerPos.subtract(crossVec); //backwards
++					Vec3d playerToCrosshair = entity.getPositionEyes(1).subtract(crossVec).normalize(); //backwards
 +					float pitch = (float)Math.toDegrees(Math.asin(playerToCrosshair.yCoord/playerToCrosshair.lengthVector()));
-+					float yaw = (float)Math.toDegrees(Math.atan2(playerToCrosshair.xCoord, playerToCrosshair.zCoord));    
++					float yaw = (float)Math.toDegrees(Math.atan2(playerToCrosshair.xCoord, -playerToCrosshair.zCoord));    
 +					entity.rotationYaw = yaw;
 +					entity.rotationYawHead = yaw;
 +					entity.rotationPitch = pitch;
@@ -2525,22 +2523,23 @@
 +
 +			if(entity.moveForward > 0 && (mc.vrPlayer.getFreeMoveMode() || entity.isRiding())){
 +				//us laim, needed for server side movement.
-+				entity.rotationYaw = - mc.roomScale.getControllerOffhandYaw_World();
-+				entity.rotationPitch = mc.roomScale.getControllerOffhandPitch_World();
-+				entity.rotationYawHead = - mc.roomScale.getControllerOffhandYaw_World();
++				entity.rotationYawHead = entity.rotationYaw = mc.roomScale.getControllerYaw_World(1);
++				entity.rotationPitch = - mc.roomScale.getControllerPitch_World(1);
 +			} else {
 +				ItemStack i = ((EntityPlayerSP) entity).inventory.getCurrentItem();
 +				if(i !=null){
 +					if(i.getItem() instanceof ItemBow){
 +						//use bow aim
 +						Vec3d aim = mc.bowTracker.getAimVector();
++						if (aim != null) {
++							float pitch = (float)Math.toDegrees(Math.asin(aim.yCoord/aim.lengthVector()));
++							float yaw = (float)Math.toDegrees(Math.atan2(aim.xCoord, -aim.zCoord));   		
 +
-+						float pitch = -(float)Math.toDegrees(Math.asin(aim.yCoord/aim.lengthVector()));
-+						float yaw = -(float)Math.toDegrees(Math.atan2(aim.xCoord, aim.zCoord));   		
++							entity.rotationYaw =  (float)yaw;
++							entity.rotationPitch = (float)pitch;
++							entity.rotationYawHead = yaw;							
++						}
 +
-+						entity.rotationYaw =  (float)yaw;
-+						entity.rotationPitch = (float)pitch;
-+						entity.rotationYawHead = yaw;
 +						
 +					}	 else if(i.getItem() == Items.SNOWBALL ||
 +							i.getItem() == Items.EGG  ||
@@ -2548,9 +2547,15 @@
 +							i.getItem() == Items.POTIONITEM  
 +							) {
 +						//use r_hand aim
-+						entity.rotationYaw =  -mc.roomScale.getControllerMainYaw_World();
-+						entity.rotationPitch = -mc.roomScale.getControllerMainPitch_World();
-+						entity.rotationYawHead = -mc.roomScale.getControllerMainYaw_World();
++						entity.rotationYawHead=	entity.rotationYaw =  mc.roomScale.getControllerYaw_World(0);
++						entity.rotationPitch = mc.roomScale.getControllerPitch_World(0);
++					}
++					else if(mc.vrPlayer.shouldIlookatMyHand){
++						Vec3d playerToMain = entity.getPositionEyes(1).subtract(mc.roomScale.getControllerPos_World(0)); //backwards
++						float pitch = - (float)Math.toDegrees(Math.asin(playerToMain.yCoord/playerToMain.lengthVector()));
++						float yaw = (float)Math.toDegrees(Math.atan2(-playerToMain.xCoord, playerToMain.zCoord));    
++						entity.rotationYawHead  = entity.rotationYaw = yaw;
++						entity.rotationPitch = pitch;
 +					}
 +				}
 +			}
@@ -2880,7 +2885,7 @@
 +			Vec3d aimsourcecopy2 = new Vec3d(aimsource.xCoord, aimsource.yCoord, aimsource.zCoord);
 +			// VIVE END - interact source
 +	
-+			Vec3d aim = mc.roomScale.getControllerMainDir_World();
++			Vec3d aim = mc.roomScale.getControllerDir_World(0);
 +			Vec3d endPos = aimsource.addVector(aim.xCoord*blockReachDistance,aim.yCoord*blockReachDistance ,aim.zCoord*blockReachDistance );
 +			crossVec=aimsource.addVector(aim.xCoord*blockReachDistance,aim.yCoord*blockReachDistance ,aim.zCoord*blockReachDistance );
 +	
@@ -3198,6 +3203,11 @@
 +					//Render HUD elements
 +					this.mc.ingameGUI.renderGameOverlay(renderPartialTicks);
 +					
++					if (this.mc.gameSettings.ofShowFps && !this.mc.gameSettings.showDebugInfo)
++					{
++						Config.drawFps();
++					}
++					
 +					mc.guiAchievement.updateAchievementWindow();
 +
 +					GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
@@ -3391,17 +3401,7 @@
 +		}
 +	}
 +
-+	public Vec3d getMainHandPos_Render(){
-+		Vec3d out =  mc.roomScale.getControllerMainPos_World().subtract(mc.getRenderViewEntity().getPositionVector());
-+		return out;
-+	}
-+	
-+	public Vec3d getOffHandPos_Render(){
-+		Vec3d out =  mc.roomScale.getControllerOffhandPos_World().subtract(mc.getRenderViewEntity().getPositionVector());
-+		return out;
-+	}
-+	
-+	
++
 +	//please push your matrix first. and pop after.
 +	public void SetupRenderingAtController(int controller){
 +		Vec3d aimSource = this.getControllerRenderPos(controller).
@@ -3469,7 +3469,7 @@
 +					if(mc.bowTracker.isActive(mc.thePlayer)){ //render bow
 +						int c = 1;
 +						if (mc.vrSettings.vrReverseShootingEye) c = 0;
-+						itemRenderer.renderItemInFirstPerson(mc.thePlayer, nano, 0, EnumHand.OFF_HAND, mc.thePlayer.getSwingProgress(nano), mc.thePlayer.getHeldItemOffhand(), 0);
++						itemRenderer.renderItemInFirstPerson(mc.thePlayer, nano, 0, EnumHand.OFF_HAND, mc.thePlayer.getSwingProgress(nano), mc.thePlayer.getHeldItemMainhand(), 0);
 +					}
 +					else //just hand
 +						itemRenderer.renderItemInFirstPerson(mc.thePlayer, nano, 0, EnumHand.OFF_HAND, mc.thePlayer.getSwingProgress(nano), mc.thePlayer.getHeldItemOffhand(), 0);
@@ -3589,8 +3589,7 @@
 +//						Matrix4f controllerRotation = mc.lookaimController.getAimRotation(c);
 +//						Vector3f forward = new Vector3f(0,0,-0.17f);
 +//						Vector3f dir = controllerRotation.transform(forward);
-+						Vec3d dir = mc.roomScale.getControllerMainDir_World();
-+						if(c==1) dir = mc.roomScale.getControllerOffhandDir_World();
++						Vec3d dir = mc.roomScale.getControllerDir_World(c);
 +						Vec3d up = mc.roomScale.getCustomControllerVector(c, new Vec3d(0, 1, 0));
 +				
 +						Vec3d end = new Vec3d(
@@ -4057,15 +4056,15 @@
 +		{
 +			this.mc.mcProfiler.endStartSection("crosshair");
 +			GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f); //white crosshair, with blending
-+			float crossDepth =(float)crossVec.subtract(mc.roomScale.getControllerMainPos_World()).lengthVector();
++			float crossDepth =(float)crossVec.subtract(mc.roomScale.getControllerPos_World(0)).lengthVector();
 +			if (crossDepth > MAX_CROSSHAIR_DISTANCE) crossDepth = MAX_CROSSHAIR_DISTANCE;
 +			float depthscale = 0.4f + 0.6f*( (MAX_CROSSHAIR_DISTANCE - crossDepth) / MAX_CROSSHAIR_DISTANCE);
 +			float scale = (float) (0.15f* this.mc.vrSettings.crosshairScale * Math.sqrt(mc.vrSettings.vrWorldScale));
 +			scale/=(depthscale);
 +			GL11.glPushMatrix();
 +				GL11.glTranslatef(crossX, crossY, crossZ);
-+				GL11.glRotatef(mc.vrPlayer.getControllerMainYaw_World(), 0.0F, 1.0F, 0.0F);
-+				GL11.glRotatef(-mc.roomScale.getControllerMainPitch_World(), 1.0F, 0.0F, 0.0F);
++				GL11.glRotatef(-mc.vrPlayer.getControllerYaw_World(0), 0.0F, 1.0F, 0.0F);
++				GL11.glRotatef(-mc.roomScale.getControllerPitch_World(0), 1.0F, 0.0F, 0.0F);
 +				
 +				if (this.mc.vrSettings.crosshairRollsWithHead)
 +					GL11.glRotated(this.cameraRoll, 0.0F, 0.0F, 1.0F);
@@ -4235,7 +4234,9 @@
 +   			if(mc.theWorld == null)	mc.vrPlayer.worldRotationRadians = 0;
 +		
 +			Vec3d eye =mc.entityRenderer.getEyeRenderPos(currentPass);
-+						
++			if (mc.theWorld==null || mc.currentScreen instanceof GuiWinGame ) {
++				eye = mc.roomScale.getEyePos_Room(currentPass);
++			}
 +			Vector3f guipos = MCOpenVR.guiPos_World;
 +			Matrix4f guirot = MCOpenVR.guiRotationPose; 
 +			Vec3d guiLocal = new Vec3d(0, 0, 0);		

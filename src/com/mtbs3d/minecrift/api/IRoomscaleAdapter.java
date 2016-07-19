@@ -31,21 +31,18 @@ public interface IRoomscaleAdapter  {
 	
 	public Vec3d getEyePos_World(renderPass currentPass);
 	public Vec3d getEyePos_Room(renderPass currentPass);
-	
-    public boolean isControllerMainTracking();
-	public Vec3d getControllerMainPos_World(); 
-	public Vec3d getControllerMainDir_World(); 
-	public float getControllerMainYaw_World(); //degrees
-	public float getControllerMainPitch_World(); //degrees
-	
+
 	public float getControllerYaw_Room(int controller); //degrees
 	public float getControllerPitch_Room(int controller); //degrees
+	public Vec3d getControllerPos_Room(int i);
+	public Vec3d getControllerDir_Room(int c);
 	
-    public boolean isControllerOffhandTracking();
-	public Vec3d getControllerOffhandPos_World(); 
-	public Vec3d getControllerOffhandDir_World(); 
-	public float getControllerOffhandYaw_World(); //degrees
-	public float getControllerOffhandPitch_World(); //degrees
+	public float getControllerYaw_World(int controller); //degrees
+	public float getControllerPitch_World(int controller); //degrees
+	public Vec3d getControllerPos_World(int c);
+	public Vec3d getControllerDir_World(int c);
+	
+	public boolean isControllerTracking(int c);
 	
 	public Vec3d getCustomControllerVector(int controller, Vec3d axis);
 	public Vec3d getCustomHMDVector(Vec3d axis);
@@ -54,8 +51,7 @@ public interface IRoomscaleAdapter  {
 	public Vec3d getRoomOriginUpDir_World(); //what do you do
 	
 	public void triggerHapticPulse(int controller, int duration);
-	public Vec3d getControllerPos_Room(int i);
-	public Vec3d getControllerPos_World(int c);
+
 
 
 	
