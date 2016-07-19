@@ -1,0 +1,69 @@
+--- a/net/minecraft/entity/player/EntityPlayer.java
++++ b/net/minecraft/entity/player/EntityPlayer.java
+@@ -13,6 +13,7 @@
+ import net.minecraft.block.BlockHorizontal;
+ import net.minecraft.block.material.Material;
+ import net.minecraft.block.state.IBlockState;
++import net.minecraft.client.Minecraft;
+ import net.minecraft.enchantment.EnchantmentHelper;
+ import net.minecraft.entity.Entity;
+ import net.minecraft.entity.EntityList;
+@@ -84,6 +85,7 @@
+ import net.minecraft.util.math.AxisAlignedBB;
+ import net.minecraft.util.math.BlockPos;
+ import net.minecraft.util.math.MathHelper;
++import net.minecraft.util.math.Vec3d;
+ import net.minecraft.util.text.ITextComponent;
+ import net.minecraft.util.text.TextComponentString;
+ import net.minecraft.util.text.event.ClickEvent;
+@@ -806,7 +808,8 @@
+         else
+         {
+             double d0 = this.posY - 0.30000001192092896D + (double)this.getEyeHeight();
+-            EntityItem entityitem = new EntityItem(this.worldObj, this.posX, d0, this.posZ, droppedItem);
++            Vec3d pos =  Minecraft.getMinecraft().roomScale.getControllerPos_World(0);
++            EntityItem entityitem = new EntityItem(this.worldObj, pos.xCoord, pos.yCoord, pos.zCoord, droppedItem);
+             entityitem.setPickupDelay(40);
+ 
+             if (traceItem)
+@@ -824,10 +827,14 @@
+             }
+             else
+             {
++            	
++            	float yaw = Minecraft.getMinecraft().roomScale.getControllerYaw_World(0);
++            	float pitch = -Minecraft.getMinecraft().roomScale.getControllerPitch_World(0);
++            	
+                 float f2 = 0.3F;
+-                entityitem.motionX = (double)(-MathHelper.sin(this.rotationYaw * 0.017453292F) * MathHelper.cos(this.rotationPitch * 0.017453292F) * f2);
+-                entityitem.motionZ = (double)(MathHelper.cos(this.rotationYaw * 0.017453292F) * MathHelper.cos(this.rotationPitch * 0.017453292F) * f2);
+-                entityitem.motionY = (double)(-MathHelper.sin(this.rotationPitch * 0.017453292F) * f2 + 0.1F);
++                entityitem.motionX = (double)(-MathHelper.sin(yaw * 0.017453292F) * MathHelper.cos(this.rotationPitch * 0.017453292F) * f2);
++                entityitem.motionZ = (double)(MathHelper.cos(yaw * 0.017453292F) * MathHelper.cos(this.rotationPitch * 0.017453292F) * f2);
++                entityitem.motionY = (double)(-MathHelper.sin(pitch * 0.017453292F) * f2 + 0.1F);
+                 float f3 = this.rand.nextFloat() * ((float)Math.PI * 2F);
+                 f2 = 0.02F * this.rand.nextFloat();
+                 entityitem.motionX += Math.cos((double)f3) * (double)f2;
+@@ -1510,13 +1517,19 @@
+ 
+     public void spawnSweepParticles()
+     {
+-        double d0 = (double)(-MathHelper.sin(this.rotationYaw * 0.017453292F));
+-        double d1 = (double)MathHelper.cos(this.rotationYaw * 0.017453292F);
++    	//VIVECRAFT USE CONTROLLER
++    	float yaw = Minecraft.getMinecraft().roomScale.getControllerYaw_World(0);
++        double d0 = (double)(-MathHelper.sin(yaw * 0.017453292F));
++        double d1 = (double)MathHelper.cos(yaw * 0.017453292F);
+ 
++      	Vec3d pos= Minecraft.getMinecraft().roomScale.getControllerPos_World(0);
++        
+         if (this.worldObj instanceof WorldServer)
+         {
+-            ((WorldServer)this.worldObj).spawnParticle(EnumParticleTypes.SWEEP_ATTACK, this.posX + d0, this.posY + (double)this.height * 0.5D, this.posZ + d1, 0, d0, 0.0D, d1, 0.0D, new int[0]);
++            ((WorldServer)this.worldObj).spawnParticle(EnumParticleTypes.SWEEP_ATTACK, pos.xCoord + d0, pos.yCoord , pos.zCoord+ d1, 0, d0, 0.0D, d1, 0.0D, new int[0]);
+         }
++        //END
++        
+     }
+ 
+     public void respawnPlayer()

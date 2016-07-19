@@ -15,9 +15,9 @@
 +        	//VIVE SET SPAWNPOS
 +            Vec3d aimSource = Minecraft.getMinecraft().roomScale.getControllerPos_World(1);
 +            Vec3d controllerDirection = Minecraft.getMinecraft().bowTracker.getAimVector();
++            this.setPosition(aimSource.xCoord + controllerDirection.xCoord * 0.1f,aimSource.yCoord + controllerDirection.yCoord * 0.1f,aimSource.zCoord + controllerDirection.zCoord * 0.1f);
 +            ///
 +            
-+        	 this.setPosition(aimSource.xCoord + controllerDirection.xCoord * 0.1f,aimSource.yCoord + controllerDirection.yCoord * 0.1f,aimSource.zCoord + controllerDirection.zCoord * 0.1f);
              this.pickupStatus = EntityArrow.PickupStatus.ALLOWED;
          }
      }

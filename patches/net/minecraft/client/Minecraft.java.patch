@@ -264,7 +264,7 @@
 +	 * The minecriftVerString will be automatically updated by the build scripts, do not modify here.
 +	 * Modify minecriftversion.py in root minecrift dir.
 +	 */
-+    public final String minecriftVerString = "ViveCraft 1.10.2 Vivecraft-jrbudda1alpha";
++    public final String minecriftVerString = "ViveCraft 1.10.2 Vivecraft-jrbudda-alpha2";
 +	/* end version */
 +	/** END MINECRIFT */
 +    
@@ -890,7 +890,24 @@
  
              long j = getSystemTime() - this.systemTime;
  
-@@ -2458,6 +2810,9 @@
+@@ -2381,6 +2733,7 @@
+      */
+     public void launchIntegratedServer(String folderName, String worldName, @Nullable WorldSettings worldSettingsIn)
+     {
++    	integratedServerLaunchInProgress = true;
+         this.loadWorld((WorldClient)null);
+         System.gc();
+         ISaveHandler isavehandler = this.saveLoader.getSaveLoader(folderName, false);
+@@ -2443,7 +2796,7 @@
+                 ;
+             }
+         }
+-
++        integratedServerLaunchInProgress = false;
+         this.displayGuiScreen(new GuiScreenWorking());
+         SocketAddress socketaddress = this.theIntegratedServer.getNetworkSystem().addLocalEndpoint();
+         NetworkManager networkmanager = NetworkManager.provideLocalClient(socketaddress);
+@@ -2458,6 +2811,9 @@
       */
      public void loadWorld(WorldClient worldClientIn)
      {
@@ -900,7 +917,7 @@
          this.loadWorld(worldClientIn, "");
      }
  
-@@ -2623,7 +2978,7 @@
+@@ -2623,7 +2979,7 @@
      /**
       * Called when user clicked he's mouse middle button (pick block)
       */
@@ -909,7 +926,7 @@
      {
          if (this.objectMouseOver != null && this.objectMouseOver.typeOfHit != RayTraceResult.Type.MISS)
          {
-@@ -3417,4 +3772,1124 @@
+@@ -3417,4 +3773,1124 @@
      {
          return this.thePlayer != null && this.thePlayer.hasReducedDebug() || this.gameSettings.reducedDebugInfo;
      }
@@ -1267,7 +1284,7 @@
 +			this.guiFramebuffer.setFramebufferColor(RED_COLOUR_COMPONENT, GREEN_COLOUR_COMPONENT, BLUE_COLOUR_COMPONENT, 0.0F);
 +			checkGLError("post color");
 +
-+
++		
 +			_DepthMask_shaderProgramId = ShaderHelper.initShaders(VRShaders.DEPTH_MASK_VERTEX_SHADER, VRShaders.DEPTH_MASK_FRAGMENT_SHADER, true);
 +			
 +			if (_DepthMask_shaderProgramId == 0) {

@@ -37,6 +37,18 @@
      /** Ticks left before sprinting is disabled. */
      public int sprintingTicksLeft;
      public float renderArmYaw;
+@@ -151,9 +173,9 @@
+     private boolean handActive;
+     private EnumHand activeHand;
+     private boolean rowingBoat;
+-    private boolean field_189811_cr = true;
++    private boolean autoJump = true;
+     private int field_189812_cs;
+-    private boolean field_189813_ct;
++    private boolean wasElytraFlying;
+ 
+     public EntityPlayerSP(Minecraft mcIn, World worldIn, NetHandlerPlayClient netHandler, StatisticsManager statFile)
+     {
 @@ -162,8 +184,23 @@
          this.statWriter = statFile;
          this.mc = mcIn;
@@ -61,10 +73,12 @@
      /**
       * Called when the entity is attacked.
       */
-@@ -323,6 +360,10 @@
+@@ -322,7 +359,11 @@
+             }
  
              this.prevOnGround = this.onGround;
-             this.field_189811_cr = this.mc.gameSettings.autoJump;
+-            this.field_189811_cr = this.mc.gameSettings.autoJump;
++            this.autoJump = this.mc.gameSettings.autoJump;
 +            
 +            
 +            mc.vrPlayer.IAmLookingAtMyHand = mc.vrPlayer.shouldIlookatMyHand;
@@ -72,6 +86,24 @@
          }
      }
  
+@@ -698,7 +739,7 @@
+             }
+         }
+ 
+-        if (FLAGS.equals(key) && this.isElytraFlying() && !this.field_189813_ct)
++        if (FLAGS.equals(key) && this.isElytraFlying() && !this.wasElytraFlying)
+         {
+             this.mc.getSoundHandler().playSound(new ElytraSound(this));
+         }
+@@ -1002,7 +1043,7 @@
+             }
+         }
+ 
+-        this.field_189813_ct = this.isElytraFlying();
++        this.wasElytraFlying = this.isElytraFlying();
+ 
+         if (this.capabilities.isFlying && this.isCurrentViewEntity())
+         {
 @@ -1065,6 +1106,11 @@
  
          super.onLivingUpdate();
@@ -84,7 +116,7 @@
          if (this.onGround && this.capabilities.isFlying && !this.mc.playerController.isSpectatorMode())
          {
              this.capabilities.isFlying = false;
-@@ -1115,10 +1161,41 @@
+@@ -1115,20 +1161,53 @@
       */
      public void moveEntity(double x, double y, double z)
      {
@@ -98,12 +130,14 @@
 +    	Vec3d roomOrigin = OpenVRPlayer.get().getRoomOriginPos_World();
 + //   	Vec3 camloc = Minecraft.getMinecraft().roomScale.getHMDPos_World();
 +
-+    	if (this.isRiding() ||  freemove && (this.moveForward != 0 || Math.abs(this.motionX) > 0.01 || Math.abs(this.motionZ) > 0.01))
++    	if (this.isRiding() ||  freemove && (this.moveForward != 0 || this.isElytraFlying() || Math.abs(this.motionX) > 0.01 || Math.abs(this.motionZ) > 0.01))
 +    	{
 +    		double ox = roomOrigin.xCoord - posX;
 +    		double oz = roomOrigin.zCoord - posZ;
++            double d0 = this.posX;
++            double d1 = this.posZ;
 +    		super.moveEntity(x,y,z);
-+
++    		this.doAutoJump((float)(this.posX - d0), (float)(this.posZ - d1));
 +    		if (client){	
 +    			double oy = this.posY;
 +    			if (this.isRiding()) oy = this.getRidingEntity().posY;
@@ -129,8 +163,41 @@
 +    	}
      }
  
-     public boolean func_189809_N()
-@@ -1269,4 +1346,199 @@
+-    public boolean func_189809_N()
++    public boolean autoJumpEnabled()
+     {
+-        return this.field_189811_cr;
++        return this.autoJump;
+     }
+ 
+-    protected void func_189810_i(float p_189810_1_, float p_189810_2_)
++    protected void doAutoJump(float p_189810_1_, float p_189810_2_)
+     {
+-        if (this.func_189809_N())
++        if (this.autoJumpEnabled())
+         {
+             if (this.field_189812_cs <= 0 && this.onGround && !this.isSneaking() && !this.isRiding())
+             {
+@@ -1144,12 +1223,16 @@
+                     float f = this.getAIMoveSpeed();
+                     float f1 = (float)vec3d2.lengthSquared();
+ 
++                    //VIVE
++                    float yaw = Minecraft.getMinecraft().roomScale.getControllerYaw_World(0);
++                    //END VIVE
++                    
+                     if (f1 <= 0.001F)
+                     {
+                         float f2 = f * vec2f.x;
+                         float f3 = f * vec2f.y;
+-                        float f4 = MathHelper.sin(this.rotationYaw * 0.017453292F);
+-                        float f5 = MathHelper.cos(this.rotationYaw * 0.017453292F);
++                        float f4 = MathHelper.sin(yaw * 0.017453292F);
++                        float f5 = MathHelper.cos(yaw * 0.017453292F);
+                         vec3d2 = new Vec3d((double)(f2 * f5 - f3 * f4), vec3d2.yCoord, (double)(f3 * f5 + f2 * f4));
+                         f1 = (float)vec3d2.lengthSquared();
+ 
+@@ -1269,4 +1352,199 @@
              }
          }
      }
