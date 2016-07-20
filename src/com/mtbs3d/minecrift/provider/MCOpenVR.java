@@ -494,7 +494,7 @@ public class MCOpenVR
 			processGui();
 		}
 
-		if(mc.vrSettings.vrTouchHotbar && mc.vrSettings.vrHudLockMode != mc.vrSettings.HUD_LOCK_HEAD && hudPopup){
+		if(mc.currentScreen == null && mc.vrSettings.vrTouchHotbar && mc.vrSettings.vrHudLockMode != mc.vrSettings.HUD_LOCK_HEAD && hudPopup){
 			processHotbar();
 		}
 	}
@@ -1704,8 +1704,15 @@ public class MCOpenVR
 				guiRotationPose = Matrix4f.multiply(guiRotationPose,tilt);						
 			}				
 			else{
+				Vec3d adj = new Vec3d(0,0,-2);
+				if (newScreen instanceof GuiChat){
+					 adj = new Vec3d(0.3,1,-2);
+				} else if (newScreen instanceof GuiScreenBook || newScreen instanceof GuiEditSign) {
+					 adj = new Vec3d(0,1,-2);
+				}
+				
 				Vec3d v = mc.vrPlayer.getHMDPos_World();
-				Vec3d e = mc.vrPlayer.getHMDDir_World();
+				Vec3d e = mc.roomScale.getCustomHMDVector(adj);
 				guiPos_World = new Vector3f(
 						(float) (e.xCoord * mc.vrSettings.vrWorldScale / 2 + v.xCoord),
 						(float) (e.yCoord* mc.vrSettings.vrWorldScale / 2 + v.yCoord),
@@ -1721,19 +1728,7 @@ public class MCOpenVR
 				Matrix4f tilt = OpenVRUtil.rotationXMatrix((float)Math.toRadians(mc.roomScale.getHMDPitch_World()));	
 				guiRotationPose = Matrix4f.multiply(guiRotationPose,tilt);		
 
-				if (newScreen instanceof GuiChat){
-					Vector3f forward = new Vector3f(-0.3f,- 1f,1f);
-					Vector3f controllerForward = hmd.transform(forward);
-					guiPos_World = guiPos_World.subtract(controllerForward.divide(2/mc.vrSettings.vrWorldScale));
-				} else if (newScreen instanceof GuiScreenBook || newScreen instanceof GuiEditSign) {
-					Vector3f forward = new Vector3f(0,-1f,1f);
-					Vector3f controllerForward = hmd.transform(forward);
-					guiPos_World = guiPos_World.subtract(controllerForward.divide(2/mc.vrSettings.vrWorldScale));
-				} else {
-					Vector3f forward = new Vector3f(0,0,1);
-					Vector3f controllerForward = hmd.transform(forward);
-					guiPos_World = guiPos_World.subtract(controllerForward.divide(2/mc.vrSettings.vrWorldScale));
-				}
+
 			}
 		}
 	}

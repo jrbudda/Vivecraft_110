@@ -95,6 +95,15 @@
          {
              this.mc.getSoundHandler().playSound(new ElytraSound(this));
          }
+@@ -977,7 +1018,7 @@
+                     this.sendPlayerAbilities();
+                 }
+             }
+-            else if (!flag && this.movementInput.jump && !flag3)
++            else if (!flag &&   this.movementInput.jump && !flag3)
+             {
+                 if (this.flyToggleTimer == 0)
+                 {
 @@ -1002,7 +1043,7 @@
              }
          }

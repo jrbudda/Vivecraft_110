@@ -1,20 +1,11 @@
 --- a/net/minecraft/client/renderer/entity/RenderPlayer.java
 +++ b/net/minecraft/client/renderer/entity/RenderPlayer.java
-@@ -194,7 +194,7 @@
-         GlStateManager.enableBlend();
-         modelplayer.swingProgress = 0.0F;
-         modelplayer.isSneak = false;
--        modelplayer.setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, clientPlayer);
-+       // modelplayer.setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, clientPlayer);
-         modelplayer.bipedRightArm.rotateAngleX = 0.0F;
-         modelplayer.bipedRightArm.render(0.0625F);
-         modelplayer.bipedRightArmwear.rotateAngleX = 0.0F;
-@@ -212,7 +212,7 @@
-         GlStateManager.enableBlend();
-         modelplayer.isSneak = false;
-         modelplayer.swingProgress = 0.0F;
--        modelplayer.setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, clientPlayer);
-+      //  modelplayer.setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, clientPlayer);
-         modelplayer.bipedLeftArm.rotateAngleX = 0.0F;
-         modelplayer.bipedLeftArm.render(0.0625F);
-         modelplayer.bipedLeftArmwear.rotateAngleX = 0.0F;
+@@ -72,7 +72,7 @@
+         }
+     }
+ 
+-    private void setModelVisibilities(AbstractClientPlayer clientPlayer)
++    protected void setModelVisibilities(AbstractClientPlayer clientPlayer)
+     {
+         ModelPlayer modelplayer = this.getMainModel();
+ 

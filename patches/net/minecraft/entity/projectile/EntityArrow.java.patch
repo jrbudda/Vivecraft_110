@@ -34,7 +34,7 @@
 -        this.setThrowableHeading((double)f, (double)f1, (double)f2, p_184547_5_, p_184547_6_);
 +        
 +        //VIVE SET VELOCITY
-+        if(this.shootingEntity instanceof EntityPlayer)
++        if(this.shootingEntity instanceof EntityPlayer && !Minecraft.getMinecraft().vrSettings.seated )
 +        	velocity = (float) (Minecraft.getMinecraft().bowTracker.getDrawPercent() * 3f);
 +        ///
 +        

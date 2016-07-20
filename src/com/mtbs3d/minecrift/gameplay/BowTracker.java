@@ -73,7 +73,7 @@ public class BowTracker {
 		}
 
 		if(Minecraft.getMinecraft().vrSettings.seated){
-			aim = 	provider.getControllerDir_World(1);
+			aim = provider.getCustomControllerVector(0, new Vec3d(0,0,1));
 			return;
 		}
 		

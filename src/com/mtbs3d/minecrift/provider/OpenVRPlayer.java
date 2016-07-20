@@ -99,6 +99,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 	    	if (reset){
 		    		//interPolatedRoomOrigin = Vec3.createVectorHelper(x, y, z);
 		    		lastroomOrigin = new Vec3d(x, y, z);
+		    		Minecraft.getMinecraft().entityRenderer.interPolatedRoomOrigin = new Vec3d(x, y, z);
 		    	} else {
 		    		lastroomOrigin = new Vec3d(roomOrigin.xCoord, roomOrigin.yCoord, roomOrigin.zCoord);
 		    	}
@@ -894,13 +895,13 @@ public class OpenVRPlayer implements IRoomscaleAdapter
         
         if (item instanceof ItemSword){
         		entityReachAdd = 2.5f;
-        		weaponLength = 0.3f;
+        		weaponLength = 0.4f;
         		tool = true;
         } else if (item instanceof ItemTool ||
         		item instanceof ItemHoe
         		){
         	entityReachAdd = 1.8f;
-        	weaponLength = 0.3f;
+        	weaponLength = 0.4f;
     		tool = true;
         } else if (item !=null){
         	weaponLength = 0.1f;
