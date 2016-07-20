@@ -1227,7 +1227,7 @@
 +				{
 +					if (!this.mc.vrSettings.hideGui || this.mc.currentScreen != null)
 +					{
-+						GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
++						GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
 +						boolean var12 = this.mc.gameSettings.fancyGraphics;
 +
 +						if (!Config.isVignetteEnabled())

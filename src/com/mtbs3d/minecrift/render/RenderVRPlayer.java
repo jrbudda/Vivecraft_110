@@ -54,14 +54,21 @@ public class RenderVRPlayer extends RenderPlayer
         modelplayer.bipedRightArm.rotateAngleX = 0;
         modelplayer.bipedRightArm.rotateAngleY = 0;
         modelplayer.bipedRightArm.rotateAngleZ = 0;
-        modelplayer.bipedRightArm.rotateAngleX = 0.0F;
+//        modelplayer.bipedRightArm.offsetX = 0;
+//        modelplayer.bipedRightArm.offsetY = 0;
+//        modelplayer.bipedRightArm.offsetZ = 0;
         modelplayer.bipedRightArm.render(0.0625F);
-        modelplayer.bipedRightArmwear.offsetX = 0;
-        modelplayer.bipedRightArmwear.offsetY = 0;
-        modelplayer.bipedRightArmwear.offsetZ = 0;
+//        modelplayer.bipedRightArmwear.offsetX = 0;
+//        modelplayer.bipedRightArmwear.offsetY = 0;
+//        modelplayer.bipedRightArmwear.offsetZ = 0;
+        modelplayer.bipedRightArmwear.rotateAngleY = 0.0F;
         modelplayer.bipedRightArmwear.rotateAngleX = 0.0F;
-        modelplayer.bipedRightArmwear.rotateAngleX = 0.0F;
+        modelplayer.bipedRightArmwear.rotateAngleZ = 0.0F;
+//        modelplayer.bipedRightArmwear.rotationPointX = 0.0F;
+//        modelplayer.bipedRightArmwear.rotationPointY = 0.0F;
+        modelplayer.bipedRightArmwear.rotationPointZ = 0.0F;
         modelplayer.bipedRightArmwear.render(0.0625F);
+        
         GlStateManager.disableBlend();
     }
 	
@@ -79,12 +86,20 @@ public class RenderVRPlayer extends RenderPlayer
         modelplayer.bipedLeftArm.rotateAngleX = 0;
         modelplayer.bipedLeftArm.rotateAngleY = 0;
         modelplayer.bipedLeftArm.rotateAngleZ = 0;
-        modelplayer.bipedLeftArm.rotateAngleX = 0.0F;
+//        modelplayer.bipedLeftArm.offsetX = 0;
+//        modelplayer.bipedLeftArm.offsetY = 0;
+//        modelplayer.bipedLeftArm.offsetZ = 0;
         modelplayer.bipedLeftArm.render(0.0625F);
-        modelplayer.bipedLeftArmwear.offsetX = 0;
-        modelplayer.bipedLeftArmwear.offsetY = 0;
-        modelplayer.bipedLeftArmwear.offsetZ = 0;
+//        modelplayer.bipedLeftArmwear.offsetX = 0;
+//        modelplayer.bipedLeftArmwear.offsetY = 0;
+//        modelplayer.bipedLeftArmwear.offsetZ = 0;
         modelplayer.bipedLeftArmwear.rotateAngleX = 0.0F;
+        modelplayer.bipedLeftArmwear.rotateAngleY = 0.0F;
+        modelplayer.bipedLeftArmwear.rotateAngleZ = 0.0F;
+//        modelplayer.bipedLeftArmwear.rotationPointX = 0.0F;
+//        modelplayer.bipedLeftArmwear.rotationPointY = 0.0F;
+        modelplayer.bipedLeftArmwear.rotationPointZ = 0.0F;
+
         modelplayer.bipedLeftArmwear.render(0.0625F);
         GlStateManager.disableBlend();
     }
