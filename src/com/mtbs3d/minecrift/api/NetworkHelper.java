@@ -47,6 +47,15 @@ public class NetworkHelper {
         return (new SPacketCustomPayload(channel, pb));
 	}
 	
+	public static SPacketCustomPayload getVivecraftServerPacket(PacketDiscriminators command, String payload)
+	{//TODO: Packetbuffer?
+		PacketBuffer pb = new PacketBuffer(Unpooled.buffer());
+		pb.writeByte(command.ordinal());
+		pb.writeString(payload);
+        return (new SPacketCustomPayload(channel, pb));
+	}
+	
+	
 public static boolean serverWantsData = false;
 	
 	private static float worldScallast = 0;

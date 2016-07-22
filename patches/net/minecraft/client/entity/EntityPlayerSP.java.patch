@@ -73,7 +73,7 @@
      /**
       * Called when the entity is attacked.
       */
-@@ -322,7 +359,11 @@
+@@ -322,7 +359,12 @@
              }
  
              this.prevOnGround = this.onGround;
@@ -81,12 +81,13 @@
 +            this.autoJump = this.mc.gameSettings.autoJump;
 +            
 +            
-+            mc.vrPlayer.IAmLookingAtMyHand = mc.vrPlayer.shouldIlookatMyHand;
++            mc.vrPlayer.IAmLookingAtMyHand[0] = mc.vrPlayer.shouldIlookatMyHand[0];
++            mc.vrPlayer.IAmLookingAtMyHand[1] = mc.vrPlayer.shouldIlookatMyHand[1];
 +            
          }
      }
  
-@@ -698,7 +739,7 @@
+@@ -698,7 +740,7 @@
              }
          }
  
@@ -95,7 +96,7 @@
          {
              this.mc.getSoundHandler().playSound(new ElytraSound(this));
          }
-@@ -977,7 +1018,7 @@
+@@ -977,7 +1019,7 @@
                      this.sendPlayerAbilities();
                  }
              }
@@ -104,7 +105,7 @@
              {
                  if (this.flyToggleTimer == 0)
                  {
-@@ -1002,7 +1043,7 @@
+@@ -1002,7 +1044,7 @@
              }
          }
  
@@ -113,7 +114,7 @@
  
          if (this.capabilities.isFlying && this.isCurrentViewEntity())
          {
-@@ -1065,6 +1106,11 @@
+@@ -1065,6 +1107,11 @@
  
          super.onLivingUpdate();
  
@@ -125,7 +126,7 @@
          if (this.onGround && this.capabilities.isFlying && !this.mc.playerController.isSpectatorMode())
          {
              this.capabilities.isFlying = false;
-@@ -1115,20 +1161,53 @@
+@@ -1115,20 +1162,53 @@
       */
      public void moveEntity(double x, double y, double z)
      {
@@ -187,7 +188,7 @@
          {
              if (this.field_189812_cs <= 0 && this.onGround && !this.isSneaking() && !this.isRiding())
              {
-@@ -1144,12 +1223,16 @@
+@@ -1144,12 +1224,16 @@
                      float f = this.getAIMoveSpeed();
                      float f1 = (float)vec3d2.lengthSquared();
  
@@ -206,7 +207,7 @@
                          vec3d2 = new Vec3d((double)(f2 * f5 - f3 * f4), vec3d2.yCoord, (double)(f3 * f5 + f2 * f4));
                          f1 = (float)vec3d2.lengthSquared();
  
-@@ -1269,4 +1352,199 @@
+@@ -1269,4 +1353,199 @@
              }
          }
      }

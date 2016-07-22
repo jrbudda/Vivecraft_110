@@ -36,7 +36,20 @@
                  }
  
                  entity.setPositionAndRotation(d3, d4, d5, f, f1);
-@@ -1790,5 +1798,24 @@
+@@ -518,8 +526,10 @@
+ 
+                         if (!this.playerEntity.isInvulnerableDimensionChange() && d11 > 0.0625D && !this.playerEntity.isPlayerSleeping() && !this.playerEntity.interactionManager.isCreative() && this.playerEntity.interactionManager.getGameType() != GameType.SPECTATOR)
+                         {
+-                            flag = true;
+-                            LOGGER.warn("{} moved wrongly!", new Object[] {this.playerEntity.getName()});
++                        	//VIVE
++//                            flag = true;
++//                            LOGGER.warn("{} moved wrongly!", new Object[] {this.playerEntity.getName()});
++                        	//END VIVE
+                         }
+ 
+                         this.playerEntity.setPositionAndRotation(d4, d5, d6, f, f1);
+@@ -1790,5 +1800,24 @@
                  LOGGER.error((String)"Couldn\'t pick item", (Throwable)exception);
              }
          }
@@ -49,7 +62,7 @@
 +        	switch (dis){
 +        	case VERSION:
 +            	String ver = Minecraft.getMinecraft().minecriftVerString;
-+            	sendPacket(NetworkHelper.getVivecraftServerPacket(PacketDiscriminators.VERSION,ver.getBytes(Charsets.UTF_8)));
++            	sendPacket(NetworkHelper.getVivecraftServerPacket(PacketDiscriminators.VERSION,ver));
 +            	sendPacket(NetworkHelper.getVivecraftServerPacket(PacketDiscriminators.REQUESTDATA, new byte[]{}));  
 +
 +        		break;

@@ -1,6 +1,6 @@
 --- a/net/minecraft/client/network/NetHandlerPlayClient.java
 +++ b/net/minecraft/client/network/NetHandlerPlayClient.java
-@@ -1,9 +1,14 @@
+@@ -1,9 +1,15 @@
  package net.minecraft.client.network;
  
 +import com.google.common.base.Charsets;
@@ -12,10 +12,11 @@
 +import com.mtbs3d.minecrift.api.NetworkHelper.PacketDiscriminators;
 +import com.mtbs3d.minecrift.provider.OpenVRPlayer;
 +
++import io.netty.buffer.ByteBuf;
  import io.netty.buffer.Unpooled;
  import java.io.File;
  import java.io.IOException;
-@@ -234,6 +239,8 @@
+@@ -234,6 +240,8 @@
  import net.minecraft.world.WorldSettings;
  import net.minecraft.world.chunk.Chunk;
  import net.minecraft.world.storage.MapData;
@@ -24,7 +25,7 @@
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  
-@@ -314,6 +321,13 @@
+@@ -314,6 +322,13 @@
          this.gameController.playerController.setGameType(packetIn.getGameType());
          this.gameController.gameSettings.sendSettingsToServer();
          this.netManager.sendPacket(new CPacketCustomPayload("MC|Brand", (new PacketBuffer(Unpooled.buffer())).writeString(ClientBrandRetriever.getClientModName())));
@@ -38,7 +39,7 @@
      }
  
      /**
-@@ -833,6 +847,10 @@
+@@ -833,6 +848,10 @@
      public void handleDisconnect(SPacketDisconnect packetIn)
      {
          this.netManager.closeChannel(packetIn.getReason());
@@ -49,7 +50,33 @@
      }
  
      /**
-@@ -1928,6 +1946,31 @@
+@@ -904,8 +923,23 @@
+         }
+         else
+         {
+-            this.gameController.ingameGUI.getChatGUI().printChatMessage(packetIn.getChatComponent());
+-        }
++        	boolean nochat = false;
++            ITextComponent t = packetIn.getChatComponent();
++            if(t instanceof TextComponentTranslation){
++            	TextComponentTranslation tt = (TextComponentTranslation) t;
++            	if(tt.getKey() == "commands.tp.success.coordinates"){
++            		Minecraft.getMinecraft().vrPlayer.doTeleportCallback();
++            		nochat = true;
++            	}
++            }
++            
++            if(!nochat)this.gameController.ingameGUI.getChatGUI().printChatMessage(t);
++        	
++
++        }
++        
++       
++        
+     }
+ 
+     /**
+@@ -1928,6 +1962,34 @@
              String s1 = packetbuffer2.readStringFromBuffer(256);
              this.gameController.getSoundHandler().stop(s1, SoundCategory.getByName(s));
          }
@@ -61,13 +88,15 @@
 +        } 
 +        else if ("Vivecraft".equals(packetIn.getChannelName()))
 +        { 
-+        	PacketDiscriminators dis = PacketDiscriminators.values()[packetIn.getBufferData().readByte()];
-+          	byte[] payload = packetIn.getBufferData().array();
++        	PacketBuffer packetbuffer = packetIn.getBufferData(); 	
++        	PacketDiscriminators dis = PacketDiscriminators.values()[packetbuffer.readByte()];
++          			
 +        	switch (dis){
 +        	case VERSION:
++            	String v = packetbuffer.readStringFromBuffer(1024);
 +            	this.gameController.vrPlayer.noTeleportClient = false;
 +                this.gameController.vrPlayer.setFreeMoveMode(Minecraft.getMinecraft().vrSettings.vrFreeMove);
-+                this.gameController.printChatMessage("Vivecraft server mod detected: " + new String(payload));
++                this.gameController.printChatMessage("Vivecraft server mod detected: " + v);
 +        		break;
 +        	case REQUESTDATA:
 +        		NetworkHelper.serverWantsData = true;
@@ -76,6 +105,7 @@
 +        		break;
 +        	}
 +
++        	packetbuffer.release();
 +        }
 +        // VIVE END
      }
