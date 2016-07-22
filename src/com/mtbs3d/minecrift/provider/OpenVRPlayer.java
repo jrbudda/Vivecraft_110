@@ -402,7 +402,6 @@ public class OpenVRPlayer implements IRoomscaleAdapter
     
     public void doTeleportCallback(){
         Minecraft mc = Minecraft.getMinecraft();
-    	mc.printChatMessage("Vivecraft Teleport Successful");
 
         this.disableSwing = 3;
 

@@ -529,9 +529,7 @@ public class MCOpenVR
 
 		} else {
 			try {
-				if (keyboardShowing) {
 					vrOverlay.HideKeyboard.apply();				
-				}
 			} catch (Error e) {
 				// TODO: handle exception
 			}
@@ -596,10 +594,13 @@ public class MCOpenVR
 	
 	//TODO: to hell with all these conversions.
 	//sets mouse position for currentscreen
-	private static void processGui() {
+private static void processGui() {
+		
+		if(guiRotationPose == null) return;
+		
 		Vector3f controllerPos = new Vector3f();
 		//OpenVRUtil.convertMatrix4ftoTranslationVector(controllerPose[0]);
-		Vec3d con = mc.roomScale.getControllerPos_World(0);
+		Vec3d con = mc.vrPlayer.getControllerPos_World(0);
 		controllerPos.x	= (float) con.xCoord;
 		controllerPos.y	= (float) con.yCoord;
 		controllerPos.z	= (float) con.zCoord;
@@ -639,6 +640,7 @@ public class MCOpenVR
 			float u = relativePoint.dot(guiRight.divide(1.0f/guiWidth));
 			float v = relativePoint.dot(guiUp.divide(1.0f/guiWidth));
 
+					
 			// adjust vertical for aspect ratio
 			v = ( (v - 0.5f) * ((float)mc.displayWidth / (float)mc.displayHeight) ) + 0.5f;
 
@@ -689,6 +691,31 @@ public class MCOpenVR
 		mc.currentScreen.mouseOffsetX = -1;
 		mc.currentScreen.mouseOffsetY = -1;
 
+		if (controllerDeviceIndex[LEFT_CONTROLLER] != -1) {
+			//Shift
+			if (mc.currentScreen != null &&
+					(controllerStateReference[LEFT_CONTROLLER].ulButtonPressed & k_buttonGrip) > 0 &&
+					(lastControllerState[LEFT_CONTROLLER].ulButtonPressed & k_buttonGrip) == 0 
+					)				
+			{
+				//press Shift
+				mc.currentScreen.pressShiftFake = true;
+				if (Display.isActive()) KeyboardSimulator.robot.keyPress(KeyEvent.VK_SHIFT);
+			}
+
+
+			if(mc.currentScreen != null &&
+					(
+					controllerStateReference[LEFT_CONTROLLER].ulButtonPressed & k_buttonGrip) == 0 &&
+					(lastControllerState[LEFT_CONTROLLER].ulButtonPressed & k_buttonGrip) > 0 
+					)
+			{
+				//release Shift
+				mc.currentScreen.pressShiftFake = false;
+				if (Display.isActive()) KeyboardSimulator.robot.keyRelease(KeyEvent.VK_SHIFT);
+			}	
+			//end Shift
+		}
 		if (controllerMouseX >= 0 && controllerMouseX < mc.displayWidth
 				&& controllerMouseY >=0 && controllerMouseY < mc.displayHeight)
 		{
@@ -706,8 +733,10 @@ public class MCOpenVR
 						lastControllerState[RIGHT_CONTROLLER].rAxis[k_EAxis_Trigger].x <= triggerThreshold 
 						)
 				{
-					//click left mouse button
-					mc.currentScreen.mouseDown(mouseX, mouseY, 0);
+					//press left mouse button
+					if (Display.isActive()) 
+						KeyboardSimulator.robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+					else mc.currentScreen.mouseDown(mouseX, mouseY, 0);
 				}	
 
 				if (mc.currentScreen != null &&
@@ -722,9 +751,11 @@ public class MCOpenVR
 						lastControllerState[RIGHT_CONTROLLER].rAxis[k_EAxis_Trigger].x > triggerThreshold 
 						)
 				{
-					//click left mouse button
-					mc.currentScreen.mouseUp(mouseX, mouseY, 0);
-				}	
+					//release left mouse button
+					if (Display.isActive()) KeyboardSimulator.robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+					else mc.currentScreen.mouseUp(mouseX, mouseY, 0);
+				}
+				//end LMB
 
 				//RMB
 				if (mc.currentScreen != null &&
@@ -732,12 +763,13 @@ public class MCOpenVR
 						(lastControllerState[RIGHT_CONTROLLER].ulButtonPressed & k_buttonTouchpad) == 0 
 						)				
 				{
-					//click left mouse button
-					mc.currentScreen.mouseDown(mouseX, mouseY, 1);
+					//press right mouse button
+					if (Display.isActive()) KeyboardSimulator.robot.mousePress(InputEvent.BUTTON3_DOWN_MASK);
+					else mc.currentScreen.mouseDown(mouseX, mouseY, 1);
 				}	
 
 				if (mc.currentScreen != null &&
-						controllerStateReference[RIGHT_CONTROLLER].rAxis[k_EAxis_Trigger].x > triggerThreshold)
+						(controllerStateReference[RIGHT_CONTROLLER].ulButtonPressed & k_buttonTouchpad) > 0)
 				{
 					mc.currentScreen.mouseDrag(mouseX, mouseY);//Signals mouse move
 				}
@@ -749,15 +781,41 @@ public class MCOpenVR
 						(lastControllerState[RIGHT_CONTROLLER].ulButtonPressed & k_buttonTouchpad) > 0 
 						)
 				{
-					//click left mouse button
-					mc.currentScreen.mouseUp(mouseX, mouseY, 1);
+					//release right mouse button
+					if (Display.isActive()) KeyboardSimulator.robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
+					else mc.currentScreen.mouseUp(mouseX, mouseY, 1);
 				}	
-				//end RMB
+				//end RMB	
+
+				//MMB
+				if (mc.currentScreen != null &&
+						(controllerStateReference[RIGHT_CONTROLLER].ulButtonPressed & k_buttonGrip) > 0 &&
+						(lastControllerState[RIGHT_CONTROLLER].ulButtonPressed & k_buttonGrip) == 0 
+						)				
+				{
+					//press middle mouse button
+					if (Display.isActive()) KeyboardSimulator.robot.mousePress(InputEvent.BUTTON2_DOWN_MASK);
+					else mc.currentScreen.mouseDown(mouseX, mouseY, 2);
+				}	
+
+				if (mc.currentScreen != null &&
+						(controllerStateReference[RIGHT_CONTROLLER].ulButtonPressed & k_buttonGrip) > 0)
+				{
+					mc.currentScreen.mouseDrag(mouseX, mouseY);//Signals mouse move
+				}
 
 
-
-			} else // right controller not found
-			{
+				if(mc.currentScreen != null &&
+						(
+						controllerStateReference[RIGHT_CONTROLLER].ulButtonPressed & k_buttonGrip) == 0 &&
+						(lastControllerState[RIGHT_CONTROLLER].ulButtonPressed & k_buttonGrip) > 0 
+						)
+				{
+					//release middle mouse button
+					if (Display.isActive()) KeyboardSimulator.robot.mouseRelease(InputEvent.BUTTON2_DOWN_MASK);
+					else mc.currentScreen.mouseUp(mouseX, mouseY, 2);
+				}	
+				//end MMB
 
 			}
 		} else {
@@ -1475,6 +1533,7 @@ public class MCOpenVR
 		{
 			headIsTracking = false;
 			OpenVRUtil.Matrix4fSetIdentity(hmdPose);
+			hmdPose.M[1][3] = 1.62f;
 		}
 
 		findControllerDevices();

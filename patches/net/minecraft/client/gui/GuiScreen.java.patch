@@ -31,7 +31,15 @@
  
      /** The button that was just pressed. */
      private GuiButton selectedButton;
-@@ -103,6 +111,10 @@
+@@ -78,6 +86,7 @@
+      */
+     private int touchValue;
+     private URI clickedLinkURI;
++	public static boolean pressShiftFake;
+ 
+     /**
+      * Draws the screen and all the components in it.
+@@ -103,6 +112,10 @@
      {
          if (keyCode == 1)
          {
@@ -42,7 +50,7 @@
              this.mc.displayGuiScreen((GuiScreen)null);
  
              if (this.mc.currentScreen == null)
-@@ -567,6 +579,12 @@
+@@ -567,6 +580,12 @@
          {
              while (Mouse.next())
              {
@@ -55,7 +63,7 @@
                  this.handleMouseInput();
              }
          }
-@@ -589,6 +607,24 @@
+@@ -589,6 +608,24 @@
          int j = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
          int k = Mouse.getEventButton();
  
@@ -80,7 +88,16 @@
          if (Mouse.getEventButtonState())
          {
              if (this.mc.gameSettings.touchscreen && this.touchValue++ > 0)
-@@ -658,7 +694,16 @@
+@@ -629,6 +666,8 @@
+             this.keyTyped(c0, Keyboard.getEventKey());
+         }
+ 
++        if(Keyboard.getEventKey()==1) MCOpenVR.setKeyboardOverlayShowing(false, null);
++        
+         this.mc.dispatchKeypresses();
+     }
+ 
+@@ -658,7 +697,16 @@
      {
          if (this.mc.theWorld != null)
          {
@@ -98,7 +115,16 @@
          }
          else
          {
-@@ -774,4 +819,93 @@
+@@ -736,7 +784,7 @@
+      */
+     public static boolean isShiftKeyDown()
+     {
+-        return Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54);
++        return Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54) || pressShiftFake;
+     }
+ 
+     /**
+@@ -774,4 +822,93 @@
      {
          this.setWorldAndResolution(mcIn, w, h);
      }

@@ -262,7 +262,7 @@
 +	 * The minecriftVerString will be automatically updated by the build scripts, do not modify here.
 +	 * Modify minecriftversion.py in root minecrift dir.
 +	 */
-+    public final String minecriftVerString = "ViveCraft 1.10.2 Vivecraft-jrbudda-1r3";
++    public final String minecriftVerString = "ViveCraft 1.10.2 Vivecraft-jrbudda-2";
 +	/* end version */
 +	/** END MINECRIFT */
 +    
@@ -873,7 +873,7 @@
 -                {
 -                    this.leftClickCounter = 10;
 -                }
-+                this.leftClickCounter =  this.playerController.isNotCreative() ? 10 : 0;
++                this.leftClickCounter = 10; // this.playerController.isNotCreative() ? 10 : 0;
              }
              else if (!this.thePlayer.isRowingBoat())
              {
@@ -972,16 +972,24 @@
              boolean flag = Keyboard.getEventKeyState();
  
              if (flag)
-@@ -2012,6 +2368,8 @@
+@@ -2005,6 +2361,8 @@
+                     this.entityRenderer.switchUseShader();
+                 }
+ 
++                if(i==1) MCOpenVR.setKeyboardOverlayShowing(false, null);
++                
+                 boolean flag1 = false;
+ 
+                 if (this.currentScreen == null)
+@@ -2012,6 +2370,7 @@
                      if (i == 1)
                      {
                          this.displayInGameMenu();
-+						//VIVE
-+						MCOpenVR.setKeyboardOverlayShowing(false, null);
++
                      }
  
                      flag1 = Keyboard.isKeyDown(61) && this.processKeyF3(i);
-@@ -2255,7 +2613,7 @@
+@@ -2255,7 +2614,7 @@
  
          if (this.thePlayer.isHandActive())
          {
@@ -990,7 +998,7 @@
              {
                  this.playerController.onStoppedUsingItem(this.thePlayer);
              }
-@@ -2285,11 +2643,21 @@
+@@ -2285,11 +2644,21 @@
          }
          else
          {
@@ -1000,7 +1008,7 @@
 -            }
 -
 +        	//VIVE SUPPORT HAND SWINGING
-+        	if (this.gameSettings.keyBindAttack.isKeyDown())
++        	if (this.gameSettings.keyBindAttack.isKeyDown() && currentScreen == null)
 +        	{
 +        		this.clickMouse();
 +        		lastClick = true;
@@ -1017,7 +1025,7 @@
              while (this.gameSettings.keyBindUseItem.isPressed())
              {
                  this.rightClickMouse();
-@@ -2306,7 +2674,6 @@
+@@ -2306,7 +2675,6 @@
              this.rightClickMouse();
          }
  
@@ -1025,7 +1033,7 @@
      }
  
      private void runTickMouse() throws IOException
-@@ -2327,6 +2694,13 @@
+@@ -2327,6 +2695,13 @@
                      KeyBinding.onTick(i - 100);
                  }
              }
@@ -1039,7 +1047,7 @@
  
              long j = getSystemTime() - this.systemTime;
  
-@@ -2381,6 +2755,7 @@
+@@ -2381,6 +2756,7 @@
       */
      public void launchIntegratedServer(String folderName, String worldName, @Nullable WorldSettings worldSettingsIn)
      {
@@ -1047,7 +1055,7 @@
          this.loadWorld((WorldClient)null);
          System.gc();
          ISaveHandler isavehandler = this.saveLoader.getSaveLoader(folderName, false);
-@@ -2443,7 +2818,7 @@
+@@ -2443,7 +2819,7 @@
                  ;
              }
          }
@@ -1056,7 +1064,7 @@
          this.displayGuiScreen(new GuiScreenWorking());
          SocketAddress socketaddress = this.theIntegratedServer.getNetworkSystem().addLocalEndpoint();
          NetworkManager networkmanager = NetworkManager.provideLocalClient(socketaddress);
-@@ -2458,6 +2833,9 @@
+@@ -2458,6 +2834,9 @@
       */
      public void loadWorld(WorldClient worldClientIn)
      {
@@ -1066,7 +1074,7 @@
          this.loadWorld(worldClientIn, "");
      }
  
-@@ -2623,7 +3001,7 @@
+@@ -2623,7 +3002,7 @@
      /**
       * Called when user clicked he's mouse middle button (pick block)
       */
@@ -1075,7 +1083,7 @@
      {
          if (this.objectMouseOver != null && this.objectMouseOver.typeOfHit != RayTraceResult.Type.MISS)
          {
-@@ -3417,4 +3795,1079 @@
+@@ -3417,4 +3796,1079 @@
      {
          return this.thePlayer != null && this.thePlayer.hasReducedDebug() || this.gameSettings.reducedDebugInfo;
      }
@@ -1556,7 +1564,7 @@
 +				GL11.glStencilMask(0xFF); // Write to stencil buffer
 +				GlStateManager.clear(GL11.GL_STENCIL_BUFFER_BIT); // Clear stencil buffer (0 by default)
 +				GL11.glStencilFunc(GL11.GL_ALWAYS, 0xFF, 0xFF); // Set any stencil to 1
-+				GlStateManager.color(255, 255, 0);
++				GlStateManager.color(0, 0, 0);
 +				GlStateManager.depthMask(false); // Don't write to depth buffer
 +				GL11.glMatrixMode(GL11.GL_PROJECTION);
 +				GlStateManager.pushMatrix();

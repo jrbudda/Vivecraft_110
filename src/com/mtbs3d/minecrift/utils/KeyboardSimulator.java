@@ -5,6 +5,7 @@ import static java.awt.event.KeyEvent.*;
 import java.awt.AWTException;
 import java.awt.Robot;
 
+
 public class KeyboardSimulator {
 	public static Robot robot;
 
@@ -168,3 +169,4 @@ public class KeyboardSimulator {
 
 
 }
+
