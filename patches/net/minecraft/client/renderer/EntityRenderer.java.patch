@@ -2298,7 +2298,7 @@
      public boolean setFxaaShader(int p_setFxaaShader_1_)
      {
          if (!OpenGlHelper.isFramebufferEnabled())
-@@ -2858,4 +2903,2152 @@
+@@ -2858,4 +2903,2151 @@
          GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
          GlStateManager.popMatrix();
      }
@@ -3016,8 +3016,7 @@
 +						GlStateManager.enableDepth();
 +						GlStateManager.depthMask(true);
 +					}
-+					if(shaders) Shaders.useProgram(0);
-+	
++
 +					GlStateManager.disableCull();
 +
 +					//Render framebuffer onto world projection

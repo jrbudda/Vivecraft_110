@@ -893,7 +893,7 @@
 -                        {
 -                            this.leftClickCounter = 10;
 -                        }
-+                    	this.leftClickCounter =  this.playerController.isNotCreative() ? 10 : 0;
++                       this.leftClickCounter = 10;
  
                          this.thePlayer.resetCooldown();
                  }

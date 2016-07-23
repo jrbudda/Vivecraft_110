@@ -88,16 +88,29 @@
          if (Mouse.getEventButtonState())
          {
              if (this.mc.gameSettings.touchscreen && this.touchValue++ > 0)
-@@ -629,6 +666,8 @@
+@@ -622,13 +659,20 @@
+      */
+     public void handleKeyboardInput() throws IOException
+     {
+-        char c0 = Keyboard.getEventCharacter();
++        if(Keyboard.getEventKey()==1 && MCOpenVR.keyboardShowing){
++        	MCOpenVR.setKeyboardOverlayShowing(false, null);
++        	return;
++        }
++        
++    	char c0 = Keyboard.getEventCharacter();
+ 
+         if (Keyboard.getEventKey() == 0 && c0 >= 32 || Keyboard.getEventKeyState())
+         {
              this.keyTyped(c0, Keyboard.getEventKey());
          }
  
-+        if(Keyboard.getEventKey()==1) MCOpenVR.setKeyboardOverlayShowing(false, null);
++
 +        
          this.mc.dispatchKeypresses();
      }
  
-@@ -658,7 +697,16 @@
+@@ -658,7 +702,16 @@
      {
          if (this.mc.theWorld != null)
          {
@@ -115,7 +128,7 @@
          }
          else
          {
-@@ -736,7 +784,7 @@
+@@ -736,7 +789,7 @@
       */
      public static boolean isShiftKeyDown()
      {
@@ -124,7 +137,7 @@
      }
  
      /**
-@@ -774,4 +822,93 @@
+@@ -774,4 +827,93 @@
      {
          this.setWorldAndResolution(mcIn, w, h);
      }

@@ -87,12 +87,14 @@ public class MinecriftClassTransformer implements IClassTransformer
     	else {
     		// Perform any additional mods using ASM
     		minecriftClass = performAsmModification(minecriftClass, transformedName);
+    		
     		if(bytes.length != minecriftClass.length)
     		debug(String.format("Minecrift: Overwrite " + name +" "+ transformedName + " " + bytes.length + " > "  + minecriftClass.length));
 
     		//writeToFile("original", transformedName, name, bytes);
     		//writeToFile("transformed", transformedName, name, minecriftClass);
     	}
+    	
     	return minecriftClass != null ? minecriftClass : bytes;
     }
 

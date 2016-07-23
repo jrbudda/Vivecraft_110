@@ -826,6 +826,8 @@ public class OpenVRPlayer implements IRoomscaleAdapter
     }
 
     private boolean canStand(World w, BlockPos bp){
+    	if(w.getBlockState(bp).getBlock().isPassable(w, bp) && !w.getBlockState(bp).isFullBlock()) 
+    		bp = bp.down(); //raytrace hit snow or something...
     	return !w.getBlockState(bp).getBlock().isPassable(w, bp) && w.getBlockState(bp.up()).getBlock().isPassable(w, bp.up()) &&  w.getBlockState(bp.up(2)).getBlock().isPassable(w, bp.up(2));
     }
     
