@@ -1,6 +1,6 @@
 --- a/net/minecraft/client/entity/EntityPlayerSP.java
 +++ b/net/minecraft/client/entity/EntityPlayerSP.java
-@@ -1,7 +1,14 @@
+@@ -1,7 +1,15 @@
  package net.minecraft.client.entity;
  
 +import java.lang.reflect.Field;
@@ -12,10 +12,11 @@
 +import com.mtbs3d.minecrift.settings.VRSettings;
 +import com.mtbs3d.minecrift.utils.Utils;
 +
++import jopenvr.VR_IVRSystem_FnTable.GetEyeToHeadTransform_callback;
  import net.minecraft.block.state.IBlockState;
  import net.minecraft.client.Minecraft;
  import net.minecraft.client.audio.ElytraSound;
-@@ -134,6 +141,21 @@
+@@ -134,6 +142,21 @@
       */
      protected int sprintToggleTimer;
  
@@ -37,7 +38,7 @@
      /** Ticks left before sprinting is disabled. */
      public int sprintingTicksLeft;
      public float renderArmYaw;
-@@ -151,9 +173,9 @@
+@@ -151,9 +174,9 @@
      private boolean handActive;
      private EnumHand activeHand;
      private boolean rowingBoat;
@@ -49,7 +50,7 @@
  
      public EntityPlayerSP(Minecraft mcIn, World worldIn, NetHandlerPlayClient netHandler, StatisticsManager statFile)
      {
-@@ -162,8 +184,23 @@
+@@ -162,8 +185,23 @@
          this.statWriter = statFile;
          this.mc = mcIn;
          this.dimension = 0;
@@ -73,7 +74,7 @@
      /**
       * Called when the entity is attacked.
       */
-@@ -322,7 +359,12 @@
+@@ -322,7 +360,12 @@
              }
  
              this.prevOnGround = this.onGround;
@@ -87,7 +88,7 @@
          }
      }
  
-@@ -698,7 +740,7 @@
+@@ -698,7 +741,7 @@
              }
          }
  
@@ -96,7 +97,7 @@
          {
              this.mc.getSoundHandler().playSound(new ElytraSound(this));
          }
-@@ -977,7 +1019,7 @@
+@@ -977,7 +1020,7 @@
                      this.sendPlayerAbilities();
                  }
              }
@@ -105,7 +106,7 @@
              {
                  if (this.flyToggleTimer == 0)
                  {
-@@ -1002,7 +1044,7 @@
+@@ -1002,7 +1045,7 @@
              }
          }
  
@@ -114,7 +115,7 @@
  
          if (this.capabilities.isFlying && this.isCurrentViewEntity())
          {
-@@ -1065,6 +1107,11 @@
+@@ -1065,6 +1108,11 @@
  
          super.onLivingUpdate();
  
@@ -126,7 +127,7 @@
          if (this.onGround && this.capabilities.isFlying && !this.mc.playerController.isSpectatorMode())
          {
              this.capabilities.isFlying = false;
-@@ -1115,20 +1162,53 @@
+@@ -1115,20 +1163,53 @@
       */
      public void moveEntity(double x, double y, double z)
      {
@@ -188,7 +189,7 @@
          {
              if (this.field_189812_cs <= 0 && this.onGround && !this.isSneaking() && !this.isRiding())
              {
-@@ -1144,12 +1224,16 @@
+@@ -1144,12 +1225,16 @@
                      float f = this.getAIMoveSpeed();
                      float f1 = (float)vec3d2.lengthSquared();
  
@@ -207,7 +208,7 @@
                          vec3d2 = new Vec3d((double)(f2 * f5 - f3 * f4), vec3d2.yCoord, (double)(f3 * f5 + f2 * f4));
                          f1 = (float)vec3d2.lengthSquared();
  
-@@ -1269,4 +1353,199 @@
+@@ -1269,4 +1354,210 @@
              }
          }
      }
@@ -363,18 +364,18 @@
 +            // Account for pitch if required
 +    		if(this.capabilities.isFlying || this.inWater)
 +            if (Minecraft.getMinecraft().vrSettings.allowPitchAffectsHeightWhileFlying) {
-+            	if (vr.useLControllerForRestricedMovement) {
++            	if (vr.useLControllerForRestricedMovement) {//these are negative cause directionvec is backwards in the z direction.
 +            		directionVec= directionVec.rotatePitch(con.getControllerPitch_World(1) * PIOVER180);		   
 +            	} else {
-+            		directionVec=directionVec.rotatePitch(this.headPitch * PIOVER180);	
++            		directionVec=directionVec.rotatePitch(con.getHMDPitch_World()* PIOVER180);	
 +            	}		
 +            }
 +    		
 +    		// Account for yaw
-+            if (vr.useLControllerForRestricedMovement) {
++            if (vr.useLControllerForRestricedMovement) {//these are negative cause directionvec is backwards in the z direction.
 +            	directionVec=directionVec.rotateYaw(-con.getControllerYaw_World(1) * PIOVER180);	
 +            } else {
-+            	directionVec=directionVec.rotateYaw(this.rotationYaw * PIOVER180);
++            	directionVec=directionVec.rotateYaw(-con.getHMDYaw_World()* PIOVER180);
 +    		}
 +    	
 +            mX = directionVec.xCoord;
@@ -405,5 +406,16 @@
 +/** END MINECRIFT **/
 +   
 +    }
++    
++    public float eyeHeightOverride = 0;
++    public boolean overrideEyeHeight;
++    
++    @Override
++    public float getEyeHeight(){
++    	if(overrideEyeHeight) return eyeHeightOverride;
++    	return super.getEyeHeight();
++    	
++    }
++    
 +    
  }

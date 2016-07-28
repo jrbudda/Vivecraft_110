@@ -36,16 +36,35 @@
          ItemStack itemstack = this.mc.thePlayer.inventory.armorItemInSlot(3);
  
          if (this.mc.gameSettings.thirdPersonView == 0 && itemstack != null && itemstack.getItem() == Item.getItemFromBlock(Blocks.PUMPKIN))
-@@ -175,7 +181,7 @@
-                 this.renderPortal(f, scaledresolution);
-             }
+@@ -166,16 +172,17 @@
+             this.renderPumpkinOverlay(scaledresolution);
          }
+ 
+-        if (!this.mc.thePlayer.isPotionActive(MobEffects.NAUSEA))
+-        {
+-            float f = this.mc.thePlayer.prevTimeInPortal + (this.mc.thePlayer.timeInPortal - this.mc.thePlayer.prevTimeInPortal) * partialTicks;
 -
+-            if (f > 0.0F)
+-            {
+-                this.renderPortal(f, scaledresolution);
+-            }
+-        }
+-
++        //VIVE move to FP overlay
++//        if (!this.mc.thePlayer.isPotionActive(MobEffects.NAUSEA))
++//        {
++//            float f = this.mc.thePlayer.prevTimeInPortal + (this.mc.thePlayer.timeInPortal - this.mc.thePlayer.prevTimeInPortal) * partialTicks;
++//
++//            if (f > 0.0F)
++//            {
++//                this.renderPortal(f, scaledresolution);
++//            }
++//        }
 +        
          if (this.mc.playerController.isSpectator())
          {
              this.spectatorGui.renderTooltip(scaledresolution, partialTicks);
-@@ -184,15 +190,21 @@
+@@ -184,15 +191,21 @@
          {
              this.renderHotbar(scaledresolution, partialTicks);
          }
@@ -70,7 +89,7 @@
          GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
          this.mc.getTextureManager().bindTexture(ICONS);
  
-@@ -227,6 +239,8 @@
+@@ -227,6 +240,8 @@
          GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
          int k1 = i / 2 - 91;
  
@@ -79,7 +98,7 @@
          if (this.mc.thePlayer.isRidingHorse())
          {
              this.renderHorseJumpBar(scaledresolution, k1);
-@@ -1106,6 +1120,11 @@
+@@ -1106,6 +1121,11 @@
       */
      private void renderVignette(float lightLevel, ScaledResolution scaledRes)
      {
@@ -91,7 +110,47 @@
          if (Config.isVignetteEnabled())
          {
              lightLevel = 1.0F - lightLevel;
-@@ -1363,4 +1382,42 @@
+@@ -1154,39 +1174,6 @@
+         }
+     }
+ 
+-    private void renderPortal(float timeInPortal, ScaledResolution scaledRes)
+-    {
+-        if (timeInPortal < 1.0F)
+-        {
+-            timeInPortal = timeInPortal * timeInPortal;
+-            timeInPortal = timeInPortal * timeInPortal;
+-            timeInPortal = timeInPortal * 0.8F + 0.2F;
+-        }
+-
+-        GlStateManager.disableAlpha();
+-        GlStateManager.disableDepth();
+-        GlStateManager.depthMask(false);
+-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+-        GlStateManager.color(1.0F, 1.0F, 1.0F, timeInPortal);
+-        this.mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+-        TextureAtlasSprite textureatlassprite = this.mc.getBlockRendererDispatcher().getBlockModelShapes().getTexture(Blocks.PORTAL.getDefaultState());
+-        float f = textureatlassprite.getMinU();
+-        float f1 = textureatlassprite.getMinV();
+-        float f2 = textureatlassprite.getMaxU();
+-        float f3 = textureatlassprite.getMaxV();
+-        Tessellator tessellator = Tessellator.getInstance();
+-        VertexBuffer vertexbuffer = tessellator.getBuffer();
+-        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+-        vertexbuffer.pos(0.0D, (double)scaledRes.getScaledHeight(), -90.0D).tex((double)f, (double)f3).endVertex();
+-        vertexbuffer.pos((double)scaledRes.getScaledWidth(), (double)scaledRes.getScaledHeight(), -90.0D).tex((double)f2, (double)f3).endVertex();
+-        vertexbuffer.pos((double)scaledRes.getScaledWidth(), 0.0D, -90.0D).tex((double)f2, (double)f1).endVertex();
+-        vertexbuffer.pos(0.0D, 0.0D, -90.0D).tex((double)f, (double)f1).endVertex();
+-        tessellator.draw();
+-        GlStateManager.depthMask(true);
+-        GlStateManager.enableDepth();
+-        GlStateManager.enableAlpha();
+-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+-    }
+ 
+     private void renderHotbarItem(int p_184044_1_, int p_184044_2_, float p_184044_3_, EntityPlayer player, @Nullable ItemStack stack)
+     {
+@@ -1363,4 +1350,42 @@
      {
          return this.overlayBoss;
      }

@@ -1,18 +1,19 @@
 --- a/net/minecraft/client/gui/GuiSlot.java
 +++ b/net/minecraft/client/gui/GuiSlot.java
-@@ -222,7 +222,10 @@
+@@ -222,7 +222,11 @@
      public void drawScreen(int mouseXIn, int mouseYIn, float partialTicks)
      {
          if (this.visible)
 -        {
 +     {
-+        	
-+        	if(GuiScreen.mouseDown) handleMouseInput();
-+        	
++        	//VIVCRAFT
++        	 handleMouseInput();
++        	//END
++        	 
              this.mouseX = mouseXIn;
              this.mouseY = mouseYIn;
              this.drawBackground();
-@@ -317,7 +320,7 @@
+@@ -317,7 +321,7 @@
      {
          if (this.isMouseYWithinSlotBounds(this.mouseY))
          {
@@ -21,7 +22,7 @@
              {
                  int i = (this.width - this.getListWidth()) / 2;
                  int j = (this.width + this.getListWidth()) / 2;
-@@ -335,7 +338,7 @@
+@@ -335,7 +339,7 @@
                  }
              }
  

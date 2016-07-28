@@ -11,6 +11,7 @@ import com.sun.jna.Memory;
 import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.ByteByReference;
+import com.sun.jna.ptr.FloatByReference;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.LongByReference;
 
@@ -32,6 +33,7 @@ import net.minecraft.client.gui.GuiScreenBook;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.GuiWinGame;
 import net.minecraft.client.gui.inventory.*;
+import net.minecraft.client.renderer.GlStateManager.Color;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -180,7 +182,7 @@ public class MCOpenVR
 	
 	private static int moveModeSwitchcount = 0;
 
-	private static boolean isWalkingAbout;
+	public static boolean isWalkingAbout;
 	private static boolean isFreeRotate;
 	private static float walkaboutYawStart;
 	private static float hmdForwardYaw;
@@ -552,32 +554,40 @@ public class MCOpenVR
 		
 		Vec3d barStartos = null,barEndos = null;
 		
+		int i = 1;
+		if(mc.vrSettings.vrReverseHands) i = -1;
+		
 		if (mc.vrSettings.vrHudLockMode == mc.vrSettings.HUD_LOCK_WRIST){
-			 barStartos = vecFromVector( getAimRotation(1).transform(new Vector3f(0.04f,-0.05f,0.24f)));
-			 barEndos = vecFromVector( getAimRotation(1).transform(new Vector3f(0.2f,-0.05f,-0.05f)));
+			 barStartos = vecFromVector( getAimRotation(1).transform(new Vector3f(i*0.06f,-0.05f,0.24f)));
+			 barEndos = vecFromVector( getAimRotation(1).transform(new Vector3f(i*0.22f,-0.05f,-0.05f)));
 		} else if (mc.vrSettings.vrHudLockMode == mc.vrSettings.HUD_LOCK_HAND){
-			 barStartos = vecFromVector( getAimRotation(1).transform(new Vector3f(-.18f,0.08f,-0.01f)));
-			 barEndos = vecFromVector( getAimRotation(1).transform(new Vector3f(0.19f,0.04f,-0.08f)));
+			 barStartos = vecFromVector( getAimRotation(1).transform(new Vector3f(i*-.18f,0.08f,-0.01f)));
+			 barEndos = vecFromVector( getAimRotation(1).transform(new Vector3f(i*0.19f,0.04f,-0.08f)));
 		} else return; //how did u get here
 		
 	
 		Vec3d barStart = off.addVector(barStartos.xCoord, barStartos.yCoord, barStartos.zCoord);	
 		Vec3d barEnd = off.addVector(barEndos.xCoord, barEndos.yCoord, barEndos.zCoord);
 
-		Vec3d u = barEnd.subtract(barStart);
-		Vec3d pq = main.subtract(barStart);
+		Vec3d u = barStart.subtract(barEnd);
+		Vec3d pq = barStart.subtract(main);
 		float dist = (float) (pq.crossProduct(u).lengthVector() / u.lengthVector());
 
 		if(dist > 0.06) return;
 		
 		float fact = (float) (pq.dotProduct(u) / (u.xCoord*u.xCoord + u.yCoord*u.yCoord + u.zCoord*u.zCoord));
-		Vec3d w2 = pq.subtract(u.scale(fact));
+	
+		if(fact < 0) return;
+		
+		Vec3d w2 = u.scale(fact).subtract(pq);
 	
 		Vec3d point = main.subtract(w2);
 		float linelen = (float) barStart.subtract(barEnd).lengthVector();
 		float ilen = (float) barStart.subtract(point).lengthVector();
 
 		float pos = ilen / linelen * 9; 
+		
+		if(mc.vrSettings.vrReverseHands) pos = 9 - pos;
 		
 		int box = (int) Math.floor(pos);
 		if(pos - Math.floor(pos) < 0.1) return;
@@ -620,12 +630,13 @@ private static void processGui() {
 
 		Vector3f gp = new Vector3f();
 		
-		gp.x = (float) (guiPos_World.x ) ;
-		gp.y = (float) (guiPos_World.y );
-		gp.z = (float) (guiPos_World.z );
+		gp.x = (float) (guiPos_World.x + mc.entityRenderer.interPolatedRoomOrigin.xCoord ) ;
+		gp.y = (float) (guiPos_World.y + mc.entityRenderer.interPolatedRoomOrigin.yCoord ) ;
+		gp.z = (float) (guiPos_World.z + mc.entityRenderer.interPolatedRoomOrigin.zCoord ) ;
 					
-		Vector3f guiTopLeft = guiPos_World.subtract(guiUp.divide(1.0f / guiHalfHeight)).subtract(guiRight.divide(1.0f/guiHalfWidth));
-		Vector3f guiTopRight = guiPos_World.subtract(guiUp.divide(1.0f / guiHalfHeight)).add(guiRight.divide(1.0f / guiHalfWidth));
+	
+		Vector3f guiTopLeft = gp.subtract(guiUp.divide(1.0f / guiHalfHeight)).subtract(guiRight.divide(1.0f/guiHalfWidth));
+		Vector3f guiTopRight = gp.subtract(guiUp.divide(1.0f / guiHalfHeight)).add(guiRight.divide(1.0f / guiHalfWidth));
 
 		//Vector3f guiBottomLeft = guiPos.add(guiUp.divide(1.0f / guiHalfHeight)).subtract(guiRight.divide(1.0f/guiHalfWidth));
 		//Vector3f guiBottomRight = guiPos.add(guiUp.divide(1.0f / guiHalfHeight)).add(guiRight.divide(1.0f/guiHalfWidth));
@@ -1787,6 +1798,10 @@ private static void processGui() {
 				Matrix4f tilt = OpenVRUtil.rotationXMatrix((float)Math.toRadians(mc.roomScale.getHMDPitch_World()));	
 				guiRotationPose = Matrix4f.multiply(guiRotationPose,tilt);		
 
+				if(guiPos_World!=null)
+					guiPos_World = guiPos_World.subtract(new Vector3f((float)mc.entityRenderer.interPolatedRoomOrigin.xCoord,
+							(float) mc.entityRenderer.interPolatedRoomOrigin.yCoord, (float) mc.entityRenderer.interPolatedRoomOrigin.zCoord));
+				
 
 			}
 		}
@@ -1948,7 +1963,7 @@ private static void processGui() {
 		controllerRotation[0].M[3][2] = 0.0F;
 		controllerRotation[0].M[3][3] = 1.0F;
 
-		if(mc.vrSettings.seated){
+		if(mc.vrSettings.seated && mc.currentScreen == null){
 			org.lwjgl.util.vector.Matrix4f temp = new org.lwjgl.util.vector.Matrix4f();
 			
 			float hRange = 110;
@@ -2033,10 +2048,17 @@ private static void processGui() {
 
 	}
 
-
 	public static double getCurrentTimeSecs()
 	{
 		return System.nanoTime() / 1000000000d;
 	}
 
+//	public static void renderFade(float dur, Color color){
+//		vrCompositor.FadeToColor.apply(dur, color.red,color.green,color.blue,color.alpha, (byte)0);
+//	}
+//	
+//	public static void renderGrid(Color color){
+//		vrCompositor.FadeGrid.apply(0.5f, (byte)0);
+//	}
+	
 }

@@ -1,6 +1,26 @@
 --- a/net/minecraft/src/Config.java
 +++ b/net/minecraft/src/Config.java
-@@ -1812,12 +1812,7 @@
+@@ -135,6 +135,9 @@
+     public static void initDisplay()
+     {
+         checkInitialized();
++        //VIVE
++        gameSettings.ofAaLevel = 0;
++        //
+         antialiasingLevel = gameSettings.ofAaLevel;
+         checkDisplaySettings();
+         checkDisplayMode();
+@@ -920,7 +923,8 @@
+ 
+     public static boolean isVignetteEnabled()
+     {
+-        return gameSettings.ofVignette == 0 ? gameSettings.fancyGraphics : gameSettings.ofVignette == 2;
++    	return true;
++       // return gameSettings.ofVignette == 0 ? gameSettings.fancyGraphics : gameSettings.ofVignette == 2;
+     }
+ 
+     public static boolean isStarsEnabled()
+@@ -1812,12 +1816,7 @@
  
      public static void updateFramebufferSize()
      {

@@ -373,9 +373,10 @@ public class OpenVRPlayer implements IRoomscaleAdapter
             	mc.thePlayer.sendChatMessage(tp);
             } else {
                 player.setPositionAndUpdate(dest.xCoord, dest.yCoord, dest.zCoord);
-                doTeleportCallback();
             }
-                  
+
+            doTeleportCallback();
+            
           //  System.out.println("teleport " + dest.toString());
 
             if (playTeleportSound)

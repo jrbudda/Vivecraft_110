@@ -1,9 +1,10 @@
 --- a/net/minecraft/client/renderer/ItemRenderer.java
 +++ b/net/minecraft/client/renderer/ItemRenderer.java
-@@ -1,8 +1,16 @@
+@@ -1,13 +1,24 @@
  package net.minecraft.client.renderer;
  
 +
++import com.mtbs3d.minecrift.provider.MCOpenVR;
 +import com.mtbs3d.minecrift.render.OpenGLdebugging;
 +import com.mtbs3d.minecrift.render.RenderVRPlayer;
 +
@@ -15,9 +16,16 @@
  import net.minecraft.block.Block;
 +import net.minecraft.block.BlockLiquid;
  import net.minecraft.block.material.Material;
++import net.minecraft.block.material.MaterialLiquid;
  import net.minecraft.block.state.IBlockState;
  import net.minecraft.client.Minecraft;
-@@ -16,11 +24,23 @@
+ import net.minecraft.client.entity.AbstractClientPlayer;
+ import net.minecraft.client.entity.EntityPlayerSP;
++import net.minecraft.client.gui.ScaledResolution;
+ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+ import net.minecraft.client.renderer.entity.Render;
+ import net.minecraft.client.renderer.entity.RenderManager;
+@@ -16,11 +27,25 @@
  import net.minecraft.client.renderer.texture.TextureMap;
  import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
  import net.minecraft.entity.EntityLivingBase;
@@ -25,12 +33,14 @@
  import net.minecraft.entity.player.EntityPlayer;
 +import net.minecraft.init.Blocks;
  import net.minecraft.init.Items;
++import net.minecraft.init.MobEffects;
  import net.minecraft.item.Item;
 +import net.minecraft.item.ItemArrow;
 +import net.minecraft.item.ItemBlock;
 +import net.minecraft.item.ItemBow;
 +import net.minecraft.item.ItemCarrotOnAStick;
 +import net.minecraft.item.ItemFishingRod;
++import net.minecraft.item.ItemFlintAndSteel;
 +import net.minecraft.item.ItemHoe;
  import net.minecraft.item.ItemMap;
 +import net.minecraft.item.ItemShears;
@@ -41,7 +51,7 @@
  import net.minecraft.src.Config;
  import net.minecraft.src.DynamicLights;
  import net.minecraft.src.Reflector;
-@@ -31,6 +51,7 @@
+@@ -31,6 +56,7 @@
  import net.minecraft.util.ResourceLocation;
  import net.minecraft.util.math.BlockPos;
  import net.minecraft.util.math.MathHelper;
@@ -49,7 +59,7 @@
  import net.minecraft.world.storage.MapData;
  import shadersmod.client.Shaders;
  
-@@ -49,7 +70,7 @@
+@@ -49,7 +75,7 @@
      private float prevEquippedProgressOffHand;
      private final RenderManager renderManager;
      private final RenderItem itemRenderer;
@@ -58,7 +68,7 @@
      public ItemRenderer(Minecraft mcIn)
      {
          this.mc = mcIn;
-@@ -59,29 +80,29 @@
+@@ -59,29 +85,29 @@
  
      public void renderItem(EntityLivingBase entityIn, ItemStack heldStack, ItemCameraTransforms.TransformType transform)
      {
@@ -103,7 +113,7 @@
  
              GlStateManager.popMatrix();
          }
-@@ -107,7 +128,7 @@
+@@ -107,7 +133,7 @@
          GlStateManager.popMatrix();
      }
  
@@ -112,7 +122,7 @@
      {
          AbstractClientPlayer abstractclientplayer = this.mc.thePlayer;
          int i = this.mc.theWorld.getCombinedLight(new BlockPos(abstractclientplayer.posX, abstractclientplayer.posY + (double)abstractclientplayer.getEyeHeight(), abstractclientplayer.posZ), 0);
-@@ -122,6 +143,7 @@
+@@ -122,6 +148,7 @@
          OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, f, f1);
      }
  
@@ -120,7 +130,7 @@
      private void rotateArm(float p_187458_1_)
      {
          EntityPlayerSP entityplayersp = this.mc.thePlayer;
-@@ -142,6 +164,7 @@
+@@ -142,6 +169,7 @@
          return f;
      }
  
@@ -128,7 +138,7 @@
      private void renderArms()
      {
          if (!this.mc.thePlayer.isInvisible())
-@@ -156,6 +179,7 @@
+@@ -156,6 +184,7 @@
          }
      }
  
@@ -136,7 +146,7 @@
      private void renderArm(EnumHandSide p_187455_1_)
      {
          this.mc.getTextureManager().bindTexture(this.mc.thePlayer.getLocationSkin());
-@@ -183,27 +207,29 @@
+@@ -183,27 +212,29 @@
      private void renderMapFirstPersonSide(float p_187465_1_, EnumHandSide p_187465_2_, float p_187465_3_, ItemStack p_187465_4_)
      {
          float f = p_187465_2_ == EnumHandSide.RIGHT ? 1.0F : -1.0F;
@@ -181,7 +191,7 @@
          GlStateManager.popMatrix();
      }
  
-@@ -212,14 +238,17 @@
+@@ -212,14 +243,17 @@
          float f = MathHelper.sqrt_float(p_187463_3_);
          float f1 = -0.2F * MathHelper.sin(p_187463_3_ * (float)Math.PI);
          float f2 = -0.4F * MathHelper.sin(f * (float)Math.PI);
@@ -205,7 +215,7 @@
          this.renderMapFirstPerson(this.itemStackMainHand);
      }
  
-@@ -250,100 +279,123 @@
+@@ -250,100 +284,123 @@
          GlStateManager.enableLighting();
      }
  
@@ -317,9 +327,7 @@
      }
  
 -    private void transformFirstPerson(EnumHandSide p_187453_1_, float p_187453_2_)
-+    //was transformFirstPerson
-+    private void doSwingItemAnimation(EnumHandSide side, float swingprogress)
-     {
+-    {
 -        int i = p_187453_1_ == EnumHandSide.RIGHT ? 1 : -1;
 -        float f = MathHelper.sin(p_187453_2_ * p_187453_2_ * (float)Math.PI);
 -        GlStateManager.rotate((float)i * (45.0F + f * -20.0F), 0.0F, 1.0F, 0.0F);
@@ -330,7 +338,9 @@
 -    }
 -
 -    private void transformSideFirstPerson(EnumHandSide p_187459_1_, float p_187459_2_)
--    {
++    //was transformFirstPerson
++    private void doSwingItemAnimation(EnumHandSide side, float swingprogress)
+     {
 -        int i = p_187459_1_ == EnumHandSide.RIGHT ? 1 : -1;
 -        GlStateManager.translate((float)i * 0.56F, -0.52F + p_187459_2_ * -0.6F, -0.72F);
 +    	//VIVE TODO: SOMETHING
@@ -393,7 +403,7 @@
              }
          }
  
-@@ -352,163 +404,303 @@
+@@ -352,188 +409,433 @@
          this.rotateArm(partialTicks);
          GlStateManager.enableRescaleNormal();
  
@@ -643,7 +653,8 @@
 +	    							item instanceof ItemHoe || 
 +	    							item instanceof ItemFishingRod || 
 +	    							item instanceof ItemCarrotOnAStick ||
-+	    							item instanceof ItemShears)
++	    							item instanceof ItemShears||
++	    							item instanceof ItemFlintAndSteel)
 +	    						
 +	    					{
 +	    						GlStateManager.translate(0f, -.025f, -0.1f);		
@@ -820,19 +831,103 @@
              if (this.mc.thePlayer.isBurning() && !Reflector.callBoolean(Reflector.ForgeEventFactory_renderFireOverlay, new Object[] {this.mc.thePlayer, Float.valueOf(partialTicks)}))
              {
                  this.renderFireInFirstPerson(partialTicks);
-@@ -518,6 +710,32 @@
-         GlStateManager.enableAlpha();
-     }
+             }
+         }
  
++		// VIVE start - screen flash when hurt instead of view tilt
++		float r = 0, g = 0, b = 0, a = 0;
++		
++		// VIVE start - screen flash when hurt instead of view tilt
++		 EntityPlayerSP player = mc.thePlayer;
++		if (player!=null) {
++			if( player.getHealth() > 0.0f)		
++			{
++				float var3 = (float)player.hurtTime - partialTicks;
++				if (var3>0.0f)
++				{
++					var3 /= (float) player.maxHurtTime;
++					var3 = MathHelper.sin(var3 * var3 * var3 * var3 * (float) Math.PI) * 0.5f;
++					r = 1;
++					a = var3;
++				} 
++			} 
++
++			if (player.isPlayerSleeping()){
++				a = .8f;
++			}
++			
++			if (MCOpenVR.isWalkingAbout){
++				a = .8f;
++			}
++			
++			if(r+g+b+a > 0)
++				mc.entityRenderer.renderFadeBlend(r, g, b, a);
++			
++		}
++        
++		
++        if (!this.mc.thePlayer.isPotionActive(MobEffects.NAUSEA))
++        {
++            float f = this.mc.thePlayer.prevTimeInPortal + (this.mc.thePlayer.timeInPortal - this.mc.thePlayer.prevTimeInPortal) * partialTicks;
++
++            if (f > 0.0F)
++            {
++                this.renderPortal(f, new ScaledResolution(mc));
++            }
++        }
++		
++        
++        GlStateManager.enableAlpha();
++    }
++
++    private void renderPortal(float timeInPortal, ScaledResolution scaledRes)
++    {
++        if (timeInPortal < 1.0F)
++        {
++            timeInPortal = timeInPortal * timeInPortal;
++            timeInPortal = timeInPortal * timeInPortal;
++            timeInPortal = timeInPortal * 0.8F + 0.2F;
++        }
++        GlStateManager.enableTexture2D();
++        GlStateManager.disableAlpha();
++        GlStateManager.disableDepth();
++        GlStateManager.enableBlend();
++        GlStateManager.depthMask(false);
++        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
++        GlStateManager.color(1.0F, 1.0F, 1.0F, timeInPortal);
++        System.out.println(timeInPortal);
++        this.mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
++        TextureAtlasSprite textureatlassprite = this.mc.getBlockRendererDispatcher().getBlockModelShapes().getTexture(Blocks.PORTAL.getDefaultState());
++        Tessellator tessellator = Tessellator.getInstance();
++        VertexBuffer vertexbuffer = tessellator.getBuffer();
++        float f6 = textureatlassprite.getMinU();
++        float f7 = textureatlassprite.getMaxU();
++        float f8 = textureatlassprite.getMinV();
++        float f9 = textureatlassprite.getMaxV();
++        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
++        vertexbuffer.pos(-1.0D, -1.0D, -.6D).tex((double)( f6), (double)( f8)).endVertex();
++        vertexbuffer.pos(1.0D, -1.0D, -.6D).tex((double)(f7), (double)( f8)).endVertex();
++        vertexbuffer.pos(1.0D, 1.0D, -.6D).tex((double)(f7), (double)(f9)).endVertex();
++        vertexbuffer.pos(-1.0D, 1.0D, -.6D).tex((double)( f6), (double)(f9)).endVertex();
++        tessellator.draw();
++        GlStateManager.depthMask(true);
++        GlStateManager.enableDepth();
+         GlStateManager.enableAlpha();
++        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+     }
++    
 +    public boolean isInsideOfMaterial(Vec3d pos, Material materialIn)
 +    {
 +    	BlockPos blockpos = new BlockPos(pos);
 +    	IBlockState iblockstate = mc.theWorld.getBlockState(blockpos);
++    	IBlockState iblockstateup = mc.theWorld.getBlockState(blockpos.up());
 +
 +    	if (iblockstate.getMaterial() == materialIn)
 +    	{
-+    		float f = BlockLiquid.getLiquidHeightPercent(iblockstate.getBlock().getMetaFromState(iblockstate));
-+    		float f1 = (float)(blockpos.getY() + 1) - f;
++    		float f = BlockLiquid.getLiquidHeightPercent(iblockstate.getBlock().getMetaFromState(iblockstate)) -0.11111111F;;
++    		if(iblockstateup.getMaterial() != materialIn && materialIn instanceof MaterialLiquid) f+=0.09F;
++    		
++    		//float f1 = (float)(blockpos.getY() + 1) - f;
 +    		boolean flag = (pos.yCoord-blockpos.getY()) < (1-f);
 +    		return flag;
 +    	}
@@ -848,12 +943,29 @@
 +    	return mc.theWorld.getBlockState(bp).getBlock().isVisuallyOpaque();
 +    }
 +
-+
+ 
 +    
      /**
       * Render the block in the player's hand
       */
-@@ -561,17 +779,21 @@
+     private void renderBlockInHand(float partialTicks, TextureAtlasSprite atlas)
+     {
++    	GlStateManager.disableDepth();
+         this.mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+         Tessellator tessellator = Tessellator.getInstance();
+         VertexBuffer vertexbuffer = tessellator.getBuffer();
+         float f = 0.1F;
+         GlStateManager.color(0.1F, 0.1F, 0.1F, 0.5F);
+         GlStateManager.pushMatrix();
+-        float f1 = -1.0F;
+-        float f2 = 1.0F;
+-        float f3 = -1.0F;
+-        float f4 = 1.0F;
+-        float f5 = -0.5F;
+         float f6 = atlas.getMinU();
+         float f7 = atlas.getMaxU();
+         float f8 = atlas.getMinV();
+@@ -561,17 +863,14 @@
              VertexBuffer vertexbuffer = tessellator.getBuffer();
              float f = this.mc.thePlayer.getBrightness(partialTicks);
              GlStateManager.color(f, f, f, 0.5F);
@@ -863,16 +975,14 @@
 +            GlStateManager.disableDepth();
              GlStateManager.pushMatrix();
 -            float f1 = 4.0F;
-+            //VIVE INFINITY!
-+        	mc.entityRenderer.applyCameraDepth(true);
-+            float f1 = 0.0F;
-             float f2 = -1.0F;
-             float f3 = 1.0F;
-             float f4 = -1.0F;
-             float f5 = 1.0F;
-             float f6 = -0.5F;
+-            float f2 = -1.0F;
+-            float f3 = 1.0F;
+-            float f4 = -1.0F;
+-            float f5 = 1.0F;
+-            float f6 = -0.5F;
 -            float f7 = -this.mc.thePlayer.rotationYaw / 64.0F;
 -            float f8 = this.mc.thePlayer.rotationPitch / 64.0F;
++            //VIVE INFINITY!
 +            float f7 = 0;//-this.mc.thePlayer.rotationYaw / 64.0F;
 +            float f8 = 0;//this.mc.thePlayer.rotationPitch / 64.0F;
              vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);

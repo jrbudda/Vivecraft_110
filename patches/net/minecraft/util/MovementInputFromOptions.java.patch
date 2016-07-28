@@ -9,7 +9,20 @@
  import net.minecraft.client.settings.GameSettings;
  
  public class MovementInputFromOptions extends MovementInput
-@@ -64,5 +67,11 @@
+@@ -56,13 +59,22 @@
+             this.rightKeyDown = false;
+         }
+ 
+-        this.jump = this.gameSettings.keyBindJump.isKeyDown();
+-        this.sneak = this.gameSettings.keyBindSneak.isKeyDown();
++        boolean ok = Minecraft.getMinecraft().currentScreen==null;
++        
++        //VIVECRAFT DO ok.
++        this.jump = this.gameSettings.keyBindJump.isKeyDown() && ok;
++        this.sneak = this.gameSettings.keyBindSneak.isKeyDown() && ok;
+ 
+         if (this.sneak)
+         {
              this.moveStrafe = (float)((double)this.moveStrafe * 0.3D);
              this.moveForward = (float)((double)this.moveForward * 0.3D);
          }

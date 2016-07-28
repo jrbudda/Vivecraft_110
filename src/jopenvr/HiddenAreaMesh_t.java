@@ -1,8 +1,6 @@
 package jopenvr;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
-import com.sun.jna.ptr.IntByReference;
-
 import java.util.Arrays;
 import java.util.List;
 /**
@@ -15,7 +13,7 @@ public class HiddenAreaMesh_t extends Structure {
 	 * const struct vr::HmdVector2_t *<br>
 	 * C type : HmdVector2_t*
 	 */
-	public IntByReference pVertexData;
+	public jopenvr.HmdVector2_t.ByReference pVertexData;
 	public int unTriangleCount;
 	public HiddenAreaMesh_t() {
 		super();
@@ -27,7 +25,7 @@ public class HiddenAreaMesh_t extends Structure {
 	 * @param pVertexData const struct vr::HmdVector2_t *<br>
 	 * C type : HmdVector2_t*
 	 */
-	public HiddenAreaMesh_t(IntByReference pVertexData, int unTriangleCount) {
+	public HiddenAreaMesh_t(jopenvr.HmdVector2_t.ByReference pVertexData, int unTriangleCount) {
 		super();
 		this.pVertexData = pVertexData;
 		this.unTriangleCount = unTriangleCount;

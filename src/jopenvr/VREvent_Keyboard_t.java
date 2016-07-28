@@ -13,7 +13,7 @@ public class VREvent_Keyboard_t extends Structure {
 	 * char[8]<br>
 	 * C type : char*[8]
 	 */
-	public byte[] cNewInput = new byte[8];
+	public Pointer[] cNewInput = new Pointer[8];
 	public long uUserValue;
 	public VREvent_Keyboard_t() {
 		super();
@@ -25,7 +25,7 @@ public class VREvent_Keyboard_t extends Structure {
 	 * @param cNewInput char[8]<br>
 	 * C type : char*[8]
 	 */
-	public VREvent_Keyboard_t(byte[] cNewInput, long uUserValue) {
+	public VREvent_Keyboard_t(Pointer cNewInput[], long uUserValue) {
 		super();
 		if ((cNewInput.length != this.cNewInput.length)) 
 			throw new IllegalArgumentException("Wrong array size !");

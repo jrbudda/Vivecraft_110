@@ -50,7 +50,7 @@
      }
  
      /**
-@@ -904,8 +923,23 @@
+@@ -904,8 +923,24 @@
          }
          else
          {
@@ -58,13 +58,14 @@
 -        }
 +        	boolean nochat = false;
 +            ITextComponent t = packetIn.getChatComponent();
-+            if(t instanceof TextComponentTranslation){
-+            	TextComponentTranslation tt = (TextComponentTranslation) t;
-+            	if(tt.getKey() == "commands.tp.success.coordinates"){
-+            		Minecraft.getMinecraft().vrPlayer.doTeleportCallback();
-+            		nochat = true;
-+            	}
-+            }
++//            if(t instanceof TextComponentTranslation){
++//            	TextComponentTranslation tt = (TextComponentTranslation) t;
++            	//vive its a nice thought but unrelable on non-vanilla
++//            	if(tt.getKey() == "commands.tp.success.coordinates"){
++//            		Minecraft.getMinecraft().vrPlayer.doTeleportCallback();
++//            		nochat = true;
++//            	}
++//            }
 +            
 +            if(!nochat)this.gameController.ingameGUI.getChatGUI().printChatMessage(t);
 +        	
@@ -76,7 +77,7 @@
      }
  
      /**
-@@ -1928,6 +1962,34 @@
+@@ -1928,6 +1963,34 @@
              String s1 = packetbuffer2.readStringFromBuffer(256);
              this.gameController.getSoundHandler().stop(s1, SoundCategory.getByName(s));
          }

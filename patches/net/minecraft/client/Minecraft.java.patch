@@ -50,11 +50,10 @@
  import java.util.Iterator;
  import java.util.List;
  import java.util.Queue;
-@@ -37,11 +66,15 @@
+@@ -37,11 +66,14 @@
  import java.util.concurrent.FutureTask;
  import javax.annotation.Nullable;
  import javax.imageio.ImageIO;
-+import javax.vecmath.Color3f;
 +import javax.vecmath.Vector3f;
 +
  import net.minecraft.block.Block;
@@ -66,14 +65,16 @@
  import net.minecraft.client.entity.EntityPlayerSP;
  import net.minecraft.client.gui.FontRenderer;
  import net.minecraft.client.gui.GuiChat;
-@@ -69,6 +102,7 @@
+@@ -69,7 +101,9 @@
  import net.minecraft.client.particle.ParticleManager;
  import net.minecraft.client.renderer.BlockRendererDispatcher;
  import net.minecraft.client.renderer.EntityRenderer;
 +import net.minecraft.client.renderer.GLAllocation;
  import net.minecraft.client.renderer.GlStateManager;
++import net.minecraft.client.renderer.GlStateManager.Color;
  import net.minecraft.client.renderer.ItemRenderer;
  import net.minecraft.client.renderer.OpenGlHelper;
+ import net.minecraft.client.renderer.RenderGlobal;
 @@ -112,12 +146,14 @@
  import net.minecraft.client.settings.GameSettings;
  import net.minecraft.client.settings.KeyBinding;
@@ -140,7 +141,7 @@
  import org.lwjgl.opengl.GLContext;
  import org.lwjgl.opengl.OpenGLException;
  import org.lwjgl.opengl.PixelFormat;
-@@ -201,6 +251,128 @@
+@@ -201,6 +251,126 @@
  
  public class Minecraft implements IThreadListener, ISnooperInfo
  {
@@ -215,8 +216,6 @@
 +	public float lastWorldScale = 0f;
 +	public DimensionType lastDimensionId = DimensionType.OVERWORLD;
 +	public SoundManager sndManager = null;
-+	public boolean hydraLibsAvailable = false;
-+	public double PredictedDisplayTimeSeconds = 0d;
 +	public int _Lanczos_shaderProgramId = -1;
 +	public int _LanczosShader_texelWidthOffsetUniform = -1;
 +	public int _LanczosShader_texelHeightOffsetUniform = -1;
@@ -262,14 +261,14 @@
 +	 * The minecriftVerString will be automatically updated by the build scripts, do not modify here.
 +	 * Modify minecriftversion.py in root minecrift dir.
 +	 */
-+    public final String minecriftVerString = "ViveCraft 1.10.2 Vivecraft-jrbudda-2";
++    public final String minecriftVerString = "ViveCraft 1.10.2 Vivecraft-jrbudda-3";
 +	/* end version */
 +	/** END MINECRIFT */
 +    
      private static final Logger LOGGER = LogManager.getLogger();
      private static final ResourceLocation LOCATION_MOJANG_PNG = new ResourceLocation("textures/gui/title/mojang.png");
      public static final boolean IS_RUNNING_ON_MAC = Util.getOSType() == Util.EnumOS.OSX;
-@@ -216,7 +388,7 @@
+@@ -216,7 +386,7 @@
      private ServerData currentServerData;
  
      /** The RenderEngine instance used by Minecraft */
@@ -278,7 +277,7 @@
  
      /**
       * Set to 'this' in Minecraft constructor; used by some settings get methods
-@@ -329,7 +501,7 @@
+@@ -329,7 +499,7 @@
      private final boolean jvm64bit;
      private final boolean isDemo;
      @Nullable
@@ -287,7 +286,7 @@
      private boolean integratedServerIsRunning;
  
      /** The profiler instance */
-@@ -349,7 +521,7 @@
+@@ -349,7 +519,7 @@
      private ItemColors itemColors;
      private Framebuffer framebufferMc;
      private TextureMap textureMapBlocks;
@@ -296,7 +295,7 @@
      private MusicTicker mcMusicTicker;
      private ResourceLocation mojangLogo;
      private final MinecraftSessionService sessionService;
-@@ -382,6 +554,25 @@
+@@ -382,6 +552,25 @@
  
      /** Profiler currently displayed in the debug screen pie chart */
      private String debugProfilerName = "root";
@@ -322,7 +321,7 @@
  
      public Minecraft(GameConfiguration gameConfig)
      {
-@@ -400,8 +591,10 @@
+@@ -400,8 +589,10 @@
          LOGGER.info("Setting user: {}", new Object[] {this.session.getUsername()});
          LOGGER.debug("(Session ID is {})", new Object[] {this.session.getSessionID()});
          this.isDemo = gameConfig.gameInfo.isDemo;
@@ -335,7 +334,7 @@
          this.tempDisplayWidth = gameConfig.displayInfo.width;
          this.tempDisplayHeight = gameConfig.displayInfo.height;
          this.fullscreen = gameConfig.displayInfo.fullscreen;
-@@ -417,6 +610,15 @@
+@@ -417,6 +608,15 @@
          ImageIO.setUseCache(false);
          Bootstrap.register();
          this.dataFixer = DataFixesManager.createFixer();
@@ -351,7 +350,7 @@
      }
  
      public void run()
-@@ -492,7 +694,7 @@
+@@ -492,7 +692,7 @@
      /**
       * Starts the game: initializes the canvas, the title, the settings, etcetera.
       */
@@ -360,7 +359,7 @@
      {
          this.gameSettings = new GameSettings(this, this.mcDataDir);
          this.defaultResourcePacks.add(this.mcDefaultResourcePack);
-@@ -508,6 +710,7 @@
+@@ -508,6 +708,7 @@
          this.setWindowIcon();
          this.setInitialDisplayMode();
          this.createDisplay();
@@ -368,7 +367,7 @@
          OpenGlHelper.initializeTextures();
          this.framebufferMc = new Framebuffer(this.displayWidth, this.displayHeight, true);
          this.framebufferMc.setFramebufferColor(0.0F, 0.0F, 0.0F, 0.0F);
-@@ -533,6 +736,11 @@
+@@ -533,6 +734,11 @@
              this.fontRendererObj.setBidiFlag(this.mcLanguageManager.isCurrentLanguageBidirectional());
          }
  
@@ -380,7 +379,7 @@
          this.standardGalacticFontRenderer = new FontRenderer(this.gameSettings, new ResourceLocation("textures/font/ascii_sga.png"), this.renderEngine, false);
          this.mcResourceManager.registerReloadListener(this.fontRendererObj);
          this.mcResourceManager.registerReloadListener(this.standardGalacticFontRenderer);
-@@ -612,7 +820,7 @@
+@@ -612,7 +818,7 @@
  
          try
          {
@@ -389,7 +388,7 @@
          }
          catch (OpenGLException var2)
          {
-@@ -621,6 +829,11 @@
+@@ -621,6 +827,11 @@
          }
  
          this.renderGlobal.makeEntityOutlineShader();
@@ -401,7 +400,7 @@
      }
  
      private void registerMetadataSerializers()
-@@ -1015,6 +1228,13 @@
+@@ -1015,6 +1226,13 @@
              this.ingameGUI.getChatGUI().clearChatMessages();
          }
  
@@ -415,7 +414,7 @@
          this.currentScreen = (GuiScreen)guiScreenIn;
  
          if (guiScreenIn != null)
-@@ -1048,7 +1268,8 @@
+@@ -1048,7 +1266,8 @@
      /**
       * Checks for an OpenGL error. If there is one, prints the error ID and error string.
       */
@@ -425,7 +424,7 @@
      {
          int i = GlStateManager.glGetError();
  
-@@ -1098,128 +1319,264 @@
+@@ -1098,128 +1317,264 @@
      /**
       * Called repeatedly from run()
       */
@@ -582,8 +581,7 @@
 +				//avoid having to changed OpenGLHelper
 +				gameSettings.fboEnable = true;
 +				OpenGlHelper.framebufferSupported = true;
-+			}
-+			
++			}	
 +			
 +			/** MINECRIFT */ // setup the display, render buffers, shaders etc.
 +			this.frameIndex++;
@@ -760,6 +758,7 @@
 +				this.stereoProvider.endFrame();
 +			mcProfiler.endSection();
 +
++		
 +			////END MAIN VIVECRAFT RENDERING
 +			
 +			//this.entityRenderer.frameFinish(); //does nothing
@@ -811,7 +810,7 @@
  
      public void updateDisplay()
      {
-@@ -1333,7 +1690,7 @@
+@@ -1333,7 +1688,7 @@
      /**
       * Parameter appears to be unused
       */
@@ -820,7 +819,7 @@
      {
          if (this.mcProfiler.profilingEnabled)
          {
-@@ -1505,16 +1862,16 @@
+@@ -1505,16 +1860,16 @@
          }
      }
  
@@ -840,7 +839,7 @@
              {
                  BlockPos blockpos = this.objectMouseOver.getBlockPos();
  
-@@ -1524,25 +1881,26 @@
+@@ -1524,25 +1879,26 @@
                      this.thePlayer.swingArm(EnumHand.MAIN_HAND);
                  }
              }
@@ -877,7 +876,7 @@
              }
              else if (!this.thePlayer.isRowingBoat())
              {
-@@ -1558,14 +1916,15 @@
+@@ -1558,14 +1914,15 @@
                          if (this.theWorld.getBlockState(blockpos).getMaterial() != Material.AIR)
                          {
                              this.playerController.clickBlock(blockpos, this.objectMouseOver.sideHit);
@@ -897,7 +896,7 @@
  
                          this.thePlayer.resetCooldown();
                  }
-@@ -1573,14 +1932,18 @@
+@@ -1573,18 +1930,24 @@
                  this.thePlayer.swingArm(EnumHand.MAIN_HAND);
              }
          }
@@ -916,8 +915,15 @@
 -    private void rightClickMouse()
 +     */ void rightClickMouse()
      {
++    	if (rightClickDelayTimer > 0)return;
++    	
          if (!this.playerController.getIsHittingBlock())
          {
+-            this.rightClickDelayTimer = 4;
++            this.rightClickDelayTimer = 12;
+ 
+             if (!this.thePlayer.isRowingBoat())
+             {
 @@ -1594,7 +1957,7 @@
  
                      if (this.objectMouseOver == null)
@@ -998,7 +1004,7 @@
              {
                  this.playerController.onStoppedUsingItem(this.thePlayer);
              }
-@@ -2285,11 +2644,21 @@
+@@ -2285,15 +2644,25 @@
          }
          else
          {
@@ -1007,6 +1013,7 @@
 -                this.clickMouse();
 -            }
 -
+-            while (this.gameSettings.keyBindUseItem.isPressed())
 +        	//VIVE SUPPORT HAND SWINGING
 +        	if (this.gameSettings.keyBindAttack.isKeyDown() && currentScreen == null)
 +        	{
@@ -1022,9 +1029,14 @@
 +        	}
 +            ///END VIVE
 +            
-             while (this.gameSettings.keyBindUseItem.isPressed())
++            if (this.gameSettings.keyBindUseItem.isKeyDown() && currentScreen == null)
              {
                  this.rightClickMouse();
+-            }
++            }else {this.rightClickDelayTimer = 0;}
+ 
+             while (this.gameSettings.keyBindPickBlock.isPressed())
+             {
 @@ -2306,7 +2675,6 @@
              this.rightClickMouse();
          }
@@ -1083,7 +1095,7 @@
      {
          if (this.objectMouseOver != null && this.objectMouseOver.typeOfHit != RayTraceResult.Type.MISS)
          {
-@@ -3417,4 +3796,1079 @@
+@@ -3417,4 +3796,1078 @@
      {
          return this.thePlayer != null && this.thePlayer.hasReducedDebug() || this.gameSettings.reducedDebugInfo;
      }
@@ -1132,9 +1144,10 @@
 +				Vector3f CameraLook = new Vector3f(-(f1 * f2), f3, -f * f2);
 +
 +				Vec3d camplayer = entityRenderer.getEyeRenderPos(renderPass.Third).subtract(entityRenderer.getEyeRenderPos(renderPass.Center));
-+										
++							
 +				GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
 +				GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, framebuffer.framebufferObject);
++				
 +				GlStateManager.clearColor(vrSettings.mixedRealityKeyColor.getRed() / 255F, vrSettings.mixedRealityKeyColor.getGreen() / 255F, vrSettings.mixedRealityKeyColor.getBlue() / 255F, 1);
 +				GlStateManager.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 +				for(int i = 0; i < 2; i++) {
@@ -1168,16 +1181,20 @@
 +					ARBShaderObjects.glUniform3fARB(_DepthMask_keyColorUniform, vrSettings.mixedRealityKeyColor.getRed() / 255F, vrSettings.mixedRealityKeyColor.getGreen() / 255F, vrSettings.mixedRealityKeyColor.getBlue() / 255F);
 +
 +					// bind color and depth textures
-+					GL13.glActiveTexture(GL13.GL_TEXTURE1);
++					GlStateManager.setActiveTexture(GL13.GL_TEXTURE1);
 +					framebuffer.bindFramebufferTexture();
-+					GL13.glActiveTexture(GL13.GL_TEXTURE2);
-+					if (hasShaders) GL11.glBindTexture(GL11.GL_TEXTURE_2D, entityRenderer.smcDepthBuffer); // shaders mod has it's own depth buffer
-+					else GL11.glBindTexture(GL11.GL_TEXTURE_2D, framebuffer.depthBuffer);
-+					GL13.glActiveTexture(GL13.GL_TEXTURE0);
++					GlStateManager.setActiveTexture(GL13.GL_TEXTURE2);
++					
++					if (hasShaders) 
++						GlStateManager.bindTexture(entityRenderer.smcDepthBuffer); // shaders mod has it's own depth buffer
++					else 
++						GlStateManager.bindTexture(framebuffer.depthBuffer);
++					
++					GlStateManager.setActiveTexture(GL13.GL_TEXTURE0);
 +
++					
 +					// draw framebuffer
 +					framebufferMc.framebufferRenderExt((displayWidth / 2) * i, displayWidth / 2, displayHeight, 0, true);
-+
 +					OpenGlHelper.glUseProgram(0);
 +				}
 +				return true;
@@ -1552,14 +1569,16 @@
 +		
 +	}
 +
-+	public void doStencilForEye(int i) {
-+		
++	public void doStencilForEye(int i) {	
 +		float[] verts = stereoProvider.getStencilMask(this.currentPass);
 +		if (verts == null) return;
 +			//START STENCIL TESTING - Yes I know there's about 15 better ways to do this.
 +				GL11.glEnable(GL11.GL_STENCIL_TEST);
++				GlStateManager.disableAlpha();
++				GlStateManager.disableDepth();
 +		        GlStateManager.disableTexture2D();
 +				GlStateManager.disableCull();
++				
 +				GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);
 +				GL11.glStencilMask(0xFF); // Write to stencil buffer
 +				GlStateManager.clear(GL11.GL_STENCIL_BUFFER_BIT); // Clear stencil buffer (0 by default)
@@ -1571,9 +1590,9 @@
 +				GL11.glLoadIdentity();
 +				GL11.glMatrixMode(GL11.GL_MODELVIEW);
 +				GlStateManager.pushMatrix();
-+				GL11.glLoadIdentity();
-+				GL11.glOrtho(0.0D, displayFBWidth,displayFBHeight, 0.0D, -10, 20.0D);
-+				GL11.glViewport(0, 0, displayFBWidth, displayFBHeight);
++				GlStateManager.loadIdentity();
++				GlStateManager.ortho(0.0D, displayFBWidth,displayFBHeight, 0.0D, -10, 20.0D);
++				GlStateManager.viewport(0, 0, displayFBWidth, displayFBHeight);
 +
 +				GL11.glBegin(GL11.GL_TRIANGLES);
 +
@@ -1585,7 +1604,6 @@
 +				GL11.glStencilFunc(GL11.GL_NOTEQUAL, 0xFF, 1);
 +				GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP);
 +				GlStateManager.depthMask(true); // Do write to depth buffer
-+				GlStateManager.enableCull();
 +				GL11.glStencilMask(0x0); // Dont Write to stencil buffer
 +				
 +				GL11.glMatrixMode(GL11.GL_PROJECTION);
@@ -1593,6 +1611,11 @@
 +				GL11.glMatrixMode(GL11.GL_MODELVIEW);
 +				GlStateManager.popMatrix();
 +				
++				GlStateManager.enableDepth();
++				GlStateManager.enableAlpha();
++				GlStateManager.enableTexture2D();
++				GlStateManager.enableCull();
++		
 +				/// END STENCIL TESTING
 +	}
 +
@@ -1780,23 +1803,11 @@
 +		return this.stereoProvider.getCurrentTimeSecs();
 +	}
 +
++boolean w;
++
 +	private void doPostProcessing(long frameIndex, float nano)
 +	{	
-+		// VIVE start - screen flash when hurt instead of view tilt
-+//		Entity player = getRenderViewEntity();
-+//		if (player!=null && player.getHealth() > 0.0f)
-+//		{
-+//			float var3 = (float)player.hurtTime - nano;
-+//			if (var3>0.0f)
-+//			{
-+//				var3 /= (float) player.maxHurtTime;
-+//				var3 = MathHelper.sin(var3 * var3 * var3 * var3 * (float) Math.PI) * 0.5f;
-+//				final Color3f rgb = new Color3f(255.0f, 0f, 0f);
-+//				this.entityRenderer.renderFadeBlend(rgb, var3);
-+//			}
-+//		}
-+		// VIVE end - screen flash when hurt instead of view tilt
-+
++		
 +		if (showSplashScreen && splashFadeAlpha > 0)
 +		{
 +		//	final Color3f rgb = new Color3f(0f, 0f, 0f);
@@ -2087,7 +2098,7 @@
 +	
 +	
 +	private boolean renderSingleView(int eye, float nano) {
-+		boolean shouldupdate;
++		boolean shouldupdate = false;
 +	
 +				if (this.entityRenderer != null)
 +				{

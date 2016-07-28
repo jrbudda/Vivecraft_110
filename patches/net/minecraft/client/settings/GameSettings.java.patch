@@ -28,6 +28,15 @@
  
              Config.updateFramebufferSize();
          }
+@@ -2927,7 +2927,7 @@
+         this.guiScale = 0;
+         this.particleSetting = 0;
+         this.heldItemTooltips = true;
+-        this.useVbo = false;
++        this.useVbo = true;
+         this.forceUnicodeFont = false;
+         this.ofFogType = 1;
+         this.ofFogStart = 0.8F;
 @@ -2938,7 +2938,7 @@
          this.ofSmoothWorld = Config.isSingleProcessor();
          this.ofLazyChunkLoading = Config.isSingleProcessor();

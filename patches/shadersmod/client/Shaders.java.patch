@@ -81,7 +81,19 @@
          {
              resize();
          }
-@@ -3245,16 +3252,15 @@
+@@ -3145,8 +3152,9 @@
+         float f2 = (float)Math.exp(Math.log(0.5D) * (double)f1 / (double)eyeBrightnessHalflife);
+         eyeBrightnessFadeX = eyeBrightnessFadeX * f2 + (float)(eyeBrightness & 65535) * (1.0F - f2);
+         eyeBrightnessFadeY = eyeBrightnessFadeY * f2 + (float)(eyeBrightness >> 16) * (1.0F - f2);
+-        isEyeInWater = mc.gameSettings.thirdPersonView == 0 && !isSleeping && mc.thePlayer.isInsideOfMaterial(Material.WATER) ? 1 : 0;
+-        Vec3d vec3d = mc.theWorld.getSkyColor(mc.getRenderViewEntity(), partialTicks);
++        //VIVE use my method its better.
++        isEyeInWater = mc.gameSettings.thirdPersonView == 0 && !isSleeping && mc.getItemRenderer().isInsideOfMaterial(mc.entityRenderer.getEyeRenderPos(mc.currentPass),Material.WATER) ? 1 : 0;
++        Vec3d vec3d = mc.theWorld.getSkyColor(entity, partialTicks);
+         skyColorR = (float)vec3d.xCoord;
+         skyColorG = (float)vec3d.yCoord;
+         skyColorB = (float)vec3d.zCoord;
+@@ -3245,16 +3253,15 @@
          checkGLError("end beginRender");
      }
  
@@ -104,7 +116,7 @@
                  boolean flag = shaderPackDimensions.contains(Integer.valueOf(i));
                  boolean flag1 = shaderPackDimensions.contains(Integer.valueOf(j));
  
-@@ -3263,6 +3269,7 @@
+@@ -3263,6 +3270,7 @@
                      uninit();
                  }
              }
@@ -112,7 +124,16 @@
          }
      }
  
-@@ -3337,16 +3344,16 @@
+@@ -3327,7 +3335,7 @@
+         {
+             checkGLError("shadow clear pre");
+             EXTFramebufferObject.glFramebufferTexture2DEXT(36160, 36096, 3553, sfbDepthTextures.get(0), 0);
+-            GL11.glClearColor(1.0F, 1.0F, 1.0F, 1.0F);
++            GlStateManager.clearColor(1.0F, 1.0F, 1.0F, 1.0F);
+             GL20.glDrawBuffers(programsDrawBuffers[30]);
+             checkFramebufferStatus("shadow clear");
+             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+@@ -3337,16 +3345,16 @@
          {
              checkGLError("clear pre");
              GL20.glDrawBuffers(36064);
@@ -134,7 +155,7 @@
              }
  
              setDrawBuffers(dfbDrawBuffers);
-@@ -3523,7 +3530,7 @@
+@@ -3523,7 +3531,7 @@
  
      public static void drawComposite()
      {
@@ -143,7 +164,7 @@
          GL11.glBegin(GL11.GL_QUADS);
          GL11.glTexCoord2f(0.0F, 0.0F);
          GL11.glVertex3f(0.0F, 0.0F, 0.0F);
-@@ -3547,7 +3554,7 @@
+@@ -3547,7 +3555,7 @@
              GL11.glPushMatrix();
              GL11.glLoadIdentity();
              GL11.glOrtho(0.0D, 1.0D, 0.0D, 1.0D, 0.0D, 1.0D);
@@ -152,7 +173,7 @@
              GlStateManager.enableTexture2D();
              GlStateManager.disableAlpha();
              GlStateManager.disableBlend();
-@@ -3651,7 +3658,7 @@
+@@ -3651,7 +3659,7 @@
              isRenderingDfb = false;
              mc.getFramebuffer().bindFramebuffer(true);
              OpenGlHelper.glFramebufferTexture2D(OpenGlHelper.GL_FRAMEBUFFER, OpenGlHelper.GL_COLOR_ATTACHMENT0, 3553, mc.getFramebuffer().framebufferTexture, 0);
@@ -161,16 +182,20 @@
  
              if (EntityRenderer.anaglyphEnable)
              {
-@@ -3662,7 +3669,7 @@
+@@ -3660,9 +3668,9 @@
+             }
+ 
              GlStateManager.depthMask(true);
-             GL11.glClearColor(clearColorR, clearColorG, clearColorB, 1.0F);
-             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+-            GL11.glClearColor(clearColorR, clearColorG, clearColorB, 1.0F);
+-            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 -            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
++            GlStateManager.clearColor(clearColorR, clearColorG, clearColorB, 1.0F);
++            GlStateManager.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 +            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
              GlStateManager.enableTexture2D();
              GlStateManager.disableAlpha();
              GlStateManager.disableBlend();
-@@ -3780,9 +3787,9 @@
+@@ -3780,9 +3788,9 @@
  
      public static void preSkyList()
      {
@@ -182,7 +207,7 @@
      }
  
      public static void endSky()
-@@ -4116,7 +4123,8 @@
+@@ -4116,7 +4124,8 @@
      public static void endFPOverlay()
      {
      }
@@ -192,7 +217,7 @@
      public static void glEnableWrapper(int cap)
      {
          GL11.glEnable(cap);
-@@ -4131,6 +4139,7 @@
+@@ -4131,6 +4140,7 @@
          }
      }
  
@@ -200,7 +225,7 @@
      public static void glDisableWrapper(int cap)
      {
          GL11.glDisable(cap);
-@@ -4384,7 +4393,7 @@
+@@ -4384,7 +4394,7 @@
  
                          for (Object s7 : properties.keySet())
                          {

@@ -95,6 +95,8 @@ public class JOpenVRLibrary implements Library {
 		public static final int ETrackedDeviceProperty_Prop_Firmware_ProgrammingTarget_String = 1028;
 		public static final int ETrackedDeviceProperty_Prop_DeviceClass_Int32 = 1029;
 		public static final int ETrackedDeviceProperty_Prop_HasCamera_Bool = 1030;
+		public static final int ETrackedDeviceProperty_Prop_DriverVersion_String = 1031;
+		public static final int ETrackedDeviceProperty_Prop_Firmware_ForceUpdateRequired_Bool = 1032;
 		public static final int ETrackedDeviceProperty_Prop_ReportsTimeSinceVSync_Bool = 2000;
 		public static final int ETrackedDeviceProperty_Prop_SecondsFromVsyncToPhotons_Float = 2001;
 		public static final int ETrackedDeviceProperty_Prop_DisplayFrequency_Float = 2002;
@@ -128,6 +130,10 @@ public class JOpenVRLibrary implements Library {
 		public static final int ETrackedDeviceProperty_Prop_DisplayBootloaderVersion_Uint64 = 2030;
 		public static final int ETrackedDeviceProperty_Prop_DisplayHardwareVersion_Uint64 = 2031;
 		public static final int ETrackedDeviceProperty_Prop_AudioFirmwareVersion_Uint64 = 2032;
+		public static final int ETrackedDeviceProperty_Prop_CameraCompatibilityMode_Int32 = 2033;
+		public static final int ETrackedDeviceProperty_Prop_ScreenshotHorizontalFieldOfViewDegrees_Float = 2034;
+		public static final int ETrackedDeviceProperty_Prop_ScreenshotVerticalFieldOfViewDegrees_Float = 2035;
+		public static final int ETrackedDeviceProperty_Prop_DisplaySuppressed_Bool = 2036;
 		public static final int ETrackedDeviceProperty_Prop_AttachedDeviceId_String = 3000;
 		public static final int ETrackedDeviceProperty_Prop_SupportedButtons_Uint64 = 3001;
 		public static final int ETrackedDeviceProperty_Prop_Axis0Type_Int32 = 3002;
@@ -135,6 +141,7 @@ public class JOpenVRLibrary implements Library {
 		public static final int ETrackedDeviceProperty_Prop_Axis2Type_Int32 = 3004;
 		public static final int ETrackedDeviceProperty_Prop_Axis3Type_Int32 = 3005;
 		public static final int ETrackedDeviceProperty_Prop_Axis4Type_Int32 = 3006;
+		public static final int ETrackedDeviceProperty_Prop_ControllerRoleHint_Int32 = 3007;
 		public static final int ETrackedDeviceProperty_Prop_FieldOfViewLeftDegrees_Float = 4000;
 		public static final int ETrackedDeviceProperty_Prop_FieldOfViewRightDegrees_Float = 4001;
 		public static final int ETrackedDeviceProperty_Prop_FieldOfViewTopDegrees_Float = 4002;
@@ -173,6 +180,8 @@ public class JOpenVRLibrary implements Library {
 		public static final int EVRState_VRState_Ready = 3;
 		public static final int EVRState_VRState_Ready_Alert = 4;
 		public static final int EVRState_VRState_NotReady = 5;
+		public static final int EVRState_VRState_Standby = 6;
+		public static final int EVRState_VRState_Ready_Alert_Low = 7;
 	};
 	/** enum values */
 	public static interface EVREventType {
@@ -186,6 +195,7 @@ public class JOpenVRLibrary implements Library {
 		public static final int EVREventType_VREvent_EnterStandbyMode = 106;
 		public static final int EVREventType_VREvent_LeaveStandbyMode = 107;
 		public static final int EVREventType_VREvent_TrackedDeviceRoleChanged = 108;
+		public static final int EVREventType_VREvent_WatchdogWakeUpRequested = 109;
 		public static final int EVREventType_VREvent_ButtonPress = 200;
 		public static final int EVREventType_VREvent_ButtonUnpress = 201;
 		public static final int EVREventType_VREvent_ButtonTouch = 202;
@@ -197,12 +207,15 @@ public class JOpenVRLibrary implements Library {
 		public static final int EVREventType_VREvent_FocusLeave = 304;
 		public static final int EVREventType_VREvent_Scroll = 305;
 		public static final int EVREventType_VREvent_TouchPadMove = 306;
+		public static final int EVREventType_VREvent_OverlayFocusChanged = 307;
 		public static final int EVREventType_VREvent_InputFocusCaptured = 400;
 		public static final int EVREventType_VREvent_InputFocusReleased = 401;
 		public static final int EVREventType_VREvent_SceneFocusLost = 402;
 		public static final int EVREventType_VREvent_SceneFocusGained = 403;
 		public static final int EVREventType_VREvent_SceneApplicationChanged = 404;
 		public static final int EVREventType_VREvent_SceneFocusChanged = 405;
+		public static final int EVREventType_VREvent_InputFocusChanged = 406;
+		public static final int EVREventType_VREvent_SceneApplicationSecondaryRenderingStarted = 407;
 		public static final int EVREventType_VREvent_HideRenderModels = 410;
 		public static final int EVREventType_VREvent_ShowRenderModels = 411;
 		public static final int EVREventType_VREvent_OverlayShown = 500;
@@ -218,6 +231,16 @@ public class JOpenVRLibrary implements Library {
 		public static final int EVREventType_VREvent_HideKeyboard = 510;
 		public static final int EVREventType_VREvent_OverlayGamepadFocusGained = 511;
 		public static final int EVREventType_VREvent_OverlayGamepadFocusLost = 512;
+		public static final int EVREventType_VREvent_OverlaySharedTextureChanged = 513;
+		public static final int EVREventType_VREvent_DashboardGuideButtonDown = 514;
+		public static final int EVREventType_VREvent_DashboardGuideButtonUp = 515;
+		public static final int EVREventType_VREvent_ScreenshotTriggered = 516;
+		public static final int EVREventType_VREvent_ImageFailed = 517;
+		public static final int EVREventType_VREvent_RequestScreenshot = 520;
+		public static final int EVREventType_VREvent_ScreenshotTaken = 521;
+		public static final int EVREventType_VREvent_ScreenshotFailed = 522;
+		public static final int EVREventType_VREvent_SubmitScreenshotToDashboard = 523;
+		public static final int EVREventType_VREvent_ScreenshotProgressToDashboard = 524;
 		public static final int EVREventType_VREvent_Notification_Shown = 600;
 		public static final int EVREventType_VREvent_Notification_Hidden = 601;
 		public static final int EVREventType_VREvent_Notification_BeginInteraction = 602;
@@ -226,13 +249,18 @@ public class JOpenVRLibrary implements Library {
 		public static final int EVREventType_VREvent_ProcessQuit = 701;
 		public static final int EVREventType_VREvent_QuitAborted_UserPrompt = 702;
 		public static final int EVREventType_VREvent_QuitAcknowledged = 703;
+		public static final int EVREventType_VREvent_DriverRequestedQuit = 704;
 		public static final int EVREventType_VREvent_ChaperoneDataHasChanged = 800;
 		public static final int EVREventType_VREvent_ChaperoneUniverseHasChanged = 801;
 		public static final int EVREventType_VREvent_ChaperoneTempDataHasChanged = 802;
 		public static final int EVREventType_VREvent_ChaperoneSettingsHaveChanged = 803;
 		public static final int EVREventType_VREvent_SeatedZeroPoseReset = 804;
+		public static final int EVREventType_VREvent_AudioSettingsHaveChanged = 820;
 		public static final int EVREventType_VREvent_BackgroundSettingHasChanged = 850;
 		public static final int EVREventType_VREvent_CameraSettingsHaveChanged = 851;
+		public static final int EVREventType_VREvent_ReprojectionSettingHasChanged = 852;
+		public static final int EVREventType_VREvent_ModelSkinSettingsHaveChanged = 853;
+		public static final int EVREventType_VREvent_EnvironmentSettingsHaveChanged = 854;
 		public static final int EVREventType_VREvent_StatusUpdate = 900;
 		public static final int EVREventType_VREvent_MCImageUpdated = 1000;
 		public static final int EVREventType_VREvent_FirmwareUpdateStarted = 1100;
@@ -243,6 +271,8 @@ public class JOpenVRLibrary implements Library {
 		public static final int EVREventType_VREvent_ApplicationTransitionStarted = 1300;
 		public static final int EVREventType_VREvent_ApplicationTransitionAborted = 1301;
 		public static final int EVREventType_VREvent_ApplicationTransitionNewAppStarted = 1302;
+		public static final int EVREventType_VREvent_ApplicationListUpdated = 1303;
+		public static final int EVREventType_VREvent_ApplicationMimeTypeLoad = 1304;
 		public static final int EVREventType_VREvent_Compositor_MirrorWindowShown = 1400;
 		public static final int EVREventType_VREvent_Compositor_MirrorWindowHidden = 1401;
 		public static final int EVREventType_VREvent_Compositor_ChaperoneBoundsShown = 1410;
@@ -341,6 +371,9 @@ public class JOpenVRLibrary implements Library {
 		public static final int EVRApplicationType_VRApplication_Overlay = 2;
 		public static final int EVRApplicationType_VRApplication_Background = 3;
 		public static final int EVRApplicationType_VRApplication_Utility = 4;
+		public static final int EVRApplicationType_VRApplication_VRMonitor = 5;
+		public static final int EVRApplicationType_VRApplication_SteamWatchdog = 6;
+		public static final int EVRApplicationType_VRApplication_Max = 7;
 	};
 	/** enum values */
 	public static interface EVRFirmwareError {
@@ -354,6 +387,7 @@ public class JOpenVRLibrary implements Library {
 		public static final int EVRNotificationError_VRNotificationError_InvalidNotificationId = 100;
 		public static final int EVRNotificationError_VRNotificationError_NotificationQueueFull = 101;
 		public static final int EVRNotificationError_VRNotificationError_InvalidOverlayHandle = 102;
+		public static final int EVRNotificationError_VRNotificationError_SystemWithUserValueAlreadyExists = 103;
 	};
 	/** enum values */
 	public static interface EVRInitError {
@@ -383,6 +417,15 @@ public class JOpenVRLibrary implements Library {
 		public static final int EVRInitError_VRInitError_Init_NoServerForBackgroundApp = 121;
 		public static final int EVRInitError_VRInitError_Init_NotSupportedWithCompositor = 122;
 		public static final int EVRInitError_VRInitError_Init_NotAvailableToUtilityApps = 123;
+		public static final int EVRInitError_VRInitError_Init_Internal = 124;
+		public static final int EVRInitError_VRInitError_Init_HmdDriverIdIsNone = 125;
+		public static final int EVRInitError_VRInitError_Init_HmdNotFoundPresenceFailed = 126;
+		public static final int EVRInitError_VRInitError_Init_VRMonitorNotFound = 127;
+		public static final int EVRInitError_VRInitError_Init_VRMonitorStartupFailed = 128;
+		public static final int EVRInitError_VRInitError_Init_LowPowerWatchdogNotSupported = 129;
+		public static final int EVRInitError_VRInitError_Init_InvalidApplicationType = 130;
+		public static final int EVRInitError_VRInitError_Init_NotAvailableToWatchdogApps = 131;
+		public static final int EVRInitError_VRInitError_Init_WatchdogDisabledInSettings = 132;
 		public static final int EVRInitError_VRInitError_Driver_Failed = 200;
 		public static final int EVRInitError_VRInitError_Driver_Unknown = 201;
 		public static final int EVRInitError_VRInitError_Driver_HmdUnknown = 202;
@@ -392,14 +435,23 @@ public class JOpenVRLibrary implements Library {
 		public static final int EVRInitError_VRInitError_Driver_NotCalibrated = 206;
 		public static final int EVRInitError_VRInitError_Driver_CalibrationInvalid = 207;
 		public static final int EVRInitError_VRInitError_Driver_HmdDisplayNotFound = 208;
+		public static final int EVRInitError_VRInitError_Driver_TrackedDeviceInterfaceUnknown = 209;
+		public static final int EVRInitError_VRInitError_Driver_HmdDriverIdOutOfBounds = 211;
+		public static final int EVRInitError_VRInitError_Driver_HmdDisplayMirrored = 212;
 		public static final int EVRInitError_VRInitError_IPC_ServerInitFailed = 300;
 		public static final int EVRInitError_VRInitError_IPC_ConnectFailed = 301;
 		public static final int EVRInitError_VRInitError_IPC_SharedStateInitFailed = 302;
 		public static final int EVRInitError_VRInitError_IPC_CompositorInitFailed = 303;
 		public static final int EVRInitError_VRInitError_IPC_MutexInitFailed = 304;
 		public static final int EVRInitError_VRInitError_IPC_Failed = 305;
+		public static final int EVRInitError_VRInitError_IPC_CompositorConnectFailed = 306;
+		public static final int EVRInitError_VRInitError_IPC_CompositorInvalidConnectResponse = 307;
+		public static final int EVRInitError_VRInitError_IPC_ConnectFailedAfterMultipleAttempts = 308;
 		public static final int EVRInitError_VRInitError_Compositor_Failed = 400;
 		public static final int EVRInitError_VRInitError_Compositor_D3D11HardwareRequired = 401;
+		public static final int EVRInitError_VRInitError_Compositor_FirmwareRequiresUpdate = 402;
+		public static final int EVRInitError_VRInitError_Compositor_OverlayInitFailed = 403;
+		public static final int EVRInitError_VRInitError_Compositor_ScreenshotsInitFailed = 404;
 		public static final int EVRInitError_VRInitError_VendorSpecific_UnableToConnectToOculusRuntime = 1000;
 		public static final int EVRInitError_VRInitError_VendorSpecific_HmdFound_CantOpenDevice = 1101;
 		public static final int EVRInitError_VRInitError_VendorSpecific_HmdFound_UnableToRequestConfigStart = 1102;
@@ -417,6 +469,46 @@ public class JOpenVRLibrary implements Library {
 		public static final int EVRInitError_VRInitError_Steam_SteamInstallationNotFound = 2000;
 	};
 	/** enum values */
+	public static interface EVRScreenshotType {
+		public static final int EVRScreenshotType_VRScreenshotType_None = 0;
+		public static final int EVRScreenshotType_VRScreenshotType_Mono = 1;
+		public static final int EVRScreenshotType_VRScreenshotType_Stereo = 2;
+		public static final int EVRScreenshotType_VRScreenshotType_Cubemap = 3;
+		public static final int EVRScreenshotType_VRScreenshotType_MonoPanorama = 4;
+		public static final int EVRScreenshotType_VRScreenshotType_StereoPanorama = 5;
+	};
+	/** enum values */
+	public static interface EVRScreenshotPropertyFilenames {
+		public static final int EVRScreenshotPropertyFilenames_VRScreenshotPropertyFilenames_Preview = 0;
+		public static final int EVRScreenshotPropertyFilenames_VRScreenshotPropertyFilenames_VR = 1;
+	};
+	/** enum values */
+	public static interface EVRTrackedCameraError {
+		public static final int EVRTrackedCameraError_VRTrackedCameraError_None = 0;
+		public static final int EVRTrackedCameraError_VRTrackedCameraError_OperationFailed = 100;
+		public static final int EVRTrackedCameraError_VRTrackedCameraError_InvalidHandle = 101;
+		public static final int EVRTrackedCameraError_VRTrackedCameraError_InvalidFrameHeaderVersion = 102;
+		public static final int EVRTrackedCameraError_VRTrackedCameraError_OutOfHandles = 103;
+		public static final int EVRTrackedCameraError_VRTrackedCameraError_IPCFailure = 104;
+		public static final int EVRTrackedCameraError_VRTrackedCameraError_NotSupportedForThisDevice = 105;
+		public static final int EVRTrackedCameraError_VRTrackedCameraError_SharedMemoryFailure = 106;
+		public static final int EVRTrackedCameraError_VRTrackedCameraError_FrameBufferingFailure = 107;
+		public static final int EVRTrackedCameraError_VRTrackedCameraError_StreamSetupFailure = 108;
+		public static final int EVRTrackedCameraError_VRTrackedCameraError_InvalidGLTextureId = 109;
+		public static final int EVRTrackedCameraError_VRTrackedCameraError_InvalidSharedTextureHandle = 110;
+		public static final int EVRTrackedCameraError_VRTrackedCameraError_FailedToGetGLTextureId = 111;
+		public static final int EVRTrackedCameraError_VRTrackedCameraError_SharedTextureFailure = 112;
+		public static final int EVRTrackedCameraError_VRTrackedCameraError_NoFrameAvailable = 113;
+		public static final int EVRTrackedCameraError_VRTrackedCameraError_InvalidArgument = 114;
+		public static final int EVRTrackedCameraError_VRTrackedCameraError_InvalidFrameBufferSize = 115;
+	};
+	/** enum values */
+	public static interface EVRTrackedCameraFrameType {
+		public static final int EVRTrackedCameraFrameType_VRTrackedCameraFrameType_Distorted = 0;
+		public static final int EVRTrackedCameraFrameType_VRTrackedCameraFrameType_Undistorted = 1;
+		public static final int EVRTrackedCameraFrameType_VRTrackedCameraFrameType_MaximumUndistorted = 2;
+		public static final int EVRTrackedCameraFrameType_MAX_CAMERA_FRAME_TYPES = 3;
+	};
 	public static interface EVRApplicationError {
 		public static final int EVRApplicationError_VRApplicationError_None = 0;
 		public static final int EVRApplicationError_VRApplicationError_AppKeyAlreadyExists = 100;
@@ -433,9 +525,11 @@ public class JOpenVRLibrary implements Library {
 		public static final int EVRApplicationError_VRApplicationError_LaunchInProgress = 111;
 		public static final int EVRApplicationError_VRApplicationError_OldApplicationQuitting = 112;
 		public static final int EVRApplicationError_VRApplicationError_TransitionAborted = 113;
+		public static final int EVRApplicationError_VRApplicationError_IsTemplate = 114;
 		public static final int EVRApplicationError_VRApplicationError_BufferTooSmall = 200;
 		public static final int EVRApplicationError_VRApplicationError_PropertyNotSet = 201;
 		public static final int EVRApplicationError_VRApplicationError_UnknownProperty = 202;
+		public static final int EVRApplicationError_VRApplicationError_InvalidParameter = 203;
 	};
 	/** enum values */
 	public static interface EVRApplicationProperty {
@@ -450,6 +544,8 @@ public class JOpenVRLibrary implements Library {
 		public static final int EVRApplicationProperty_VRApplicationProperty_ImagePath_String = 52;
 		public static final int EVRApplicationProperty_VRApplicationProperty_Source_String = 53;
 		public static final int EVRApplicationProperty_VRApplicationProperty_IsDashboardOverlay_Bool = 60;
+		public static final int EVRApplicationProperty_VRApplicationProperty_IsTemplate_Bool = 61;
+		public static final int EVRApplicationProperty_VRApplicationProperty_IsInstanced_Bool = 62;
 		public static final int EVRApplicationProperty_VRApplicationProperty_LastLaunchTime_Uint64 = 70;
 	};
 	/** enum values */
@@ -478,8 +574,12 @@ public class JOpenVRLibrary implements Library {
 		public static final int EChaperoneConfigFile_Temp = 2;
 	};
 	/** enum values */
+	public static interface EChaperoneImportFlags {
+		public static final int EChaperoneImportFlags_EChaperoneImport_BoundsOnly = 1;
+	};
 	public static interface EVRCompositorError {
 		public static final int EVRCompositorError_VRCompositorError_None = 0;
+		public static final int EVRCompositorError_VRCompositorError_RequestFailed = 1;
 		public static final int EVRCompositorError_VRCompositorError_IncompatibleVersion = 100;
 		public static final int EVRCompositorError_VRCompositorError_DoNotHaveFocus = 101;
 		public static final int EVRCompositorError_VRCompositorError_InvalidTexture = 102;
@@ -512,6 +612,12 @@ public class JOpenVRLibrary implements Library {
 		public static final int VROverlayFlags_SendVRScrollEvents = 6;
 		public static final int VROverlayFlags_SendVRTouchpadEvents = 7;
 		public static final int VROverlayFlags_ShowTouchPadScrollWheel = 8;
+		public static final int VROverlayFlags_TransferOwnershipToInternalProcess = 9;
+		public static final int VROverlayFlags_SideBySide_Parallel = 10;
+		public static final int VROverlayFlags_SideBySide_Crossed = 11;
+		public static final int VROverlayFlags_Panorama = 12;
+		public static final int VROverlayFlags_StereoPanorama = 13;
+		public static final int VROverlayFlags_SortWithNonSceneOverlays = 14;
 	};
 	/** enum values */
 	public static interface EGamepadTextInputMode {
@@ -541,8 +647,11 @@ public class JOpenVRLibrary implements Library {
 		public static final int EVRRenderModelError_VRRenderModelError_InvalidModel = 301;
 		public static final int EVRRenderModelError_VRRenderModelError_NoShapes = 302;
 		public static final int EVRRenderModelError_VRRenderModelError_MultipleShapes = 303;
-		public static final int EVRRenderModelError_VRRenderModelError_TooManyIndices = 304;
+		public static final int EVRRenderModelError_VRRenderModelError_TooManyVertices = 304;
 		public static final int EVRRenderModelError_VRRenderModelError_MultipleTextures = 305;
+		public static final int EVRRenderModelError_VRRenderModelError_BufferTooSmall = 306;
+		public static final int EVRRenderModelError_VRRenderModelError_NotEnoughNormals = 307;
+		public static final int EVRRenderModelError_VRRenderModelError_NotEnoughTexCoords = 308;
 		public static final int EVRRenderModelError_VRRenderModelError_InvalidTexture = 400;
 	};
 	/** enum values */
@@ -557,6 +666,7 @@ public class JOpenVRLibrary implements Library {
 	public static interface EVRNotificationType {
 		public static final int EVRNotificationType_Transient = 0;
 		public static final int EVRNotificationType_Persistent = 1;
+		public static final int EVRNotificationType_Transient_SystemWithUserValue = 2;
 	};
 	/** enum values */
 	public static interface EVRNotificationStyle {
@@ -574,22 +684,25 @@ public class JOpenVRLibrary implements Library {
 		public static final int EVRSettingsError_VRSettingsError_ReadFailed = 3;
 	};
 	/** enum values */
-	public static interface ECameraVideoStreamFormat {
-		public static final int ECameraVideoStreamFormat_CVS_FORMAT_UNKNOWN = 0;
-		public static final int ECameraVideoStreamFormat_CVS_FORMAT_RAW10 = 1;
-		public static final int ECameraVideoStreamFormat_CVS_FORMAT_NV12 = 2;
-		public static final int ECameraVideoStreamFormat_CVS_FORMAT_RGB24 = 3;
-		public static final int ECameraVideoStreamFormat_CVS_MAX_FORMATS = 4;
+	public static interface EVRScreenshotError {
+		public static final int EVRScreenshotError_VRScreenshotError_None = 0;
+		public static final int EVRScreenshotError_VRScreenshotError_RequestFailed = 1;
+		public static final int EVRScreenshotError_VRScreenshotError_IncompatibleVersion = 100;
+		public static final int EVRScreenshotError_VRScreenshotError_NotFound = 101;
+		public static final int EVRScreenshotError_VRScreenshotError_BufferTooSmall = 102;
+		public static final int EVRScreenshotError_VRScreenshotError_ScreenshotAlreadyInProgress = 108;
 	};
 	/** OpenVR Constants */
 	public static final int k_unTrackingStringSize = 32;
 	public static final int k_unMaxDriverDebugResponseSize = 32768;
 	public static final int k_unTrackedDeviceIndex_Hmd = 0;
 	public static final int k_unMaxTrackedDeviceCount = 16;
-	public static final int k_unTrackedDeviceIndexInvalid = -1; //4294967295L;
+	public static final int k_unTrackedDeviceIndexOther = 0xFFFFFFFF;
+	public static final int k_unTrackedDeviceIndexInvalid = 0xFFFFFFFF;
 	public static final int k_unMaxPropertyStringSize = 32768;
 	public static final int k_unControllerStateAxisCount = 5;
 	public static final long k_ulOverlayHandleInvalid = 0;
+	public static final int k_unScreenshotHandleInvalid = 0;
 	public static final int k_unMaxApplicationKeyLength = 128;
 	public static final int k_unVROverlayMaxKeyLength = 128;
 	public static final int k_unVROverlayMaxNameLength = 128;
@@ -628,15 +741,17 @@ public class JOpenVRLibrary implements Library {
 	public static native Pointer VR_GetVRInitErrorAsEnglishDescription(int error);
 
 	public static String IVRSystem_Version = "FnTable:IVRSystem_012";
-	public static String IVRApplications_Version = "FnTable:IVRApplications_005";
+	public static String IVRApplications_Version = "FnTable:IVRApplications_006";
 	public static String IVRSettings_Version = "FnTable:IVRSettings_001";
 	public static String IVRExtendedDisplay_Version = "FnTable:IVRExtendedDisplay_001";
 	public static String IVRChaperone_Version = "FnTable:IVRChaperone_003";
 	public static String IVRChaperoneSetup_Version = "FnTable:IVRChaperoneSetup_005";
-	public static String IVRCompositor_Version = "FnTable:IVRCompositor_015";
-	public static String IVROverlay_Version = "FnTable:IVROverlay_010";
+	public static String IVRCompositor_Version = "FnTable:IVRCompositor_016";
+	public static String IVROverlay_Version = "FnTable:IVROverlay_013";
 	public static String IVRRenderModels_Version = "FnTable:IVRRenderModels_005";
 	public static String IVRControlPanel_Version = "FnTable:IVRControlPanel_001";
 	public static String IVRNotifications_Version = "FnTable:IVRNotifications_002";
-	public static String IVRTrackedCamera_Version = "FnTable:IVRTrackedCamera_002";
+	public static String IVRTrackedCamera_Version = "FnTable:IVRTrackedCamera_003";
+        public static String IVRScreenshots_Version = "FnTable:IVRScreenshots_001";
+        public static String IVRResources_Version = "FnTable:IVRResources_001";
 }

@@ -1,0 +1,11 @@
+--- a/net/minecraft/client/renderer/GlStateManager.java
++++ b/net/minecraft/client/renderer/GlStateManager.java
+@@ -1003,7 +1003,7 @@
+         }
+     }
+ 
+-    static class Color
++    public static class Color
+     {
+         public float red;
+         public float green;

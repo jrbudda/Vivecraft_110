@@ -14,6 +14,7 @@ import jopenvr.Texture_t;
 import jopenvr.VRTextureBounds_t;
 import net.minecraft.client.Minecraft.renderPass;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager.Color;
 
 import java.nio.IntBuffer;
 
@@ -246,4 +247,6 @@ public class OpenVRStereoRenderer implements IStereoProvider
 		return MCOpenVR.initStatus;
 	}
 
+
+	
 }

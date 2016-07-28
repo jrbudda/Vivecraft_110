@@ -246,7 +246,7 @@ public class VRHotkeys {
 		mc.vrSettings.vrFixedCamposZ = (float) pos.zCoord /mc.vrSettings.vrWorldScale;
 
 		mc.vrSettings.vrFixedCamrotPitch = -Minecraft.getMinecraft().roomScale.getControllerPitch_World(0);
-		mc.vrSettings.vrFixedCamrotYaw = 180- Minecraft.getMinecraft().roomScale.getControllerYaw_World(0) + mc.vrSettings.vrWorldRotation;
+		mc.vrSettings.vrFixedCamrotYaw = Minecraft.getMinecraft().roomScale.getControllerYaw_World(0) + mc.vrSettings.vrWorldRotation;
 		mc.vrSettings.saveOptions();
 	}
 }
