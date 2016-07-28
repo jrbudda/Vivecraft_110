@@ -9,6 +9,15 @@
      static int sfb = 0;
      private static int[] gbuffersFormat = new int[8];
      public static int activeProgram = 0;
+@@ -349,7 +349,7 @@
+     static final FloatBuffer tempMatrixDirectBuffer = nextFloatBuffer(16);
+     static final FloatBuffer tempDirectFloatBuffer = nextFloatBuffer(16);
+     static final IntBuffer dfbColorTextures = nextIntBuffer(16);
+-    static final IntBuffer dfbDepthTextures = nextIntBuffer(3);
++    public static final IntBuffer dfbDepthTextures = nextIntBuffer(3);
+     static final IntBuffer sfbColorTextures = nextIntBuffer(8);
+     static final IntBuffer sfbDepthTextures = nextIntBuffer(2);
+     static final IntBuffer dfbDrawBuffers = nextIntBuffer(8);
 @@ -687,11 +687,11 @@
              flag2 = true;
          }

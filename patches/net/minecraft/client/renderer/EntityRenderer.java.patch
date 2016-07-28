@@ -182,13 +182,11 @@
      private long lastServerTime = 0L;
      private int lastServerTicks = 0;
      private int serverWaitTime = 0;
-@@ -222,6 +298,13 @@
+@@ -222,6 +298,11 @@
      private long lastErrorCheckTimeMs = 0L;
      private ShaderGroup[] fxaaShaders = new ShaderGroup[10];
  
 +	Frustum currentFrustum = new Frustum();
-+	
-+	public int smcDepthBuffer;
 +	
 +	public boolean irpUpdatedThisFrame = false;
 +    
@@ -196,7 +194,7 @@
      public EntityRenderer(Minecraft mcIn, IResourceManager resourceManagerIn)
      {
          this.shaderIndex = SHADER_COUNT;
-@@ -385,7 +468,7 @@
+@@ -385,7 +466,7 @@
  
          Entity entity = this.mc.getRenderViewEntity();
          double d2 = entity.posX;
@@ -205,7 +203,7 @@
          double d1 = entity.posZ;
          float f2 = this.mc.theWorld.getLightBrightness(new BlockPos(d2, d0, d1));
          float f3 = (float)this.mc.gameSettings.renderDistanceChunks / 16.0F;
-@@ -435,112 +518,113 @@
+@@ -435,112 +516,113 @@
       */
      public void getMouseOver(float partialTicks)
      {
@@ -425,7 +423,7 @@
      }
  
      /**
-@@ -630,17 +714,18 @@
+@@ -630,17 +712,18 @@
                  f /= (1.0F - 500.0F / (f1 + 500.0F)) * 2.0F + 1.0F;
              }
  
@@ -448,7 +446,7 @@
      private void hurtCameraEffect(float partialTicks)
      {
          if (this.mc.getRenderViewEntity() instanceof EntityLivingBase)
-@@ -671,6 +756,7 @@
+@@ -671,6 +754,7 @@
      /**
       * Updates the bobbing render effect of the player.
       */
@@ -456,7 +454,7 @@
      private void setupViewBobbing(float partialTicks)
      {
          if (this.mc.getRenderViewEntity() instanceof EntityPlayer)
-@@ -695,35 +781,35 @@
+@@ -695,35 +779,35 @@
          Entity entity = this.mc.getRenderViewEntity();
          float f = entity.getEyeHeight();
          double d0 = entity.prevPosX + (entity.posX - entity.prevPosX) * (double)partialTicks;
@@ -519,7 +517,7 @@
          {
              double d3 = (double)(this.thirdPersonDistancePrev + (4.0F - this.thirdPersonDistancePrev) * partialTicks);
  
-@@ -733,8 +819,8 @@
+@@ -733,8 +817,8 @@
              }
              else
              {
@@ -530,7 +528,7 @@
  
                  if (this.mc.gameSettings.thirdPersonView == 2)
                  {
-@@ -753,7 +839,12 @@
+@@ -753,7 +837,12 @@
                      f3 = f3 * 0.1F;
                      f4 = f4 * 0.1F;
                      f5 = f5 * 0.1F;
@@ -544,7 +542,7 @@
  
                      if (raytraceresult != null)
                      {
-@@ -771,253 +862,244 @@
+@@ -771,253 +860,238 @@
                      GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
                  }
  
@@ -569,6 +567,38 @@
 -                float f6 = entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTicks + 180.0F;
 -                float f7 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks;
 -                float f8 = 0.0F;
+-
+-                if (entity instanceof EntityAnimal)
+-                {
+-                    EntityAnimal entityanimal1 = (EntityAnimal)entity;
+-                    f6 = entityanimal1.prevRotationYawHead + (entityanimal1.rotationYawHead - entityanimal1.prevRotationYawHead) * partialTicks + 180.0F;
+-                }
+-
+-                IBlockState iblockstate1 = ActiveRenderInfo.getBlockStateAtEntityViewpoint(this.mc.theWorld, entity, partialTicks);
+-                Object object = Reflector.newInstance(Reflector.EntityViewRenderEvent_CameraSetup_Constructor, new Object[] {this, entity, iblockstate1, Float.valueOf(partialTicks), Float.valueOf(f6), Float.valueOf(f7), Float.valueOf(f8)});
+-                Reflector.postForgeBusEvent(object);
+-                f8 = Reflector.callFloat(object, Reflector.EntityViewRenderEvent_CameraSetup_getRoll, new Object[0]);
+-                f7 = Reflector.callFloat(object, Reflector.EntityViewRenderEvent_CameraSetup_getPitch, new Object[0]);
+-                f6 = Reflector.callFloat(object, Reflector.EntityViewRenderEvent_CameraSetup_getYaw, new Object[0]);
+-                GlStateManager.rotate(f8, 0.0F, 0.0F, 1.0F);
+-                GlStateManager.rotate(f7, 1.0F, 0.0F, 0.0F);
+-                GlStateManager.rotate(f6, 0.0F, 1.0F, 0.0F);
+-            }
+-        }
+-        else if (!this.mc.gameSettings.debugCamEnable)
+-        {
+-            GlStateManager.rotate(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks, 1.0F, 0.0F, 0.0F);
+-
+-            if (entity instanceof EntityAnimal)
+-            {
+-                EntityAnimal entityanimal = (EntityAnimal)entity;
+-                GlStateManager.rotate(entityanimal.prevRotationYawHead + (entityanimal.rotationYawHead - entityanimal.prevRotationYawHead) * partialTicks + 180.0F, 0.0F, 1.0F, 0.0F);
+-            }
+-            else
+-            {
+-                GlStateManager.rotate(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTicks + 180.0F, 0.0F, 1.0F, 0.0F);
+-            }
+-        }
 +                GlStateManager.rotate(f1 - rveyaw, 0.0F, 1.0F, 0.0F);
 +                GlStateManager.rotate(f2 - rvepitch, 1.0F, 0.0F, 0.0F);
 +                
@@ -634,38 +664,6 @@
 +//            }
 +//        }
  
--                if (entity instanceof EntityAnimal)
--                {
--                    EntityAnimal entityanimal1 = (EntityAnimal)entity;
--                    f6 = entityanimal1.prevRotationYawHead + (entityanimal1.rotationYawHead - entityanimal1.prevRotationYawHead) * partialTicks + 180.0F;
--                }
--
--                IBlockState iblockstate1 = ActiveRenderInfo.getBlockStateAtEntityViewpoint(this.mc.theWorld, entity, partialTicks);
--                Object object = Reflector.newInstance(Reflector.EntityViewRenderEvent_CameraSetup_Constructor, new Object[] {this, entity, iblockstate1, Float.valueOf(partialTicks), Float.valueOf(f6), Float.valueOf(f7), Float.valueOf(f8)});
--                Reflector.postForgeBusEvent(object);
--                f8 = Reflector.callFloat(object, Reflector.EntityViewRenderEvent_CameraSetup_getRoll, new Object[0]);
--                f7 = Reflector.callFloat(object, Reflector.EntityViewRenderEvent_CameraSetup_getPitch, new Object[0]);
--                f6 = Reflector.callFloat(object, Reflector.EntityViewRenderEvent_CameraSetup_getYaw, new Object[0]);
--                GlStateManager.rotate(f8, 0.0F, 0.0F, 1.0F);
--                GlStateManager.rotate(f7, 1.0F, 0.0F, 0.0F);
--                GlStateManager.rotate(f6, 0.0F, 1.0F, 0.0F);
--            }
--        }
--        else if (!this.mc.gameSettings.debugCamEnable)
--        {
--            GlStateManager.rotate(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks, 1.0F, 0.0F, 0.0F);
--
--            if (entity instanceof EntityAnimal)
--            {
--                EntityAnimal entityanimal = (EntityAnimal)entity;
--                GlStateManager.rotate(entityanimal.prevRotationYawHead + (entityanimal.rotationYawHead - entityanimal.prevRotationYawHead) * partialTicks + 180.0F, 0.0F, 1.0F, 0.0F);
--            }
--            else
--            {
--                GlStateManager.rotate(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTicks + 180.0F, 0.0F, 1.0F, 0.0F);
--            }
--        }
--
 -        GlStateManager.translate(0.0F, -f, 0.0F);
 +       // GlStateManager.translate(0.0F, -f, 0.0F);
          d0 = entity.prevPosX + (entity.posX - entity.prevPosX) * (double)partialTicks;
@@ -695,7 +693,8 @@
      public void setupCameraTransform(float partialTicks, int pass)
      {
 -        this.farPlaneDistance = (float)(this.mc.gameSettings.renderDistanceChunks * 16);
--
++		/** MINECRIFT */
+ 
 -        if (Config.isFogFancy())
 -        {
 -            this.farPlaneDistance *= 0.95F;
@@ -748,8 +747,7 @@
 -        {
 -            this.setupViewBobbing(partialTicks);
 -        }
-+		/** MINECRIFT */
- 
+-
 -        float f1 = this.mc.thePlayer.prevTimeInPortal + (this.mc.thePlayer.timeInPortal - this.mc.thePlayer.prevTimeInPortal) * partialTicks;
 -
 -        if (f1 > 0.0F)
@@ -968,8 +966,6 @@
 +			GL11.glPushMatrix();
 +		}
 +			
-+			RenderHelper.enableStandardItemLighting();    
-+	
 +			//from player face to HMD
 +			setupCameraTransform(partialTicks, pass);
 +			applyCameraDepth(false);
@@ -978,8 +974,6 @@
 +	
 +				// VIVE START - from HMD to controller
 +				SetupRenderingAtController(0);
-+	
-+				//this.enableLightmap();	
 +	
 +				ItemStack item = mc.thePlayer.getHeldItemMainhand();
 +	
@@ -998,9 +992,7 @@
 +					itemRenderer.renderItemInFirstPerson(mc.thePlayer, partialTicks, 0, EnumHand.MAIN_HAND, mc.thePlayer.getSwingProgress(partialTicks), item, 0);
 +				}
 +			}
-+			//this.disableLightmap();
-+	
-+			RenderHelper.disableStandardItemLighting();    
++
 +			
 +		if(shadersMod)
 +			Shaders.endHand();
@@ -1015,7 +1007,22 @@
  
      public void disableLightmap()
      {
-@@ -1221,197 +1303,108 @@
+@@ -1034,12 +1108,12 @@
+     public void enableLightmap()
+     {
+         GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+-        GlStateManager.matrixMode(5890);
++        GlStateManager.matrixMode(GL11.GL_TEXTURE);
+         GlStateManager.loadIdentity();
+         float f = 0.00390625F;
+         GlStateManager.scale(0.00390625F, 0.00390625F, 0.00390625F);
+         GlStateManager.translate(8.0F, 8.0F, 8.0F);
+-        GlStateManager.matrixMode(5888);
++        GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+         this.mc.getTextureManager().bindTexture(this.locationLightMap);
+         GlStateManager.glTexParameteri(3553, 10241, 9729);
+         GlStateManager.glTexParameteri(3553, 10240, 9729);
+@@ -1221,197 +1295,108 @@
          return i > 200 ? 1.0F : 0.7F + MathHelper.sin(((float)i - partialTicks) * (float)Math.PI * 0.2F) * 0.3F;
      }
  
@@ -1058,9 +1065,7 @@
 -            {
 -                i = -1;
 -            }
-+    public void updateCameraAndRender(float par1)
-+	{// called each eye
- 
+-
 -            if (this.mc.gameSettings.smoothCamera)
 -            {
 -                this.smoothCamYaw += f2;
@@ -1078,10 +1083,138 @@
 -                this.mc.thePlayer.setAngles(f2, f3 * (float)i);
 -            }
 -        }
+-
+-        this.mc.mcProfiler.endSection();
+-
+-        if (!this.mc.skipRenderWorld)
+-        {
+-            anaglyphEnable = this.mc.gameSettings.anaglyph;
+-            final ScaledResolution scaledresolution = new ScaledResolution(this.mc);
+-            int i1 = scaledresolution.getScaledWidth();
+-            int j1 = scaledresolution.getScaledHeight();
+-            final int k1 = Mouse.getX() * i1 / this.mc.displayWidth;
+-            final int l1 = j1 - Mouse.getY() * j1 / this.mc.displayHeight - 1;
+-            int i2 = this.mc.gameSettings.limitFramerate;
+-
+-            if (this.mc.theWorld == null)
+-            {
+-                GlStateManager.viewport(0, 0, this.mc.displayWidth, this.mc.displayHeight);
+-                GlStateManager.matrixMode(5889);
+-                GlStateManager.loadIdentity();
+-                GlStateManager.matrixMode(5888);
+-                GlStateManager.loadIdentity();
+-                this.setupOverlayRendering();
+-                this.renderEndNanoTime = System.nanoTime();
+-            }
+-            else
+-            {
+-                this.mc.mcProfiler.startSection("level");
+-                int j = Math.min(Minecraft.getDebugFPS(), i2);
+-                j = Math.max(j, 60);
+-                long k = System.nanoTime() - nanoTime;
+-                long l = Math.max((long)(1000000000 / j / 4) - k, 0L);
+-                this.renderWorld(partialTicks, System.nanoTime() + l);
+-
+-                if (this.mc.isSingleplayer() && this.timeWorldIcon < Minecraft.getSystemTime() - 1000L)
+-                {
+-                    this.timeWorldIcon = Minecraft.getSystemTime();
+-
+-                    if (!this.mc.getIntegratedServer().isWorldIconSet())
+-                    {
+-                        this.createWorldIcon();
+-                    }
+-                }
+-
+-                if (OpenGlHelper.shadersSupported)
+-                {
+-                    this.mc.renderGlobal.renderEntityOutlineFramebuffer();
+-
+-                    if (this.theShaderGroup != null && this.useShader)
+-                    {
+-                        GlStateManager.matrixMode(5890);
+-                        GlStateManager.pushMatrix();
+-                        GlStateManager.loadIdentity();
+-                        this.theShaderGroup.loadShaderGroup(partialTicks);
+-                        GlStateManager.popMatrix();
+-                    }
+-
+-                    this.mc.getFramebuffer().bindFramebuffer(true);
+-                }
+-
+-                this.renderEndNanoTime = System.nanoTime();
+-                this.mc.mcProfiler.endStartSection("gui");
+-
+-                if (!this.mc.gameSettings.hideGUI || this.mc.currentScreen != null)
+-                {
+-                    GlStateManager.alphaFunc(516, 0.1F);
+-                    this.mc.ingameGUI.renderGameOverlay(partialTicks);
+-
+-                    if (this.mc.gameSettings.ofShowFps && !this.mc.gameSettings.showDebugInfo)
+-                    {
+-                        Config.drawFps();
+-                    }
+-
+-                    if (this.mc.gameSettings.showDebugInfo)
+-                    {
+-                        Lagometer.showLagometer(scaledresolution);
+-                    }
+-                }
+-
+-                this.mc.mcProfiler.endSection();
+-            }
+-
+-            if (this.mc.currentScreen != null)
+-            {
+-                GlStateManager.clear(256);
++    public void updateCameraAndRender(float par1)
++	{// called each eye
+ 
+-                try
+-                {
+-                    if (Reflector.ForgeHooksClient_drawScreen.exists())
+-                    {
+-                        Reflector.callVoid(Reflector.ForgeHooksClient_drawScreen, new Object[] {this.mc.currentScreen, Integer.valueOf(k1), Integer.valueOf(l1), Float.valueOf(partialTicks)});
+-                    }
+-                    else
+-                    {
+-                        this.mc.currentScreen.drawScreen(k1, l1, partialTicks);
+-                    }
+-                }
+-                catch (Throwable throwable)
+-                {
+-                    CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Rendering screen");
+-                    CrashReportCategory crashreportcategory = crashreport.makeCategory("Screen render details");
+-                    crashreportcategory.setDetail("Screen name", new ICrashReportDetail<String>()
+-                    {
+-                        public String call() throws Exception
+-                        {
+-                            return EntityRenderer.this.mc.currentScreen.getClass().getCanonicalName();
+-                        }
+-                    });
+-                    crashreportcategory.setDetail("Mouse location", new ICrashReportDetail<String>()
+-                    {
+-                        public String call() throws Exception
+-                        {
+-                            return String.format("Scaled: (%d, %d). Absolute: (%d, %d)", new Object[] {Integer.valueOf(k1), Integer.valueOf(l1), Integer.valueOf(Mouse.getX()), Integer.valueOf(Mouse.getY())});
+-                        }
+-                    });
+-                    crashreportcategory.setDetail("Screen size", new ICrashReportDetail<String>()
+-                    {
+-                        public String call() throws Exception
+-                        {
+-                            return String.format("Scaled: (%d, %d). Absolute: (%d, %d). Scale factor of %d", new Object[] {Integer.valueOf(scaledresolution.getScaledWidth()), Integer.valueOf(scaledresolution.getScaledHeight()), Integer.valueOf(EntityRenderer.this.mc.displayWidth), Integer.valueOf(EntityRenderer.this.mc.displayHeight), Integer.valueOf(scaledresolution.getScaleFactor())});
+-                        }
+-                    });
+-                    throw new ReportedException(crashreport);
+-                }
+-            }
+-        }
 +		if(mc.currentPass == renderPass.Left) //contains all the stuff that was in this method that only needs to be called once per frame.
 +			updateCameraAndRender_OnePass(par1);
  
--        this.mc.mcProfiler.endSection();
+-        this.frameFinish();
+-        this.waitForServerThread();
+-        Lagometer.updateLagometer();
 +		if (!this.mc.skipRenderWorld)
 +		{//RENDER WORLD
 +			/** MINECRIFT */
@@ -1176,132 +1309,6 @@
 +		
 +		Config.checkDisplayMode();
  
--        if (!this.mc.skipRenderWorld)
--        {
--            anaglyphEnable = this.mc.gameSettings.anaglyph;
--            final ScaledResolution scaledresolution = new ScaledResolution(this.mc);
--            int i1 = scaledresolution.getScaledWidth();
--            int j1 = scaledresolution.getScaledHeight();
--            final int k1 = Mouse.getX() * i1 / this.mc.displayWidth;
--            final int l1 = j1 - Mouse.getY() * j1 / this.mc.displayHeight - 1;
--            int i2 = this.mc.gameSettings.limitFramerate;
--
--            if (this.mc.theWorld == null)
--            {
--                GlStateManager.viewport(0, 0, this.mc.displayWidth, this.mc.displayHeight);
--                GlStateManager.matrixMode(5889);
--                GlStateManager.loadIdentity();
--                GlStateManager.matrixMode(5888);
--                GlStateManager.loadIdentity();
--                this.setupOverlayRendering();
--                this.renderEndNanoTime = System.nanoTime();
--            }
--            else
--            {
--                this.mc.mcProfiler.startSection("level");
--                int j = Math.min(Minecraft.getDebugFPS(), i2);
--                j = Math.max(j, 60);
--                long k = System.nanoTime() - nanoTime;
--                long l = Math.max((long)(1000000000 / j / 4) - k, 0L);
--                this.renderWorld(partialTicks, System.nanoTime() + l);
--
--                if (this.mc.isSingleplayer() && this.timeWorldIcon < Minecraft.getSystemTime() - 1000L)
--                {
--                    this.timeWorldIcon = Minecraft.getSystemTime();
--
--                    if (!this.mc.getIntegratedServer().isWorldIconSet())
--                    {
--                        this.createWorldIcon();
--                    }
--                }
--
--                if (OpenGlHelper.shadersSupported)
--                {
--                    this.mc.renderGlobal.renderEntityOutlineFramebuffer();
--
--                    if (this.theShaderGroup != null && this.useShader)
--                    {
--                        GlStateManager.matrixMode(5890);
--                        GlStateManager.pushMatrix();
--                        GlStateManager.loadIdentity();
--                        this.theShaderGroup.loadShaderGroup(partialTicks);
--                        GlStateManager.popMatrix();
--                    }
--
--                    this.mc.getFramebuffer().bindFramebuffer(true);
--                }
--
--                this.renderEndNanoTime = System.nanoTime();
--                this.mc.mcProfiler.endStartSection("gui");
--
--                if (!this.mc.gameSettings.hideGUI || this.mc.currentScreen != null)
--                {
--                    GlStateManager.alphaFunc(516, 0.1F);
--                    this.mc.ingameGUI.renderGameOverlay(partialTicks);
--
--                    if (this.mc.gameSettings.ofShowFps && !this.mc.gameSettings.showDebugInfo)
--                    {
--                        Config.drawFps();
--                    }
--
--                    if (this.mc.gameSettings.showDebugInfo)
--                    {
--                        Lagometer.showLagometer(scaledresolution);
--                    }
--                }
--
--                this.mc.mcProfiler.endSection();
--            }
--
--            if (this.mc.currentScreen != null)
--            {
--                GlStateManager.clear(256);
--
--                try
--                {
--                    if (Reflector.ForgeHooksClient_drawScreen.exists())
--                    {
--                        Reflector.callVoid(Reflector.ForgeHooksClient_drawScreen, new Object[] {this.mc.currentScreen, Integer.valueOf(k1), Integer.valueOf(l1), Float.valueOf(partialTicks)});
--                    }
--                    else
--                    {
--                        this.mc.currentScreen.drawScreen(k1, l1, partialTicks);
--                    }
--                }
--                catch (Throwable throwable)
--                {
--                    CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Rendering screen");
--                    CrashReportCategory crashreportcategory = crashreport.makeCategory("Screen render details");
--                    crashreportcategory.setDetail("Screen name", new ICrashReportDetail<String>()
--                    {
--                        public String call() throws Exception
--                        {
--                            return EntityRenderer.this.mc.currentScreen.getClass().getCanonicalName();
--                        }
--                    });
--                    crashreportcategory.setDetail("Mouse location", new ICrashReportDetail<String>()
--                    {
--                        public String call() throws Exception
--                        {
--                            return String.format("Scaled: (%d, %d). Absolute: (%d, %d)", new Object[] {Integer.valueOf(k1), Integer.valueOf(l1), Integer.valueOf(Mouse.getX()), Integer.valueOf(Mouse.getY())});
--                        }
--                    });
--                    crashreportcategory.setDetail("Screen size", new ICrashReportDetail<String>()
--                    {
--                        public String call() throws Exception
--                        {
--                            return String.format("Scaled: (%d, %d). Absolute: (%d, %d). Scale factor of %d", new Object[] {Integer.valueOf(scaledresolution.getScaledWidth()), Integer.valueOf(scaledresolution.getScaledHeight()), Integer.valueOf(EntityRenderer.this.mc.displayWidth), Integer.valueOf(EntityRenderer.this.mc.displayHeight), Integer.valueOf(scaledresolution.getScaleFactor())});
--                        }
--                    });
--                    throw new ReportedException(crashreport);
--                }
--            }
--        }
--
--        this.frameFinish();
--        this.waitForServerThread();
--        Lagometer.updateLagometer();
--
 -        if (this.mc.gameSettings.ofProfiler)
 -        {
 -            this.mc.gameSettings.showDebugProfilerChart = true;
@@ -1312,7 +1319,7 @@
  
      private void createWorldIcon()
      {
-@@ -1461,6 +1454,9 @@
+@@ -1461,6 +1446,9 @@
          }
          else
          {
@@ -1322,7 +1329,7 @@
              Entity entity = this.mc.getRenderViewEntity();
              boolean flag = entity instanceof EntityPlayer && !this.mc.gameSettings.hideGUI;
  
-@@ -1491,210 +1487,294 @@
+@@ -1491,404 +1479,510 @@
  
      public void renderWorld(float partialTicks, long finishTimeNano)
      {
@@ -1413,9 +1420,7 @@
          GlStateManager.enableAlpha();
          GlStateManager.alphaFunc(516, 0.1F);
 -        this.mc.mcProfiler.startSection("center");
-+        this.mc.gameSettings.anaglyph = false; //just no.
-+        
- 
+-
 -        if (this.mc.gameSettings.anaglyph)
 -        {
 -            anaglyphField = 0;
@@ -1430,7 +1435,9 @@
 -        {
 -            this.renderWorldPass(2, partialTicks, finishTimeNano);
 -        }
--
++        this.mc.gameSettings.anaglyph = false; //just no.
++        
+ 
 -        this.mc.mcProfiler.endSection();
 -    }
  
@@ -1702,43 +1709,6 @@
 -            GL11.glFinish();
 -            this.mc.mcProfiler.endStartSection("terrain");
 -        }
--
--        GlStateManager.matrixMode(5888);
--        GlStateManager.pushMatrix();
--        GlStateManager.disableAlpha();
--
--        if (flag)
--        {
--            ShadersRender.beginTerrainSolid();
--        }
--
--        renderglobal.renderBlockLayer(BlockRenderLayer.SOLID, (double)partialTicks, pass, entity);
--        GlStateManager.enableAlpha();
--
--        if (flag)
--        {
--            ShadersRender.beginTerrainCutoutMipped();
--        }
--
--        renderglobal.renderBlockLayer(BlockRenderLayer.CUTOUT_MIPPED, (double)partialTicks, pass, entity);
--        this.mc.getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
--
--        if (flag)
--        {
--            ShadersRender.beginTerrainCutout();
--        }
--
--        renderglobal.renderBlockLayer(BlockRenderLayer.CUTOUT, (double)partialTicks, pass, entity);
--        this.mc.getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
--
--        if (flag)
--        {
--            ShadersRender.endTerrain();
--        }
--
--        Lagometer.timerTerrain.end();
--        GlStateManager.shadeModel(7424);
--        GlStateManager.alphaFunc(516, 0.1F);
 +	        Lagometer.timerTerrain.start();
 +	
 +	        if (this.mc.gameSettings.ofSmoothFps && pass > 0)
@@ -1788,27 +1758,103 @@
 +        
 +        this.mc.mcProfiler.endStartSection("entities");
  
-         if (!this.debugView)
-         {
-@@ -1702,7 +1782,6 @@
+-        GlStateManager.matrixMode(5888);
+-        GlStateManager.pushMatrix();
+-        GlStateManager.disableAlpha();
+-
+-        if (flag)
+-        {
+-            ShadersRender.beginTerrainSolid();
+-        }
+-
+-        renderglobal.renderBlockLayer(BlockRenderLayer.SOLID, (double)partialTicks, pass, entity);
+-        GlStateManager.enableAlpha();
+-
+-        if (flag)
+-        {
+-            ShadersRender.beginTerrainCutoutMipped();
+-        }
+-
+-        renderglobal.renderBlockLayer(BlockRenderLayer.CUTOUT_MIPPED, (double)partialTicks, pass, entity);
+-        this.mc.getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
+-
+-        if (flag)
+-        {
+-            ShadersRender.beginTerrainCutout();
+-        }
+-
+-        renderglobal.renderBlockLayer(BlockRenderLayer.CUTOUT, (double)partialTicks, pass, entity);
+-        this.mc.getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
+-
+-        if (flag)
+-        {
+-            ShadersRender.endTerrain();
+-        }
+-
+-        Lagometer.timerTerrain.end();
+-        GlStateManager.shadeModel(7424);
+-        GlStateManager.alphaFunc(516, 0.1F);
+-
+-        if (!this.debugView)
+-        {
+-            GlStateManager.matrixMode(5888);
++            GlStateManager.matrixMode(GL11.GL_MODELVIEW);
              GlStateManager.popMatrix();
              GlStateManager.pushMatrix();
-             RenderHelper.enableStandardItemLighting();
+-            RenderHelper.enableStandardItemLighting();
 -            this.mc.mcProfiler.endStartSection("entities");
+-
+-            if (Reflector.ForgeHooksClient_setRenderPass.exists())
+-            {
+-                Reflector.callVoid(Reflector.ForgeHooksClient_setRenderPass, new Object[] {Integer.valueOf(0)});
+-            }
+-
+-            renderglobal.renderEntities(entity, icamera, partialTicks);
++	            RenderHelper.enableStandardItemLighting();
++	
++	            if (Reflector.ForgeHooksClient_setRenderPass.exists())
++	            {
++	                Reflector.callVoid(Reflector.ForgeHooksClient_setRenderPass, new Object[] {Integer.valueOf(0)});
++	            }
++	
++	            renderglobal.renderEntities(entity, icamera, partialTicks);
++	
++	    		renderCrosshairAtDepth();
++	            
++	            if (Reflector.ForgeHooksClient_setRenderPass.exists())
++	            {
++	                Reflector.callVoid(Reflector.ForgeHooksClient_setRenderPass, new Object[] {Integer.valueOf(-1)});
++	            }
++	
++        this.mc.mcProfiler.endStartSection("hands");
++	            
++		    	this.enableLightmap();    
++		        RenderHelper.enableStandardItemLighting();
++	    		itemRenderer.setLightmap();
++	    		GlStateManager.enableRescaleNormal();
++	    		
++		        this.renderHand(partialTicks, 0);
++				this.renderLeftHand(partialTicks);
++				
++		        boolean forgeHands = ReflectorForge.renderFirstPersonHand(this.mc.renderGlobal, partialTicks, pass);
++		        
++	            GlStateManager.disableRescaleNormal();
++	            RenderHelper.disableStandardItemLighting();
++	            this.disableLightmap();
++		        GlStateManager.enableTexture2D();	
++	        
  
-             if (Reflector.ForgeHooksClient_setRenderPass.exists())
-             {
-@@ -1711,6 +1790,8 @@
- 
-             renderglobal.renderEntities(entity, icamera, partialTicks);
- 
-+    		renderCrosshairAtDepth();
-+            
-             if (Reflector.ForgeHooksClient_setRenderPass.exists())
-             {
-                 Reflector.callVoid(Reflector.ForgeHooksClient_setRenderPass, new Object[] {Integer.valueOf(-1)});
-@@ -1723,172 +1804,192 @@
-         GlStateManager.matrixMode(5888);
+-            if (Reflector.ForgeHooksClient_setRenderPass.exists())
+-            {
+-                Reflector.callVoid(Reflector.ForgeHooksClient_setRenderPass, new Object[] {Integer.valueOf(-1)});
+-            }
+-
+-            RenderHelper.disableStandardItemLighting();
+-            this.disableLightmap();
+-        }
+-
+-        GlStateManager.matrixMode(5888);
++        GlStateManager.matrixMode(GL11.GL_MODELVIEW);
          GlStateManager.popMatrix();
  
 -        if (flag1 && this.mc.objectMouseOver != null && !entity.isInsideOfMaterial(Material.WATER))
@@ -1910,17 +1956,6 @@
 +	        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 +	        GlStateManager.disableBlend();
 +
-+        this.mc.mcProfiler.endStartSection("hands");
-+            
-+	        
-+				this.renderHand(partialTicks, 0);
-+				this.renderLeftHand(partialTicks);      
-+	                
-+		        boolean forgeHands = ReflectorForge.renderFirstPersonHand(this.mc.renderGlobal, partialTicks, pass);
-+		        
-+		        //GlStateManager.enableAlpha();
-+		        //GlStateManager.enableBlend();
-+		        GlStateManager.enableTexture2D();	
 +	        
 +        this.mc.mcProfiler.endStartSection("litParticles");
 +	        if (!this.debugView)
@@ -2144,7 +2179,7 @@
 +            	Shaders.endRender(); 
 +
 +		
-+    		this.mc.mcProfiler.endStartSection("renderGui");
++    	this.mc.mcProfiler.endStartSection("renderGui");
 +			if(!mc.bowTracker.isDrawing)				
 +				renderGuiLayer(partialTicks);  
 +            
@@ -2159,7 +2194,7 @@
      }
  
      private void renderCloudsCheck(RenderGlobal renderGlobalIn, float partialTicks, int pass)
-@@ -1896,19 +1997,19 @@
+@@ -1896,19 +1990,19 @@
          if (this.mc.gameSettings.renderDistanceChunks >= 4 && !Config.isCloudsOff() && Shaders.shouldRenderClouds(this.mc.gameSettings))
          {
              this.mc.mcProfiler.endStartSection("clouds");
@@ -2188,7 +2223,7 @@
          }
      }
  
-@@ -2206,7 +2307,7 @@
+@@ -2206,7 +2300,7 @@
              double d0 = MathHelper.sin(world.getCelestialAngleRadians(partialTicks)) > 0.0F ? -1.0D : 1.0D;
              Vec3d vec3d2 = new Vec3d(d0, 0.0D, 0.0D);
              float f5 = (float)entity.getLook(partialTicks).dotProduct(vec3d2);
@@ -2197,7 +2232,7 @@
              if (f5 < 0.0F)
              {
                  f5 = 0.0F;
-@@ -2250,8 +2351,10 @@
+@@ -2250,8 +2344,10 @@
              this.fogColorBlue *= f11;
          }
  
@@ -2209,7 +2244,7 @@
          if (this.cloudFog)
          {
              Vec3d vec3d3 = world.getCloudColour(partialTicks);
-@@ -2259,7 +2362,7 @@
+@@ -2259,7 +2355,7 @@
              this.fogColorGreen = (float)vec3d3.yCoord;
              this.fogColorBlue = (float)vec3d3.zCoord;
          }
@@ -2218,7 +2253,7 @@
          {
              float f12 = 0.0F;
  
-@@ -2285,7 +2388,7 @@
+@@ -2285,7 +2381,7 @@
                  this.fogColorBlue = (float)vec3d4.zCoord;
              }
          }
@@ -2227,7 +2262,7 @@
          {
              this.fogColorRed = 0.6F;
              this.fogColorGreen = 0.1F;
-@@ -2363,16 +2466,7 @@
+@@ -2363,16 +2459,7 @@
              this.fogColorBlue = f7;
          }
  
@@ -2245,7 +2280,7 @@
      }
  
      /**
-@@ -2386,8 +2480,11 @@
+@@ -2386,8 +2473,11 @@
          GlStateManager.glFog(2918, this.setFogColorBuffer(this.fogColorRed, this.fogColorGreen, this.fogColorBlue, 1.0F));
          GlStateManager.glNormal3f(0.0F, -1.0F, 0.0F);
          GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -2258,7 +2293,7 @@
  
          if (Reflector.ForgeHooksClient_getFogDensity.exists())
          {
-@@ -2446,7 +2543,7 @@
+@@ -2446,7 +2536,7 @@
  
              GlStateManager.setFogDensity(0.1F);
          }
@@ -2267,7 +2302,7 @@
          {
              if (Config.isShaders())
              {
-@@ -2478,7 +2575,7 @@
+@@ -2478,7 +2568,7 @@
                  GlStateManager.setFogDensity(0.02F);
              }
          }
@@ -2276,7 +2311,7 @@
          {
              if (Config.isShaders())
              {
-@@ -2706,10 +2803,12 @@
+@@ -2706,10 +2796,12 @@
              this.updatedWorld = world;
          }
  
@@ -2293,7 +2328,7 @@
      }
  
      private void frameFinish()
-@@ -2733,49 +2832,6 @@
+@@ -2733,49 +2825,6 @@
          }
      }
  
@@ -2343,7 +2378,7 @@
      public boolean setFxaaShader(int p_setFxaaShader_1_)
      {
          if (!OpenGlHelper.isFramebufferEnabled())
-@@ -2858,4 +2914,2066 @@
+@@ -2858,4 +2907,2060 @@
          GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
          GlStateManager.popMatrix();
      }
@@ -3306,8 +3341,6 @@
 +			GL11.glPushMatrix();
 +		}
 +			
-+			RenderHelper.enableStandardItemLighting();    
-+
 +			GL11.glPushMatrix();
 +
 +				SetupRenderingAtController(1);	//does not push
@@ -3319,7 +3352,6 @@
 +		
 +				mc.getTextureManager().bindTexture(mc.thePlayer.getLocationSkin());
 +	
-+				//this.enableLightmap();
 +		        GlStateManager.enableRescaleNormal();
 +					if(mc.bowTracker.isActive(mc.thePlayer)){ //render bow
 +						int c = 1;
@@ -3329,13 +3361,10 @@
 +					else //just hand
 +						itemRenderer.renderItemInFirstPerson(mc.thePlayer, nano, 0, EnumHand.OFF_HAND, mc.thePlayer.getSwingProgress(nano), mc.thePlayer.getHeldItemOffhand(), 0);
 +			    GlStateManager.disableRescaleNormal();
-+				//this.disableLightmap();
 +		
 +
 +			GL11.glPopMatrix();//back to hmd rendering
-+		
-+			RenderHelper.disableStandardItemLighting();    
-+				
++					
 +											
 +			setupPolyRendering(true);
 +			

@@ -882,7 +882,7 @@
                              this.playerController.clickBlock(blockpos, this.objectMouseOver.sideHit);
 +                            this.leftClickCounter =  this.playerController.isNotCreative() ? 0 : 10;               
 +                            if(!this.playerController.isNotCreative()) 
-+                            	this.sendClickBlockToController(this.currentScreen == null && this.gameSettings.keyBindAttack.isKeyDown() && this.inGameHasFocus);
++                            	this.sendClickBlockToController(this.currentScreen == null && this.gameSettings.keyBindAttack.isKeyDown());
 +
                              break;
                          }
@@ -901,7 +901,7 @@
              }
          }
 +        
-+    if(this.playerController.isNotCreative())    this.sendClickBlockToController(this.currentScreen == null && this.gameSettings.keyBindAttack.isKeyDown() && this.inGameHasFocus);
++    if(this.playerController.isNotCreative())    this.sendClickBlockToController(this.currentScreen == null && this.gameSettings.keyBindAttack.isKeyDown());
 +
 +        
      }
@@ -1186,7 +1186,7 @@
 +					GlStateManager.setActiveTexture(GL13.GL_TEXTURE2);
 +					
 +					if (hasShaders) 
-+						GlStateManager.bindTexture(entityRenderer.smcDepthBuffer); // shaders mod has it's own depth buffer
++						GlStateManager.bindTexture(Shaders.dfbDepthTextures.get(0)); // shaders mod has it's own depth buffer
 +					else 
 +						GlStateManager.bindTexture(framebuffer.depthBuffer);
 +					

@@ -533,7 +533,7 @@
 +	    	//                this.renderArmFirstPerson(equippingprogress, swingProgress, enumhandside);
 +	    	//            }
 +	    	//        }
-+	
++    	    		
 +    		boolean shouldrenderhand = true;
 +    	
 +    		if(itemstack!=null){
