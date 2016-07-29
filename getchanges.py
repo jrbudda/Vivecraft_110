@@ -76,7 +76,7 @@ def main(mcp_dir, patch_dir = "patches", orig_dir = ".minecraft_orig"):
             if file_ == "Minecraft.java":
                 # Update Minecrift version
                 print "Updating Minecraft.java Minecrift version: [Minecrift %s %s] %s" % ( minecrift_version_num, minecrift_build, org_file ) 
-                replacelineinfile( mod_file, "public final String minecriftVerString",     "    public final String minecriftVerString = \"ViveCraft %s %s\";\n" % (minecrift_version_num, minecrift_build) );
+                replacelineinfile( mod_file, "public final String minecriftVerString",     "    public final String minecriftVerString = \"Vivecraft %s %s\";\n" % (minecrift_version_num, minecrift_build) );
                 
             if os.path.exists(org_file):
                 patch_file = os.path.join(patch_dir,file_+".patch")

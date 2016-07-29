@@ -1738,6 +1738,10 @@ private static void processGui() {
 			guiRotationPose = new Matrix4f(orientationQuat);
 
 			guiRotationPose.M[3][3] = 1.0f;
+			
+			guiPos_World = guiPos_World.subtract(new Vector3f((float)mc.entityRenderer.interPolatedRoomOrigin.xCoord,
+					(float) mc.entityRenderer.interPolatedRoomOrigin.yCoord, (float) mc.entityRenderer.interPolatedRoomOrigin.zCoord));
+		
 		}  else if ( previousScreen==null && newScreen != null	|| 
 				newScreen instanceof GuiContainerCreative 
 				|| newScreen instanceof GuiChat) {			
@@ -1771,7 +1775,11 @@ private static void processGui() {
 				float yaw = (float) ((float) Math.PI + Math.atan2(look.x, look.z));    
 				guiRotationPose = Matrix4f.rotationY((float) yaw);
 				Matrix4f tilt = OpenVRUtil.rotationXMatrix(pitch);	
-				guiRotationPose = Matrix4f.multiply(guiRotationPose,tilt);						
+				guiRotationPose = Matrix4f.multiply(guiRotationPose,tilt);		
+				
+				guiPos_World = guiPos_World.subtract(new Vector3f((float)mc.entityRenderer.interPolatedRoomOrigin.xCoord,
+						(float) mc.entityRenderer.interPolatedRoomOrigin.yCoord, (float) mc.entityRenderer.interPolatedRoomOrigin.zCoord));
+			
 			}				
 			else{
 				Vec3d adj = new Vec3d(0,0,-2);
@@ -1796,15 +1804,15 @@ private static void processGui() {
 							
 				guiRotationPose = Matrix4f.rotationY((float) Math.toRadians( getHeadYawDegrees() + mc.vrSettings.vrWorldRotation));
 				Matrix4f tilt = OpenVRUtil.rotationXMatrix((float)Math.toRadians(mc.roomScale.getHMDPitch_World()));	
-				guiRotationPose = Matrix4f.multiply(guiRotationPose,tilt);		
-
-				if(guiPos_World!=null)
-					guiPos_World = guiPos_World.subtract(new Vector3f((float)mc.entityRenderer.interPolatedRoomOrigin.xCoord,
-							(float) mc.entityRenderer.interPolatedRoomOrigin.yCoord, (float) mc.entityRenderer.interPolatedRoomOrigin.zCoord));
+				guiRotationPose = Matrix4f.multiply(guiRotationPose,tilt);
 				
-
+				guiPos_World = guiPos_World.subtract(new Vector3f((float)mc.entityRenderer.interPolatedRoomOrigin.xCoord,
+						(float) mc.entityRenderer.interPolatedRoomOrigin.yCoord, (float) mc.entityRenderer.interPolatedRoomOrigin.zCoord));
+			
 			}
 		}
+
+	
 	}
 
 	//-------------------------------------------------------
