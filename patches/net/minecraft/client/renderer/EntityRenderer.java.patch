@@ -2378,7 +2378,7 @@
      public boolean setFxaaShader(int p_setFxaaShader_1_)
      {
          if (!OpenGlHelper.isFramebufferEnabled())
-@@ -2858,4 +2907,2060 @@
+@@ -2858,4 +2907,2061 @@
          GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
          GlStateManager.popMatrix();
      }
@@ -2502,8 +2502,9 @@
 +							entity.rotationYawHead = yaw;							
 +						}
 +
-+						
-+					}	 else if(i.getItem() == Items.SNOWBALL ||
++
++					}	 
++					else if(i.getItem() == Items.SNOWBALL ||
 +							i.getItem() == Items.EGG  ||
 +							i.getItem() == Items.SPAWN_EGG  ||
 +							i.getItem() == Items.POTIONITEM  
@@ -2514,15 +2515,15 @@
 +					}
 +					else if(mc.vrPlayer.shouldIlookatMyHand[0]){
 +						Vec3d playerToMain = entity.getPositionEyes(1).subtract(mc.roomScale.getControllerPos_World(0)); //backwards
-+						float pitch = - (float)Math.toDegrees(Math.asin(playerToMain.yCoord/playerToMain.lengthVector()));
-+						float yaw = (float)Math.toDegrees(Math.atan2(-playerToMain.xCoord, playerToMain.zCoord));    
++						float pitch =(float)Math.toDegrees(Math.asin(playerToMain.yCoord/playerToMain.lengthVector()));
++						float yaw = (float)Math.toDegrees(Math.atan2(playerToMain.xCoord,-playerToMain.zCoord));    
 +						entity.rotationYawHead  = entity.rotationYaw = yaw;
 +						entity.rotationPitch = pitch;
 +					}
 +					else if(mc.vrPlayer.shouldIlookatMyHand[1]){
 +						Vec3d playerToMain = entity.getPositionEyes(1).subtract(mc.roomScale.getControllerPos_World(1)); //backwards
-+						float pitch = - (float)Math.toDegrees(Math.asin(playerToMain.yCoord/playerToMain.lengthVector()));
-+						float yaw = (float)Math.toDegrees(Math.atan2(-playerToMain.xCoord, playerToMain.zCoord));    
++						float pitch = (float)Math.toDegrees(Math.asin(playerToMain.yCoord/playerToMain.lengthVector()));
++						float yaw = (float)Math.toDegrees(Math.atan2(playerToMain.xCoord, -playerToMain.zCoord));    
 +						entity.rotationYawHead  = entity.rotationYaw = yaw;
 +						entity.rotationPitch = pitch;
 +					}

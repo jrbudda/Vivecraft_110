@@ -1028,8 +1028,8 @@ public class OpenVRPlayer implements IRoomscaleAdapter
         						this.shouldIlookatMyHand[c] = true;
         						if (IAmLookingAtMyHand[c]){
 
-        							if(	Minecraft.getMinecraft().playerController.processRightClick(player, player.worldObj,is,EnumHand.MAIN_HAND)==EnumActionResult.SUCCESS){
-        								mc.entityRenderer.itemRenderer.resetEquippedProgress(EnumHand.MAIN_HAND);					
+        							if(	Minecraft.getMinecraft().playerController.processRightClick(player, player.worldObj,is,c==0?EnumHand.MAIN_HAND:EnumHand.OFF_HAND)==EnumActionResult.SUCCESS){
+        								mc.entityRenderer.itemRenderer.resetEquippedProgress(c==0?EnumHand.MAIN_HAND:EnumHand.OFF_HAND);					
         							}
         						}
         					}

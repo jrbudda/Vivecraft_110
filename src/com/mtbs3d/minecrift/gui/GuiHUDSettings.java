@@ -190,13 +190,11 @@ public class GuiHUDSettings extends BaseGuiSettings
                 case HUD_LOCK_TO:
                     return new String[] {
                             "Specifies to which orientation the HUD is locked to.",
-                            "  BODY:  The HUD when visible will appear locked",
-                            "         relative to your body orientation. This allows",
-							"         free look around the HUD.",
-                            "  HEAD:  The HUD appears locked to your head",
-                            "         orientation. The HUD may have to be scaled to",
-							"         fit within your visible field of view. Edges",
-							"         may be blurred!"
+                            "  HAND:  The HUD will appear just above your off-hand",
+                            "  HEAD:  The HUD will always appear in your field of view",
+                            "straight ahead",
+                            "  WRIST:  The HUD will appear on the inside of your off-hand",
+                            "arm. It will 'pop out' when looked at."
                     };
                 case OTHER_HUD_SETTINGS:
                     return new String[] {
