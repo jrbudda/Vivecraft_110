@@ -1,6 +1,23 @@
 --- a/net/minecraft/src/Config.java
 +++ b/net/minecraft/src/Config.java
-@@ -135,6 +135,9 @@
+@@ -122,19 +122,23 @@
+ 
+     public static void initGameSettings(GameSettings p_initGameSettings_0_)
+     {
+-        if (gameSettings == null)
+-        {
++    	//VIVE WHY WOULD YOU DO THAT??
++//        if (gameSettings == null)
++     //{
+             gameSettings = p_initGameSettings_0_;
+             minecraft = Minecraft.getMinecraft();
+             desktopDisplayMode = Display.getDesktopDisplayMode();
+             updateAvailableProcessors();
+             ReflectorForge.putLaunchBlackboard("optifine.ForgeSplashCompatible", Boolean.TRUE);
+-        }
++//        }
+     }
+ 
      public static void initDisplay()
      {
          checkInitialized();
@@ -10,7 +27,7 @@
          antialiasingLevel = gameSettings.ofAaLevel;
          checkDisplaySettings();
          checkDisplayMode();
-@@ -920,7 +923,8 @@
+@@ -920,7 +924,8 @@
  
      public static boolean isVignetteEnabled()
      {
@@ -20,7 +37,7 @@
      }
  
      public static boolean isStarsEnabled()
-@@ -1812,12 +1816,7 @@
+@@ -1812,12 +1817,7 @@
  
      public static void updateFramebufferSize()
      {
@@ -34,3 +51,11 @@
      }
  
      public static Object[] addObjectToArray(Object[] p_addObjectToArray_0_, Object p_addObjectToArray_1_)
+@@ -2066,6 +2066,7 @@
+ 
+     public static boolean isDynamicLights()
+     {
++    	boolean wat = Minecraft.getMinecraft().gameSettings == gameSettings;
+         return gameSettings.ofDynamicLights != 3;
+     }
+ 

@@ -261,7 +261,7 @@
 +	 * The minecriftVerString will be automatically updated by the build scripts, do not modify here.
 +	 * Modify minecriftversion.py in root minecrift dir.
 +	 */
-+    public final String minecriftVerString = "Vivecraft 1.10.2 Vivecraft-jrbudda-3";
++    public final String minecriftVerString = "Vivecraft 1.10.2 Vivecraft-jrbudda-4";
 +	/* end version */
 +	/** END MINECRIFT */
 +    
@@ -350,15 +350,18 @@
      }
  
      public void run()
-@@ -492,7 +692,7 @@
+@@ -492,9 +692,9 @@
      /**
       * Starts the game: initializes the canvas, the title, the settings, etcetera.
       */
 -    private void startGame() throws LWJGLException, IOException
 +    private void startGame() throws LWJGLException, Exception
      {
-         this.gameSettings = new GameSettings(this, this.mcDataDir);
+-        this.gameSettings = new GameSettings(this, this.mcDataDir);
++       // this.gameSettings = new GameSettings(this, this.mcDataDir);
          this.defaultResourcePacks.add(this.mcDefaultResourcePack);
+         this.startTimerHackThread();
+ 
 @@ -508,6 +708,7 @@
          this.setWindowIcon();
          this.setInitialDisplayMode();
@@ -424,7 +427,7 @@
      {
          int i = GlStateManager.glGetError();
  
-@@ -1098,128 +1317,264 @@
+@@ -1098,128 +1317,269 @@
      /**
       * Called repeatedly from run()
       */
@@ -677,6 +680,10 @@
 +		//	RenderBlocks.fancyGrass = this.gameSettings.fancyGraphics;
 +			
 +			this.mcProfiler.startSection("Gui");
++			
++            GlStateManager.depthMask(true);
++            GlStateManager.colorMask(true, true, true, true);
++			
 +			// Render GUI to FBO if necessary
 +				this.framebufferMc = this.guiFramebuffer; //draw to 2d gui.
 +				this.framebufferMc.bindFramebuffer(true);
@@ -746,6 +753,7 @@
 +					this.framebufferMc.unbindFramebuffer();	//draw directly to window
 +					GlStateManager.clear(GL11.GL_COLOR_BUFFER_BIT);
 +					entityRenderer.displayNotificationText("Mirror is OFF", "", "", this.displayWidth, this.displayHeight, false, true);
++					this.framebufferMc.bindFramebuffer(true);
 +				}
 +
 +			mcProfiler.startSection("GameWindowEvents");			
@@ -810,7 +818,7 @@
  
      public void updateDisplay()
      {
-@@ -1333,7 +1688,7 @@
+@@ -1333,7 +1693,7 @@
      /**
       * Parameter appears to be unused
       */
@@ -819,7 +827,7 @@
      {
          if (this.mcProfiler.profilingEnabled)
          {
-@@ -1505,16 +1860,16 @@
+@@ -1505,16 +1865,16 @@
          }
      }
  
@@ -839,7 +847,7 @@
              {
                  BlockPos blockpos = this.objectMouseOver.getBlockPos();
  
-@@ -1524,25 +1879,26 @@
+@@ -1524,25 +1884,26 @@
                      this.thePlayer.swingArm(EnumHand.MAIN_HAND);
                  }
              }
@@ -876,7 +884,7 @@
              }
              else if (!this.thePlayer.isRowingBoat())
              {
-@@ -1558,14 +1914,15 @@
+@@ -1558,14 +1919,15 @@
                          if (this.theWorld.getBlockState(blockpos).getMaterial() != Material.AIR)
                          {
                              this.playerController.clickBlock(blockpos, this.objectMouseOver.sideHit);
@@ -896,7 +904,7 @@
  
                          this.thePlayer.resetCooldown();
                  }
-@@ -1573,18 +1930,24 @@
+@@ -1573,18 +1935,24 @@
                  this.thePlayer.swingArm(EnumHand.MAIN_HAND);
              }
          }
@@ -924,7 +932,7 @@
  
              if (!this.thePlayer.isRowingBoat())
              {
-@@ -1594,7 +1957,7 @@
+@@ -1594,7 +1962,7 @@
  
                      if (this.objectMouseOver == null)
                      {
@@ -933,7 +941,7 @@
                      }
                      else
                      {
-@@ -1722,27 +2085,12 @@
+@@ -1722,27 +2090,12 @@
       */
      private void resize(int width, int height)
      {
@@ -963,7 +971,7 @@
      }
  
      /**
-@@ -1996,6 +2344,14 @@
+@@ -1996,6 +2349,14 @@
                  this.currentScreen.handleKeyboardInput();
              }
  
@@ -978,7 +986,7 @@
              boolean flag = Keyboard.getEventKeyState();
  
              if (flag)
-@@ -2005,6 +2361,8 @@
+@@ -2005,6 +2366,8 @@
                      this.entityRenderer.switchUseShader();
                  }
  
@@ -987,7 +995,7 @@
                  boolean flag1 = false;
  
                  if (this.currentScreen == null)
-@@ -2012,6 +2370,7 @@
+@@ -2012,6 +2375,7 @@
                      if (i == 1)
                      {
                          this.displayInGameMenu();
@@ -995,7 +1003,7 @@
                      }
  
                      flag1 = Keyboard.isKeyDown(61) && this.processKeyF3(i);
-@@ -2255,7 +2614,7 @@
+@@ -2255,7 +2619,7 @@
  
          if (this.thePlayer.isHandActive())
          {
@@ -1004,7 +1012,7 @@
              {
                  this.playerController.onStoppedUsingItem(this.thePlayer);
              }
-@@ -2285,15 +2644,25 @@
+@@ -2285,15 +2649,25 @@
          }
          else
          {
@@ -1037,7 +1045,7 @@
  
              while (this.gameSettings.keyBindPickBlock.isPressed())
              {
-@@ -2306,7 +2675,6 @@
+@@ -2306,7 +2680,6 @@
              this.rightClickMouse();
          }
  
@@ -1045,7 +1053,7 @@
      }
  
      private void runTickMouse() throws IOException
-@@ -2327,6 +2695,13 @@
+@@ -2327,6 +2700,13 @@
                      KeyBinding.onTick(i - 100);
                  }
              }
@@ -1059,7 +1067,7 @@
  
              long j = getSystemTime() - this.systemTime;
  
-@@ -2381,6 +2756,7 @@
+@@ -2381,6 +2761,7 @@
       */
      public void launchIntegratedServer(String folderName, String worldName, @Nullable WorldSettings worldSettingsIn)
      {
@@ -1067,7 +1075,7 @@
          this.loadWorld((WorldClient)null);
          System.gc();
          ISaveHandler isavehandler = this.saveLoader.getSaveLoader(folderName, false);
-@@ -2443,7 +2819,7 @@
+@@ -2443,7 +2824,7 @@
                  ;
              }
          }
@@ -1076,7 +1084,7 @@
          this.displayGuiScreen(new GuiScreenWorking());
          SocketAddress socketaddress = this.theIntegratedServer.getNetworkSystem().addLocalEndpoint();
          NetworkManager networkmanager = NetworkManager.provideLocalClient(socketaddress);
-@@ -2458,6 +2834,9 @@
+@@ -2458,6 +2839,9 @@
       */
      public void loadWorld(WorldClient worldClientIn)
      {
@@ -1086,7 +1094,15 @@
          this.loadWorld(worldClientIn, "");
      }
  
-@@ -2623,7 +3002,7 @@
+@@ -2607,6 +2991,7 @@
+         return theMinecraft == null || !theMinecraft.gameSettings.hideGUI;
+     }
+ 
++    //unused
+     public static boolean isFancyGraphicsEnabled()
+     {
+         return theMinecraft != null && theMinecraft.gameSettings.fancyGraphics;
+@@ -2623,7 +3008,7 @@
      /**
       * Called when user clicked he's mouse middle button (pick block)
       */
@@ -1095,7 +1111,7 @@
      {
          if (this.objectMouseOver != null && this.objectMouseOver.typeOfHit != RayTraceResult.Type.MISS)
          {
-@@ -3417,4 +3796,1078 @@
+@@ -3417,4 +3802,1080 @@
      {
          return this.thePlayer != null && this.thePlayer.hasReducedDebug() || this.gameSettings.reducedDebugInfo;
      }
@@ -2107,7 +2123,9 @@
 +	
 +				GlStateManager.clearColor(0f, 0, 0, 1f);	
 +				GlStateManager.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-+							
++				GlStateManager.enableTexture2D();	
++				GlStateManager.enableDepth();
++				
 +				
 +//				Object fmlCommonHandler = null;
 +//				if (Reflector.FMLCommonHandler_instance.exists()) {

@@ -1,6 +1,6 @@
 --- a/net/minecraft/client/renderer/ItemRenderer.java
 +++ b/net/minecraft/client/renderer/ItemRenderer.java
-@@ -1,13 +1,24 @@
+@@ -1,13 +1,25 @@
  package net.minecraft.client.renderer;
  
 +
@@ -19,13 +19,14 @@
 +import net.minecraft.block.material.MaterialLiquid;
  import net.minecraft.block.state.IBlockState;
  import net.minecraft.client.Minecraft;
++import net.minecraft.client.Minecraft.renderPass;
  import net.minecraft.client.entity.AbstractClientPlayer;
  import net.minecraft.client.entity.EntityPlayerSP;
 +import net.minecraft.client.gui.ScaledResolution;
  import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
  import net.minecraft.client.renderer.entity.Render;
  import net.minecraft.client.renderer.entity.RenderManager;
-@@ -16,11 +27,25 @@
+@@ -16,11 +28,25 @@
  import net.minecraft.client.renderer.texture.TextureMap;
  import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
  import net.minecraft.entity.EntityLivingBase;
@@ -51,7 +52,7 @@
  import net.minecraft.src.Config;
  import net.minecraft.src.DynamicLights;
  import net.minecraft.src.Reflector;
-@@ -31,6 +56,7 @@
+@@ -31,6 +57,7 @@
  import net.minecraft.util.ResourceLocation;
  import net.minecraft.util.math.BlockPos;
  import net.minecraft.util.math.MathHelper;
@@ -59,7 +60,7 @@
  import net.minecraft.world.storage.MapData;
  import shadersmod.client.Shaders;
  
-@@ -49,7 +75,7 @@
+@@ -49,7 +76,7 @@
      private float prevEquippedProgressOffHand;
      private final RenderManager renderManager;
      private final RenderItem itemRenderer;
@@ -68,7 +69,7 @@
      public ItemRenderer(Minecraft mcIn)
      {
          this.mc = mcIn;
-@@ -59,29 +85,29 @@
+@@ -59,29 +86,29 @@
  
      public void renderItem(EntityLivingBase entityIn, ItemStack heldStack, ItemCameraTransforms.TransformType transform)
      {
@@ -113,7 +114,7 @@
  
              GlStateManager.popMatrix();
          }
-@@ -107,7 +133,7 @@
+@@ -107,7 +134,7 @@
          GlStateManager.popMatrix();
      }
  
@@ -122,7 +123,7 @@
      {
          AbstractClientPlayer abstractclientplayer = this.mc.thePlayer;
          int i = this.mc.theWorld.getCombinedLight(new BlockPos(abstractclientplayer.posX, abstractclientplayer.posY + (double)abstractclientplayer.getEyeHeight(), abstractclientplayer.posZ), 0);
-@@ -122,6 +148,7 @@
+@@ -122,6 +149,7 @@
          OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, f, f1);
      }
  
@@ -130,7 +131,7 @@
      private void rotateArm(float p_187458_1_)
      {
          EntityPlayerSP entityplayersp = this.mc.thePlayer;
-@@ -142,6 +169,7 @@
+@@ -142,6 +170,7 @@
          return f;
      }
  
@@ -138,7 +139,7 @@
      private void renderArms()
      {
          if (!this.mc.thePlayer.isInvisible())
-@@ -156,6 +184,7 @@
+@@ -156,6 +185,7 @@
          }
      }
  
@@ -146,7 +147,7 @@
      private void renderArm(EnumHandSide p_187455_1_)
      {
          this.mc.getTextureManager().bindTexture(this.mc.thePlayer.getLocationSkin());
-@@ -183,27 +212,29 @@
+@@ -183,27 +213,29 @@
      private void renderMapFirstPersonSide(float p_187465_1_, EnumHandSide p_187465_2_, float p_187465_3_, ItemStack p_187465_4_)
      {
          float f = p_187465_2_ == EnumHandSide.RIGHT ? 1.0F : -1.0F;
@@ -191,7 +192,7 @@
          GlStateManager.popMatrix();
      }
  
-@@ -212,14 +243,17 @@
+@@ -212,14 +244,17 @@
          float f = MathHelper.sqrt_float(p_187463_3_);
          float f1 = -0.2F * MathHelper.sin(p_187463_3_ * (float)Math.PI);
          float f2 = -0.4F * MathHelper.sin(f * (float)Math.PI);
@@ -215,7 +216,7 @@
          this.renderMapFirstPerson(this.itemStackMainHand);
      }
  
-@@ -250,100 +284,123 @@
+@@ -250,100 +285,123 @@
          GlStateManager.enableLighting();
      }
  
@@ -403,7 +404,7 @@
              }
          }
  
-@@ -352,188 +409,433 @@
+@@ -352,192 +410,440 @@
          this.rotateArm(partialTicks);
          GlStateManager.enableRescaleNormal();
  
@@ -766,6 +767,9 @@
 +    			GlStateManager.popMatrix();	
 +    		}
 +
++    		if(mc.currentPass ==renderPass.Third && mc.vrSettings.mixedRealityRenderHands == false) 
++    			shouldrenderhand = false;
++    		
 +	    	if (shouldrenderhand && !player.isInvisible())
 +	    	{
 +	    		this.renderArmFirstPerson(equippingprogress, player.swingingHand == hand ? swingProgress : 0, enumhandside);
@@ -963,9 +967,15 @@
 -        float f4 = 1.0F;
 -        float f5 = -0.5F;
          float f6 = atlas.getMinU();
-         float f7 = atlas.getMaxU();
+-        float f7 = atlas.getMaxU();
++        float f7 = mc.vrSettings.insideBlockSolidColor ? atlas.getMinU() : atlas.getMaxU();
          float f8 = atlas.getMinV();
-@@ -561,17 +863,14 @@
+-        float f9 = atlas.getMaxV();
++        float f9 = mc.vrSettings.insideBlockSolidColor ? atlas.getMinV() : atlas.getMaxV();
+         vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+         vertexbuffer.pos(-1.0D, -1.0D, -0.5D).tex((double)f7, (double)f9).endVertex();
+         vertexbuffer.pos(1.0D, -1.0D, -0.5D).tex((double)f6, (double)f9).endVertex();
+@@ -561,17 +867,14 @@
              VertexBuffer vertexbuffer = tessellator.getBuffer();
              float f = this.mc.thePlayer.getBrightness(partialTicks);
              GlStateManager.color(f, f, f, 0.5F);
