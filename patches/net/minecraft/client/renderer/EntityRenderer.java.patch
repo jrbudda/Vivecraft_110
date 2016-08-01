@@ -2380,7 +2380,7 @@
      public boolean setFxaaShader(int p_setFxaaShader_1_)
      {
          if (!OpenGlHelper.isFramebufferEnabled())
-@@ -2858,4 +2908,2061 @@
+@@ -2858,4 +2908,2062 @@
          GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
          GlStateManager.popMatrix();
      }
@@ -2953,7 +2953,7 @@
 +	
 +					///JRBUDDA MAIN MENU ROOM            
 +					if(inMenuRoom){		
-+						rendserJrbuddasAwesomeMainMenuRoom();			
++						renderJrbuddasAwesomeMainMenuRoom();			
 +					}
 +					//END JRBUDDA'S AWESOME MAIN MENU ROOM
 +					
@@ -3612,7 +3612,7 @@
 +	}
 +
 +	//awesome.
-+	private void rendserJrbuddasAwesomeMainMenuRoom() {
++	private void renderJrbuddasAwesomeMainMenuRoom() {
 +		GlStateManager.clearColor(.1f, .1f, .1f, 0f);       
 +		GlStateManager.clear(GL11.GL_COLOR_BUFFER_BIT);        
 +		GlStateManager.color(0.5f, 0.5f, 0.5f, 1f);
@@ -4254,7 +4254,8 @@
 +					GL11.glMultMatrix(mc.roomScale.getHMDMatrix_World());
 +			} else {
 +				GL11.glRotatef(mc.vrSettings.vrFixedCamrotPitch, 1.0F, 0.0F, 0.0F);
-+				GL11.glRotatef(mc.vrSettings.vrFixedCamrotYaw - mc.vrSettings.vrWorldRotation, 0.0F, 1.0F, 0.0F);
++				//idk why its like that
++				GL11.glRotatef(180+mc.vrSettings.vrFixedCamrotYaw - mc.vrSettings.vrWorldRotation, 0.0F, 1.0F, 0.0F);
 +				GL11.glRotatef(mc.vrSettings.vrFixedCamrotRoll, 0.0F, 0.0F, 1.0F);
 +			}
 +			

@@ -405,7 +405,7 @@ public class MCOpenVR
 	
 	public static void initOpenVRCompositor(boolean set) throws Exception
 	{
-		if( set && vrsystem != null ) {
+		if( set && vrsystem.GetFloatTrackedDeviceProperty != null ) {
 			vrCompositor = new VR_IVRCompositor_FnTable(JOpenVRLibrary.VR_GetGenericInterface(JOpenVRLibrary.IVRCompositor_Version, hmdErrorStore));
 			if(vrCompositor != null && hmdErrorStore.get(0) == 0){                
 				System.out.println("OpenVR Compositor initialized OK.");

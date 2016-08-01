@@ -827,6 +827,15 @@
      {
          if (this.mcProfiler.profilingEnabled)
          {
+@@ -1470,7 +1830,7 @@
+                 }
+ 
+                 this.inGameHasFocus = true;
+-                this.mouseHelper.grabMouseCursor();
++				if(vrSettings.seated) this.mouseHelper.grabMouseCursor(); // NO. BAD.
+                 this.displayGuiScreen((GuiScreen)null);
+                 this.leftClickCounter = 10000;
+             }
 @@ -1505,16 +1865,16 @@
          }
      }
