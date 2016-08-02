@@ -1836,8 +1836,8 @@
 +	    		itemRenderer.setLightmap();
 +	    		GlStateManager.enableRescaleNormal();
 +	    		
-+		        this.renderHand(partialTicks, 0);
-+				this.renderLeftHand(partialTicks);
++		       this.renderHand(partialTicks, 0);
++			   this.renderLeftHand(partialTicks);
 +				
 +		        boolean forgeHands = ReflectorForge.renderFirstPersonHand(this.mc.renderGlobal, partialTicks, pass);
 +		        
@@ -2380,7 +2380,7 @@
      public boolean setFxaaShader(int p_setFxaaShader_1_)
      {
          if (!OpenGlHelper.isFramebufferEnabled())
-@@ -2858,4 +2908,2062 @@
+@@ -2858,4 +2908,2037 @@
          GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
          GlStateManager.popMatrix();
      }
@@ -2483,7 +2483,7 @@
 +				}
 +			}
 +
-+			if(entity.isElytraFlying() || (entity.moveForward > 0 && ! mc.bowTracker.isDrawing && (mc.vrPlayer.getFreeMoveMode() || entity.isRiding()))){
++			if(entity.isElytraFlying() || entity.isRiding()){
 +				//us laim, needed for server side movement.
 +				entity.rotationYawHead = entity.rotationYaw = mc.roomScale.getControllerYaw_World(1);
 +				entity.rotationPitch = - mc.roomScale.getControllerPitch_World(1);
@@ -2992,10 +2992,7 @@
 +
 +					//the framebuffer has to be drawn with color blending transparency to support non-alpha cursors. Always has a black background.	
 +					GlStateManager.disableBlend();
-+
 +					GlStateManager.alphaFunc(GL11.GL_GREATER, 0.01f);
-+					//	OpenGlHelper.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_COLOR, 1, 0); //color blend for corsshair transparency
-+					//	OpenGlHelper.glBlendFunc(GL11.GL_ONE, GL11.GL_ZERO,0,1);
 +					float scale = MCOpenVR.guiScale; // * this.mc.vroptions.hudscale
 +
 +					GlStateManager.scale(scale, scale, scale);
@@ -3368,7 +3365,6 @@
 +
 +			GL11.glPopMatrix();//back to hmd rendering
 +					
-+											
 +			setupPolyRendering(true);
 +			
 +					//	TP energy
@@ -3387,28 +3383,23 @@
 +						}
 +			
 +						if(r<0){r=0;}
-+						GlStateManager.disableDepth();
 +						renderCircle(start.addVector(0, .05001, 0), r, 32, 255, 163, 255, 128, 1);
 +						renderCircle(start.addVector(0, .05, 0), max, 32, 255, 163, 255, 50, 1);    
-+			
 +					GL11.glPopMatrix();
 +				}
 +				
 +				if(!mc.vrPlayer.getFreeMoveMode()){ //actually rendered from the head, not hand.
 +					GL11.glPushMatrix();	
-+					setupPolyRendering(true);
 +					GlStateManager.enableDepth();
 +						if(mc.vrPlayer.vrMovementStyle.arcAiming) {						
 +							renderTeleportArc(mc.vrPlayer);
 +						} else {
 +							renderTeleportLine(mc.vrPlayer); 	
 +						}	
-+						setupPolyRendering(false);
 +					GL11.glPopMatrix();
 +				}
 +				
-+				setupPolyRendering(false);
-+			
++			setupPolyRendering(false);	
 +		if(shadersMod)
 +			Shaders.endHand();
 +		else {
@@ -3498,19 +3489,7 @@
 +	public void renderCircle(Vec3d pos, float radius, int edges, int r, int g, int b, int a, int side)
 +	{
 +		Tessellator tes = Tessellator.getInstance();
-+
-+		boolean blend = GL11.glIsEnabled(GL11.GL_BLEND);
-+		boolean tex =  GL11.glIsEnabled(GL11.GL_TEXTURE_2D);
-+		boolean light =  GL11.glIsEnabled(GL11.GL_LIGHTING);
-+		boolean cull =  GL11.glIsEnabled(GL11.GL_CULL_FACE);
-+
-+		
-+		GlStateManager.enableBlend();
-+		GlStateManager.blendFunc(SourceFactor.SRC_ALPHA,DestFactor.ONE_MINUS_SRC_ALPHA);
-+		GlStateManager.disableTexture2D();
-+		GlStateManager.disableLighting();
-+		GlStateManager.disableCull();
-+		
++	
 +		tes.getBuffer().begin(GL11.GL_TRIANGLE_FAN,DefaultVertexFormats.POSITION_COLOR);
 +
 +		tes.getBuffer().pos(pos.xCoord, pos.yCoord, pos.zCoord).color(r, g, b, a).endVertex();
@@ -3541,10 +3520,6 @@
 +		
 +		tes.draw();       
 +
-+		if(!blend){GlStateManager.disableBlend();}
-+		if (tex){GlStateManager.enableTexture2D();}
-+		if(light){GlStateManager.enableLighting();}
-+		if(cull){GlStateManager.disableCull();;}
 +	}
 +
 +	private void renderBox(Tessellator tes, Vec3d start, Vec3d end, float minX, float maxX, float minY, float maxY, Vec3d up, Vec4b color)
@@ -4284,8 +4259,8 @@
 +		boolean shadersMod = Config.isShaders();
 +		boolean shadersModShadowPass = false;
 +		if(enable){
-+			polyblendsrc = GL11.glGetInteger(GL11.GL_BLEND_SRC);
-+			polyblenddst = GL11.glGetInteger(GL11.GL_BLEND_DST);
++			polyblendsrc = GlStateManager.blendState.srcFactor;
++			polyblenddst = GlStateManager.blendState.dstFactor;
 +			polyblend = GL11.glIsEnabled(GL11.GL_BLEND);
 +			polytex =  GL11.glIsEnabled(GL11.GL_TEXTURE_2D);
 +			polylight =  GL11.glIsEnabled(GL11.GL_LIGHTING);
@@ -4301,7 +4276,7 @@
 +				Shaders.useProgram(0);
 +			}
 +		} else {
-+			GL11.glBlendFunc(polyblendsrc, polyblenddst);
++			GlStateManager.blendFunc(polyblendsrc, polyblenddst);
 +			if (!polyblend) GlStateManager.disableBlend(); 
 +			if (polytex) GlStateManager.enableTexture2D();
 +			if (polylight) GlStateManager.enableLighting();

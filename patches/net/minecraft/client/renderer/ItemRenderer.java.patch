@@ -278,7 +278,7 @@
 +        
 +        GlStateManager.pushMatrix();
 +        
-+//			this.doSwingItemAnimation(side, swingProgress);	
++        	this.doSwingItemAnimation(side, swingProgress);	
 +        
 +        	GlStateManager.scale(0.4f, 0.4F, 0.4F);
 +        	GlStateManager.translate(-0.375*-f, 0, .75);
@@ -348,7 +348,7 @@
 +        int i = side == EnumHandSide.RIGHT ? 1 : -1;
 +        float f = MathHelper.sin(swingprogress * swingprogress * (float)Math.PI);
 +      //  GlStateManager.rotate((float)i * (45.0F + f * -20.0F), 0.0F, 1.0F, 0.0F);
-+        float f1 = MathHelper.sin(MathHelper.sqrt_float(swingprogress) * (float)Math.PI);
++        float f1 = 0.5f * MathHelper.sin(MathHelper.sqrt_float(swingprogress) * (float)Math.PI);
 +        GlStateManager.translate(0, 0,- f1);
 +        
 +//        GlStateManager.rotate((float)i * f1 * -20.0F, 0.0F, 0.0F, 1.0F);
@@ -404,7 +404,7 @@
              }
          }
  
-@@ -352,192 +410,440 @@
+@@ -352,192 +410,442 @@
          this.rotateArm(partialTicks);
          GlStateManager.enableRescaleNormal();
  
@@ -772,6 +772,8 @@
 +    		
 +	    	if (shouldrenderhand && !player.isInvisible())
 +	    	{
++		        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
++
 +	    		this.renderArmFirstPerson(equippingprogress, player.swingingHand == hand ? swingProgress : 0, enumhandside);
 +	    	}
 +			
@@ -975,7 +977,7 @@
          vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
          vertexbuffer.pos(-1.0D, -1.0D, -0.5D).tex((double)f7, (double)f9).endVertex();
          vertexbuffer.pos(1.0D, -1.0D, -0.5D).tex((double)f6, (double)f9).endVertex();
-@@ -561,17 +867,14 @@
+@@ -561,17 +869,14 @@
              VertexBuffer vertexbuffer = tessellator.getBuffer();
              float f = this.mc.thePlayer.getBrightness(partialTicks);
              GlStateManager.color(f, f, f, 0.5F);
