@@ -1,0 +1,105 @@
+--- a/net/minecraft/client/model/ModelBiped.java
++++ b/net/minecraft/client/model/ModelBiped.java
+@@ -1,5 +1,6 @@
+ package net.minecraft.client.model;
+ 
++import com.mtbs3d.minecrift.render.PlayerModelController;
+ import net.minecraft.client.renderer.GlStateManager;
+ import net.minecraft.entity.Entity;
+ import net.minecraft.entity.EntityLivingBase;
+@@ -29,6 +30,12 @@
+     public ModelBiped.ArmPose rightArmPose;
+     public boolean isSneak;
+ 
++    //VIVE START
++    public boolean isVrPlayer;
++    public String playerUuid;
++
++    //VIVE END
++
+     public ModelBiped()
+     {
+         this(0.0F);
+@@ -180,36 +187,48 @@
+         this.bipedRightArm.rotateAngleY = 0.0F;
+         this.bipedRightArm.rotateAngleZ = 0.0F;
+ 
+-        switch (this.leftArmPose)
+-        {
+-            case EMPTY:
+-                this.bipedLeftArm.rotateAngleY = 0.0F;
+-                break;
++        if(isVrPlayer){
++            PlayerModelController.RotInfo rotInfo=PlayerModelController.getInstance().getArmsForPlayer(playerUuid);
+ 
+-            case BLOCK:
+-                this.bipedLeftArm.rotateAngleX = this.bipedLeftArm.rotateAngleX * 0.5F - 0.9424779F;
+-                this.bipedLeftArm.rotateAngleY = 0.5235988F;
+-                break;
+ 
+-            case ITEM:
+-                this.bipedLeftArm.rotateAngleX = this.bipedLeftArm.rotateAngleX * 0.5F - ((float)Math.PI / 10F);
+-                this.bipedLeftArm.rotateAngleY = 0.0F;
+-        }
+ 
+-        switch (this.rightArmPose)
+-        {
+-            case EMPTY:
+-                this.bipedRightArm.rotateAngleY = 0.0F;
+-                break;
++            this.bipedLeftArm.rotateAngleX=(float) rotInfo.leftArm.xCoord - bipedHead.rotateAngleX;
++            this.bipedLeftArm.rotateAngleY=(float) rotInfo.leftArm.yCoord - bipedHead.rotateAngleY;
++
++            this.bipedRightArm.rotateAngleX=(float) rotInfo.rightArm.xCoord - bipedHead.rotateAngleX;
++            this.bipedRightArm.rotateAngleY=(float) rotInfo.rightArm.yCoord - bipedHead.rotateAngleY;
+ 
+-            case BLOCK:
+-                this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * 0.5F - 0.9424779F;
+-                this.bipedRightArm.rotateAngleY = -0.5235988F;
+-                break;
++        }else {
+ 
+-            case ITEM:
+-                this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * 0.5F - ((float)Math.PI / 10F);
+-                this.bipedRightArm.rotateAngleY = 0.0F;
++            switch (this.leftArmPose) {
++                case EMPTY:
++                    this.bipedLeftArm.rotateAngleY = 0.0F;
++                    break;
++
++                case BLOCK:
++                    this.bipedLeftArm.rotateAngleX = this.bipedLeftArm.rotateAngleX * 0.5F - 0.9424779F;
++                    this.bipedLeftArm.rotateAngleY = 0.5235988F;
++                    break;
++
++                case ITEM:
++                    this.bipedLeftArm.rotateAngleX = this.bipedLeftArm.rotateAngleX * 0.5F - ((float) Math.PI / 10F);
++                    this.bipedLeftArm.rotateAngleY = 0.0F;
++            }
++
++            switch (this.rightArmPose) {
++                case EMPTY:
++                    this.bipedRightArm.rotateAngleY = 0.0F;
++                    break;
++
++                case BLOCK:
++                    this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * 0.5F - 0.9424779F;
++                    this.bipedRightArm.rotateAngleY = -0.5235988F;
++                    break;
++
++                case ITEM:
++                    this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * 0.5F - ((float) Math.PI / 10F);
++                    this.bipedRightArm.rotateAngleY = 0.0F;
++            }
+         }
+ 
+         if (this.swingProgress > 0.0F)
+@@ -296,6 +315,8 @@
+             this.leftArmPose = modelbiped.leftArmPose;
+             this.rightArmPose = modelbiped.rightArmPose;
+             this.isSneak = modelbiped.isSneak;
++            this.isVrPlayer = modelbiped.isVrPlayer;
++            this.playerUuid = modelbiped.playerUuid;
+         }
+     }
+ 

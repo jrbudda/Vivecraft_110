@@ -1,6 +1,13 @@
 --- a/net/minecraft/client/renderer/entity/RenderPlayer.java
 +++ b/net/minecraft/client/renderer/entity/RenderPlayer.java
-@@ -72,7 +72,7 @@
+@@ -1,5 +1,6 @@
+ package net.minecraft.client.renderer.entity;
+ 
++import com.mtbs3d.minecrift.render.PlayerModelController;
+ import net.minecraft.client.entity.AbstractClientPlayer;
+ import net.minecraft.client.entity.EntityPlayerSP;
+ import net.minecraft.client.model.ModelBiped;
+@@ -72,7 +73,7 @@
          }
      }
  
@@ -9,3 +16,39 @@
      {
          ModelPlayer modelplayer = this.getMainModel();
  
+@@ -94,6 +95,11 @@
+             modelplayer.bipedLeftArmwear.showModel = clientPlayer.isWearing(EnumPlayerModelParts.LEFT_SLEEVE);
+             modelplayer.bipedRightArmwear.showModel = clientPlayer.isWearing(EnumPlayerModelParts.RIGHT_SLEEVE);
+             modelplayer.isSneak = clientPlayer.isSneaking();
++
++            String uuid=clientPlayer.getGameProfile().getId().toString();
++            modelplayer.isVrPlayer= PlayerModelController.getInstance().isTracked(uuid);
++            modelplayer.playerUuid=uuid;
++
+             ModelBiped.ArmPose modelbiped$armpose = ModelBiped.ArmPose.EMPTY;
+             ModelBiped.ArmPose modelbiped$armpose1 = ModelBiped.ArmPose.EMPTY;
+ 
+@@ -192,6 +198,11 @@
+         ModelPlayer modelplayer = this.getMainModel();
+         this.setModelVisibilities(clientPlayer);
+         GlStateManager.enableBlend();
++
++        String uuid=clientPlayer.getGameProfile().getId().toString();
++        modelplayer.isVrPlayer= PlayerModelController.getInstance().isTracked(uuid);
++        modelplayer.playerUuid=uuid;
++
+         modelplayer.swingProgress = 0.0F;
+         modelplayer.isSneak = false;
+         modelplayer.setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, clientPlayer);
+@@ -210,6 +221,11 @@
+         ModelPlayer modelplayer = this.getMainModel();
+         this.setModelVisibilities(clientPlayer);
+         GlStateManager.enableBlend();
++
++        String uuid=clientPlayer.getGameProfile().getId().toString();
++        modelplayer.isVrPlayer= PlayerModelController.getInstance().isTracked(uuid);
++        modelplayer.playerUuid=uuid;
++
+         modelplayer.isSneak = false;
+         modelplayer.swingProgress = 0.0F;
+         modelplayer.setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, clientPlayer);

@@ -94,10 +94,10 @@
 +          			
 +        	switch (dis){
 +        	case VERSION:
-+            	String v = packetbuffer.readStringFromBuffer(1024);
-+            	this.gameController.vrPlayer.noTeleportClient = false;
-+                this.gameController.vrPlayer.setFreeMoveMode(Minecraft.getMinecraft().vrSettings.vrFreeMove);
-+                this.gameController.printChatMessage("Vivecraft server mod detected: " + v);
++        		String v = packetbuffer.readStringFromBuffer(1024);
++        		this.gameController.vrPlayer.noTeleportClient = false;
++        		this.gameController.vrPlayer.setFreeMoveMode(Minecraft.getMinecraft().vrSettings.vrFreeMove);
++        		this.gameController.printChatMessage("Vivecraft server mod detected: " + v);
 +        		break;
 +        	case REQUESTDATA:
 +        		NetworkHelper.serverWantsData = true;

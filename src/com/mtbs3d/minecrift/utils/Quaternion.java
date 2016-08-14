@@ -1,7 +1,13 @@
 package com.mtbs3d.minecrift.utils;
 
+import de.fruitfly.ovr.structs.EulerOrient;
+import de.fruitfly.ovr.structs.Quatf;
+import jopenvr.OpenVRUtil;
+import net.minecraft.util.math.Vec3d;
 import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Matrix4f;
+
+import javax.vecmath.Quat4f;
 
 /**
  *
@@ -39,7 +45,6 @@ public class Quaternion {
 		y = vector.y * sinRot;
 		z = vector.z * sinRot;
 	}
-
 	public Quaternion(Axis axis, float rotation) {
 		this(axis.getVector(), rotation);
 	}
@@ -186,6 +191,13 @@ public class Quaternion {
 		return new Quaternion(newW, newX, newY, newZ);
 	}
 
+	public Angle toEuler(){
+		Quaternion norm=this.normalized();
+		Quatf quat = new Quatf(norm.x,norm.y,norm.z,norm.w);
+		EulerOrient euler = OpenVRUtil.getEulerAnglesDegYXZ(quat);
+		return new Angle(euler.pitch,euler.yaw,euler.roll);
+	}
+
 	public Quaternion rotate(Axis axis, float degrees) {
 		//return this.multiply(new Quaternion(axis.getVector(), degrees));
 		Matrix4f matrix = getMatrix();
@@ -230,6 +242,13 @@ public class Quaternion {
 		matrix.m12 = 2 * (tmp1 - tmp2) * invs;
 
 		return matrix;
+	}
+
+	public static Quaternion createFromToVector(Vector3 from, Vector3 to){
+		Vector3 cross = from.cross(to);
+		float w=(float) (Math.sqrt(Math.pow(from.length(), 2) * Math.pow(to.length(), 2)) + from.dot(to));
+
+		return new Quaternion(w,cross.x,cross.y,cross.z);
 	}
 
 	@Override

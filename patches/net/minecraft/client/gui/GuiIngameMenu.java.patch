@@ -1,12 +1,14 @@
 --- a/net/minecraft/client/gui/GuiIngameMenu.java
 +++ b/net/minecraft/client/gui/GuiIngameMenu.java
-@@ -1,10 +1,14 @@
+@@ -1,10 +1,16 @@
  package net.minecraft.client.gui;
  
  import java.io.IOException;
 +
 +import com.mtbs3d.minecrift.gui.GuiQuickCommandsInGame;
 +
++import com.mtbs3d.minecrift.settings.AutoCalibration;
++import net.minecraft.client.Minecraft;
  import net.minecraft.client.gui.achievement.GuiAchievements;
  import net.minecraft.client.gui.achievement.GuiStats;
  import net.minecraft.client.multiplayer.WorldClient;
@@ -15,7 +17,7 @@
  import net.minecraft.realms.RealmsBridge;
  
  public class GuiIngameMenu extends GuiScreen
-@@ -19,22 +23,35 @@
+@@ -19,22 +25,36 @@
      public void initGui()
      {
          this.saveStep = 0;
@@ -33,7 +35,7 @@
 -        {
 -            ((GuiButton)this.buttonList.get(0)).displayString = I18n.format("menu.disconnect", new Object[0]);
 -        }
-+    	this.buttonList.add(new GuiButton(1, this.width / 2 - 100, this.height / 4 + 144 + var1, I18n.format("menu.returnToMenu", new Object[0])));
++    	this.buttonList.add(new GuiButton(1, this.width / 2 - 100, this.height / 4 + 168 + var1, I18n.format("menu.returnToMenu", new Object[0])));
 +
 +    	if (!this.mc.isIntegratedServerRunning())
 +    	{
@@ -47,6 +49,7 @@
 +      	this.buttonList.add(new GuiButton(102, this.width / 2 - 100,this.height / 4 + 120 + var1, 49, 20, "Overlay"));
 +      	this.buttonList.add(new GuiButton(103, this.width / 2 - 50,this.height / 4 + 120 + var1, 49, 20, "Profiler"));
 +      	this.buttonList.add(new GuiButton(104, this.width / 2 + 2,this.height / 4 + 120 + var1, 98,	 20, "Screenshot"));
++		this.buttonList.add(new GuiButton(105, this.width / 2 - 100, this.height / 4 + 144 + var1, "Calibrate Height"));
 +
 +    	GuiButton var3;
 +    	this.buttonList.add(var3 = new GuiButton(7, this.width / 2 + 2, this.height / 4 + 96 + var1, 98, 20, I18n.format("menu.shareToLan", new Object[0])));
@@ -64,7 +67,7 @@
      }
  
      /**
-@@ -71,9 +88,6 @@
+@@ -71,9 +91,6 @@
  
              case 2:
              case 3:
@@ -74,7 +77,7 @@
              case 4:
                  this.mc.displayGuiScreen((GuiScreen)null);
                  this.mc.setIngameFocus();
-@@ -89,6 +103,31 @@
+@@ -89,9 +106,41 @@
  
              case 7:
                  this.mc.displayGuiScreen(new GuiShareToLan(this));
@@ -101,8 +104,18 @@
 +            	this.mc.displayGuiScreen((GuiScreen)null);
 +            	this.mc.grabScreenShot = 10;
 +            	break;
++	        case 105:
++		        AutoCalibration.calibrateManual();
++		        Minecraft.getMinecraft().vrSettings.saveOptions();
++		        this.mc.displayGuiScreen((GuiScreen)null);
++		        this.mc.setIngameFocus();
++		        break;
 +            default:
 +
          }
      }
  
++
+     /**
+      * Called from the main game loop to update the screen.
+      */

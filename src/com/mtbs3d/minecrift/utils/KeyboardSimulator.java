@@ -1,5 +1,8 @@
 package com.mtbs3d.minecrift.utils;
 
+import net.minecraft.client.Minecraft;
+import org.lwjgl.opengl.Display;
+
 import static java.awt.event.KeyEvent.*;
 
 import java.awt.AWTException;
@@ -155,7 +158,6 @@ public class KeyboardSimulator {
 
     private static void doType(int[] keyCodes, int offset, int length) {
     	try {
-			
         if (length == 0) {
             return;
         }

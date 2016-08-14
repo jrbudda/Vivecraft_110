@@ -39,6 +39,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketClientStatus;
 import net.minecraft.network.play.client.CPacketClientStatus.State;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import optifine.Utils;
 
@@ -73,7 +74,7 @@ public class MCOpenVR
 	private static boolean initialized;
 	private static Minecraft mc;
 
-	static VR_IVRSystem_FnTable vrsystem;
+	public static VR_IVRSystem_FnTable vrsystem;
 	static VR_IVRCompositor_FnTable vrCompositor;
 	static VR_IVROverlay_FnTable vrOverlay;
 	static VR_IVRSettings_FnTable vrSettings;
@@ -90,7 +91,7 @@ public class MCOpenVR
 	private LongByReference oHandle = new LongByReference();
 
 	// position/orientation of headset and eye offsets
-	static final Matrix4f hmdPose = new Matrix4f();
+	public static final Matrix4f hmdPose = new Matrix4f();
 	public static final Matrix4f hmdRotation = new Matrix4f();
 	static Matrix4f hmdProjectionLeftEye;
 	static Matrix4f hmdProjectionRightEye;
@@ -106,6 +107,12 @@ public class MCOpenVR
 	private static float vsyncToPhotons;
 	private static double timePerFrame, frameCountRun;
 	private static long frameCount;
+
+	public static Vec3History hmdHistory = new Vec3History();
+	public static Vec3History hmdPivotHistory = new Vec3History();
+	public static Vec3History[] controllerHistory = new Vec3History[] { new Vec3History(), new Vec3History()};
+
+	public static boolean isVive=true;
 
 	// TextureIDs of framebuffers for each eye
 	private int LeftEyeTextureId;
@@ -125,7 +132,9 @@ public class MCOpenVR
 	static Vector3f headDirection = new Vector3f();
 	static Vector3f controllerDirection = new Vector3f();
 	static Vector3f lcontrollerDirection = new Vector3f();
-	
+
+	static Vector3f offset=new Vector3f(0,0,0);
+
 	static boolean[] controllerTracking = new boolean[2];
 	
 	// Controllers
@@ -284,6 +293,7 @@ public class MCOpenVR
 			initOpenVROverlay() ;	
 			initOpenVROSettings();
 		} catch (Exception e) {
+			e.printStackTrace();
 			initSuccess = false;
 			initStatus = e.getLocalizedMessage();
 			return false;
@@ -359,12 +369,6 @@ public class MCOpenVR
 				hmdTrackedDevicePoses[i].setAutoSynch(false);
 			}
 
-			//            // init controllers for the first time
-			//            VRInput._updateConnectedControllers();
-			//            
-			//            // init bounds & chaperone info
-			//            VRBounds.init();
-			//            
 			initSuccess = true;
 		}
 	}
@@ -374,6 +378,38 @@ public class MCOpenVR
 		p.setString(0, in);
 		return p;
 
+	}
+
+	static void debugOut(){
+		for(Field i :JOpenVRLibrary.ETrackedDeviceProperty.class.getDeclaredFields()){
+			try {
+				String[] ts = i.getName().split("_");
+				String Type = ts[ts.length - 1];
+				String out = "";
+
+
+				if (Type.equals("Float")) {
+					out += i.getName() + " " + vrsystem.GetFloatTrackedDeviceProperty.apply(JOpenVRLibrary.k_unTrackedDeviceIndex_Hmd, i.getInt(null), hmdErrorStore);
+				}
+				if (Type.equals("String")) {
+					Pointer pointer = new Memory(JOpenVRLibrary.k_unMaxPropertyStringSize);
+					int len = vrsystem.GetStringTrackedDeviceProperty.apply(JOpenVRLibrary.k_unTrackedDeviceIndex_Hmd, i.getInt(null), pointer, JOpenVRLibrary.k_unMaxPropertyStringSize - 1, hmdErrorStore);
+					out += i.getName() + " " + pointer.getString(0);
+				} else if (Type.equals("Bool")) {
+					out += i.getName() + " " + vrsystem.GetBoolTrackedDeviceProperty.apply(JOpenVRLibrary.k_unTrackedDeviceIndex_Hmd, i.getInt(null), hmdErrorStore);
+				} else if (Type.equals("Int32")) {
+					out += i.getName() + " " + vrsystem.GetInt32TrackedDeviceProperty.apply(JOpenVRLibrary.k_unTrackedDeviceIndex_Hmd, i.getInt(null), hmdErrorStore);
+				} else if (Type.equals("UInt64")) {
+					out += i.getName() + " " + vrsystem.GetUint64TrackedDeviceProperty.apply(JOpenVRLibrary.k_unTrackedDeviceIndex_Hmd, i.getInt(null), hmdErrorStore);
+				}
+
+				System.out.println(out);
+			}catch (IllegalAccessException e){
+				e.printStackTrace();
+			}
+		}
+
+		System.out.println("TrackingSpace: "+vrCompositor.GetTrackingSpace.apply());
 	}
 
 
@@ -393,7 +429,7 @@ public class MCOpenVR
 
 	public static void initOpenVROSettings() throws Exception
 	{
-		vrSettings =   new VR_IVRSettings_FnTable(JOpenVRLibrary.VR_GetGenericInterface(JOpenVRLibrary.IVRSettings_Version, hmdErrorStore));
+		vrSettings = new VR_IVRSettings_FnTable(JOpenVRLibrary.VR_GetGenericInterface(JOpenVRLibrary.IVRSettings_Version, hmdErrorStore));
 		if (vrSettings != null &&  hmdErrorStore.get(0) == 0) {     		
 			vrSettings.setAutoSynch(false);
 			vrSettings.read();					
@@ -405,13 +441,30 @@ public class MCOpenVR
 	
 	public static void initOpenVRCompositor(boolean set) throws Exception
 	{
-		if( set && vrsystem.GetFloatTrackedDeviceProperty != null ) {
+		if( set && vrsystem != null ) {
 			vrCompositor = new VR_IVRCompositor_FnTable(JOpenVRLibrary.VR_GetGenericInterface(JOpenVRLibrary.IVRCompositor_Version, hmdErrorStore));
 			if(vrCompositor != null && hmdErrorStore.get(0) == 0){                
 				System.out.println("OpenVR Compositor initialized OK.");
 				vrCompositor.setAutoSynch(false);
 				vrCompositor.read();
 				vrCompositor.SetTrackingSpace.apply(JOpenVRLibrary.ETrackingUniverseOrigin.ETrackingUniverseOrigin_TrackingUniverseStanding);
+
+				int buffsize=20;
+				Pointer s=new Memory(buffsize);
+
+				//vrCompositor.GetTrackingSpace.apply();
+				debugOut();
+
+				vrsystem.GetStringTrackedDeviceProperty.apply(JOpenVRLibrary.k_unTrackedDeviceIndex_Hmd,JOpenVRLibrary.ETrackedDeviceProperty.ETrackedDeviceProperty_Prop_ManufacturerName_String,s,buffsize,hmdErrorStore);
+				String id=s.getString(0);
+				System.out.println("Device manufacturer is: "+id);
+				if(!id.equals("HTC")) {
+					isVive=false;
+					resetPosition();
+				}
+
+
+
 			} else {
 				throw new Exception(jopenvr.JOpenVRLibrary.VR_GetVRInitErrorAsEnglishDescription(hmdErrorStore.get(0)).getString(0));			 
 			}
@@ -420,10 +473,15 @@ public class MCOpenVR
 			System.out.println("Skipping VR Compositor...");
 			if( vrsystem != null ) {
 				vsyncToPhotons = vrsystem.GetFloatTrackedDeviceProperty.apply(JOpenVRLibrary.k_unTrackedDeviceIndex_Hmd, JOpenVRLibrary.ETrackedDeviceProperty.ETrackedDeviceProperty_Prop_SecondsFromVsyncToPhotons_Float, hmdErrorStore);
+
+
 			} else {
 				vsyncToPhotons = 0f;
 			}
 		}
+
+
+
 
 		// left eye
 		texBounds.uMax = 1f;
@@ -727,6 +785,7 @@ private static void processGui() {
 			}	
 			//end Shift
 		}
+		
 		if (controllerMouseX >= 0 && controllerMouseX < mc.displayWidth
 				&& controllerMouseY >=0 && controllerMouseY < mc.displayHeight)
 		{
@@ -846,7 +905,6 @@ private static void processGui() {
 				if (pressedLMB || pressedRMB)
 				{
 					{mc.thePlayer.closeScreen();}			
-
 				}
 			}
 		}
@@ -1067,42 +1125,43 @@ private static void processGui() {
 			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_GRIP.ordinal()].unpress();
 		}
 
-		//R TOUCHPAD	
-
-		//if(!gui){ //this are the mouse buttons. ummm do I need this? it causes the key to stick down.
-		
-		if (pressedRtouchpadBottomLeft && !lastpressedRtouchpadBottomLeft){
-			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_TOUCHPAD_BL.ordinal()].press();
-		}			
-		if (!pressedRtouchpadBottomLeft && lastpressedRtouchpadBottomLeft){
-			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_TOUCHPAD_BL.ordinal()].unpress();
-		}		
-		if (pressedRtouchpadBottomRight && !lastpressedRtouchpadBottomRight){
-			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_TOUCHPAD_BR.ordinal()].press();
-		}			
-		if (!pressedRtouchpadBottomRight && lastpressedRtouchpadBottomRight){
-			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_TOUCHPAD_BR.ordinal()].unpress();
-		}	
-		if (pressedRtouchpadTopLeft && !lastpressedRtouchpadTopLeft){
-			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_TOUCHPAD_UL.ordinal()].press();		}			
-		if (!pressedRtouchpadTopLeft && lastpressedRtouchpadTopLeft){
-			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_TOUCHPAD_UL.ordinal()].unpress();
-		}	
-		if (pressedRtouchpadTopRight && !lastpressedRtouchpadTopRight ){
-			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_TOUCHPAD_UR.ordinal()].press();		}			
-		if (!pressedRtouchpadTopRight  && lastpressedRtouchpadTopRight ){
-			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_TOUCHPAD_UR.ordinal()].unpress();
-		}	
-
+		if(mc.currentScreen == null){ // ummm do I need this? it causes the key to stick down.
+			//R TOUCHPAD	
+			if (pressedRtouchpadBottomLeft && !lastpressedRtouchpadBottomLeft){
+				mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_TOUCHPAD_BL.ordinal()].press();
+			}			
+			if (pressedRtouchpadBottomRight && !lastpressedRtouchpadBottomRight){
+				mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_TOUCHPAD_BR.ordinal()].press();
+			}			
+			if (pressedRtouchpadTopLeft && !lastpressedRtouchpadTopLeft){
+				mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_TOUCHPAD_UL.ordinal()].press();		
+			}				
+			if (pressedRtouchpadTopRight && !lastpressedRtouchpadTopRight ){
+				mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_TOUCHPAD_UR.ordinal()].press();		
+			}			
 			//R TRIGGER
 			if (pressedRTrigger && !lastpressedRTrigger) {
 				mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_TRIGGER.ordinal()].press();
 			}	
-			if(!pressedRTrigger && lastpressedRTrigger) {
-				mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_TRIGGER.ordinal()].unpress();
-			}
-	//	}
-
+		}
+		//R TOUCHPAD	
+		if (!pressedRtouchpadBottomLeft && lastpressedRtouchpadBottomLeft){
+			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_TOUCHPAD_BL.ordinal()].unpress();
+		}	
+		if (!pressedRtouchpadBottomRight && lastpressedRtouchpadBottomRight){
+			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_TOUCHPAD_BR.ordinal()].unpress();
+		}	
+		if (!pressedRtouchpadTopLeft && lastpressedRtouchpadTopLeft){
+			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_TOUCHPAD_UL.ordinal()].unpress();
+		}
+		if (!pressedRtouchpadTopRight  && lastpressedRtouchpadTopRight ){
+			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_TOUCHPAD_UR.ordinal()].unpress();
+		}	
+		//R TRIGGER
+		if(!pressedRTrigger && lastpressedRTrigger) {
+			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_TRIGGER.ordinal()].unpress();
+		}
+	
 		//R AppMenu
 		if (pressedRAppMenu && !lastpressedRAppMenu) {
 			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_APPMENU.ordinal()].press();
@@ -1327,12 +1386,8 @@ private static void processGui() {
 			if(mc.vrSettings.vrAllowLocoModeSwotch){
 				moveModeSwitchcount++;
 				if (moveModeSwitchcount >= 20 * 4) {
-					moveModeSwitchcount = 0;
-					if(mc.vrPlayer.noTeleportClient && mc.vrPlayer.getFreeMoveMode()){
-						mc.printChatMessage("Warning: This server may not allow teleporting.");
-					}
+					moveModeSwitchcount = 0;					
 					mc.vrPlayer.setFreeMoveMode(!mc.vrPlayer.getFreeMoveMode());
-					mc.printChatMessage("Movement mode set to: " + (mc.vrPlayer.getFreeMoveMode() ? "Free Move" : "Teleport"));
 				}				
 			}
 		} else {
@@ -1573,7 +1628,7 @@ private static void processGui() {
 	
 	static Vec3d getCenterEyePosition() {
 		Vector3f pos = OpenVRUtil.convertMatrix4ftoTranslationVector(hmdPose);
-		// not sure why the negative y is required here - no more!
+		pos=pos.add(offset);
 		return new Vec3d(pos.x, pos.y, pos.z);
 	}
 
@@ -1597,10 +1652,12 @@ private static void processGui() {
 		if(hmdToEye == null){
 			Matrix4f pose = hmdPose;
 			Vector3f pos = OpenVRUtil.convertMatrix4ftoTranslationVector(pose);
+			pos=pos.add(offset);
 			return new Vec3d(pos.x, pos.y, pos.z);
 		} else {
 			Matrix4f pose = Matrix4f.multiply( hmdPose, hmdToEye );
 			Vector3f pos = OpenVRUtil.convertMatrix4ftoTranslationVector(pose);
+			pos=pos.add(offset);
 			return new Vec3d(pos.x, pos.y, pos.z);
 		}
 	}
@@ -1608,7 +1665,7 @@ private static void processGui() {
 	/**
 	 * Resets the current origin position
 	 */
-	
+
 	public void resetOrigin()
 	{
 		// not needed with Lighthouse
@@ -1725,13 +1782,13 @@ private static void processGui() {
 		{
 			Matrix4f rot = Matrix4f.rotationY((float) Math.toRadians(mc.vrSettings.vrWorldRotation));
 			Matrix4f max = Matrix4f.multiply(rot, MCOpenVR.hmdRotation);
-			MCOpenVR.guiScale = 1.0f*mc.vrSettings.vrWorldScale;
+			MCOpenVR.guiScale = 1.0f*mc.vrPlayer.worldScale;
 			Vec3d v = mc.entityRenderer.getEyeRenderPos(renderPass.Center);
 			Vec3d d = mc.roomScale.getHMDDir_World();
 			guiPos_World = new Vector3f(
-					(float) (v.xCoord + d.xCoord*mc.vrSettings.vrWorldScale),
-					(float) (v.yCoord + d.yCoord*mc.vrSettings.vrWorldScale),
-					(float) (v.zCoord + d.zCoord*mc.vrSettings.vrWorldScale));
+					(float) (v.xCoord + d.xCoord*mc.vrPlayer.worldScale),
+					(float) (v.yCoord + d.yCoord*mc.vrPlayer.worldScale),
+					(float) (v.zCoord + d.zCoord*mc.vrPlayer.worldScale));
 
 			Quatf orientationQuat = OpenVRUtil.convertMatrix4ftoRotationQuat(max);
 
@@ -1760,7 +1817,7 @@ private static void processGui() {
 
 			if(appearOverBlock && mc.objectMouseOver !=null){	
 
-				guiScale =(float) (Math.sqrt(mc.vrSettings.vrWorldScale) * 2);
+				guiScale =(float) (Math.sqrt(mc.vrPlayer.worldScale) * 2);
 				guiPos_World =new Vector3f((float) mc.objectMouseOver.getBlockPos().getX() + 0.5f,
 						(float) mc.objectMouseOver.getBlockPos().getY() + 1.7f,
 						(float) mc.objectMouseOver.getBlockPos().getZ() + 0.5f);
@@ -1792,14 +1849,14 @@ private static void processGui() {
 				Vec3d v = mc.vrPlayer.getHMDPos_World();
 				Vec3d e = mc.roomScale.getCustomHMDVector(adj);
 				guiPos_World = new Vector3f(
-						(float) (e.xCoord * mc.vrSettings.vrWorldScale / 2 + v.xCoord),
-						(float) (e.yCoord* mc.vrSettings.vrWorldScale / 2 + v.yCoord),
-						(float) (e.zCoord* mc.vrSettings.vrWorldScale / 2 + v.zCoord));
+						(float) (e.xCoord * mc.vrPlayer.worldScale / 2 + v.xCoord),
+						(float) (e.yCoord* mc.vrPlayer.worldScale / 2 + v.yCoord),
+						(float) (e.zCoord* mc.vrPlayer.worldScale / 2 + v.zCoord));
 				Matrix4f hmd = hmdRotation;
 				Matrix4f rot = Matrix4f.rotationY((float) Math.toRadians(mc.vrSettings.vrWorldRotation));
 				hmd = Matrix4f.multiply(hmd, rot);
 
-				guiScale = mc.vrSettings.vrWorldScale;
+				guiScale = mc.vrPlayer.worldScale;
 				if(mc.theWorld == null) guiScale = 2.0f;
 							
 				guiRotationPose = Matrix4f.rotationY((float) Math.toRadians( getHeadYawDegrees() + mc.vrSettings.vrWorldRotation));
@@ -1941,6 +1998,11 @@ private static void processGui() {
 		
 		headDirection = hmdRotation.transform(forward);
 		
+		Vec3d eye = getCenterEyePosition();
+		hmdHistory.add(eye);
+		Vector3f v3 = MCOpenVR.hmdRotation.transform(new Vector3f(0,-.1f, .1f));
+		hmdPivotHistory.add(new Vec3d(v3.x+eye.xCoord, v3.y+eye.yCoord, v3.z+eye.zCoord));
+						
 		if(mc.vrSettings.seated){
 			controllerPose[0] = hmdPose.inverted().inverted();
 			controllerPose[1] = hmdPose.inverted().inverted();
@@ -1952,6 +2014,8 @@ private static void processGui() {
 			 controllerPos.x,
 			 controllerPos.y,
 			 controllerPos.z);
+
+		controllerHistory[0].add(aimSource[0]);
 
 		// build matrix describing controller rotation
 		controllerRotation[0].M[0][0] = controllerPose[0].M[0][0];
@@ -1978,25 +2042,41 @@ private static void processGui() {
 			float vRange = 180;
 			double h = Mouse.getX() / (double) mc.displayWidth * hRange - (hRange / 2);
 			double v = Mouse.getY() / (double) mc.displayHeight * vRange - (vRange / 2);
-			
+
+			double nPitch=-v;
+
 			if(Display.isActive()){
-				float rotStart = 30;
-				float rotSpeed = 180; // Degrees per second
+				float rotStart = mc.vrSettings.keyholeX;
+				float rotSpeed = 2000 * mc.vrSettings.xSensitivity;
+				int leftedge=(int)((-rotStart + (hRange / 2)) *(double) mc.displayWidth / hRange )+1;
+				int rightedge=(int)((rotStart + (hRange / 2)) *(double) mc.displayWidth / hRange )-1;
 				float rotMul = ((float)Math.abs(h) - rotStart) / ((hRange / 2) - rotStart); // Scaled 0...1 from rotStart to FOV edge
+				if(rotMul > 0.15) rotMul = 0.15f;
+				
 				if(h < -rotStart){
 					mc.vrSettings.vrWorldRotation += rotSpeed * rotMul * mc.getFrameDelta();
 					mc.vrSettings.vrWorldRotation %= 360; // Prevent stupidly large values
 					hmdForwardYaw = (float)Math.toDegrees(Math.atan2(headDirection.x, headDirection.z));    
 					mc.vrPlayer.checkandUpdateRotateScale(true);
+					Mouse.setCursorPosition(leftedge,Mouse.getY());
+					h=-rotStart;
 				}
 				if(h > rotStart){
 					mc.vrSettings.vrWorldRotation -= rotSpeed * rotMul * mc.getFrameDelta();
 					mc.vrSettings.vrWorldRotation %= 360; // Prevent stupidly large values
 					hmdForwardYaw = (float)Math.toDegrees(Math.atan2(headDirection.x, headDirection.z));    
 					mc.vrPlayer.checkandUpdateRotateScale(true);
+					Mouse.setCursorPosition(rightedge,Mouse.getY());
+					h=rotStart;
 				}
+
+				double ySpeed=0.5 * mc.vrSettings.ySensitivity;
+				nPitch=aimPitch+(v)*ySpeed;
+				nPitch=MathHelper.clamp_double(nPitch,-90,90);
+				Mouse.setCursorPosition(Mouse.getX(),mc.displayHeight/2);
+
 			}
-			temp.rotate((float) Math.toRadians(-v), new org.lwjgl.util.vector.Vector3f(1,0,0));
+			temp.rotate((float) Math.toRadians(-nPitch), new org.lwjgl.util.vector.Vector3f(1,0,0));
 			
 			temp.rotate((float) Math.toRadians(-180 + h - hmdForwardYaw), new org.lwjgl.util.vector.Vector3f(0,1,0));
 			
@@ -2026,6 +2106,7 @@ private static void processGui() {
 				leftControllerPos.x,
 				leftControllerPos.y,
 				leftControllerPos.z);
+		controllerHistory[1].add(aimSource[1]);
 
 		// build matrix describing controller rotation
 		controllerRotation[1].M[0][0] = controllerPose[1].M[0][0];
@@ -2056,9 +2137,22 @@ private static void processGui() {
 
 	}
 
+	public static void debugOutput(){
+
+	}
+
 	public static double getCurrentTimeSecs()
 	{
 		return System.nanoTime() / 1000000000d;
+	}
+
+	public static void resetPosition() {
+		Vec3d pos= getCenterEyePosition().scale(-1).addVector(offset.x,offset.y,offset.z);
+		offset=new Vector3f((float) pos.xCoord,(float)pos.yCoord+1.62f,(float)pos.zCoord);
+	}
+	
+	public static void clearOffset() {
+		offset=new Vector3f(0,0,0);
 	}
 
 //	public static void renderFade(float dur, Color color){

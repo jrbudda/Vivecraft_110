@@ -1,5 +1,6 @@
 package com.mtbs3d.minecrift.utils;
 
+import net.minecraft.util.math.Vec3d;
 import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Matrix4f;
 
@@ -31,6 +32,10 @@ public class Vector3 {
 		this.x = other.x;
 		this.y = other.y;
 		this.z = other.z;
+	}
+
+	public Vec3d toVec3d(){
+		return new Vec3d(x,y,z);
 	}
 
 	public Vector3 copy() {

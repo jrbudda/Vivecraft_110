@@ -46,7 +46,8 @@ public class RenderVRPlayer extends RenderPlayer
     public void renderRightArm(AbstractClientPlayer clientPlayer)
     {
         float f = 1.0F;
-        GlStateManager.color(1.0F, 1.0F, 1.0F);
+        if(Minecraft.getMinecraft().thePlayer.isSneaking()) f= 0.75f;
+        GlStateManager.color(1.0F, 1.0F, 1.0F, f);
         float f1 = 0.0625F;
         ModelPlayer modelplayer = this.getMainModel();
         this.setModelVisibilities(clientPlayer);
@@ -72,6 +73,7 @@ public class RenderVRPlayer extends RenderPlayer
         modelplayer.bipedRightArmwear.render(0.0625F);
         
         GlStateManager.disableBlend();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0f);
     }
 	
 	@Override

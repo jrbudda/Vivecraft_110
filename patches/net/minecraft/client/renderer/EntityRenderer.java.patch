@@ -1330,7 +1330,7 @@
              Entity entity = this.mc.getRenderViewEntity();
              boolean flag = entity instanceof EntityPlayer && !this.mc.gameSettings.hideGUI;
  
-@@ -1491,404 +1480,510 @@
+@@ -1491,404 +1480,509 @@
  
      public void renderWorld(float partialTicks, long finishTimeNano)
      {
@@ -1836,8 +1836,8 @@
 +	    		itemRenderer.setLightmap();
 +	    		GlStateManager.enableRescaleNormal();
 +	    		
-+		       this.renderHand(partialTicks, 0);
-+			   this.renderLeftHand(partialTicks);
++		        this.renderHand(partialTicks, 0);
++				this.renderLeftHand(partialTicks);
 +				
 +		        boolean forgeHands = ReflectorForge.renderFirstPersonHand(this.mc.renderGlobal, partialTicks, pass);
 +		        
@@ -1948,10 +1948,9 @@
 +	            this.mc.getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
 +	            renderglobal.drawBlockDamageTexture(Tessellator.getInstance(), Tessellator.getInstance().getBuffer(), entity, partialTicks);
 +	            this.mc.getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
-+	            GlStateManager.disableBlend();
 +	        }
 +	
-+	        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
++	        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 +	        GlStateManager.disableBlend();
 +
 +	        
@@ -2196,7 +2195,7 @@
      }
  
      private void renderCloudsCheck(RenderGlobal renderGlobalIn, float partialTicks, int pass)
-@@ -1896,19 +1991,19 @@
+@@ -1896,19 +1990,19 @@
          if (this.mc.gameSettings.renderDistanceChunks >= 4 && !Config.isCloudsOff() && Shaders.shouldRenderClouds(this.mc.gameSettings))
          {
              this.mc.mcProfiler.endStartSection("clouds");
@@ -2225,7 +2224,7 @@
          }
      }
  
-@@ -2206,7 +2301,7 @@
+@@ -2206,7 +2300,7 @@
              double d0 = MathHelper.sin(world.getCelestialAngleRadians(partialTicks)) > 0.0F ? -1.0D : 1.0D;
              Vec3d vec3d2 = new Vec3d(d0, 0.0D, 0.0D);
              float f5 = (float)entity.getLook(partialTicks).dotProduct(vec3d2);
@@ -2234,7 +2233,7 @@
              if (f5 < 0.0F)
              {
                  f5 = 0.0F;
-@@ -2250,8 +2345,10 @@
+@@ -2250,8 +2344,10 @@
              this.fogColorBlue *= f11;
          }
  
@@ -2246,7 +2245,7 @@
          if (this.cloudFog)
          {
              Vec3d vec3d3 = world.getCloudColour(partialTicks);
-@@ -2259,7 +2356,7 @@
+@@ -2259,7 +2355,7 @@
              this.fogColorGreen = (float)vec3d3.yCoord;
              this.fogColorBlue = (float)vec3d3.zCoord;
          }
@@ -2255,7 +2254,7 @@
          {
              float f12 = 0.0F;
  
-@@ -2285,7 +2382,7 @@
+@@ -2285,7 +2381,7 @@
                  this.fogColorBlue = (float)vec3d4.zCoord;
              }
          }
@@ -2264,7 +2263,7 @@
          {
              this.fogColorRed = 0.6F;
              this.fogColorGreen = 0.1F;
-@@ -2363,16 +2460,7 @@
+@@ -2363,16 +2459,7 @@
              this.fogColorBlue = f7;
          }
  
@@ -2282,7 +2281,7 @@
      }
  
      /**
-@@ -2386,8 +2474,11 @@
+@@ -2386,8 +2473,11 @@
          GlStateManager.glFog(2918, this.setFogColorBuffer(this.fogColorRed, this.fogColorGreen, this.fogColorBlue, 1.0F));
          GlStateManager.glNormal3f(0.0F, -1.0F, 0.0F);
          GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -2295,7 +2294,7 @@
  
          if (Reflector.ForgeHooksClient_getFogDensity.exists())
          {
-@@ -2446,7 +2537,7 @@
+@@ -2446,7 +2536,7 @@
  
              GlStateManager.setFogDensity(0.1F);
          }
@@ -2304,7 +2303,7 @@
          {
              if (Config.isShaders())
              {
-@@ -2478,7 +2569,7 @@
+@@ -2478,7 +2568,7 @@
                  GlStateManager.setFogDensity(0.02F);
              }
          }
@@ -2313,7 +2312,7 @@
          {
              if (Config.isShaders())
              {
-@@ -2706,10 +2797,12 @@
+@@ -2706,10 +2796,12 @@
              this.updatedWorld = world;
          }
  
@@ -2330,7 +2329,7 @@
      }
  
      private void frameFinish()
-@@ -2733,49 +2826,6 @@
+@@ -2733,49 +2825,6 @@
          }
      }
  
@@ -2380,7 +2379,7 @@
      public boolean setFxaaShader(int p_setFxaaShader_1_)
      {
          if (!OpenGlHelper.isFramebufferEnabled())
-@@ -2858,4 +2908,2037 @@
+@@ -2858,4 +2907,2060 @@
          GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
          GlStateManager.popMatrix();
      }
@@ -2483,7 +2482,7 @@
 +				}
 +			}
 +
-+			if(entity.isElytraFlying() || entity.isRiding()){
++			if(entity.isElytraFlying() || (entity.isRiding() && entity.moveForward > 0)){
 +				//us laim, needed for server side movement.
 +				entity.rotationYawHead = entity.rotationYaw = mc.roomScale.getControllerYaw_World(1);
 +				entity.rotationPitch = - mc.roomScale.getControllerPitch_World(1);
@@ -2494,7 +2493,7 @@
 +					if(i.getItem() instanceof ItemBow){
 +						//use bow aim
 +						Vec3d aim = mc.bowTracker.getAimVector();
-+						if (aim != null) {
++						if (aim != null && aim.lengthSquared() > 0) {
 +							//backwards in 1.10 
 +							float pitch = (float)Math.toDegrees(Math.asin(aim.yCoord/aim.lengthVector()));
 +							float yaw = (float)Math.toDegrees(Math.atan2(aim.xCoord, -aim.zCoord));   		
@@ -2713,7 +2712,7 @@
 +			// forward, you can hit further away...
 +	
 +			this.mc.pointedEntity = null;
-+			double blockReachDistance = mc.vrSettings.vrWorldScale * (double)this.mc.playerController.getBlockReachDistance();
++			double blockReachDistance = mc.vrPlayer.worldScale * (double)this.mc.playerController.getBlockReachDistance();
 +			double entityReachDistance = (double)this.mc.playerController.getBlockReachDistance();
 +			// Darktemp's crosshair fix
 +			// VIVE START - interact source	
@@ -2953,7 +2952,7 @@
 +	
 +					///JRBUDDA MAIN MENU ROOM            
 +					if(inMenuRoom){		
-+						renderJrbuddasAwesomeMainMenuRoom();			
++						rendserJrbuddasAwesomeMainMenuRoom();			
 +					}
 +					//END JRBUDDA'S AWESOME MAIN MENU ROOM
 +					
@@ -2991,8 +2990,7 @@
 +					
 +
 +					//the framebuffer has to be drawn with color blending transparency to support non-alpha cursors. Always has a black background.	
-+					GlStateManager.disableBlend();
-+					GlStateManager.alphaFunc(GL11.GL_GREATER, 0.01f);
++                    GlStateManager.alphaFunc(GL11.GL_GREATER, 0.01f);
 +					float scale = MCOpenVR.guiScale; // * this.mc.vroptions.hudscale
 +
 +					GlStateManager.scale(scale, scale, scale);
@@ -3071,6 +3069,7 @@
 +				GlStateManager.matrixMode(GL11.GL_MODELVIEW);
 +				GlStateManager.loadIdentity();
 +				GlStateManager.translate(0.0F, 0.0F, -2000.0F);
++				GlStateManager.tryBlendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
 +
 +
 +				if (this.mc.theWorld != null && this.mc.currentScreen != null)
@@ -3163,7 +3162,7 @@
 +					}
 +
 +					GlStateManager.disableLighting();
-+					GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
++					GlStateManager.tryBlendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
 +					//inventory messes up fog color sometimes... This fixes
 +				
 +
@@ -3307,7 +3306,7 @@
 +		
 +
 +		
-+			GL11.glScalef(mc.vrSettings.vrWorldScale , mc.vrSettings.vrWorldScale , mc.vrSettings.vrWorldScale );
++			GL11.glScalef(mc.vrPlayer.worldScale , mc.vrPlayer.worldScale , mc.vrPlayer.worldScale );
 +		
 +    //    	Vector3f fore = new Vector3f(0,0,1);       
 +   //     	Matrix4f rotation = this.mc.vrPlayer.get.getAimRotation(controller);  
@@ -3365,6 +3364,7 @@
 +
 +			GL11.glPopMatrix();//back to hmd rendering
 +					
++											
 +			setupPolyRendering(true);
 +			
 +					//	TP energy
@@ -3385,21 +3385,23 @@
 +						if(r<0){r=0;}
 +						renderCircle(start.addVector(0, .05001, 0), r, 32, 255, 163, 255, 128, 1);
 +						renderCircle(start.addVector(0, .05, 0), max, 32, 255, 163, 255, 50, 1);    
++			
 +					GL11.glPopMatrix();
 +				}
 +				
 +				if(!mc.vrPlayer.getFreeMoveMode()){ //actually rendered from the head, not hand.
-+					GL11.glPushMatrix();	
++					GL11.glPushMatrix();
 +					GlStateManager.enableDepth();
 +						if(mc.vrPlayer.vrMovementStyle.arcAiming) {						
 +							renderTeleportArc(mc.vrPlayer);
 +						} else {
 +							renderTeleportLine(mc.vrPlayer); 	
-+						}	
++						}
 +					GL11.glPopMatrix();
 +				}
-+				
-+			setupPolyRendering(false);	
++
++				setupPolyRendering(false);
++			
 +		if(shadersMod)
 +			Shaders.endHand();
 +		else {
@@ -3489,7 +3491,8 @@
 +	public void renderCircle(Vec3d pos, float radius, int edges, int r, int g, int b, int a, int side)
 +	{
 +		Tessellator tes = Tessellator.getInstance();
-+	
++
++		
 +		tes.getBuffer().begin(GL11.GL_TRIANGLE_FAN,DefaultVertexFormats.POSITION_COLOR);
 +
 +		tes.getBuffer().pos(pos.xCoord, pos.yCoord, pos.zCoord).color(r, g, b, a).endVertex();
@@ -3587,7 +3590,7 @@
 +	}
 +
 +	//awesome.
-+	private void renderJrbuddasAwesomeMainMenuRoom() {
++	private void rendserJrbuddasAwesomeMainMenuRoom() {
 +		GlStateManager.clearColor(.1f, .1f, .1f, 0f);       
 +		GlStateManager.clear(GL11.GL_COLOR_BUFFER_BIT);        
 +		GlStateManager.color(0.5f, 0.5f, 0.5f, 1f);
@@ -3917,7 +3920,7 @@
 +			float crossDepth =(float)crossVec.subtract(mc.roomScale.getControllerPos_World(0)).lengthVector();
 +			if (crossDepth > MAX_CROSSHAIR_DISTANCE) crossDepth = MAX_CROSSHAIR_DISTANCE;
 +			float depthscale = 0.4f + 0.6f*( (MAX_CROSSHAIR_DISTANCE - crossDepth) / MAX_CROSSHAIR_DISTANCE);
-+			float scale = (float) (0.15f* this.mc.vrSettings.crosshairScale * Math.sqrt(mc.vrSettings.vrWorldScale));
++			float scale = (float) (0.15f* this.mc.vrSettings.crosshairScale * Math.sqrt(mc.vrPlayer.worldScale));
 +			scale/=(depthscale);
 +			GL11.glPushMatrix();
 +				GL11.glTranslatef(crossX, crossY, crossZ);
@@ -4057,7 +4060,7 @@
 +			dir = new Vec3d(dir.xCoord, 0, dir.zCoord);
 +			dir = dir.normalize();
 +			if(mc.getRenderViewEntity() != null && mc.theWorld != null){
-+				out = mc.getRenderViewEntity().getPositionVector().addVector(dir.xCoord*0.3 * mc.vrSettings.vrWorldScale, -0.4* mc.vrSettings.vrWorldScale ,dir.zCoord*0.3* mc.vrSettings.vrWorldScale);
++				out = mc.getRenderViewEntity().getPositionVector().addVector(dir.xCoord*0.3 * mc.vrPlayer.worldScale, -0.4* mc.vrPlayer.worldScale ,dir.zCoord*0.3* mc.vrPlayer.worldScale);
 +			} else {
 +				out = mc.roomScale.getHMDPos_Room().addVector(dir.xCoord*0.3 , -0.4 ,dir.zCoord*0.3);
 +			}
@@ -4076,7 +4079,7 @@
 +			out = out.rotateYaw(mc.vrPlayer.worldRotationRadians);
 +			return out.addVector(interPolatedRoomOrigin.xCoord, interPolatedRoomOrigin.yCoord, interPolatedRoomOrigin.zCoord);
 +		} else if (currentPass == renderPass.Third){
-+			Vec3d out = new Vec3d(mc.vrSettings.vrFixedCamposX *mc.vrSettings.vrWorldScale, mc.vrSettings.vrFixedCamposY *mc.vrSettings.vrWorldScale, mc.vrSettings.vrFixedCamposZ *mc.vrSettings.vrWorldScale);
++			Vec3d out = new Vec3d(mc.vrSettings.vrFixedCamposX *mc.vrPlayer.worldScale, mc.vrSettings.vrFixedCamposY *mc.vrPlayer.worldScale, mc.vrSettings.vrFixedCamposZ *mc.vrPlayer.worldScale);
 +			out = out.rotateYaw(mc.vrPlayer.worldRotationRadians);
 +			return interPolatedRoomOrigin.addVector(out.xCoord, out.yCoord, out.zCoord);
 +		} else {
@@ -4115,21 +4118,41 @@
 +					if(mc.currentPass != renderPass.Third)
 +						eye = mc.roomScale.getEyePos_World(currentPass); //dont need interpolation.
 +					else {
-+						eye = new Vec3d(mc.vrSettings.vrFixedCamposX *mc.vrSettings.vrWorldScale , mc.vrSettings.vrFixedCamposY *mc.vrSettings.vrWorldScale, mc.vrSettings.vrFixedCamposZ *mc.vrSettings.vrWorldScale);
++						eye = new Vec3d(mc.vrSettings.vrFixedCamposX *mc.vrPlayer.worldScale , mc.vrSettings.vrFixedCamposY *mc.vrPlayer.worldScale, mc.vrSettings.vrFixedCamposZ *mc.vrPlayer.worldScale);
 +						eye = eye.rotateYaw(mc.vrPlayer.worldRotationRadians);
 +						eye = mc.roomScale.getRoomOriginPos_World().addVector(eye.xCoord, eye.yCoord, eye.zCoord);
 +					}
-+					MCOpenVR.guiScale = mc.vrSettings.vrWorldScale;
-+					if (mc.vrSettings.seated || mc.vrSettings.vrHudLockMode == mc.vrSettings.HUD_LOCK_HEAD)
++					MCOpenVR.guiScale = mc.vrPlayer.worldScale;
++
++                    if(mc.vrSettings.vrHudLockMode == VRSettings.HUD_LOCK_BODY) {
++
++                        Matrix4f rot = Matrix4f.rotationY((float) Math.toRadians(mc.vrSettings.vrWorldRotation));
++                        Matrix4f max = Matrix4f.multiply(rot, MCOpenVR.hmdRotation);
++
++                        Vec3d v = mc.vrPlayer.getHMDPos_World();
++                        Vec3d d = mc.vrPlayer.getHMDDir_World();
++                        float height=0.5f;
++                        d=new Vec3d(d.xCoord,-height,d.zCoord);
++
++                        guipos.x = (float) (v.xCoord + d.xCoord*mc.vrPlayer.worldScale);
++                        guipos.y = (float) (v.yCoord + d.yCoord*mc.vrPlayer.worldScale);
++                        guipos.z = (float) (v.zCoord + d.zCoord*mc.vrPlayer.worldScale);
++
++                        Quatf orientationQuat = OpenVRUtil.convertMatrix4ftoRotationQuat(max);
++
++                        guirot = new Matrix4f(orientationQuat);
++                        guirot.M[3][3] = 1.0f;
++
++                    }else if (mc.vrSettings.seated || mc.vrSettings.vrHudLockMode == mc.vrSettings.HUD_LOCK_HEAD)
 +					{
 +						Matrix4f rot = Matrix4f.rotationY((float) Math.toRadians(mc.vrSettings.vrWorldRotation));
 +						Matrix4f max = Matrix4f.multiply(rot, MCOpenVR.hmdRotation);
 +
 +						Vec3d v = mc.vrPlayer.getHMDPos_World();
 +						Vec3d d = mc.vrPlayer.getHMDDir_World();
-+						guipos.x = (float) (v.xCoord + d.xCoord*mc.vrSettings.vrWorldScale);
-+						guipos.y = (float) (v.yCoord + d.yCoord*mc.vrSettings.vrWorldScale);
-+						guipos.z = (float) (v.zCoord + d.zCoord*mc.vrSettings.vrWorldScale);
++						guipos.x = (float) (v.xCoord + d.xCoord*mc.vrPlayer.worldScale);
++						guipos.y = (float) (v.yCoord + d.yCoord*mc.vrPlayer.worldScale);
++						guipos.z = (float) (v.zCoord + d.zCoord*mc.vrPlayer.worldScale);
 +
 +						Quatf orientationQuat = OpenVRUtil.convertMatrix4ftoRotationQuat(max);
 +
@@ -4153,7 +4176,7 @@
 +						guirot = Matrix4f.multiply(guirot, Matrix4f.rotationY((float) Math.PI * 0.1F * i));
 +						guirot.M[3][3] = 1.7f;
 +
-+						guiLocal = new Vec3d(guiLocal.xCoord, 0.5*mc.vrSettings.vrWorldScale,guiLocal.zCoord);
++						guiLocal = new Vec3d(guiLocal.xCoord, 0.5*mc.vrPlayer.worldScale,guiLocal.zCoord);
 +								
 +						Vec3d v =mc.vrPlayer.getControllerPos_World(1);
 +						guipos.x = (float) v.xCoord;
@@ -4187,9 +4210,9 @@
 +						guipos.z = (float) v.zCoord;
 +						
 +						guiLocal = new Vec3d(
-+						 -0.005*mc.vrSettings.vrWorldScale,
-+					  	0.16*mc.vrSettings.vrWorldScale,
-+						 0.19*mc.vrSettings.vrWorldScale);
++						 -0.005*mc.vrPlayer.worldScale,
++					  	0.16*mc.vrPlayer.worldScale,
++						 0.19*mc.vrPlayer.worldScale);
 +
 +						Vec3d head = mc.roomScale.getHMDPos_World();
 +						
@@ -4205,13 +4228,13 @@
 +						}
 +														
 +						if(MCOpenVR.hudPopup){
-+							MCOpenVR.guiScale = .5f*mc.vrSettings.vrWorldScale;
++							MCOpenVR.guiScale = .5f*mc.vrPlayer.worldScale;
 +						}else {
-+							MCOpenVR.guiScale = 0.33f*mc.vrSettings.vrWorldScale;
++							MCOpenVR.guiScale = 0.33f*mc.vrPlayer.worldScale;
 +							guiLocal = new Vec3d(
-+							 i*-0.12f*mc.vrSettings.vrWorldScale,
-+							 0.1*mc.vrSettings.vrWorldScale,
-+							 0.06*mc.vrSettings.vrWorldScale);
++							 i*-0.12f*mc.vrPlayer.worldScale,
++							 0.1*mc.vrPlayer.worldScale,
++							 0.06*mc.vrPlayer.worldScale);
 +							guirot = Matrix4f.multiply(guirot, Matrix4f.rotationY((float) Math.PI * 0.2f*i ));		
 +						}
 +					
@@ -4229,8 +4252,7 @@
 +					GL11.glMultMatrix(mc.roomScale.getHMDMatrix_World());
 +			} else {
 +				GL11.glRotatef(mc.vrSettings.vrFixedCamrotPitch, 1.0F, 0.0F, 0.0F);
-+				//idk why its like that
-+				GL11.glRotatef(180+mc.vrSettings.vrFixedCamrotYaw - mc.vrSettings.vrWorldRotation, 0.0F, 1.0F, 0.0F);
++				GL11.glRotatef(mc.vrSettings.vrFixedCamrotYaw - mc.vrSettings.vrWorldRotation, 0.0F, 1.0F, 0.0F);
 +				GL11.glRotatef(mc.vrSettings.vrFixedCamrotRoll, 0.0F, 0.0F, 1.0F);
 +			}
 +			
@@ -4259,8 +4281,8 @@
 +		boolean shadersMod = Config.isShaders();
 +		boolean shadersModShadowPass = false;
 +		if(enable){
-+			polyblendsrc = GlStateManager.blendState.srcFactor;
-+			polyblenddst = GlStateManager.blendState.dstFactor;
++            polyblendsrc = GlStateManager.blendState.srcFactor;
++            polyblenddst = GlStateManager.blendState.dstFactor;
 +			polyblend = GL11.glIsEnabled(GL11.GL_BLEND);
 +			polytex =  GL11.glIsEnabled(GL11.GL_TEXTURE_2D);
 +			polylight =  GL11.glIsEnabled(GL11.GL_LIGHTING);
@@ -4276,7 +4298,7 @@
 +				Shaders.useProgram(0);
 +			}
 +		} else {
-+			GlStateManager.blendFunc(polyblendsrc, polyblenddst);
++            GlStateManager.blendFunc(polyblendsrc, polyblenddst);
 +			if (!polyblend) GlStateManager.disableBlend(); 
 +			if (polytex) GlStateManager.enableTexture2D();
 +			if (polylight) GlStateManager.enableLighting();
@@ -4361,10 +4383,10 @@
 +						if(eyeCollision ){
 +							int was = GL11.glGetInteger(GL11.GL_DEPTH_FUNC);
 +							GL11.glDepthFunc(GL11.GL_ALWAYS);
-+							renderCircle(pos, 0.05f * mc.vrSettings.vrWorldScale, 32, 0, 255, 255, 128, 1);
++							renderCircle(pos, 0.05f * mc.vrPlayer.worldScale, 32, 0, 255, 255, 128, 1);
 +							GL11.glDepthFunc(was);
 +						}  else {
-+							renderCircle(pos, .05f * mc.vrSettings.vrWorldScale, 32, 0, 255, 255, 48, 1);            		
++							renderCircle(pos, .05f * mc.vrPlayer.worldScale, 32, 0, 255, 255, 48, 1);            		
 +						}
 +						
 +					setupPolyRendering(false);
@@ -4399,7 +4421,7 @@
 +				GL11.glRotatef(mc.vrSettings.vrFixedCamrotPitch, 1.0F, 0.0F, 0.0F);
 +				
 +				setupPolyRendering(true);
-+					renderDebugAxes(0, 0, 0, 0.08f * mc.vrSettings.vrWorldScale); //TODO: camera model?
++					renderDebugAxes(0, 0, 0, 0.08f * mc.vrPlayer.worldScale); //TODO: camera model?
 +				setupPolyRendering(false);
 +					
 +				GL11.glMatrixMode(GL11.GL_PROJECTION);

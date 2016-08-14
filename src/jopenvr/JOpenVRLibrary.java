@@ -752,6 +752,6 @@ public class JOpenVRLibrary implements Library {
 	public static String IVRControlPanel_Version = "FnTable:IVRControlPanel_001";
 	public static String IVRNotifications_Version = "FnTable:IVRNotifications_002";
 	public static String IVRTrackedCamera_Version = "FnTable:IVRTrackedCamera_003";
-        public static String IVRScreenshots_Version = "FnTable:IVRScreenshots_001";
-        public static String IVRResources_Version = "FnTable:IVRResources_001";
+    public static String IVRScreenshots_Version = "FnTable:IVRScreenshots_001";
+    public static String IVRResources_Version = "FnTable:IVRResources_001";
 }

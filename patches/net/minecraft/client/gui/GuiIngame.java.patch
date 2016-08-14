@@ -74,12 +74,13 @@
          this.mc.getTextureManager().bindTexture(ICONS);
          GlStateManager.enableBlend();
 -        this.renderAttackIndicator(partialTicks, scaledresolution);
+-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 +        
 +        //VIVE NOPE
 +        //this.renderAttackIndicator(partialTicks, scaledresolution);
 +        //NOPE
 +        
-         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
++        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
 +        
          this.mc.mcProfiler.startSection("bossHealth");
 -        this.overlayBoss.renderBossHealth();

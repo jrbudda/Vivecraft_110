@@ -19,7 +19,7 @@
 +        
 +        //VIVECRAFT DO ok.
 +        this.jump = this.gameSettings.keyBindJump.isKeyDown() && ok;
-+        this.sneak = this.gameSettings.keyBindSneak.isKeyDown() && ok;
++        this.sneak = (Minecraft.getMinecraft().sneakTracker.sneakOverride || this.gameSettings.keyBindSneak.isKeyDown()) && ok;
  
          if (this.sneak)
          {

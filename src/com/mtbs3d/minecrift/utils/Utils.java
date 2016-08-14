@@ -10,6 +10,8 @@ import org.lwjgl.util.vector.Vector3f;
 
 import net.minecraft.util.math.Vec3d;
 
+import javax.vecmath.Vector3d;
+
 public class Utils
 {
 	public static Field getDeclaredField(Class clazz, String unObfuscatedName, String obfuscatedName, String srgName)
@@ -110,6 +112,10 @@ public class Utils
 
 	public static Vector3f convertToVector3f(Vec3d vector) {
 		return new Vector3f((float)vector.xCoord, (float)vector.yCoord, (float)vector.zCoord);
+	}
+
+	public static Vector3d convertToVector3d(Vec3d vector){
+		return new Vector3d(vector.xCoord,vector.yCoord, vector.zCoord);
 	}
 
 	public static Quaternion quatLerp(Quaternion start, Quaternion end, float fraction) {

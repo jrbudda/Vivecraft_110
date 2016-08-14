@@ -8,6 +8,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.SortedSet;
 
+import com.mtbs3d.minecrift.provider.MCOpenVR;
 import com.mtbs3d.minecrift.settings.profile.ProfileReader;
 import com.mtbs3d.minecrift.control.VRControllerButtonMapping;
 import com.mtbs3d.minecrift.control.ViveButtons;
@@ -21,6 +22,7 @@ import jopenvr.VR_IVRSystem_FnTable.GetTrackedDeviceIndexForControllerRole_callb
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.util.math.Vec3d;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,13 +56,6 @@ public class VRSettings
     public static final int RENDER_BLOCK_OUTLINE_MODE_ALWAYS = 0;
     public static final int RENDER_BLOCK_OUTLINE_MODE_HUD = 1;
     public static final int RENDER_BLOCK_OUTLINE_MODE_NEVER = 2;
-    public static final int VR_COMFORT_TRANS_BLANKING_MODE_OFF = 0;
-    public static final int VR_COMFORT_TRANS_BLANKING_MODE_FADE = 1;
-    public static final int VR_COMFORT_TRANS_BLANKING_MODE_BLANK = 2;
-    public static final int VR_COMFORT_OFF = 0;
-    public static final int VR_COMFORT_YAW = 1;
-    public static final int VR_COMFORT_PITCH = 2;
-    public static final int VR_COMFORT_PITCHANDYAW = 3;
   
     public static final int MIRROR_OFF = 0;
     public static final int MIRROR_ON_ONE_THIRD_FRAME_RATE = 1;
@@ -73,15 +68,16 @@ public class VRSettings
     public static final int HUD_LOCK_HEAD= 1;
     public static final int HUD_LOCK_HAND= 2;
     public static final int HUD_LOCK_WRIST= 3;
+    public static final int HUD_LOCK_BODY= 4;
 
+    public static final int FREEMOVE_CONTROLLER= 1;
+    public static final int FREEMOVE_HMD= 2;
+    public static final int FREEMOVE_RUNINPLACE= 3;
     
     public static final int NO_SHADER = -1;
 
     public int version = UNKNOWN_VERSION;
-    public boolean firstLoad = true;
-    public boolean newlyCreated = true;
     public boolean useVRRenderer  = false; //default to false
-    public boolean debugPose = false;
     public boolean debugPos = false;
 	protected float playerEyeHeight = 1.74f;  // Use getPlayerEyeHeight()
     public float eyeReliefAdjust = 0f;
@@ -120,7 +116,6 @@ public class VRSettings
     public boolean simulateFalling = false;  // VIVE if HMD is over empty space, fall
     public boolean weaponCollision = true;  // VIVE weapon hand collides with blocks/enemies
 
-    // TODO: Clean-up all the redundant crap!
     public boolean useDistortionTextureLookupOptimisation = false;
     public boolean useFXAA = false;
     public float hudScale = 1.5f;
@@ -138,16 +133,11 @@ public class VRSettings
     public float fsaaScaleFactor = 1.4f;
     public boolean useOculusProfileIpd = true;
     public boolean useHalfIpds = false;
- 	public String headPositionPluginID   = "openvr";
-	public String headTrackerPluginID    = "openvr";
-	public String hmdPluginID            = "openvr";
     public String stereoProviderPluginID = "openvr";
     public String badStereoProviderPluginID = "";
-	public String controllerPluginID = "openvr";    // VIVE use openVR for controller
     public float crosshairScale = 1.0f;
     public int renderInGameCrosshairMode = RENDER_CROSSHAIR_MODE_ALWAYS;
     public int renderBlockOutlineMode = RENDER_BLOCK_OUTLINE_MODE_ALWAYS;
-    public boolean showEntityOutline = false;
     public boolean crosshairRollsWithHead = false;
     public boolean crosshairScalesWithDistance = false;
     public boolean hudOcclusion = false;
@@ -155,12 +145,9 @@ public class VRSettings
 	public float chatOffsetX = 0;
 	public float chatOffsetY = 0.4f;
     public int inertiaFactor = INERTIA_NORMAL;
-    public boolean allowPitchAffectsHeightWhileFlying = true;
     public boolean storeDebugAim = false;
     public int smoothRunTickCount = 20;
     public boolean smoothTick = false;
-    public static final String LEGACY_OPTIONS_VR_FILENAME = "optionsvr.txt";
-    public boolean allowAvatarIK = false;
     public boolean hideGui = false;     // VIVE show gui
     public boolean useKeyBindingForComfortYaw = false;
 
@@ -192,10 +179,26 @@ public class VRSettings
     public boolean vrTouchHotbar = true;
     public boolean seated = false;
     private Minecraft mc;
+    public float jumpThreshold=0.05f;
+    public float sneakThreshold=0.4f;
+    public boolean realisticJumpEnabled=true;
+    public boolean realisticSneakEnabled=true;
+    public boolean realisticClimbEnabled=true;
+    public boolean realisticSwimEnabled=true;
+    public boolean realisticRowEnabled=true;
+    public float walkMultiplier=1;
+    public int vrFreeMoveMode = this.FREEMOVE_CONTROLLER;
 
-    private File optionsVRFile;
-    private File optionsVRBackupFile;
-    
+    public double headToHmdLength=0.10f;
+
+    public float xSensitivity=1f;
+    public float ySensitivity=1f;
+    public float keyholeX=15;
+
+    public float autoCalibration=-1;
+    public float manualCalibration=-1;
+
+
     public VRSettings( Minecraft minecraft, File dataDir )
     {
         // Assumes GameSettings (and hence optifine's settings) have been read first
@@ -245,11 +248,6 @@ public class VRSettings
                         this.version = Integer.parseInt(optionTokens[1]);
                     }
 
-                    if (optionTokens[0].equals("newlyCreated"))
-                    {
-                        this.newlyCreated = optionTokens[1].equals("true");
-                    }
-
 //                    if (optionTokens[0].equals("firstLoad"))
 //                    {
 //                        this.firstLoad = optionTokens[1].equals("true");
@@ -258,11 +256,6 @@ public class VRSettings
                     if (optionTokens[0].equals("useVRRenderer"))
                     {
                         this.useVRRenderer = optionTokens[1].equals("true");
-                    }
-
-                    if (optionTokens[0].equals("debugPose"))
-                    {
-                        this.debugPose = optionTokens[1].equals("true");
                     }
 
                     if (optionTokens[0].equals("playerEyeHeight"))
@@ -290,21 +283,6 @@ public class VRSettings
                         this.rightHalfIpd = this.parseFloat(optionTokens[1]);
                     }
 
-                    if (optionTokens[0].equals("headTrackerPluginID"))
-                    {
-                        this.headTrackerPluginID = optionTokens[1];
-                    }
-
-                    if (optionTokens[0].equals("headPositionPluginID"))
-                    {
-                        this.headPositionPluginID = optionTokens[1];
-                    }
-
-                    if (optionTokens[0].equals("hmdPluginID"))
-                    {
-                        this.hmdPluginID = optionTokens[1];
-                    }
-
                     if (optionTokens[0].equals("stereoProviderPluginID"))
                     {
                         this.stereoProviderPluginID = optionTokens[1];
@@ -315,11 +293,6 @@ public class VRSettings
                         if (optionTokens.length > 1) {  // Trap if no entry
                             this.badStereoProviderPluginID = optionTokens[1];
                         }
-                    }
-
-                    if (optionTokens[0].equals("controllerPluginID"))
-                    {
-                        this.controllerPluginID = optionTokens[1];
                     }
 
                     if (optionTokens[0].equals("hudOpacity"))
@@ -382,11 +355,6 @@ public class VRSettings
                     if (optionTokens[0].equals("walkUpBlocks"))
                     {
                         this.walkUpBlocks = optionTokens[1].equals("true");
-                    }
-
-                    if (optionTokens[0].equals("allowPitchAffectsHeightWhileFlying"))
-                    {
-                        this.allowPitchAffectsHeightWhileFlying = optionTokens[1].equals("true");
                     }
 
                     if (optionTokens[0].equals("useLowPersistence"))
@@ -556,11 +524,6 @@ public class VRSettings
                         this.renderBlockOutlineMode = Integer.parseInt(optionTokens[1]);
                     }
 
-                    if (optionTokens[0].equals("showEntityOutline"))
-                    {
-                        this.showEntityOutline = optionTokens[1].equals("true");
-                    }
-
                     if (optionTokens[0].equals("crosshairRollsWithHead"))
                     {
                         this.crosshairRollsWithHead = optionTokens[1].equals("true");
@@ -635,11 +598,6 @@ public class VRSettings
                     if (optionTokens[0].equals("smoothTick"))
                     {
                         this.smoothTick = optionTokens[1].equals("true");
-                    }
-
-                    if (optionTokens[0].equals("allowAvatarIK"))
-                    {
-                        this.allowAvatarIK = optionTokens[1].equals("true");
                     }
 
                     if (optionTokens[0].equals("hideGui"))
@@ -730,6 +688,65 @@ public class VRSettings
                     {
                     	  this.seated = optionTokens[1].equals("true");
                     }
+
+                    if(optionTokens[0].equals("jumpThreshold")){
+                        this.jumpThreshold=this.parseFloat(optionTokens[1]);
+                    }
+
+                    if(optionTokens[0].equals("sneakThreshold")){
+                        this.sneakThreshold=this.parseFloat(optionTokens[1]);
+                    }
+
+                    if(optionTokens[0].equals("realisticSneakEnabled")){
+                        this.realisticSneakEnabled=optionTokens[1].equals("true");
+                    }
+
+                    if(optionTokens[0].equals("realisticJumpEnabled")){
+                        this.realisticJumpEnabled=optionTokens[1].equals("true");
+                    }
+                    if(optionTokens[0].equals("realisticClimbEnabled")){
+                        this.realisticClimbEnabled=optionTokens[1].equals("true");
+                    }
+                    if(optionTokens[0].equals("realisticSwimEnabled")){
+                        this.realisticSwimEnabled=optionTokens[1].equals("true");
+                    }
+                    if(optionTokens[0].equals("realisticRowEnabled")){
+                        this.realisticRowEnabled=optionTokens[1].equals("true");
+                    }
+
+                    if(optionTokens[0].equals("headToHmdLength")){
+                        this.headToHmdLength=parseFloat(optionTokens[1]);
+                    }
+
+                    if(optionTokens[0].equals("walkMultiplier")){
+                        this.walkMultiplier=parseFloat(optionTokens[1]);
+                    }
+                    
+                    if (optionTokens[0].equals("vrFreeMoveMode"))
+                    {
+                        this.vrFreeMoveMode =  Integer.parseInt(optionTokens[1]);
+                    }
+
+                    if(optionTokens[0].equals("xSensitivity")){
+                        this.xSensitivity=parseFloat(optionTokens[1]);
+                    }
+
+                    if(optionTokens[0].equals("ySensitivity")){
+                        this.ySensitivity=parseFloat(optionTokens[1]);
+                    }
+
+                    if(optionTokens[0].equals("keyholeX")){
+                        this.keyholeX=parseFloat(optionTokens[1]);
+                    }
+
+                    if(optionTokens[0].equals("autoCalibration")){
+                        this.autoCalibration=parseFloat(optionTokens[1]);
+                    }
+
+                    if(optionTokens[0].equals("manualCalibration")){
+                        this.manualCalibration=parseFloat(optionTokens[1]);
+                    }
+
                     if (optionTokens[0].startsWith("BUTTON_"))
                     {
                        VRControllerButtonMapping vb = new VRControllerButtonMapping(
@@ -927,8 +944,6 @@ public class VRSettings
             	return this.insideBlockSolidColor ? var4 + "SOLID COLOR" : var4 + "TEXTURE";
             case WALK_UP_BLOCKS:
                 return this.walkUpBlocks ? var4 + "YES" : var4 + "NO";
-            case PITCH_AFFECTS_FLYING:
-                return this.allowPitchAffectsHeightWhileFlying ? var4 + "YES" : var4 + "NO";
             case VIEW_BOBBING:
                 return this.mc.gameSettings.viewBobbing ? var4 + "YES" : var4 + "NO";
             case RENDER_SCALEFACTOR:
@@ -963,6 +978,8 @@ public class VRSettings
                 	return var4 + " head";
                 case HUD_LOCK_WRIST:
                 	return var4 + " wrist";
+                case HUD_LOCK_BODY:
+                    return var4 + " body";
                 }
 	        case HUD_DISTANCE:
 	            return var4 + String.format("%.2f", new Object[] { Float.valueOf(this.hudDistance) });
@@ -1045,8 +1062,10 @@ public class VRSettings
                 //JRBUDDA
             case ALLOW_MODE_SWITCH:
                 return this.vrAllowLocoModeSwotch ? var4 + "ON" : var4 + "OFF";     
-            case FREE_MOVE_DEFAULT:
-                return this.vrFreeMove ? var4 + "ON" : var4 + "OFF";       
+            case MOVE_MODE:
+            	if(this.vrFreeMove == false){
+            		return var4 + "Teleport";
+            	} else return var4+ "Free Move";
             case ALLOW_CRAWLING:
                 return this.vrAllowCrawling ? var4 + "ON" : var4 + "OFF"; 
             case LIMIT_TELEPORT:
@@ -1068,6 +1087,38 @@ public class VRSettings
             case PLAY_MODE_SEATED:
             	return this.seated ? var4 + "SEATED" : var4 + "STANDING";
                 //END JRBUDDA
+            case REALISTIC_JUMP:
+                return this.realisticJumpEnabled ? var4 + "ON" : var4 + "OFF";
+            case REALISTIC_SNEAK:
+                return this.realisticSneakEnabled ? var4 + "ON" : var4 + "OFF";
+            case REALISTIC_CLIMB:
+                return this.realisticClimbEnabled ? var4 + "ON" : var4 + "OFF";
+            case REALISTIC_SWIM:
+                return this.realisticSwimEnabled ? var4 + "ON" : var4 + "OFF";
+            case REALISTIC_ROW:
+                return this.realisticRowEnabled ? var4 + "ON" : var4 + "OFF";
+            case CALIBRATE_HEIGHT:
+                return var2;
+            case WALK_MULTIPLIER:
+                return var4+ String.format("%.1f",walkMultiplier);
+            case X_SENSITIVITY:
+                return var4+ String.format("%.2f",xSensitivity);
+            case Y_SENSITIVITY:
+                return var4+ String.format("%.2f",ySensitivity);
+            case KEYHOLE:
+                return var4+ String.format("%.0f",keyholeX);
+            case RESET_ORIGIN:
+                return var2;
+            case FREEMOVE_MODE:
+                switch (this.vrFreeMoveMode) {
+                // VIVE - lock to hand instead of body
+                case FREEMOVE_CONTROLLER:
+                	return var4 + " Controller";
+                case FREEMOVE_HMD:
+                	return var4 + " HMD";
+                case FREEMOVE_RUNINPLACE:
+                	return var4 + " RunInPlace";
+                }
  	        default:
 	        	return "";
         }
@@ -1118,6 +1169,14 @@ public class VRSettings
 				return this.chatOffsetX;
 			case CHAT_OFFSET_Y:
 				return this.chatOffsetY;
+            case WALK_MULTIPLIER:
+                return this.walkMultiplier;
+            case X_SENSITIVITY:
+                return this.xSensitivity;
+            case Y_SENSITIVITY:
+                return this.ySensitivity;
+            case KEYHOLE:
+                return this.keyholeX;
             // VIVE START - new options
             case WORLD_SCALE:
             	
@@ -1237,9 +1296,6 @@ public class VRSettings
             case WALK_UP_BLOCKS:
                 this.walkUpBlocks = !this.walkUpBlocks;
                 break;
-            case PITCH_AFFECTS_FLYING:
-                this.allowPitchAffectsHeightWhileFlying = !this.allowPitchAffectsHeightWhileFlying;
-                break;
             case VIEW_BOBBING:
                 this.mc.gameSettings.viewBobbing = !this.mc.gameSettings.viewBobbing;
                 break;
@@ -1262,8 +1318,10 @@ public class VRSettings
                    	this.vrHudLockMode = HUD_LOCK_WRIST;
                 	break;
                 case HUD_LOCK_WRIST:
-                   	this.vrHudLockMode = HUD_LOCK_HAND;
+                   	this.vrHudLockMode = HUD_LOCK_BODY;
                 	break;
+                case HUD_LOCK_BODY:
+                    this.vrHudLockMode = HUD_LOCK_HAND;
                 }
                 break;
 	        case FSAA:
@@ -1335,7 +1393,7 @@ public class VRSettings
             case ALLOW_MODE_SWITCH:
                 this.vrAllowLocoModeSwotch = !this.vrAllowLocoModeSwotch;
                 break;
-            case FREE_MOVE_DEFAULT:
+            case MOVE_MODE:
                 this.vrFreeMove = !this.vrFreeMove;
                 Minecraft.getMinecraft().vrPlayer.setFreeMoveMode(vrFreeMove);
                 break;
@@ -1361,6 +1419,42 @@ public class VRSettings
                 this.seated = !this.seated;
                 break;
                 //JRBUDDA
+            case REALISTIC_JUMP:
+                realisticJumpEnabled = !realisticJumpEnabled;
+                break;
+            case REALISTIC_SWIM:
+                realisticSwimEnabled = !realisticSwimEnabled;
+                break;
+            case REALISTIC_CLIMB:
+                realisticClimbEnabled = !realisticClimbEnabled;
+                break;
+            case REALISTIC_ROW:
+                realisticRowEnabled = !realisticRowEnabled;
+                break;
+            case REALISTIC_SNEAK:
+                realisticSneakEnabled = !realisticSneakEnabled;
+                break;
+            case CALIBRATE_HEIGHT:
+                if(seated) {
+                    MCOpenVR.resetPosition();
+
+                }
+                    playerEyeHeight = (float) Minecraft.getMinecraft().roomScale.getHMDPos_Room().yCoord;
+
+                break;
+            case FREEMOVE_MODE:
+                switch (this.vrFreeMoveMode) {
+                case FREEMOVE_CONTROLLER:
+                	this.vrFreeMoveMode = FREEMOVE_HMD;
+                	break;
+                case FREEMOVE_HMD:
+                   	this.vrFreeMoveMode = FREEMOVE_RUNINPLACE;
+                	break;
+                case FREEMOVE_RUNINPLACE:
+                   	this.vrFreeMoveMode = FREEMOVE_CONTROLLER;
+                	break;
+                }
+                break;
                 
             default:
                     break;
@@ -1438,6 +1532,9 @@ public class VRSettings
 	        case CHAT_OFFSET_Y:
 	        	this.chatOffsetY = par2;
 	        	break;
+            case WALK_MULTIPLIER:
+                this.walkMultiplier=par2;
+                break;
             // VIVE START - new options
             case WORLD_SCALE:
             	if(par2 ==  0) vrWorldScale = 0.1f;
@@ -1466,6 +1563,15 @@ public class VRSettings
             	if(par2 == 2f) this.vrWorldRotationIncrement =  45f;
             	if(par2 == 3f) this.vrWorldRotationIncrement =  90f;
             	if(par2 == 4f) this.vrWorldRotationIncrement =  180f;
+                break;
+            case X_SENSITIVITY:
+                this.xSensitivity=par2;
+                break;
+            case Y_SENSITIVITY:
+                this.ySensitivity=par2;
+                break;
+            case KEYHOLE:
+                this.keyholeX=par2;
                 break;
             // VIVE END - new options
             default:
@@ -1498,16 +1604,11 @@ public class VRSettings
             var5.println("newlyCreated:" + false );
             //var5.println("firstLoad:" + this.firstLoad );
             var5.println("useVRRenderer:"+ this.useVRRenderer );
-            var5.println("debugPose:"+ this.debugPose );
             var5.println("playerEyeHeight:" + this.playerEyeHeight);
             var5.println("eyeReliefAdjust:" + this.eyeReliefAdjust);
             var5.println("neckBaseToEyeHeight:" + this.neckBaseToEyeHeight );
-            var5.println("headTrackerPluginID:"+ this.headTrackerPluginID);
-            var5.println("headPositionPluginID:"+ this.headPositionPluginID);
-            var5.println("hmdPluginID:"+ this.hmdPluginID);
             var5.println("stereoProviderPluginID:"+ this.stereoProviderPluginID);
             var5.println("badStereoProviderPluginID:"+ this.badStereoProviderPluginID);
-            var5.println("controllerPluginID:"+ this.controllerPluginID);
             var5.println("leftHalfIpd:" + this.leftHalfIpd);
             var5.println("rightHalfIpd:" + this.rightHalfIpd);
             var5.println("hudOpacity:" + this.hudOpacity);
@@ -1530,7 +1631,6 @@ public class VRSettings
             var5.println("insideBlockSolidColor:" + this.insideBlockSolidColor);
             var5.println("posTrackBlankOnCollision:" + this.posTrackBlankOnCollision);
             var5.println("walkUpBlocks:" + this.walkUpBlocks);
-            var5.println("allowPitchAffectsHeightWhileFlying:" + this.allowPitchAffectsHeightWhileFlying);
             var5.println("useDistortionTextureLookupOptimisation:" + this.useDistortionTextureLookupOptimisation);
             var5.println("useFXAA:" + this.useFXAA);
             var5.println("hudScale:" + this.hudScale);
@@ -1551,7 +1651,6 @@ public class VRSettings
             var5.println("aspectRatioCorrection:" + this.aspectRatioCorrection);
             var5.println("renderInGameCrosshairMode:" + this.renderInGameCrosshairMode);
             var5.println("renderBlockOutlineMode:" + this.renderBlockOutlineMode);
-            var5.println("showEntityOutline:" + this.showEntityOutline);
             var5.println("crosshairRollsWithHead:" + this.crosshairRollsWithHead);
             var5.println("crosshairScalesWithDistance:" + this.crosshairScalesWithDistance);
             var5.println("hudOcclusion:" + this.hudOcclusion);
@@ -1572,7 +1671,6 @@ public class VRSettings
             var5.println("useKeyBindingForComfortYaw:" + this.useKeyBindingForComfortYaw);
             var5.println("smoothRunTickCount:" + this.smoothRunTickCount);
             var5.println("smoothTick:" + this.smoothTick);
-            var5.println("allowAvatarIK:" + this.allowAvatarIK);
             var5.println("hideGui:" + this.hideGui);
             //VIVE
             var5.println("simulateFalling:" + this.simulateFalling);
@@ -1598,6 +1696,21 @@ public class VRSettings
             var5.println("vrFixedCamrotRoll:" + this.vrFixedCamrotRoll);
             var5.println("vrTouchHotbar:" + this.vrTouchHotbar);
             var5.println("seated:" + this.seated);
+            var5.println("jumpThreshold:" + this.jumpThreshold);
+            var5.println("sneakThreshold:" + this.sneakThreshold);
+            var5.println("realisticJumpEnabled:" + this.realisticJumpEnabled);
+            var5.println("realisticSwimEnabled:" + this.realisticSwimEnabled);
+            var5.println("realisticClimbEnabled:" + this.realisticClimbEnabled);
+            var5.println("realisticRowEnabled:" + this.realisticRowEnabled);
+            var5.println("realisticSneakEnabled:" + this.realisticSneakEnabled);
+            var5.println("headToHmdLength:" + this.headToHmdLength);
+            var5.println("walkMultiplier:" + this.walkMultiplier);
+            var5.println("vrFreeMoveMode:" + this.vrFreeMoveMode);
+            var5.println("xSensitivity:" + this.xSensitivity);
+            var5.println("ySensitivity:" + this.ySensitivity);
+            var5.println("keyholeX:" + this.keyholeX);
+            var5.println("autoCalibration:" + this.autoCalibration);
+            var5.println("manualCalibration:" + this.manualCalibration);
 
             if (vrQuickCommands == null) vrQuickCommands = getQuickCommandsDefaults(); //defaults
             
@@ -1715,6 +1828,10 @@ public class VRSettings
     public void setMinecraftPlayerEyeHeight(float eyeHeight)
     {
         this.playerEyeHeight = eyeHeight;
+    }
+
+    public float getMinecraftPlayerEyeHeight(){
+        return playerEyeHeight;
     }
 
 
@@ -1879,7 +1996,6 @@ public class VRSettings
         POS_TRACK_HIDE_COLLISION("Blank on collision", false, true),
         WALK_UP_BLOCKS("Walk up blocks", false, true),
         VIEW_BOBBING("View Bobbing", false, true),
-        PITCH_AFFECTS_FLYING("Pitch Affects Flying", false, true),
         //Movement/aiming controls
         DECOUPLE_LOOK_MOVE("Decouple Look/Move", false, true),
         MOVEMENT_MULTIPLIER("Move. Speed Multiplier", true, false),
@@ -1910,7 +2026,7 @@ public class VRSettings
         //JRBUDDA VIVE
         ALLOW_CRAWLING("Allow crawling",false, true),
         ALLOW_MODE_SWITCH("Allow Mode Switch",false, true),
-        FREE_MOVE_DEFAULT("Default to Free Move",false, true),
+        MOVE_MODE("Move Mode",false, true),
         LIMIT_TELEPORT("Limit TP in Survival",false, true),
         REVERSE_HANDS("Reverse Hands",false, true),
         STENCIL_ON("Use Eye Stencil", false, true), 
@@ -1921,6 +2037,20 @@ public class VRSettings
         TOUCH_HOTBAR("Touch Hotbar Enabled", false, true),
         PLAY_MODE_SEATED("Play Mode", false, true),
         //END JRBUDDA
+        REALISTIC_JUMP("Roomscale Jumping",false,true),
+        REALISTIC_SNEAK("Roomscale Sneaking",false,true),
+        REALISTIC_CLIMB("Roomscale Climbing",false,true),
+        REALISTIC_SWIM("Roomscale Swimming",false,true),
+        REALISTIC_ROW("Roomscale Rowing",false,true),
+        CALIBRATE_HEIGHT("Calibrate Height",false,true),
+        WALK_MULTIPLIER("Walking Multipier",true,false),
+        FREEMOVE_MODE("Move Type", false, true),
+
+        //SEATED
+        RESET_ORIGIN("Reset Origin",false,true),
+        X_SENSITIVITY("Rotation Speed",true,false),
+        Y_SENSITIVITY("Y Sensitivity",true,false),
+        KEYHOLE("Keyhole",true,false),
         
         // OTher buttons
         OTHER_HUD_SETTINGS("Overlay/Crosshair/Chat...", false, true),

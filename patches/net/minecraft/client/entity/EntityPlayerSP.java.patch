@@ -74,7 +74,15 @@
      /**
       * Called when the entity is attacked.
       */
-@@ -322,7 +360,12 @@
+@@ -273,6 +311,7 @@
+             this.serverSneakState = flag1;
+         }
+ 
++               
+         if (this.isCurrentViewEntity())
+         {
+             AxisAlignedBB axisalignedbb = this.getEntityBoundingBox();
+@@ -322,7 +361,12 @@
              }
  
              this.prevOnGround = this.onGround;
@@ -88,7 +96,7 @@
          }
      }
  
-@@ -698,7 +741,7 @@
+@@ -698,7 +742,7 @@
              }
          }
  
@@ -97,7 +105,7 @@
          {
              this.mc.getSoundHandler().playSound(new ElytraSound(this));
          }
-@@ -977,7 +1020,7 @@
+@@ -977,7 +1021,7 @@
                      this.sendPlayerAbilities();
                  }
              }
@@ -106,7 +114,7 @@
              {
                  if (this.flyToggleTimer == 0)
                  {
-@@ -1002,7 +1045,7 @@
+@@ -1002,7 +1046,7 @@
              }
          }
  
@@ -115,7 +123,7 @@
  
          if (this.capabilities.isFlying && this.isCurrentViewEntity())
          {
-@@ -1065,6 +1108,11 @@
+@@ -1065,6 +1109,11 @@
  
          super.onLivingUpdate();
  
@@ -123,11 +131,25 @@
 +        mc.vrPlayer.onLivingUpdate(this, this.mc, this.rand);
 +        // VIVE END - teleport movement
 +
-+        
++
          if (this.onGround && this.capabilities.isFlying && !this.mc.playerController.isSpectatorMode())
          {
              this.capabilities.isFlying = false;
-@@ -1115,20 +1163,53 @@
+@@ -1083,8 +1132,11 @@
+         if (this.getRidingEntity() instanceof EntityBoat)
+         {
+             EntityBoat entityboat = (EntityBoat)this.getRidingEntity();
+-            entityboat.updateInputs(this.movementInput.leftKeyDown, this.movementInput.rightKeyDown, this.movementInput.forwardKeyDown, this.movementInput.backKeyDown);
+-            this.rowingBoat |= this.movementInput.leftKeyDown || this.movementInput.rightKeyDown || this.movementInput.forwardKeyDown || this.movementInput.backKeyDown;
++            entityboat.updateInputs(this.movementInput.leftKeyDown || (mc.rowTracker.LOar && !mc.rowTracker.Foar),
++            		this.movementInput.rightKeyDown||(mc.rowTracker.ROar&& !mc.rowTracker.Foar), 
++            		this.movementInput.forwardKeyDown || (mc.rowTracker.Foar),
++            		this.movementInput.backKeyDown);
++            this.rowingBoat |=  mc.rowTracker.LOar || mc.rowTracker.ROar || mc.rowTracker.Foar || this.movementInput.leftKeyDown || this.movementInput.rightKeyDown || this.movementInput.forwardKeyDown || this.movementInput.backKeyDown;
+         }
+     }
+ 
+@@ -1115,20 +1167,54 @@
       */
      public void moveEntity(double x, double y, double z)
      {
@@ -138,6 +160,7 @@
 +    	boolean client = this instanceof EntityPlayerSP;
 +    	boolean freemove = OpenVRPlayer.get().getFreeMoveMode();
 +    	boolean doY = freemove || (Minecraft.getMinecraft().vrSettings.simulateFalling && !this.isOnLadder()) && !this.isSneaking();
++    	if(mc.vrSettings.realisticClimbEnabled) doY = true;
 +    	Vec3d roomOrigin = OpenVRPlayer.get().getRoomOriginPos_World();
 + //   	Vec3 camloc = Minecraft.getMinecraft().roomScale.getHMDPos_World();
 +
@@ -151,7 +174,7 @@
 +    		this.doAutoJump((float)(this.posX - d0), (float)(this.posZ - d1));
 +    		if (client){	
 +    			double oy = this.posY;
-+    			if (this.isRiding()) oy = this.getRidingEntity().posY;
++    			if (this.isRiding() && !this.isRidingHorse()) oy = this.getRidingEntity().posY;
 +    			OpenVRPlayer.get().setRoomOrigin(
 +    					posX + ox, 
 +    					oy, 
@@ -189,7 +212,7 @@
          {
              if (this.field_189812_cs <= 0 && this.onGround && !this.isSneaking() && !this.isRiding())
              {
-@@ -1144,12 +1225,16 @@
+@@ -1144,12 +1230,16 @@
                      float f = this.getAIMoveSpeed();
                      float f1 = (float)vec3d2.lengthSquared();
  
@@ -208,7 +231,7 @@
                          vec3d2 = new Vec3d((double)(f2 * f5 - f3 * f4), vec3d2.yCoord, (double)(f3 * f5 + f2 * f4));
                          f1 = (float)vec3d2.lengthSquared();
  
-@@ -1269,4 +1354,210 @@
+@@ -1269,4 +1359,238 @@
              }
          }
      }
@@ -257,15 +280,23 @@
 +    @Override
 +    public void setPosition(double x, double y, double z)
 +    { //this is also called when riding to move this around.
-+    	if(this.isRiding()){
++    	if(this.isRiding()){   			
 +    		Vec3d roomOrigin = OpenVRPlayer.get().getRoomOriginPos_World();
 +    		double ox = roomOrigin.xCoord - posX;
 +    		double oz = roomOrigin.zCoord - posZ;
++    		double oy = roomOrigin.yCoord - posY;
++    		
 +    		super.setPosition(x, y, z);
++
++    		double py = this.getRidingEntity().posY;
++    		if(this.isRidingHorse()){
++    			py = posY + oy; 
++    		}
++    		
 +    		OpenVRPlayer.get().setRoomOrigin(
 +    				posX + ox, 
-+    				this.getRidingEntity().posY,
-+    				posZ  + oz, false, false);
++    				py,
++    				posZ + oz, false, false); 		    		
 +
 +    	} else
 +    		super.setPosition(x, y, z);
@@ -362,22 +393,42 @@
 +    		IRoomscaleAdapter con = mc.roomScale;
 +    		
 +            // Account for pitch if required
-+    		if(this.capabilities.isFlying || this.inWater)
-+            if (Minecraft.getMinecraft().vrSettings.allowPitchAffectsHeightWhileFlying) {
-+            	if (vr.useLControllerForRestricedMovement) {//these are negative cause directionvec is backwards in the z direction.
-+            		directionVec= directionVec.rotatePitch(con.getControllerPitch_World(1) * PIOVER180);		   
-+            	} else {
-+            		directionVec=directionVec.rotatePitch(con.getHMDPitch_World()* PIOVER180);	
-+            	}		
-+            }
-+    		
-+    		// Account for yaw
-+            if (vr.useLControllerForRestricedMovement) {//these are negative cause directionvec is backwards in the z direction.
-+            	directionVec=directionVec.rotateYaw(-con.getControllerYaw_World(1) * PIOVER180);	
-+            } else {
-+            	directionVec=directionVec.rotateYaw(-con.getHMDYaw_World()* PIOVER180);
++    		   	
++    		if(mc.vrSettings.seated){
++            	directionVec=directionVec.rotateYaw(-con.getControllerYaw_World(1) * PIOVER180);	    		
++    		}else{
++        		if(this.capabilities.isFlying || this.inWater){
++        			switch (mc.vrSettings.vrFreeMoveMode){
++        			case VRSettings.FREEMOVE_CONTROLLER:
++        				directionVec= directionVec.rotatePitch(con.getControllerPitch_World(1) * PIOVER180);		   
++        				break;
++        			case VRSettings.FREEMOVE_HMD:
++        				directionVec=directionVec.rotatePitch(con.getHMDPitch_World()* PIOVER180);				
++        				break;
++        			case VRSettings.FREEMOVE_RUNINPLACE:
++        				//hmd pitch
++        				directionVec=directionVec.rotatePitch(con.getHMDPitch_World()* PIOVER180);	
++        				break;
++        			}
++        		}
++        		
++    			switch (mc.vrSettings.vrFreeMoveMode){
++    			case VRSettings.FREEMOVE_CONTROLLER:
++                	directionVec=directionVec.rotateYaw(-con.getControllerYaw_World(1) * PIOVER180);	
++    				break;
++    			case VRSettings.FREEMOVE_HMD:
++                	directionVec=directionVec.rotateYaw(-con.getHMDYaw_World() * PIOVER180);	
++    				break;
++    			case VRSettings.FREEMOVE_RUNINPLACE:
++                	directionVec=directionVec.rotateYaw((float) (-mc.runTracker.getYaw() * PIOVER180));
++    				directionVec = directionVec.scale(mc.runTracker.getSpeed());
++    				break;
++    			}
++        		    	    			
 +    		}
-+    	
++    			
++
++
 +            mX = directionVec.xCoord;
 +            mY = directionVec.yCoord;
 +            mZ = directionVec.zCoord;

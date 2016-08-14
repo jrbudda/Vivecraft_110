@@ -1,0 +1,11 @@
+--- a/net/minecraft/item/Item.java
++++ b/net/minecraft/item/Item.java
+@@ -1046,6 +1046,8 @@
+         registerItem(2265, "record_ward", (new ItemRecord("ward", SoundEvents.RECORD_WARD)).setUnlocalizedName("record"));
+         registerItem(2266, "record_11", (new ItemRecord("11", SoundEvents.RECORD_11)).setUnlocalizedName("record"));
+         registerItem(2267, "record_wait", (new ItemRecord("wait", SoundEvents.RECORD_WAIT)).setUnlocalizedName("record"));
++        registerItem(22000, "eatme_cake", (new ItemFoodWonder(2, 0.3F, false).setAlwaysEdible()).setUnlocalizedName("eatme_cake").setCreativeTab(CreativeTabs.BREWING));
++        registerItem(22001, "drinkme_bottle", (new ItemFoodWonder(1, 0.3F, false).setAlwaysEdible()).setUnlocalizedName("drinkme_bottle").setCreativeTab(CreativeTabs.BREWING));      
+     }
+ 
+     /**

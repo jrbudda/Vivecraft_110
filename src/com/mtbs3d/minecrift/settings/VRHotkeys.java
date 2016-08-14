@@ -4,6 +4,7 @@
 */
 package com.mtbs3d.minecrift.settings;
 
+import com.mtbs3d.minecrift.provider.MCOpenVR;
 import com.mtbs3d.minecrift.provider.OpenVRPlayer;
 import com.mtbs3d.minecrift.settings.VRSettings;
 import net.minecraft.client.Minecraft;
@@ -106,34 +107,30 @@ public class VRHotkeys {
 		// VIVE START - hotkeys
 
 		// Testing different movement styles
-		if (Keyboard.getEventKey() == Keyboard.KEY_M && Keyboard.isKeyDown(Keyboard.KEY_RCONTROL))
-		{
-			// JRBUDDA ADDED all dis.
-			if (mc.vrPlayer.getFreeMoveMode()) {
-				//cycle restricted movement styles
-				if (mc.vrPlayer.useLControllerForRestricedMovement) {
-					mc.vrPlayer.useLControllerForRestricedMovement = false;
-					mc.printChatMessage("Restricted movement mode set to gaze");
-				} else {
-					mc.vrPlayer.useLControllerForRestricedMovement = true;
-					mc.printChatMessage("Restricted movement mode set to left controller");
-				}
-			} else {
-				
-				OpenVRPlayer vrp = mc.vrPlayer;
-				
-				// cycle VR movement styles
-				if (vrp.vrMovementStyle.name == "Minimal") vrp.vrMovementStyle.setStyle("Beam");
-				else if (vrp.vrMovementStyle.name == "Beam") vrp.vrMovementStyle.setStyle("Tunnel");
-				else if (vrp.vrMovementStyle.name == "Tunnel") vrp.vrMovementStyle.setStyle("Grapple");
-				else if (vrp.vrMovementStyle.name == "Grapple") vrp.vrMovementStyle.setStyle("Arc");
-				else vrp.vrMovementStyle.setStyle("Minimal");
-			
-						
-			}
-					
-			gotKey = true;
-		}
+//		if (Keyboard.getEventKey() == Keyboard.KEY_M && Keyboard.isKeyDown(Keyboard.KEY_RCONTROL))
+//		{
+//			// JRBUDDA ADDED all dis.
+//			if (mc.vrPlayer.getFreeMoveMode()) {
+//				//cycle restricted movement styles
+//				if (mc.vrPlayer.useLControllerForRestricedMovement) {
+//					mc.vrPlayer.useLControllerForRestricedMovement = false;
+//					mc.printChatMessage("Restricted movement mode set to gaze");
+//				} else {
+//					mc.vrPlayer.useLControllerForRestricedMovement = true;
+//					mc.printChatMessage("Restricted movement mode set to left controller");
+//				}
+//			} else {				
+//				OpenVRPlayer vrp = mc.vrPlayer;				
+//				// cycle VR movement styles
+//				if (vrp.vrMovementStyle.name == "Minimal") vrp.vrMovementStyle.setStyle("Beam");
+//				else if (vrp.vrMovementStyle.name == "Beam") vrp.vrMovementStyle.setStyle("Tunnel");
+//				else if (vrp.vrMovementStyle.name == "Tunnel") vrp.vrMovementStyle.setStyle("Grapple");
+//				else if (vrp.vrMovementStyle.name == "Grapple") vrp.vrMovementStyle.setStyle("Arc");
+//				else vrp.vrMovementStyle.setStyle("Minimal");			
+//			}
+//					
+//			gotKey = true;
+//		}
 
 		if (Keyboard.getEventKey() == Keyboard.KEY_R && Keyboard.isKeyDown(Keyboard.KEY_RCONTROL))
 		{
@@ -229,6 +226,10 @@ public class VRHotkeys {
 			snapMRCam(mc);
 			gotKey = true;
 		}
+		if(Keyboard.getEventKey() == Keyboard.KEY_F12){
+
+			gotKey = true;
+		}
 
 		// VIVE END - hotkeys
 
@@ -241,9 +242,9 @@ public class VRHotkeys {
 
 	public static void snapMRCam(Minecraft mc) {
 		Vec3d pos = Minecraft.getMinecraft().roomScale.getControllerPos_Room(0);
-		mc.vrSettings.vrFixedCamposX = (float) pos.xCoord /mc.vrSettings.vrWorldScale;
-		mc.vrSettings.vrFixedCamposY = (float) pos.yCoord /mc.vrSettings.vrWorldScale;
-		mc.vrSettings.vrFixedCamposZ = (float) pos.zCoord /mc.vrSettings.vrWorldScale;
+		mc.vrSettings.vrFixedCamposX = (float) pos.xCoord /mc.vrPlayer.worldScale;
+		mc.vrSettings.vrFixedCamposY = (float) pos.yCoord /mc.vrPlayer.worldScale;
+		mc.vrSettings.vrFixedCamposZ = (float) pos.zCoord /mc.vrPlayer.worldScale;
 
 		mc.vrSettings.vrFixedCamrotPitch = -Minecraft.getMinecraft().roomScale.getControllerPitch_World(0);
 		mc.vrSettings.vrFixedCamrotYaw = Minecraft.getMinecraft().roomScale.getControllerYaw_World(0) + mc.vrSettings.vrWorldRotation;

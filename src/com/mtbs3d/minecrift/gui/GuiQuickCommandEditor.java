@@ -49,9 +49,8 @@ public class GuiQuickCommandEditor extends BaseGuiSettings {
     public void initGui() {
     	this.guiList = new GuiQuickCommandsList(this, mc);
         this.buttonList.clear();
-        this.buttonList.add(new GuiButtonEx	(202, this.width / 2 , this.height -20,100,18, "Reset To Defaults"));
-        this.buttonList.add(new GuiButtonEx(200, this.width / 2 - 100, this.height -20,100,18, "Done"));
-
+        this.buttonList.add(new GuiButtonEx(ID_GENERIC_DEFAULTS, this.width / 2 - 155 ,  this.height -25 ,150,20, "Reset To Defaults"));
+        this.buttonList.add(new GuiButtonEx(ID_GENERIC_DONE, this.width / 2 - 155  + 160, this.height -25,150,20, "Done"));
     }
 
     /**
@@ -70,7 +69,7 @@ public class GuiQuickCommandEditor extends BaseGuiSettings {
      * Fired when a control is clicked. This is the equivalent of ActionListener.actionPerformed(ActionEvent e).
      */
     protected void actionPerformed(GuiButton par1GuiButton) {
-    	if (par1GuiButton.id == 200) {
+    	if (par1GuiButton.id == ID_GENERIC_DONE) {
     		for (int i = 0; i < 12; i++) {
     			String c = ((GuiQuickCommandsList.CommandEntry)this.guiList.getListEntry(i)).txt.getText();
 				mc.vrSettings.vrQuickCommands[i] = c;
@@ -78,7 +77,7 @@ public class GuiQuickCommandEditor extends BaseGuiSettings {
     		
             this.guivrSettings.saveOptions();
             this.mc.displayGuiScreen(this.parentGuiScreen);
-        } else if (par1GuiButton.id == 202){
+        } else if (par1GuiButton.id == ID_GENERIC_DEFAULTS){
         	mc.vrSettings.vrQuickCommands = mc.vrSettings.getQuickCommandsDefaults();
         	this.initGui();
         }
