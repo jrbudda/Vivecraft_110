@@ -1,13 +1,13 @@
 --- a/net/minecraft/client/renderer/RenderItem.java
 +++ b/net/minecraft/client/renderer/RenderItem.java
-@@ -166,16 +166,30 @@
+@@ -166,16 +166,37 @@
          }
      }
  
 -    public void renderItem(ItemStack stack, IBakedModel model)
 +    public static boolean ismainhand = false;
 +    public static boolean isfphand = false;
-+    
++
 +    public void renderItem(float par1, ItemStack stack, IBakedModel model)
      {
          if (stack != null)
@@ -16,14 +16,21 @@
              GlStateManager.translate(-0.5F, -0.5F, -0.5F);
  
 +            float fade = 1;
-+            if(Minecraft.getMinecraft().thePlayer!=null)
-+            	fade= Minecraft.getMinecraft().thePlayer.getCooledAttackStrength(par1);
 +            
++            EntityPlayerSP p = Minecraft.getMinecraft().thePlayer;
++            
++            if(p!=null){
++            	fade= p.getCooledAttackStrength(par1);
++              
++            	if(p.isSneaking()) 
++                	fade =0.75f;
++                
++                if(p.isActiveItemStackBlocking() && p.getActiveItemStack() != stack) 
++                	fade =0.75f;   
++            }
++                    
 +            if(fade < 0.1) fade = 0.1f;
 +            if(!isfphand) fade = 1;
-+            
-+            if(Minecraft.getMinecraft().thePlayer.isSneaking()) 
-+            	fade =0.75f;
 +            
              if (model.isBuiltInRenderer())
              {
@@ -33,7 +40,7 @@
                  GlStateManager.enableRescaleNormal();
                  TileEntityItemStackRenderer.instance.renderByItem(stack);
              }
-@@ -187,7 +201,13 @@
+@@ -187,7 +208,13 @@
                      this.modelLocation = null;
                  }
  
@@ -48,7 +55,7 @@
  
                  if (stack.hasEffect() && (!Config.isCustomItems() || !CustomItems.renderCustomEffect(this, stack, model)))
                  {
-@@ -304,7 +324,7 @@
+@@ -304,7 +331,7 @@
          if (stack != null)
          {
              IBakedModel ibakedmodel = this.getItemModelWithOverrides(stack, (World)null, (EntityLivingBase)null);
@@ -57,7 +64,7 @@
          }
      }
  
-@@ -333,16 +353,16 @@
+@@ -333,16 +360,16 @@
          }
      }
  
@@ -77,7 +84,7 @@
      {
          if (stack.getItem() != null)
          {
-@@ -370,7 +390,7 @@
+@@ -370,7 +397,7 @@
                  }
              }
  
@@ -86,7 +93,7 @@
              GlStateManager.cullFace(GlStateManager.CullFace.BACK);
              GlStateManager.popMatrix();
              GlStateManager.disableRescaleNormal();
-@@ -415,7 +435,7 @@
+@@ -415,7 +442,7 @@
              bakedmodel.getItemCameraTransforms().applyTransform(ItemCameraTransforms.TransformType.GUI);
          }
  
@@ -95,7 +102,7 @@
          GlStateManager.disableAlpha();
          GlStateManager.disableRescaleNormal();
          GlStateManager.disableLighting();
-@@ -1108,6 +1128,9 @@
+@@ -1108,6 +1135,9 @@
          this.registerItem(Items.DIAMOND_HORSE_ARMOR, "diamond_horse_armor");
          this.registerItem(Items.LEAD, "lead");
          this.registerItem(Items.NAME_TAG, "name_tag");

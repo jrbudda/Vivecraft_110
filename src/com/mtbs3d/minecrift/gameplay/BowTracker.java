@@ -1,6 +1,10 @@
 package com.mtbs3d.minecrift.gameplay;
 
+import java.nio.ByteBuffer;
+
 import com.mtbs3d.minecrift.api.IRoomscaleAdapter;
+import com.mtbs3d.minecrift.api.NetworkHelper;
+import com.mtbs3d.minecrift.api.NetworkHelper.PacketDiscriminators;
 import com.mtbs3d.minecrift.provider.MCOpenVR;
 
 import de.fruitfly.ovr.structs.Matrix4f;
@@ -14,6 +18,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.client.CPacketCustomPayload;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.Vec3d;
@@ -154,6 +159,8 @@ public class BowTracker {
 			//fire!
 			provider.triggerHapticPulse(0, 500); 	
 			provider.triggerHapticPulse(1, 3000); 	
+			CPacketCustomPayload pack =	NetworkHelper.getVivecraftClientPacket(PacketDiscriminators.DRAW, ByteBuffer.allocate(4).putFloat((float) getDrawPercent()).array());
+			Minecraft.getMinecraft().getConnection().sendPacket(pack);
 			minecraft.playerController.onStoppedUsingItem(player); //server
 			isDrawing = false;     	
 		}

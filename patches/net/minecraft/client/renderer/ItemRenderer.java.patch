@@ -422,7 +422,7 @@
              }
          }
  
-@@ -352,192 +419,453 @@
+@@ -352,192 +419,459 @@
          this.rotateArm(partialTicks);
          GlStateManager.enableRescaleNormal();
  
@@ -456,7 +456,9 @@
 -        boolean flag = p_187457_4_ == EnumHand.MAIN_HAND;
 -        EnumHandSide enumhandside = flag ? p_187457_1_.getPrimaryHand() : p_187457_1_.getPrimaryHand().opposite();
 -        GlStateManager.pushMatrix();
--
++    	boolean mainHand = hand == EnumHand.MAIN_HAND;
++    	EnumHandSide enumhandside = mainHand ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
+ 
 -        if (p_187457_6_ == null)
 -        {
 -            if (flag && !p_187457_1_.isInvisible())
@@ -482,9 +484,7 @@
 -            if (p_187457_1_.isHandActive() && p_187457_1_.getItemInUseCount() > 0 && p_187457_1_.getActiveHand() == p_187457_4_)
 -            {
 -                int j = flag1 ? 1 : -1;
-+    	boolean mainHand = hand == EnumHand.MAIN_HAND;
-+    	EnumHandSide enumhandside = mainHand ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
- 
+-
 -                switch (p_187457_6_.getItemUseAction())
 -                {
 -                    case NONE:
@@ -781,7 +781,7 @@
 +	
 +	    				this.itemRenderer.ismainhand = mainHand;
 +	    				this.itemRenderer.isfphand = true;
-+	    				
++    				
 +	    				//VIVE use 'NONE' transforms.
 +	    				if(!thing)
 +	    					this.renderItemSide(partialTicks,player, itemstack, rightSide ? ItemCameraTransforms.TransformType.NONE : ItemCameraTransforms.TransformType.NONE, !rightSide);
@@ -875,17 +875,23 @@
 +		// VIVE start - screen flash when hurt instead of view tilt
 +		 EntityPlayerSP player = mc.thePlayer;
 +		if (player!=null) {
-+			if( player.getHealth() > 0.0f)		
++
++			float var3 = (float)player.hurtTime - partialTicks;
++
++			float percent = 1 - player.getHealth() / player.getMaxHealth();
++			percent = percent * 0.15f;
++
++			if (var3>0.0f)
 +			{
-+				float var3 = (float)player.hurtTime - partialTicks;
-+				if (var3>0.0f)
-+				{
-+					var3 /= (float) player.maxHurtTime;
-+					var3 = MathHelper.sin(var3 * var3 * var3 * var3 * (float) Math.PI) * 0.5f;
-+					r = 1;
-+					a = var3;
-+				} 
-+			} 
++				var3 /= (float) player.maxHurtTime;
++				var3 = percent + MathHelper.sin(var3 * var3 * var3 * var3 * (float) Math.PI) * 0.5f;
++				r = 1;
++				a = var3;
++			} else {
++				r = 1;
++				a = percent;
++			}
++
 +
 +			if (player.isPlayerSleeping()){
 +				a = .8f;
@@ -911,7 +917,7 @@
 +            }
 +        }
 +		
-+        
++                
 +        GlStateManager.enableAlpha();
 +    }
 +
@@ -1006,7 +1012,7 @@
          vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
          vertexbuffer.pos(-1.0D, -1.0D, -0.5D).tex((double)f7, (double)f9).endVertex();
          vertexbuffer.pos(1.0D, -1.0D, -0.5D).tex((double)f6, (double)f9).endVertex();
-@@ -561,17 +889,14 @@
+@@ -561,17 +895,14 @@
              VertexBuffer vertexbuffer = tessellator.getBuffer();
              float f = this.mc.thePlayer.getBrightness(partialTicks);
              GlStateManager.color(f, f, f, 0.5F);

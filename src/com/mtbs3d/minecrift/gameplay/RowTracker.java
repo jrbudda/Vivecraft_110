@@ -39,8 +39,8 @@ public class RowTracker {
 			return;
 		}
 
-		double c0move = MCOpenVR.controllerHistory[0].averageSpeed(0.5).lengthVector();
-		double c1move = MCOpenVR.controllerHistory[1].averageSpeed(0.5).lengthVector();
+		double c0move = MCOpenVR.controllerHistory[0].averageSpeed(0.5);
+		double c1move = MCOpenVR.controllerHistory[1].averageSpeed(0.5);
 
 		ROar = c0move > 0.9f;
 		LOar = c1move > 0.9f;

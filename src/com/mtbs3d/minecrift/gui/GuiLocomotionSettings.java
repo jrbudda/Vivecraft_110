@@ -95,18 +95,6 @@ public class GuiLocomotionSettings extends BaseGuiSettings implements GuiEventEx
                     maxValue = 1.0f;
                     increment = 0.01f;
                 }
-                else if ( var8 == VRSettings.VrOptions.VR_COMFORT_TRANSITION_ANGLE_DEGS)
-                {
-                    minValue = 15f;
-                    maxValue = 45f;
-                    increment = 15f;
-                }
-                else if ( var8 == VRSettings.VrOptions.VR_COMFORT_TRANSITION_TIME_SECS)
-                {
-                    minValue = 0f;
-                    maxValue = 0.75f;
-                    increment = 0.005f;
-                }
                 else if (var8 == VRSettings.VrOptions.WALK_MULTIPLIER){
                     minValue=1f;
                     maxValue=10f;
@@ -172,7 +160,6 @@ public class GuiLocomotionSettings extends BaseGuiSettings implements GuiEventEx
             else if (par1GuiButton.id == ID_GENERIC_DEFAULTS)
             {
                 vr.inertiaFactor = VRSettings.INERTIA_NORMAL;
-                vr.useKeyBindingForComfortYaw = false;
                 vr.movementSpeedMultiplier = 1f;
                 vr.simulateFalling = false;
                 //jrbudda//
@@ -189,6 +176,7 @@ public class GuiLocomotionSettings extends BaseGuiSettings implements GuiEventEx
                 vr.realisticSneakEnabled = true;
                 vr.realisticSwimEnabled = true;
                 vr.realisticRowEnabled = true;
+                vr.vehicleRotation = false;
                 //end jrbudda
                 
                 Minecraft.getMinecraft().gameSettings.viewBobbing = true;
@@ -214,11 +202,6 @@ public class GuiLocomotionSettings extends BaseGuiSettings implements GuiEventEx
     @Override
     public boolean event(int id, VRSettings.VrOptions enumm)
     {
-        if (enumm == VRSettings.VrOptions.USE_VR_COMFORT)
-        {
-            this.reinit = true;
-        }
-
         return true;
     }
 
@@ -265,59 +248,6 @@ public class GuiLocomotionSettings extends BaseGuiSettings implements GuiEventEx
                             "  ON:  You can walk up single blocks. May reduce",
                             "       locomotion induced simulator sickness for some."
                     } ;
-                case USE_VR_COMFORT:
-                    return new String[] {
-                            "Enables view ratcheting on controller yaw or pitch input.",
-                            "For some people this can allow a more comfortable",
-                            "viewing experience while moving around. Known as",
-                            "'VR Comfort Mode' (with thanks to Cloudhead Games)!",
-                            "  OFF: (Default) No view ratcheting is applied.",
-                            "  Yaw Only: View ratcheting applied to Yaw only.",
-                            "  Pitch Only: View ratcheting applied to Pitch only.",
-                            "  Yaw and Pitch: You guessed it...",
-                    } ;
-                case VR_COMFORT_TRANSITION_LINEAR:
-                    return new String[] {
-                            "Determines how the view transitions from one ratchet",
-                            "angle to the next.",
-                            "  Sinusoidal: (default) The view movement accelerates",
-                            "  and then decelerates to the required position. Can",
-                            "  feel more natural to some.",
-                            "  Linear: The view transitions to the next angle at a",
-                            "  constant velocity."
-                    } ;
-                case VR_COMFORT_TRANSITION_BLANKING_MODE:
-                    return new String[] {
-                            "Determines if the view is blanked as the view",
-                            "transitions from one ratchet angle to the next. This can",
-                            "relieve locomotion induced motion sickness for some.",
-                            "  None: (Default) No view blanking is applied.",
-                            "  Black: The view is completely black during transition.",
-                            "  Blink: A simulated blink. The view fades to black, and",
-                            "  and then fades in again over the transition period."
-                    } ;
-                case VR_COMFORT_TRANSITION_TIME_SECS:
-                    return new String[] {
-                            "Determines how long a ratchet transition takes, in ms.",
-                            "  0ms: Instant transition.",
-                            "  200-400ms: Human blink speed."
-                    } ;
-                case VR_COMFORT_TRANSITION_ANGLE_DEGS:
-                    return new String[]{
-                            "Determines how many degrees a ratchet transition",
-                            "rotates."
-                    };
-                case ALLOW_FORWARD_PLUS_STRAFE:
-                    return new String[] {
-                            "Determines if strafing (or sideways movement) is",
-                            "allowed while moving forward or backwards.",
-                            "  Allowed: (Default) Forwards and strafe movement is",
-                            "  allowed at the same time. May cause motion sickness",
-                            "  for some.",
-                            "  Disallowed: Anything more than a small forward",
-                            "  movement will cause any strafe input to be zeroed.",
-                            "  This can help make movement more 'natural'."
-                    } ;
                 case INERTIA_FACTOR:
                     return new String[]{
                             "Sets the player's movement inertia in single player",
@@ -328,28 +258,6 @@ public class GuiLocomotionSettings extends BaseGuiSettings implements GuiEventEx
                             "           movement.",
                             "  Automan < Normal < A lot < Even More. Does not",
                             "  affect lava, water or jumping movement currently."
-                    };
-                case VIEW_BOBBING:
-                    return new String[]{
-                            "If enabled, makes player movement more realistic by",
-                            "simulating the players view changing subtly as they",
-                            "walk along. Can cause motion sickness when ON for",
-                            "some. Yet others need this ON for a comfortable",
-                            "experience!",
-                            "  ON: (Default) View bobs up and down while moving.",
-                            "  OFF: No view bobbing, the player view 'floats' at",
-                            "       a constant height above the ground."
-                    };
-                case VR_COMFORT_USE_KEY_BINDING_FOR_YAW:
-                    return new String[]{
-                            "Determines how a comfort mode yaw transition (player",
-                            "turn to the left or right) is triggered.",
-                            "  Crosshair: (Default) Moving the crosshair to the edge",
-                            "             of the keyhole will trigger a yaw",
-                            "             transition.",
-                            "  Key:       The 'Cycle Item Left / Right' key or",
-                            "             controller binding wil instead be used to",
-                            "             trigger a yaw transition."
                     };
                 // VIVE START - new options
                 case SIMULATE_FALLING:
@@ -427,6 +335,12 @@ public class GuiLocomotionSettings extends BaseGuiSettings implements GuiEventEx
                             "HMD: Uses head direction, max speed",
                             "Run In Place: Use average controllers direction. Speed based",
                             "on controller motion."
+                            
+                    } ;
+                case VEHICLE_ROTATION:
+                    return new String[] {
+                            "Riding in a vehicle will rotate the world",
+                            "as the vehicle rotates. May be disorienting."
                             
                     } ;
                 default:

@@ -22,10 +22,8 @@ public class GuiOtherHUDSettings extends BaseGuiSettings
             VRSettings.VrOptions.CROSSHAIR_OCCLUSION,
             //VRSettings.VrOptions.MAX_CROSSHAIR_DISTANCE_AT_BLOCKREACH,
             //VRSettings.VrOptions.CROSSHAIR_SCALES_WITH_DISTANCE,
-            VRSettings.VrOptions.CHAT_FADE_AWAY,
+          //  VRSettings.VrOptions.CHAT_FADE_AWAY,
             VRSettings.VrOptions.DUMMY,
-            VRSettings.VrOptions.CHAT_OFFSET_X,
-            VRSettings.VrOptions.CHAT_OFFSET_Y,
     };
     // VIVE END - hide options not supported by tracked controller UI
 
@@ -99,14 +97,9 @@ public class GuiOtherHUDSettings extends BaseGuiSettings
                 this.guivrSettings.crosshairScale = 1.0f;
                 this.guivrSettings.renderBlockOutlineMode = VRSettings.RENDER_BLOCK_OUTLINE_MODE_ALWAYS;
                 this.guivrSettings.renderInGameCrosshairMode = VRSettings.RENDER_CROSSHAIR_MODE_ALWAYS;
-                this.guivrSettings.crosshairRollsWithHead = false;
                 this.guivrSettings.menuCrosshairScale = 1f;
                 this.guivrSettings.useCrosshairOcclusion = false;
-                this.guivrSettings.maxCrosshairDistanceAtBlockReach = false;
-                this.guivrSettings.crosshairScalesWithDistance = false;
-                this.guivrSettings.chatOffsetX = 0;
-                this.guivrSettings.chatOffsetY = 0.4f;
-                this.guivrSettings.chatFadeAway = true;
+
 
                 Minecraft.getMinecraft().vrSettings.saveOptions();
                 this.reinit = true;

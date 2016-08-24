@@ -19,15 +19,15 @@ import net.minecraft.util.math.Vec3d;
 
 public class ClimbTracker {
 
-private boolean c0Latched = false;
-private boolean c1Latched = false;
+	private boolean c0Latched = false;
+	private boolean c1Latched = false;
 
 	private boolean gravityOverride=false;
-	
 
-public Vec3d[] latchStart = new Vec3d[]{new Vec3d(0,0,0), new Vec3d(0,0,0)};
-public double[] latchStartBodyY = new double[2];
-public int latchStartController = -1;
+
+	public Vec3d[] latchStart = new Vec3d[]{new Vec3d(0,0,0), new Vec3d(0,0,0)};
+	public double[] latchStartBodyY = new double[2];
+	public int latchStartController = -1;
 
 	public boolean isGrabbingLadder(){
 		return c0Latched || c1Latched;
@@ -44,6 +44,8 @@ public int latchStartController = -1;
 			return false;
 		if(p.isRiding())
 			return false;
+		if(p.moveForward > 0) 
+			return false;
 		return true;
 	}
 
@@ -58,7 +60,7 @@ public int latchStartController = -1;
 		IRoomscaleAdapter provider = minecraft.roomScale;
 
 		boolean[] ok = new boolean[2];
-		
+
 		for(int c=0;c<2;c++){
 			Vec3d controllerPos=minecraft.roomScale.getControllerPos_World(c);
 			BlockPos bp = new BlockPos(controllerPos);
@@ -84,30 +86,30 @@ public int latchStartController = -1;
 					ok[c] = c==0?c0Latched:c1Latched; //dont let go when leaving block, only when not on ladder in ladder block.
 			}
 		}
-		
-		
+
+
 		if(!ok[0] && c0Latched){
 			minecraft.vrPlayer.triggerHapticPulse(0, 200);
 		}
-		
+
 		if(ok[0] && !c0Latched){
 			latchStart[0] = minecraft.roomScale.getControllerPos_World(0);
 			latchStartBodyY[0] = player.posY;
 			latchStartController = 0;
 			minecraft.vrPlayer.triggerHapticPulse(0, 1000);
 		}
-		
+
 		if(!ok[1] && c1Latched){
 			minecraft.vrPlayer.triggerHapticPulse(1, 200);
 		}
-		
+
 		if(ok[1] && !c1Latched){
 			latchStart[1] = minecraft.roomScale.getControllerPos_World(1);
 			latchStartBodyY[1] = player.posY;
 			latchStartController = 1;
 			minecraft.vrPlayer.triggerHapticPulse(1, 1000);
 		}
-		
+
 		c0Latched = ok[0];
 		c1Latched = ok[1];
 
@@ -119,14 +121,14 @@ public int latchStartController = -1;
 			player.setNoGravity(false);
 			gravityOverride=false;
 		}
-		
+
 		if(!c0Latched && !c1Latched){
 			latchStartController = -1;
 			return; //fly u fools
 		}
-		
+
 		int c =0;
-		
+
 		if(c0Latched && c1Latched){ //y u do dis?
 			if(latchStartController >=0)
 				c = latchStartController; //use whichever one grabbed most recently.
@@ -134,11 +136,11 @@ public int latchStartController = -1;
 		} else if (c1Latched){
 			c =1;
 		}
-				
+
 		double now = minecraft.roomScale.getControllerPos_World(c).yCoord;
-		
+
 		double delta= -(now - latchStart[c].yCoord);
-		
+
 		player.motionY = delta;
 
 	}

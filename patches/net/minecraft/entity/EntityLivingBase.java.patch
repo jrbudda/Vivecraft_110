@@ -18,22 +18,20 @@
                          if (this.isOnLadder())
                          {
                              float f9 = 0.15F;
-@@ -2815,8 +2817,18 @@
+@@ -2815,8 +2817,17 @@
                      Vec3d vec3d1 = new Vec3d(((double)this.rand.nextFloat() - 0.5D) * 0.3D, d0, 0.6D);
                      vec3d1 = vec3d1.rotatePitch(-this.rotationPitch * 0.017453292F);
                      vec3d1 = vec3d1.rotateYaw(-this.rotationYaw * 0.017453292F);
--                    vec3d1 = vec3d1.addVector(this.posX, this.posY + (double)this.getEyeHeight(), this.posZ);
 +                    
-+                   // vec3d1 = vec3d1.addVector(this.posX, this.posY + (double)this.getEyeHeight(), this.posZ);
-+
-+                    //does this mess up other players in multiplayer?
+                     vec3d1 = vec3d1.addVector(this.posX, this.posY + (double)this.getEyeHeight(), this.posZ);
+ 
++                    //does this mess up other players in multiplayer? YES IT DO
 +                    EnumHand hand = getActiveHand();
 +                    if(hand == EnumHand.MAIN_HAND){
 +                        vec3d1 = (Minecraft.getMinecraft().roomScale.getControllerPos_World(0));                    	
 +                    } else {
 +                    	vec3d1 = (Minecraft.getMinecraft().roomScale.getControllerPos_World(1));   
 +                    }
- 
 +                    
                      if (stack.getHasSubtypes())
                      {

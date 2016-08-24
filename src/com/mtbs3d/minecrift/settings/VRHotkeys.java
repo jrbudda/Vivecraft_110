@@ -35,22 +35,6 @@ public class VRHotkeys {
 			gotKey = true;
 		}
 
-		// Debug pos
-		if (Keyboard.getEventKey() == Keyboard.KEY_P && Keyboard.isKeyDown(Keyboard.KEY_RCONTROL))
-		{
-			mc.vrSettings.debugPos = !mc.vrSettings.debugPos;
-			mc.printChatMessage("Debug position (RCTRL+P): " + mc.vrSettings.debugPos);
-			gotKey = true;
-		}
-
-		// Pause pose updates for Timewarp test
-		if (Keyboard.getEventKey() == Keyboard.KEY_T && Keyboard.isKeyDown(Keyboard.KEY_RCONTROL))
-		{
-			mc.vrSettings.testTimewarp = !mc.vrSettings.testTimewarp;
-			mc.printChatMessage("Test Timewarp (RCTRL+T): " + mc.vrSettings.testTimewarp);
-			gotKey = true;
-		}
-
 		// Walk up blocks
 		if (Keyboard.getEventKey() == Keyboard.KEY_B && Keyboard.isKeyDown(Keyboard.KEY_RCONTROL))
 		{

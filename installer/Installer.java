@@ -1069,9 +1069,9 @@ public class Installer extends JPanel  implements PropertyChangeListener
         {
             int option = JOptionPane.showOptionDialog(
                                          null,
-                                         "Please ensure you have closed the Minecraft launcher before proceeding.\n" +
-                                         "Also, if installing with Forge please ensure you have installed Forge " + FORGE_VERSION + " first.",
-                                         "Important!",
+                                         "Please ensure you have closed the Minecraft launcher before proceeding.\n" 
+                                         //"Also, if installing with Forge please ensure you have installed Forge " + FORGE_VERSION + " first.",
+                                         ,"Important!",
                                          JOptionPane.OK_CANCEL_OPTION,
                                          JOptionPane.WARNING_MESSAGE, null, null, null);
             

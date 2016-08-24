@@ -273,7 +273,7 @@
 +	 * The minecriftVerString will be automatically updated by the build scripts, do not modify here.
 +	 * Modify minecriftversion.py in root minecrift dir.
 +	 */
-+    public final String minecriftVerString = "Vivecraft 1.10.2 Vivecraft-jrbudda-5";
++    public final String minecriftVerString = "Vivecraft 1.10.2 Vivecraft-jrbudda-6";
 +	/* end version */
 +	/** END MINECRIFT */
 +    
@@ -1149,7 +1149,7 @@
      {
          if (this.objectMouseOver != null && this.objectMouseOver.typeOfHit != RayTraceResult.Type.MISS)
          {
-@@ -3417,4 +3817,1080 @@
+@@ -3417,4 +3817,1076 @@
      {
          return this.thePlayer != null && this.thePlayer.hasReducedDebug() || this.gameSettings.reducedDebugInfo;
      }
@@ -1294,9 +1294,6 @@
 +	{
 +		boolean changeNonDestructiveRenderConfig = false;
 +
-+		glConfig.mirrorDisplay = this.vrSettings.displayMirrorMode == VRSettings.MIRROR_OFF ? false : true;
-+		glConfig.usePositionalTimewarp = this.vrSettings.usePositionalTimewarp;
-+	
 +		if (clipPlanesChanged())
 +		{
 +			this.reinitFramebuffers = true;
@@ -1574,7 +1571,6 @@
 +			{
 +				// We had an issue. Set the usual suspects to defaults...
 +				this.vrSettings.useFsaa = false;
-+				this.vrSettings.fsaaScaleFactor = 1.4f;
 +				this.vrSettings.saveOptions();
 +				System.out.println("[Minecrift] FAILED to setup FSAA: " + ex.getMessage());
 +				reinitFramebuffers = true;
@@ -1597,7 +1593,7 @@
 +					"\nRender target width:  " + (this.stereoProvider.isStereo() ? EyeTextureSize.w + EyeTextureSize.w: this.displayWidth) +
 +					", height: " + (this.stereoProvider.isStereo() ? Math.max(EyeTextureSize.h, EyeTextureSize.h) : this.displayHeight) +
 +					(this.stereoProvider.isStereo() ? " [Render scale: " + this.vrSettings.renderScaleFactor + "]" : "") +
-+					(this.vrSettings.useFsaa ? " [FSAA Scale: " + this.vrSettings.fsaaScaleFactor + "]" : "") +
++					(this.vrSettings.useFsaa ? " [FSAA Scale: " + this.vrSettings.renderScaleFactor + "]" : "") +
 +					"\nDisplay target width: " + this.displayFBWidth + ", height: " + displayFBHeight);
 +
 +			// Init shaders

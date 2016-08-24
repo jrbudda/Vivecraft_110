@@ -74,7 +74,38 @@
      /**
       * Called when the entity is attacked.
       */
-@@ -273,6 +311,7 @@
+@@ -203,11 +241,29 @@
+         }
+     }
+ 
++    private float startmountrotate;
++    
+     public void dismountRidingEntity()
+     {
+         super.dismountRidingEntity();
+         this.rowingBoat = false;
+-    }
++        if(Minecraft.getMinecraft().vrSettings.vehicleRotation){
++        	mc.vrSettings.vrWorldRotation = startmountrotate;
++        	Minecraft.getMinecraft().vrPlayer.checkandUpdateRotateScale(false);
++        }
++    }
++    
++    @Override
++    public boolean startRiding(Entity entityIn) {
++    	if(super.startRiding(entityIn)){   	
++    		if (entityIn instanceof EntityBoat){
++    			entityIn.rotationYaw = 180 - Minecraft.getMinecraft().roomScale.getHMDYaw_World();
++    		}
++    		startmountrotate = Minecraft.getMinecraft().vrSettings.vrWorldRotation;
++    		return true;
++    	}
++    	return false;
++    };
+ 
+     /**
+      * Called to update the entity's position/logic.
+@@ -273,6 +329,7 @@
              this.serverSneakState = flag1;
          }
  
@@ -82,7 +113,7 @@
          if (this.isCurrentViewEntity())
          {
              AxisAlignedBB axisalignedbb = this.getEntityBoundingBox();
-@@ -322,7 +361,12 @@
+@@ -322,7 +379,12 @@
              }
  
              this.prevOnGround = this.onGround;
@@ -96,7 +127,7 @@
          }
      }
  
-@@ -698,7 +742,7 @@
+@@ -698,7 +760,7 @@
              }
          }
  
@@ -105,7 +136,7 @@
          {
              this.mc.getSoundHandler().playSound(new ElytraSound(this));
          }
-@@ -977,7 +1021,7 @@
+@@ -977,7 +1039,7 @@
                      this.sendPlayerAbilities();
                  }
              }
@@ -114,7 +145,7 @@
              {
                  if (this.flyToggleTimer == 0)
                  {
-@@ -1002,7 +1046,7 @@
+@@ -1002,7 +1064,7 @@
              }
          }
  
@@ -123,7 +154,7 @@
  
          if (this.capabilities.isFlying && this.isCurrentViewEntity())
          {
-@@ -1065,6 +1109,11 @@
+@@ -1065,6 +1127,11 @@
  
          super.onLivingUpdate();
  
@@ -135,7 +166,7 @@
          if (this.onGround && this.capabilities.isFlying && !this.mc.playerController.isSpectatorMode())
          {
              this.capabilities.isFlying = false;
-@@ -1083,8 +1132,11 @@
+@@ -1083,8 +1150,11 @@
          if (this.getRidingEntity() instanceof EntityBoat)
          {
              EntityBoat entityboat = (EntityBoat)this.getRidingEntity();
@@ -149,7 +180,7 @@
          }
      }
  
-@@ -1115,20 +1167,54 @@
+@@ -1115,20 +1185,54 @@
       */
      public void moveEntity(double x, double y, double z)
      {
@@ -212,7 +243,7 @@
          {
              if (this.field_189812_cs <= 0 && this.onGround && !this.isSneaking() && !this.isRiding())
              {
-@@ -1144,12 +1230,16 @@
+@@ -1144,12 +1248,16 @@
                      float f = this.getAIMoveSpeed();
                      float f1 = (float)vec3d2.lengthSquared();
  
@@ -231,7 +262,7 @@
                          vec3d2 = new Vec3d((double)(f2 * f5 - f3 * f4), vec3d2.yCoord, (double)(f3 * f5 + f2 * f4));
                          f1 = (float)vec3d2.lengthSquared();
  
-@@ -1269,4 +1359,238 @@
+@@ -1269,4 +1377,238 @@
              }
          }
      }

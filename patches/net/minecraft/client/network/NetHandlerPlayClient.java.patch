@@ -1,6 +1,6 @@
 --- a/net/minecraft/client/network/NetHandlerPlayClient.java
 +++ b/net/minecraft/client/network/NetHandlerPlayClient.java
-@@ -1,9 +1,15 @@
+@@ -1,9 +1,16 @@
  package net.minecraft.client.network;
  
 +import com.google.common.base.Charsets;
@@ -11,12 +11,13 @@
 +import com.mtbs3d.minecrift.api.NetworkHelper;
 +import com.mtbs3d.minecrift.api.NetworkHelper.PacketDiscriminators;
 +import com.mtbs3d.minecrift.provider.OpenVRPlayer;
++import com.mtbs3d.minecrift.render.PlayerModelController;
 +
 +import io.netty.buffer.ByteBuf;
  import io.netty.buffer.Unpooled;
  import java.io.File;
  import java.io.IOException;
-@@ -234,6 +240,8 @@
+@@ -234,6 +241,8 @@
  import net.minecraft.world.WorldSettings;
  import net.minecraft.world.chunk.Chunk;
  import net.minecraft.world.storage.MapData;
@@ -25,7 +26,7 @@
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  
-@@ -314,6 +322,13 @@
+@@ -314,6 +323,17 @@
          this.gameController.playerController.setGameType(packetIn.getGameType());
          this.gameController.gameSettings.sendSettingsToServer();
          this.netManager.sendPacket(new CPacketCustomPayload("MC|Brand", (new PacketBuffer(Unpooled.buffer())).writeString(ClientBrandRetriever.getClientModName())));
@@ -33,13 +34,17 @@
 +        // VIVE START - ask server if it's running this mod
 +        this.gameController.vrPlayer.setFreeMoveMode(true);
 +        byte[] version = Minecraft.getMinecraft().minecriftVerString.getBytes(Charsets.UTF_8);
++        String s = "Vivecraft";
++        PacketBuffer pb = new PacketBuffer(Unpooled.buffer());
++		pb.writeBytes(s.getBytes());
++        this.netManager.sendPacket(new CPacketCustomPayload("REGISTER", pb ));
 +        this.netManager.sendPacket(new CPacketCustomPayload("MC|Vive|Version", (new PacketBuffer(Unpooled.buffer())).writeString(Minecraft.getMinecraft().minecriftVerString)));
 +        this.netManager.sendPacket(NetworkHelper.getVivecraftClientPacket(PacketDiscriminators.VERSION, version));
 +        // VIVE END - ask server if it's running this mod
      }
  
      /**
-@@ -833,6 +848,10 @@
+@@ -833,6 +853,10 @@
      public void handleDisconnect(SPacketDisconnect packetIn)
      {
          this.netManager.closeChannel(packetIn.getReason());
@@ -50,7 +55,7 @@
      }
  
      /**
-@@ -904,8 +923,24 @@
+@@ -904,8 +928,24 @@
          }
          else
          {
@@ -77,7 +82,7 @@
      }
  
      /**
-@@ -1928,6 +1963,34 @@
+@@ -1928,6 +1968,50 @@
              String s1 = packetbuffer2.readStringFromBuffer(256);
              this.gameController.getSoundHandler().stop(s1, SoundCategory.getByName(s));
          }
@@ -102,11 +107,27 @@
 +        	case REQUESTDATA:
 +        		NetworkHelper.serverWantsData = true;
 +        		break;
++        	case UBERPACKET:
++        		Long hi = packetbuffer.readLong();
++        		Long low = packetbuffer.readLong();
++        		byte[] hmd = packetbuffer.readBytes(29).array();
++        		byte[] c0 = packetbuffer.readBytes(29).array();       		
++        		byte[] c1 = packetbuffer.readBytes(29).array();
++		
++        		UUID u = new UUID(hi, low);
++        		
++        		PlayerModelController.getInstance().Update(u, hmd, c0, c1);    		
++        		break;
 +        	default:
 +        		break;
 +        	}
 +
 +        	packetbuffer.release();
++        }
++        else if ("REGISTER".equals(packetIn.getChannelName())){
++        	PacketBuffer packetbuffer = packetIn.getBufferData(); 
++        	String v = new String(packetbuffer.array(),Charsets.UTF_8);
++        	System.out.println("REGISTER " + v );
 +        }
 +        // VIVE END
      }

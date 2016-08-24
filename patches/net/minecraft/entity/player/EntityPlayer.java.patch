@@ -16,35 +16,52 @@
  import net.minecraft.util.text.ITextComponent;
  import net.minecraft.util.text.TextComponentString;
  import net.minecraft.util.text.event.ClickEvent;
-@@ -806,7 +808,8 @@
+@@ -806,7 +808,16 @@
          else
          {
              double d0 = this.posY - 0.30000001192092896D + (double)this.getEyeHeight();
 -            EntityItem entityitem = new EntityItem(this.worldObj, this.posX, d0, this.posZ, droppedItem);
-+            Vec3d pos =  Minecraft.getMinecraft().roomScale.getControllerPos_World(0);
-+            EntityItem entityitem = new EntityItem(this.worldObj, pos.xCoord, pos.yCoord, pos.zCoord, droppedItem);
++            EntityItem entityitem;
++            
++            if(Minecraft.getMinecraft().isSingleplayer()){
++            //VIVE use controller
++            	Vec3d pos =  Minecraft.getMinecraft().roomScale.getControllerPos_World(0);
++            	entityitem = new EntityItem(this.worldObj, pos.xCoord, pos.yCoord, pos.zCoord, droppedItem);
++            } else {
++            	entityitem = new EntityItem(this.worldObj, this.posX, d0, this.posZ, droppedItem);
++            }
++            
              entityitem.setPickupDelay(40);
  
              if (traceItem)
-@@ -824,10 +827,14 @@
+@@ -824,10 +835,23 @@
              }
              else
              {
-+            	
-+            	float yaw = Minecraft.getMinecraft().roomScale.getControllerYaw_World(0);
-+            	float pitch = -Minecraft.getMinecraft().roomScale.getControllerPitch_World(0);
-+            	
++
                  float f2 = 0.3F;
 -                entityitem.motionX = (double)(-MathHelper.sin(this.rotationYaw * 0.017453292F) * MathHelper.cos(this.rotationPitch * 0.017453292F) * f2);
 -                entityitem.motionZ = (double)(MathHelper.cos(this.rotationYaw * 0.017453292F) * MathHelper.cos(this.rotationPitch * 0.017453292F) * f2);
 -                entityitem.motionY = (double)(-MathHelper.sin(this.rotationPitch * 0.017453292F) * f2 + 0.1F);
-+                entityitem.motionX = (double)(-MathHelper.sin(yaw * 0.017453292F) * MathHelper.cos(this.rotationPitch * 0.017453292F) * f2);
-+                entityitem.motionZ = (double)(MathHelper.cos(yaw * 0.017453292F) * MathHelper.cos(this.rotationPitch * 0.017453292F) * f2);
-+                entityitem.motionY = (double)(-MathHelper.sin(pitch * 0.017453292F) * f2 + 0.1F);
++                
++                if(Minecraft.getMinecraft().isSingleplayer()){
++                	//vive use controller
++                	float yaw = Minecraft.getMinecraft().roomScale.getControllerYaw_World(0);
++                	float pitch = -Minecraft.getMinecraft().roomScale.getControllerPitch_World(0);
++                	entityitem.motionX = (double)(-MathHelper.sin(yaw * 0.017453292F) * MathHelper.cos(this.rotationPitch * 0.017453292F) * f2);
++                	entityitem.motionZ = (double)(MathHelper.cos(yaw * 0.017453292F) * MathHelper.cos(this.rotationPitch * 0.017453292F) * f2);
++                	entityitem.motionY = (double)(-MathHelper.sin(pitch * 0.017453292F) * f2 + 0.1F);
++                } else {
++                	entityitem.motionX = (double)(-MathHelper.sin(this.rotationYaw * 0.017453292F) * MathHelper.cos(this.rotationPitch * 0.017453292F) * f2);
++                	entityitem.motionZ = (double)(MathHelper.cos(this.rotationYaw * 0.017453292F) * MathHelper.cos(this.rotationPitch * 0.017453292F) * f2);
++                	entityitem.motionY = (double)(-MathHelper.sin(this.rotationPitch * 0.017453292F) * f2 + 0.1F);
++                }
++                
++
                  float f3 = this.rand.nextFloat() * ((float)Math.PI * 2F);
                  f2 = 0.02F * this.rand.nextFloat();
                  entityitem.motionX += Math.cos((double)f3) * (double)f2;
-@@ -1510,13 +1517,19 @@
+@@ -1510,13 +1534,19 @@
  
      public void spawnSweepParticles()
      {

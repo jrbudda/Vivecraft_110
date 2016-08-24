@@ -91,7 +91,7 @@ public class MCOpenVR
 	private LongByReference oHandle = new LongByReference();
 
 	// position/orientation of headset and eye offsets
-	public static final Matrix4f hmdPose = new Matrix4f();
+	private static final Matrix4f hmdPose = new Matrix4f();
 	public static final Matrix4f hmdRotation = new Matrix4f();
 	static Matrix4f hmdProjectionLeftEye;
 	static Matrix4f hmdProjectionRightEye;
@@ -1117,15 +1117,14 @@ private static void processGui() {
 		rtbX = controllerStateReference[RIGHT_CONTROLLER].rAxis[k_EAxis_TouchPad].x;
 		rtbY = controllerStateReference[RIGHT_CONTROLLER].rAxis[k_EAxis_TouchPad].y;
 
-		//R GRIP
-		if (pressedRGrip && !lastpressedRGrip) {
-			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_GRIP.ordinal()].press();
-		}	
-		if(!pressedRGrip && lastpressedRGrip) {
-			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_GRIP.ordinal()].unpress();
-		}
 
-		if(mc.currentScreen == null){ // ummm do I need this? it causes the key to stick down.
+		boolean gui = (mc.currentScreen != null);
+			
+		if(!gui){ 
+			//R GRIP
+			if (pressedRGrip && !lastpressedRGrip) {
+				mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_GRIP.ordinal()].press();
+			}	
 			//R TOUCHPAD	
 			if (pressedRtouchpadBottomLeft && !lastpressedRtouchpadBottomLeft){
 				mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_TOUCHPAD_BL.ordinal()].press();
@@ -1142,7 +1141,19 @@ private static void processGui() {
 			//R TRIGGER
 			if (pressedRTrigger && !lastpressedRTrigger) {
 				mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_TRIGGER.ordinal()].press();
+			}
+			//R AppMenu
+			if (pressedRAppMenu && !lastpressedRAppMenu) {
+				mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_APPMENU.ordinal()].press();
 			}	
+			//R triggerclick
+			if (pressedRTriggerClick && !lastpressedRTriggerClick) {
+				mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_TRIGGER_FULLCLICK.ordinal()].press();
+			}	
+		}
+		
+		if(!pressedRGrip && lastpressedRGrip) {
+			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_GRIP.ordinal()].unpress();
 		}
 		//R TOUCHPAD	
 		if (!pressedRtouchpadBottomLeft && lastpressedRtouchpadBottomLeft){
@@ -1161,19 +1172,9 @@ private static void processGui() {
 		if(!pressedRTrigger && lastpressedRTrigger) {
 			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_TRIGGER.ordinal()].unpress();
 		}
-	
-		//R AppMenu
-		if (pressedRAppMenu && !lastpressedRAppMenu) {
-			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_APPMENU.ordinal()].press();
-		}	
 		if(!pressedRAppMenu && lastpressedRAppMenu) {
 			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_APPMENU.ordinal()].unpress();
 		}
-
-		//R triggerclick
-		if (pressedRTriggerClick && !lastpressedRTriggerClick) {
-			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_TRIGGER_FULLCLICK.ordinal()].press();
-		}	
 		if(!pressedRTriggerClick && lastpressedRTriggerClick) {
 			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_RIGHT_TRIGGER_FULLCLICK.ordinal()].unpress();
 		}			
@@ -1216,66 +1217,65 @@ private static void processGui() {
 		boolean pressedLTrigger = controllerStateReference[LEFT_CONTROLLER].rAxis[k_EAxis_Trigger].x > triggerThreshold;
 		boolean pressedLTriggerClick =( controllerStateReference[LEFT_CONTROLLER].ulButtonPressed & k_buttonTrigger )>0;
 
-		//l GRIP
-		if (pressedLGrip && !lastpressedLGrip) {
-			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_GRIP.ordinal()].press();
-		}	
-		if(!pressedLGrip && lastpressedLGrip) {
-			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_GRIP.ordinal()].unpress();
+
+		if(!gui){
+			//l GRIP - no gui cause shift.
+			if (pressedLGrip && !lastpressedLGrip) {
+				mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_GRIP.ordinal()].press();
+			}		
+
 		}
-
-		//l TOUCHPAD	
-
 		
 		if (pressedLtouchpadBottomLeft && !lastpressedLtouchpadBottomLeft){
 			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_TOUCHPAD_BL.ordinal()].press();
-		}			
-		if (!pressedLtouchpadBottomLeft && lastpressedLtouchpadBottomLeft){
-			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_TOUCHPAD_BL.ordinal()].unpress();
-		}		
+		}	
 		if (pressedLtouchpadBottomRight && !lastpressedLtouchpadBottomRight){
 			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_TOUCHPAD_BR.ordinal()].press();
-		}			
-		if (!pressedLtouchpadBottomRight && lastpressedLtouchpadBottomRight){
-			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_TOUCHPAD_BR.ordinal()].unpress();
 		}	
 		if (pressedLtouchpadTopLeft && !lastpressedLtouchpadTopLeft){
-			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_TOUCHPAD_UL.ordinal()].press();		}			
-		if (!pressedLtouchpadTopLeft && lastpressedLtouchpadTopLeft){
-			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_TOUCHPAD_UL.ordinal()].unpress();
-		}	
+			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_TOUCHPAD_UL.ordinal()].press();		
+		}
 		if (pressedLtouchpadTopRight && !lastpressedLtouchpadTopRight ){
-			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_TOUCHPAD_UR.ordinal()].press();		}			
-		if (!pressedLtouchpadTopRight  && lastpressedLtouchpadTopRight ){
-			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_TOUCHPAD_UR.ordinal()].unpress();
-		}	
-
+			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_TOUCHPAD_UR.ordinal()].press();		
+		}
 		//L TRIGGER
 		if (pressedLTrigger && !lastpressedLTrigger) {
 			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_TRIGGER.ordinal()].press();
 		}	
-		if(!pressedLTrigger && lastpressedLTrigger) {
-			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_TRIGGER.ordinal()].unpress();
-		}
-
-		//L AppMenu
 		if (pressedLAppMenu && !lastpressedLAppMenu) {
 			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_APPMENU.ordinal()].press();
 		}	
-		if(!pressedLAppMenu && lastpressedLAppMenu) {
-			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_APPMENU.ordinal()].unpress();
-		}
-
 		//L triggerclick
 		if (pressedLTriggerClick && !lastpressedLTriggerClick) {
 			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_TRIGGER_FULLCLICK.ordinal()].press();
 		}	
+
+
+		if(!pressedLGrip && lastpressedLGrip) {
+			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_GRIP.ordinal()].unpress();
+		}
+		if (!pressedLtouchpadBottomLeft && lastpressedLtouchpadBottomLeft){
+			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_TOUCHPAD_BL.ordinal()].unpress();
+		}		
+		if (!pressedLtouchpadBottomRight && lastpressedLtouchpadBottomRight){
+			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_TOUCHPAD_BR.ordinal()].unpress();
+		}	
+		if (!pressedLtouchpadTopLeft && lastpressedLtouchpadTopLeft){
+			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_TOUCHPAD_UL.ordinal()].unpress();
+		}	
+		if (!pressedLtouchpadTopRight  && lastpressedLtouchpadTopRight ){
+			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_TOUCHPAD_UR.ordinal()].unpress();
+		}	
+		if(!pressedLTrigger && lastpressedLTrigger) {
+			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_TRIGGER.ordinal()].unpress();
+		}
+		if(!pressedLAppMenu && lastpressedLAppMenu) {
+			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_APPMENU.ordinal()].unpress();
+		}
 		if(!pressedLTriggerClick && lastpressedLTriggerClick) {
 			mc.vrSettings.buttonMappings[ViveButtons.BUTTON_LEFT_TRIGGER_FULLCLICK.ordinal()].unpress();
 		}			
 
-		boolean gui = (mc.currentScreen != null);
-	
 		//VIVE SPECIFIC FUNCTIONALITY
 		//TODO: Find a better home for these in Minecraft.java		
 
@@ -1662,32 +1662,6 @@ private static void processGui() {
 		}
 	}
 
-	/**
-	 * Resets the current origin position
-	 */
-
-	public void resetOrigin()
-	{
-		// not needed with Lighthouse
-	}
-
-	/**
-	 * Resets the current origin rotation
-	 */
-	
-	public void resetOriginRotation()
-	{
-		// not needed with Lighthouse
-	}
-
-	/**
-	 * Enables prediction/filtering
-	 */
-	
-	public void setPrediction(float delta, boolean enable)
-	{
-		// n/a
-	}
 
 	/**
 	 * Gets the Yaw(Y) from YXZ Euler angle representation of orientation
@@ -1964,7 +1938,9 @@ private static void processGui() {
 	}
 	
 	static Vec3d getAimSource( int controller ) {
-		return new Vec3d(aimSource[controller].xCoord, aimSource[controller].yCoord, aimSource[controller].zCoord);
+		Vec3d out = new Vec3d(aimSource[controller].xCoord, aimSource[controller].yCoord, aimSource[controller].zCoord);
+		if(!mc.vrSettings.seated) out.addVector((double)offset.x, (double)offset.y,(double) offset.z);
+		return out;
 	}
 	
 	static void triggerHapticPulse(int controller, int strength) {

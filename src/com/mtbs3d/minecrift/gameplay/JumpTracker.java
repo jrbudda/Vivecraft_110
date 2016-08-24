@@ -37,9 +37,7 @@ public class JumpTracker {
 			return;
 		}
 
-		if(MCOpenVR.hmdPivotHistory.netMovement(0.25).yCoord > 0.2 &&
-				MCOpenVR.controllerHistory[0].netMovement(0.25).yCoord > 0.2 &&
-				MCOpenVR.controllerHistory[1].netMovement(0.25).yCoord > 0.2 &&
+		if(MCOpenVR.hmdPivotHistory.netMovement(0.25).yCoord > 0.1 &&
 				MCOpenVR.hmdPivotHistory.latest().yCoord-AutoCalibration.getPlayerHeight() > minecraft.vrSettings.jumpThreshold
 				){
 			player.jump();

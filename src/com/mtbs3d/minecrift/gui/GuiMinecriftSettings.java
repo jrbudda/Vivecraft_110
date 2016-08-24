@@ -11,6 +11,7 @@ import com.mtbs3d.minecrift.gui.framework.GuiEventEx;
 import com.mtbs3d.minecrift.gui.framework.GuiSliderEx;
 import com.mtbs3d.minecrift.gui.framework.GuiSmallButtonEx;
 import com.mtbs3d.minecrift.gui.framework.VROption;
+import com.mtbs3d.minecrift.provider.MCOpenVR;
 import com.mtbs3d.minecrift.settings.VRSettings;
 import com.mtbs3d.minecrift.settings.VRSettings.VrOptions;
 
@@ -24,6 +25,7 @@ public class GuiMinecriftSettings extends BaseGuiSettings implements GuiEventEx
 {
     public static final int PROFILES_ID = 915;
 
+    
 
     static VROption[] vrAlwaysOptions = new VROption[]
         {
@@ -33,7 +35,9 @@ public class GuiMinecriftSettings extends BaseGuiSettings implements GuiEventEx
             new VROption(210, 							           VROption.Position.POS_RIGHT,  3f, VROption.ENABLED, "Chat/Crosshair Settings..."),
             new VROption(VRSettings.VrOptions.PLAY_MODE_SEATED,       VROption.Position.POS_LEFT,   4.5f, VROption.ENABLED, null),
             new VROption(VRSettings.VrOptions.WORLD_SCALE,       	VROption.Position.POS_LEFT,   6f, VROption.ENABLED, null),
-            new VROption(VRSettings.VrOptions.WORLD_ROTATION,       VROption.Position.POS_RIGHT,   6f, VROption.ENABLED, null)
+            new VROption(VRSettings.VrOptions.WORLD_ROTATION,       VROption.Position.POS_RIGHT,   6f, VROption.ENABLED, null),
+            new VROption(VRSettings.VrOptions.RESET_ORIGIN,       VROption.Position.POS_LEFT,   7f, VROption.ENABLED, null),
+ 
         };
     
     static VROption[] vrStandingOptions = new VROption[]
@@ -49,7 +53,13 @@ public class GuiMinecriftSettings extends BaseGuiSettings implements GuiEventEx
                     new VROption(211,                                      VROption.Position.POS_LEFT,   3f, VROption.ENABLED, "Seated Settings..."),
             };
     
-
+    static VROption[] vrConfirm = new VROption[]
+            {
+                    new VROption(222,                                      VROption.Position.POS_RIGHT,  2,  VROption.ENABLED, "Cancel"),
+                    new VROption(223,                                      VROption.Position.POS_LEFT,   2, VROption.ENABLED, "OK"),	
+            };
+    
+    boolean isConfirm = false;
     /** An array of all of EnumOption's video options. */
 
     GameSettings settings;
@@ -72,27 +82,29 @@ public class GuiMinecriftSettings extends BaseGuiSettings implements GuiEventEx
     {
     	this.buttonList.clear();
     	int profileButtonWidth = 240;
-    	GuiSmallButtonEx profilesButton = new GuiSmallButtonEx(PROFILES_ID, (this.width / 2 - 155 + 1 * 160 / 2) - ((profileButtonWidth - 150) / 2), this.height / 6 - 14, profileButtonWidth, 20, "Profile: " + VRSettings.getCurrentProfile());
-    	this.buttonList.add(profilesButton);
-        this.buttonList.add(new GuiButtonEx(ID_GENERIC_DEFAULTS, this.width / 2 - 155 ,  this.height -25 ,150,20, "Reset To Defaults"));
-        this.buttonList.add(new GuiButtonEx(ID_GENERIC_DONE, this.width / 2 - 155  + 160, this.height -25,150,20, "Done"));
-    	VROption[] buttons = null;
 
-    	buttons = vrAlwaysOptions;
+    	if(!isConfirm){
+        	screenTitle = "VR Settings";
+    		GuiSmallButtonEx profilesButton = new GuiSmallButtonEx(PROFILES_ID, (this.width / 2 - 155 + 1 * 160 / 2) - ((profileButtonWidth - 150) / 2), this.height / 6 - 14, profileButtonWidth, 20, "Profile: " + VRSettings.getCurrentProfile());
+    		this.buttonList.add(profilesButton);
+    		this.buttonList.add(new GuiButtonEx(ID_GENERIC_DEFAULTS, this.width / 2 - 155 ,  this.height -25 ,150,20, "Reset To Defaults"));
+    		this.buttonList.add(new GuiButtonEx(ID_GENERIC_DONE, this.width / 2 - 155  + 160, this.height -25,150,20, "Done"));
+    		VROption[] buttons = null;
 
-    	processButtons(buttons);
-    	  	
-    	if(mc.vrSettings.seated) {
-    		processButtons(vrSeatedOptions);
-    	}else 
-    		processButtons(vrStandingOptions);
-    	
-    	
-    	{
+    		buttons = vrAlwaysOptions;
 
+    		processButtons(buttons);
+
+    		if(mc.vrSettings.seated) {
+    			processButtons(vrSeatedOptions);
+    		}else 
+    			processButtons(vrStandingOptions);
 
     	}
-
+    	else {
+            this.screenTitle = "Switching to Seated Mode will disable controller input. Continue?";
+			processButtons(vrConfirm);
+    	}
     }
 
 	private void processButtons(VROption[] buttons) {
@@ -101,6 +113,9 @@ public class GuiMinecriftSettings extends BaseGuiSettings implements GuiEventEx
     		int width = var8.getWidth(this.width);
     		int height = var8.getHeight(this.height);
     		VrOptions o = VrOptions.getEnumOptions(var8.getOrdinal());
+    		
+    		if(o==VrOptions.RESET_ORIGIN && (!guivrSettings.seated && MCOpenVR.isVive)) continue;
+    		
     		if(o==null || o.getEnumBoolean() ){
       			GuiSmallButtonEx button = new GuiSmallButtonEx(var8.getOrdinal(), width, height, var8._e, var8.getButtonText());
     			button.enabled = var8._enabled;
@@ -129,11 +144,11 @@ public class GuiMinecriftSettings extends BaseGuiSettings implements GuiEventEx
     	        GuiSliderEx slider = new GuiSliderEx(o.returnEnumOrdinal(), width, height, o, this.guivrSettings.getKeyBinding(o), minValue, maxValue, increment, this.guivrSettings.getOptionFloatValue(o));
     	        slider.setEventHandler(this);
     	        slider.enabled = true;
+    	        
     	        this.buttonList.add(slider);
     	        if (o == VrOptions.WORLD_ROTATION)rotationSlider = slider;
     		}
-	
-    	}
+	   	}
 	}
 
     /**
@@ -151,20 +166,21 @@ public class GuiMinecriftSettings extends BaseGuiSettings implements GuiEventEx
 
             if (par1GuiButton.id < 200 && par1GuiButton instanceof GuiSmallButtonEx)
             {
-                VRSettings.VrOptions num = VRSettings.VrOptions.getEnumOptions(par1GuiButton.id);
+            	VRSettings.VrOptions num = VRSettings.VrOptions.getEnumOptions(par1GuiButton.id);
+          
+            	if (num == VRSettings.VrOptions.PLAY_MODE_SEATED)
+                {
+                	this.reinit = true;
+            		if(mc.vrSettings.seated == false){
+                    	this.isConfirm = true;
+                    	return;
+                    }
+
+                }
+
                 this.guivrSettings.setOptionValue(((GuiSmallButtonEx)par1GuiButton).returnVrEnumOptions(), 1);
                 par1GuiButton.displayString = this.guivrSettings.getKeyBinding(VRSettings.VrOptions.getEnumOptions(par1GuiButton.id));
 
-                if (num == VRSettings.VrOptions.USE_VR)
-                {
-                    Minecraft.getMinecraft().reinitFramebuffers = true;
-                    this.reinit = true;
-                }
-                
-                if (num == VRSettings.VrOptions.PLAY_MODE_SEATED)
-                {
-                    this.reinit = true;
-                }
             }
             else if (par1GuiButton.id == 201)
             {
@@ -217,6 +233,26 @@ public class GuiMinecriftSettings extends BaseGuiSettings implements GuiEventEx
                 this.guivrSettings.saveOptions();
                 this.mc.displayGuiScreen(new GuiVRControls(this, this.guivrSettings));
             }
+            else if (par1GuiButton.id == 222)
+            {
+            	mc.vrSettings.seated = false;
+                this.guivrSettings.saveOptions();
+            	this.isConfirm = false;
+            	this.reinit = true;
+            }
+            else if (par1GuiButton.id == 223)
+            {
+            	mc.vrSettings.seated = true;
+                this.guivrSettings.saveOptions();
+            	this.isConfirm = false;
+            	this.reinit = true;
+            }
+			else if(par1GuiButton.id == VRSettings.VrOptions.RESET_ORIGIN.ordinal()){
+				MCOpenVR.resetPosition();
+				Minecraft.getMinecraft().vrSettings.saveOptions();
+				this.mc.displayGuiScreen(null);
+				this.mc.setIngameFocus();
+			}
             else if (par1GuiButton.id == ID_GENERIC_DEFAULTS)
             {
                 mc.vrSettings.vrReverseHands = false;
@@ -224,8 +260,9 @@ public class GuiMinecriftSettings extends BaseGuiSettings implements GuiEventEx
                 mc.vrSettings.vrWorldScale = 1;
                 mc.vrSettings.vrWorldRotationIncrement = 45f;
                 mc.vrSettings.seated = false;
+				MCOpenVR.clearOffset();
                 this.guivrSettings.saveOptions();
-                this.initGui();
+            	this.reinit = true;
             }
             else if (par1GuiButton.id == PROFILES_ID)
             {
@@ -243,29 +280,12 @@ public class GuiMinecriftSettings extends BaseGuiSettings implements GuiEventEx
     	if( e != null )
     	switch(e)
     	{
-    	case USE_VR:
-    		return new String[] {
-				"Whether to enable all the fun new Virtual Reality features",
-				"  ON: Yay Fun!",
-				"  OFF: Sad vanilla panda: gameplay unchanged"
-    		};
      	case REVERSE_HANDS:
     		return new String[] {
 				"Swap left/right hands as dominant",
 				"  ON: Left dominant, weirdo.",
 				"  OFF: Right dominant"
     		};
-        case USE_VR_COMFORT:
-            return new String[] {
-                    "Enables view ratcheting on controller yaw or pitch input.",
-                    "For some people this can allow a more comfortable",
-                    "viewing experience while moving around. Known as",
-                    "'VR Comfort Mode' (with thanks to Cloudhead Games)!",
-                    "  OFF: (Default) No view ratcheting is applied.",
-                    "  Yaw Only: View ratcheting applied to Yaw only.",
-                    "  Pitch Only: View ratcheting applied to Pitch only.",
-                    "  Yaw and Pitch: You guessed it...",
-            } ;
         case WORLD_SCALE:
             return new String[] {
                     "Scales the player in the world.",
@@ -292,6 +312,11 @@ public class GuiMinecriftSettings extends BaseGuiSettings implements GuiEventEx
                     "Standing is vastly superior."
                     
             };
+        case RESET_ORIGIN:
+                return new String[] {
+                        "Recenter the player's feet in the world to 1.62m below the current",
+                        "HMD position. For non-lighthouse tracking systems."
+                };
             default:
     		return null;
     	}

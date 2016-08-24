@@ -60,6 +60,11 @@ public class SwimTracker {
 			return;
 		}
 
+		if(percent < 0.5 && player.onGround){
+			return;
+			//no diving in the kiddie pool.
+		}
+		
 		player.addVelocity(0, 0.018D , 0); //counteract most gravity.
 		
 		double neutal = player.isCollidedHorizontally? 0.5 : 1;

@@ -89,10 +89,10 @@ public class Vec3History {
 	/**
 	 * Get the average scalar speed of the device over the specified length of time. Returns m/s.
 	 */
-	public Vec3d averageSpeed(double seconds){
+	public double averageSpeed(double seconds){
 		long now = Minecraft.getSystemTime();
 		ListIterator<entry> it = _data.listIterator(_data.size());
-		Vec3d out = new Vec3d(0,0,0);
+		double out = 0;
 		entry last = null;
 		int j = 0;
 		while (it.hasPrevious()){
@@ -104,12 +104,12 @@ public class Vec3History {
 			}
 			j++;
 			double tdelta = (.001*(last.ts - i.ts));
-			Vec3d ddelta = (last.data.subtract(i.data));
-			out = out.add(ddelta.scale(1/tdelta));
+			double ddelta = (last.data.subtract(i.data).lengthVector());
+			out = out + ddelta/tdelta;
 		}
 		if(j == 0) return out;
 		
-		return out.scale(1.0/j);
+		return out/j;
 	}
 
 	/**

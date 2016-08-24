@@ -6,6 +6,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.util.vector.Matrix4f;
 
 import com.google.common.base.Charsets;
+import com.mtbs3d.minecrift.render.PlayerModelController;
 import com.mtbs3d.minecrift.utils.Quaternion;
 
 import io.netty.buffer.ByteBuf;
@@ -27,7 +28,8 @@ public class NetworkHelper {
 		CONTROLLER1DATA,
 		WORLDSCALE,
 		DRAW,
-		MOVEMODE
+		MOVEMODE,
+		UBERPACKET
 	}
 	private final static String channel = "Vivecraft";
 	
@@ -40,7 +42,7 @@ public class NetworkHelper {
 	}
 	
 	public static SPacketCustomPayload getVivecraftServerPacket(PacketDiscriminators command, byte[] payload)
-	{//TODO: Packetbuffer?
+	{
 		PacketBuffer pb = new PacketBuffer(Unpooled.buffer());
 		pb.writeByte(command.ordinal());
 		pb.writeBytes(payload);
@@ -48,7 +50,7 @@ public class NetworkHelper {
 	}
 	
 	public static SPacketCustomPayload getVivecraftServerPacket(PacketDiscriminators command, String payload)
-	{//TODO: Packetbuffer?
+	{
 		PacketBuffer pb = new PacketBuffer(Unpooled.buffer());
 		pb.writeByte(command.ordinal());
 		pb.writeString(payload);
@@ -62,6 +64,7 @@ public static boolean serverWantsData = false;
 	public static void sendVRPlayerPositions(IRoomscaleAdapter player) {
 		if(!serverWantsData) return;
 		float worldScale = Minecraft.getMinecraft().vrPlayer.worldScale;
+	
 		if (worldScale != worldScallast) {
 			ByteBuf payload = Unpooled.buffer();
 			payload.writeFloat(worldScale);
@@ -72,7 +75,7 @@ public static boolean serverWantsData = false;
 			
 			worldScallast = worldScale;
 		}
-		
+		byte[] a=null, b = null, c=null;
 		{
 			FloatBuffer buffer = player.getHMDMatrix_World();
 			buffer.rewind();
@@ -84,6 +87,7 @@ public static boolean serverWantsData = false;
 			Quaternion headRotation = new Quaternion(matrix);
 			
 			ByteBuf payload = Unpooled.buffer();
+			payload.writeBoolean(Minecraft.getMinecraft().vrSettings.seated);
 			payload.writeFloat((float)headPosition.xCoord);
 			payload.writeFloat((float)headPosition.yCoord);
 			payload.writeFloat((float)headPosition.zCoord);
@@ -93,6 +97,7 @@ public static boolean serverWantsData = false;
 			payload.writeFloat((float)headRotation.z);
 			byte[] out = new byte[payload.readableBytes()];
 			payload.readBytes(out);
+			a = out;
 			CPacketCustomPayload pack = getVivecraftClientPacket(PacketDiscriminators.HEADDATA,out);
 			Minecraft.getMinecraft().getConnection().sendPacket(pack);
 		}	
@@ -115,10 +120,14 @@ public static boolean serverWantsData = false;
 			payload.writeFloat((float)controllerRotation.y);
 			payload.writeFloat((float)controllerRotation.z);
 			byte[] out = new byte[payload.readableBytes()];
+			if(i == 0) b = out;
+			else c = out;
 			payload.readBytes(out);
 			CPacketCustomPayload pack  = getVivecraftClientPacket(i == 0? PacketDiscriminators.CONTROLLER0DATA : PacketDiscriminators.CONTROLLER1DATA,out);
 			Minecraft.getMinecraft().getConnection().sendPacket(pack);
 		}
+		
+		PlayerModelController.getInstance().Update(Minecraft.getMinecraft().thePlayer.getUniqueID(), a, b, c);
 		
 	}
 }

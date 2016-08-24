@@ -693,7 +693,8 @@
      public void setupCameraTransform(float partialTicks, int pass)
      {
 -        this.farPlaneDistance = (float)(this.mc.gameSettings.renderDistanceChunks * 16);
--
++		/** MINECRIFT */
+ 
 -        if (Config.isFogFancy())
 -        {
 -            this.farPlaneDistance *= 0.95F;
@@ -748,8 +749,7 @@
 -        }
 -
 -        float f1 = this.mc.thePlayer.prevTimeInPortal + (this.mc.thePlayer.timeInPortal - this.mc.thePlayer.prevTimeInPortal) * partialTicks;
-+		/** MINECRIFT */
- 
+-
 -        if (f1 > 0.0F)
 -        {
 -            int i = 20;
@@ -784,7 +784,7 @@
 +    	
 +		var4 = this.mc.thePlayer.prevTimeInPortal + (this.mc.thePlayer.timeInPortal - this.mc.thePlayer.prevTimeInPortal) * partialTicks;
 +
-+		if (var4 > 0.0F && !this.mc.vrSettings.debugPos)
++		if (var4 > 0.0F )
 +		{
 +			byte var7 = 20;
  
@@ -840,7 +840,7 @@
 +
 +		this.orientCamera(partialTicks);
 +
-+		if (this.debugViewDirection > 0 && !this.mc.vrSettings.debugPos)
++		if (this.debugViewDirection > 0)
 +		{
 +			int var71 = this.debugViewDirection - 1;
 +
@@ -1022,7 +1022,7 @@
          this.mc.getTextureManager().bindTexture(this.locationLightMap);
          GlStateManager.glTexParameteri(3553, 10241, 9729);
          GlStateManager.glTexParameteri(3553, 10240, 9729);
-@@ -1221,197 +1295,109 @@
+@@ -1221,197 +1295,119 @@
          return i > 200 ? 1.0F : 0.7F + MathHelper.sin(((float)i - partialTicks) * (float)Math.PI * 0.2F) * 0.3F;
      }
  
@@ -1065,9 +1065,7 @@
 -            {
 -                i = -1;
 -            }
-+    public void updateCameraAndRender(float par1)
-+	{// called each eye
- 
+-
 -            if (this.mc.gameSettings.smoothCamera)
 -            {
 -                this.smoothCamYaw += f2;
@@ -1085,105 +1083,9 @@
 -                this.mc.thePlayer.setAngles(f2, f3 * (float)i);
 -            }
 -        }
-+		if(mc.currentPass == renderPass.Left) //contains all the stuff that was in this method that only needs to be called once per frame.
-+			updateCameraAndRender_OnePass(par1);
- 
+-
 -        this.mc.mcProfiler.endSection();
-+		if (!this.mc.skipRenderWorld)
-+		{//RENDER WORLD
-+			/** MINECRIFT */
-+			anaglyphEnable = false;
-+			/** END MINECRIFT */
-+			
-+			if (this.mc.theWorld != null && !(mc.currentScreen instanceof GuiWinGame))
-+			{
-+				
-+				this.mc.mcProfiler.startSection("renderWorld");
-+					this.renderWorld(par1, 0L);
-+				this.mc.mcProfiler.endSection();
-+				
-+				if (OpenGlHelper.shadersSupported)
-+				{
-+					if (this.theShaderGroup != null)
-+					{
-+						GL11.glMatrixMode(GL11.GL_TEXTURE);
-+						GL11.glPushMatrix();
-+							GL11.glLoadIdentity();
-+							this.theShaderGroup.loadShaderGroup(par1);
-+						GL11.glPopMatrix();
-+						/** MINECRIFT */
-+						GL11.glMatrixMode(GL11.GL_MODELVIEW);
-+						/** END MINECRIFT */
-+					}
-+					this.mc.getFramebuffer().bindFramebuffer(true);
-+				}
-+
-+				this.renderEndNanoTime = System.nanoTime();
-+				
-+				/** MINECRIFT */
-+				if (!this.mc.stereoProvider.isStereo()) //TODO wtf is all this....
-+				{
-+					if (!this.mc.vrSettings.hideGui || this.mc.currentScreen != null)
-+					{
-+						GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
-+						boolean var12 = this.mc.gameSettings.fancyGraphics;
-+
-+						if (!Config.isVignetteEnabled())
-+						{
-+							this.mc.gameSettings.fancyGraphics = false;
-+						}
-+						
-+						//why was this called twice per loop??
-+					//	this.mc.ingameGUI.renderGameOverlay(par1, this.mc.currentScreen != null, var161, var171);
-+						
-+						this.mc.gameSettings.fancyGraphics = var12;
-+
-+					}
-+				}
-+				/** END MINECRIFT */
-+			}//END RENDER WORLD
-+			
-+	
-+			renderFadeEffects();
-+
-+			GlStateManager.disableBlend();
-+			GlStateManager.disableAlpha();
-+			GlStateManager.enableDepth();
-+			GlStateManager.enableTexture2D();
-+			
-+			if (this.mc.theWorld == null || mc.currentScreen instanceof GuiWinGame) {
-+				this.mc.mcProfiler.startSection("renderGui");
-+					GL11.glDisable(GL11.GL_STENCIL_TEST);
-+					if(!mc.bowTracker.isDrawing) renderGuiLayer(par1);
-+				this.mc.mcProfiler.endSection();
-+			}
-+			
-+			
-+			if((mc.theWorld == null || mc.currentScreen instanceof GuiWinGame) && (mc.currentPass != renderPass.Third || mc.vrSettings.mixedRealityRenderHands)){
-+				// VIVE START - render controllers in main menu
-+				this.mc.mcProfiler.startSection("mainMenuHands");
-+					renderMainMenuHands();
-+				this.mc.mcProfiler.endSection();
-+			}
-+			
-+			
-+			// Minecrift - handle notification text
-+			handleNotificationText();
-+
-+			this.renderEndNanoTime = System.nanoTime();
-+			
-+		}
-+
-+	}
-+    
-+    
-+    
-+    private void updateCameraAndRender_OnePass(float par1) {
-+
-+    	this.frameInit();
-+		
-+		Config.checkDisplayMode();
- 
+-
 -        if (!this.mc.skipRenderWorld)
 -        {
 -            anaglyphEnable = this.mc.gameSettings.anaglyph;
@@ -1264,7 +1166,9 @@
 -            if (this.mc.currentScreen != null)
 -            {
 -                GlStateManager.clear(256);
--
++    public void updateCameraAndRender(float par1)
++	{// called each eye
+ 
 -                try
 -                {
 -                    if (Reflector.ForgeHooksClient_drawScreen.exists())
@@ -1305,22 +1209,127 @@
 -                }
 -            }
 -        }
--
++		if(mc.currentPass == renderPass.Left) //contains all the stuff that was in this method that only needs to be called once per frame.
++			updateCameraAndRender_OnePass(par1);
+ 
 -        this.frameFinish();
 -        this.waitForServerThread();
 -        Lagometer.updateLagometer();
--
++		if (!this.mc.skipRenderWorld)
++		{//RENDER WORLD
++			/** MINECRIFT */
++			anaglyphEnable = false;
++			/** END MINECRIFT */
++			
++			if (this.mc.theWorld != null && !(mc.currentScreen instanceof GuiWinGame))
++			{
++				
++				this.mc.mcProfiler.startSection("renderWorld");
++					this.renderWorld(par1, 0L);
++				this.mc.mcProfiler.endSection();
++				
++				if (OpenGlHelper.shadersSupported)
++				{
++					if (this.theShaderGroup != null)
++					{
++						GL11.glMatrixMode(GL11.GL_TEXTURE);
++						GL11.glPushMatrix();
++							GL11.glLoadIdentity();
++							this.theShaderGroup.loadShaderGroup(par1);
++						GL11.glPopMatrix();
++						/** MINECRIFT */
++						GL11.glMatrixMode(GL11.GL_MODELVIEW);
++						/** END MINECRIFT */
++					}
++					this.mc.getFramebuffer().bindFramebuffer(true);
++				}
++
++				this.renderEndNanoTime = System.nanoTime();
++				
++				/** MINECRIFT */
++				if (!this.mc.stereoProvider.isStereo()) //TODO wtf is all this....
++				{
++					if (!this.mc.vrSettings.hideGui || this.mc.currentScreen != null)
++					{
++						GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
++						boolean var12 = this.mc.gameSettings.fancyGraphics;
++
++						if (!Config.isVignetteEnabled())
++						{
++							this.mc.gameSettings.fancyGraphics = false;
++						}
++						
++						//why was this called twice per loop??
++					//	this.mc.ingameGUI.renderGameOverlay(par1, this.mc.currentScreen != null, var161, var171);
++						
++						this.mc.gameSettings.fancyGraphics = var12;
++
++					}
++				}
++				/** END MINECRIFT */
++			}//END RENDER WORLD
++			
++	
++			renderFadeEffects();
++
++			GlStateManager.disableBlend();
++			GlStateManager.disableAlpha();
++			GlStateManager.enableDepth();
++			GlStateManager.enableTexture2D();
++			
++			if (this.mc.theWorld == null || mc.currentScreen instanceof GuiWinGame) {
++				this.mc.mcProfiler.startSection("renderGui");
++					GL11.glDisable(GL11.GL_STENCIL_TEST);
++					if(!mc.bowTracker.isDrawing) 
++						renderGuiLayer(par1);
++				this.mc.mcProfiler.endSection();
++			}
++			
++			
++			if((mc.theWorld == null || mc.currentScreen instanceof GuiWinGame) && (mc.currentPass != renderPass.Third || mc.vrSettings.mixedRealityRenderHands)){
++				// VIVE START - render controllers in main menu
++				this.mc.mcProfiler.startSection("mainMenuHands");
++					renderMainMenuHands();
++				this.mc.mcProfiler.endSection();
++			}
++			
++			
++			// Minecrift - handle notification text
++			handleNotificationText();
++
++			this.renderEndNanoTime = System.nanoTime();
++			
++		}
++
++	}
++    
++    
++    
++    private void updateCameraAndRender_OnePass(float par1) {
++
++    	this.frameInit();
++
++    	Config.checkDisplayMode();
++
++    	if(mc.thePlayer != null){
++    		if(mc.vrSettings.vehicleRotation && mc.thePlayer.isRiding()){
++    			Entity e = mc.thePlayer.getRidingEntity();
++                float f1 = e.prevRotationYaw + (e.rotationYaw - e.prevRotationYaw) * par1;
++    			mc.vrSettings.vrWorldRotation= 180-f1;
++    		}
+ 
 -        if (this.mc.gameSettings.ofProfiler)
 -        {
 -            this.mc.gameSettings.showDebugProfilerChart = true;
 -        }
--    }
-+	}
++    		mc.vrPlayer.checkandUpdateRotateScale(true);
++    	}
+     }
 +    
  
      private void createWorldIcon()
      {
-@@ -1461,6 +1447,9 @@
+@@ -1461,6 +1457,9 @@
          }
          else
          {
@@ -1330,7 +1339,7 @@
              Entity entity = this.mc.getRenderViewEntity();
              boolean flag = entity instanceof EntityPlayer && !this.mc.gameSettings.hideGUI;
  
-@@ -1491,404 +1480,509 @@
+@@ -1491,404 +1490,512 @@
  
      public void renderWorld(float partialTicks, long finishTimeNano)
      {
@@ -1383,7 +1392,8 @@
 +		player.prevPosZ = f.zCoord;
 +		player.rotationPitch =player.prevRotationPitch = - mc.roomScale.getHMDPitch_World();
 +		player.prevRotationYawHead	= player.prevRotationYaw  = player.rotationYaw = player.rotationYawHead = mc.roomScale.getHMDYaw_World();
-+		((EntityPlayerSP)player).overrideEyeHeight = true;
++		if(player instanceof EntityPlayerSP)
++			((EntityPlayerSP)player).overrideEyeHeight = true;
 +		
 +		this.mc.mcProfiler.startSection("lightTex");
 +		
@@ -2190,12 +2200,14 @@
 +		this.mc.mcProfiler.endSection();
 +
 +		restoreRVEPos((EntityLivingBase) mc.getRenderViewEntity()); //unhack the RVE position.
-+		((EntityPlayerSP)player).overrideEyeHeight = false;
++		
++		if(player instanceof EntityPlayerSP)
++			((EntityPlayerSP)player).overrideEyeHeight = false;
 +			
      }
  
      private void renderCloudsCheck(RenderGlobal renderGlobalIn, float partialTicks, int pass)
-@@ -1896,19 +1990,19 @@
+@@ -1896,19 +2003,19 @@
          if (this.mc.gameSettings.renderDistanceChunks >= 4 && !Config.isCloudsOff() && Shaders.shouldRenderClouds(this.mc.gameSettings))
          {
              this.mc.mcProfiler.endStartSection("clouds");
@@ -2224,7 +2236,7 @@
          }
      }
  
-@@ -2206,7 +2300,7 @@
+@@ -2206,7 +2313,7 @@
              double d0 = MathHelper.sin(world.getCelestialAngleRadians(partialTicks)) > 0.0F ? -1.0D : 1.0D;
              Vec3d vec3d2 = new Vec3d(d0, 0.0D, 0.0D);
              float f5 = (float)entity.getLook(partialTicks).dotProduct(vec3d2);
@@ -2233,7 +2245,7 @@
              if (f5 < 0.0F)
              {
                  f5 = 0.0F;
-@@ -2250,8 +2344,10 @@
+@@ -2250,8 +2357,10 @@
              this.fogColorBlue *= f11;
          }
  
@@ -2245,7 +2257,7 @@
          if (this.cloudFog)
          {
              Vec3d vec3d3 = world.getCloudColour(partialTicks);
-@@ -2259,7 +2355,7 @@
+@@ -2259,7 +2368,7 @@
              this.fogColorGreen = (float)vec3d3.yCoord;
              this.fogColorBlue = (float)vec3d3.zCoord;
          }
@@ -2254,7 +2266,7 @@
          {
              float f12 = 0.0F;
  
-@@ -2285,7 +2381,7 @@
+@@ -2285,7 +2394,7 @@
                  this.fogColorBlue = (float)vec3d4.zCoord;
              }
          }
@@ -2263,7 +2275,7 @@
          {
              this.fogColorRed = 0.6F;
              this.fogColorGreen = 0.1F;
-@@ -2363,16 +2459,7 @@
+@@ -2363,16 +2472,7 @@
              this.fogColorBlue = f7;
          }
  
@@ -2281,7 +2293,7 @@
      }
  
      /**
-@@ -2386,8 +2473,11 @@
+@@ -2386,8 +2486,11 @@
          GlStateManager.glFog(2918, this.setFogColorBuffer(this.fogColorRed, this.fogColorGreen, this.fogColorBlue, 1.0F));
          GlStateManager.glNormal3f(0.0F, -1.0F, 0.0F);
          GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -2294,7 +2306,7 @@
  
          if (Reflector.ForgeHooksClient_getFogDensity.exists())
          {
-@@ -2446,7 +2536,7 @@
+@@ -2446,7 +2549,7 @@
  
              GlStateManager.setFogDensity(0.1F);
          }
@@ -2303,7 +2315,7 @@
          {
              if (Config.isShaders())
              {
-@@ -2478,7 +2568,7 @@
+@@ -2478,7 +2581,7 @@
                  GlStateManager.setFogDensity(0.02F);
              }
          }
@@ -2312,7 +2324,7 @@
          {
              if (Config.isShaders())
              {
-@@ -2706,10 +2796,12 @@
+@@ -2706,10 +2809,12 @@
              this.updatedWorld = world;
          }
  
@@ -2329,7 +2341,7 @@
      }
  
      private void frameFinish()
-@@ -2733,49 +2825,6 @@
+@@ -2733,49 +2838,6 @@
          }
      }
  
@@ -2379,7 +2391,7 @@
      public boolean setFxaaShader(int p_setFxaaShader_1_)
      {
          if (!OpenGlHelper.isFramebufferEnabled())
-@@ -2858,4 +2907,2060 @@
+@@ -2858,4 +2920,2054 @@
          GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
          GlStateManager.popMatrix();
      }
@@ -2672,7 +2684,7 @@
 +				float rows = wrapped.size();
 +				float shift = rows / 2f;
 +		
-+				float x = isGuiOrtho ? 0f : -this.mc.vrSettings.getHalfIPD(EyeType.ovrEye_Center);
++				float x = isGuiOrtho ? 0f : 0; // : -this.mc.vrSettings.getHalfIPD(EyeType.ovrEye_Center);
 +				float y = shift * COLUMN_GAP * 0.003f; // Move up
 +				float z = -0.6f;
 +				boolean d = GL11.glIsEnabled(GL11.GL_DEPTH_TEST);
@@ -2735,8 +2747,7 @@
 +			//   System.out.println(this.mc.objectMouseOver.toString());
 +			if (this.mc.objectMouseOver == null || this.mc.objectMouseOver.typeOfHit ==Type.MISS)
 +			{
-+				// Get MISS distance
-+				if (!this.mc.vrSettings.maxCrosshairDistanceAtBlockReach) {
++
 +					endPos = aimsoucecopy.addVector(aim.xCoord * MAX_CROSSHAIR_DISTANCE, aim.yCoord * MAX_CROSSHAIR_DISTANCE, aim.zCoord * MAX_CROSSHAIR_DISTANCE);
 +					RayTraceResult crossPos = this.mc.theWorld.rayTraceBlocks(aimsoucecopy, endPos, false, false, true);
 +					if (crossPos != null) {
@@ -2746,7 +2757,7 @@
 +						crossVec = new Vec3d(endPos.xCoord, endPos.yCoord, endPos.zCoord);
 +						maxreach = crossVec.distanceTo(aimsourcecopy2);
 +					}
-+				}
++
 +				this.mc.objectMouseOver = null;
 +			}
 +			else
@@ -2863,15 +2874,13 @@
 +//		GL11.glDisable(GL11.GL_BLEND);
 +	}
 +
-+
-+
 +	// Thanks to mhagain
 +	public void renderFadeBlend (float r, float g, float b, float fadeAlpha, int left, int right, int bottom, int top)
 +	{
 +		
 +		GlStateManager.enableBlend();
 +		GlStateManager.disableAlpha();
-+		GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
++		GlStateManager.tryBlendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA,SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 +		GlStateManager.disableDepth();
 +		GlStateManager.disableTexture2D();
 +		
@@ -2892,15 +2901,11 @@
 +			GL11.glBegin(GL11.GL_QUADS);
 +	
 +			GL11.glVertex3f(left, top, 0);
-+			GL11.glVertex3f(right, top, 0);
-+			GL11.glVertex3f(right, bottom, 0);
 +			GL11.glVertex3f(left, bottom, 0);
-+	
++			GL11.glVertex3f(right, bottom, 0);
++			GL11.glVertex3f(right, top, 0);
++
 +			GL11.glEnd();
-+	
-+			GL11.glDisable(GL11.GL_BLEND);
-+			GL11.glEnable(GL11.GL_DEPTH_TEST);
-+			GL11.glEnable(GL11.GL_TEXTURE_2D);
 +	
 +			GL11.glMatrixMode(GL11.GL_PROJECTION);
 +			GL11.glPopMatrix();
@@ -2983,7 +2988,7 @@
 +
 +					if (this.mc.vrSettings.hudOcclusion == false || this.mc.currentScreen != null){
 +						// Never use depth test for in game menu - so you can always see it!
-+						GlStateManager.disableDepth();		
++						GlStateManager.disableDepth();	
 +					} else {
 +						GlStateManager.enableDepth();
 +					}
@@ -2999,7 +3004,7 @@
 +						GlStateManager.enableDepth();
 +						GlStateManager.depthMask(true);
 +					}
-+
++					GlStateManager.disableBlend();
 +					GlStateManager.disableCull();
 +
 +					//Render framebuffer onto world projection
@@ -3927,9 +3932,10 @@
 +				GL11.glRotatef(-mc.vrPlayer.getControllerYaw_World(0), 0.0F, 1.0F, 0.0F);
 +				GL11.glRotatef(-mc.roomScale.getControllerPitch_World(0), 1.0F, 0.0F, 0.0F);
 +				
-+				if (this.mc.vrSettings.crosshairRollsWithHead)
++				if (false)//(this.mc.vrSettings.crosshairRollsWithHead)
 +					GL11.glRotated(this.cameraRoll, 0.0F, 0.0F, 1.0F);
-+				if (this.mc.vrSettings.crosshairScalesWithDistance)
++				
++				if (false) //todo: put back (this.mc.vrSettings.crosshairScalesWithDistance)
 +				{
 +					// VIVE START - adjust depth scaling to handle far crosshair positions
 +					scale = -0.05f;
@@ -4051,7 +4057,7 @@
 +	}
 +	
 +    
-+	private Vec3d getControllerRenderPos(int c){
++	public Vec3d getControllerRenderPos(int c){
 +		Vec3d out ;
 +
 +		if(mc.vrSettings.seated){	
