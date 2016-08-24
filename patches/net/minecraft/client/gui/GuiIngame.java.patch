@@ -99,16 +99,15 @@
          if (this.mc.thePlayer.isRidingHorse())
          {
              this.renderHorseJumpBar(scaledresolution, k1);
-@@ -552,6 +567,8 @@
+@@ -552,6 +567,7 @@
              int j = 182;
              int k = 91;
              this.zLevel = -90.0F;
-+            GlStateManager.enableTexture2D();
 +            GlStateManager.enableAlpha();
              this.drawTexturedModalRect(i - 91, sr.getScaledHeight() - 22, 0, 0, 182, 22);
              this.drawTexturedModalRect(i - 91 - 1 + entityplayer.inventory.currentItem * 20, sr.getScaledHeight() - 22 - 1, 0, 22, 24, 22);
  
-@@ -570,7 +587,7 @@
+@@ -570,7 +586,7 @@
              this.zLevel = f;
              GlStateManager.enableRescaleNormal();
              GlStateManager.enableBlend();
@@ -117,7 +116,7 @@
              RenderHelper.enableGUIStandardItemLighting();
  
              for (int l = 0; l < 9; ++l)
-@@ -1106,6 +1123,11 @@
+@@ -1106,6 +1122,11 @@
       */
      private void renderVignette(float lightLevel, ScaledResolution scaledRes)
      {
@@ -129,7 +128,7 @@
          if (Config.isVignetteEnabled())
          {
              lightLevel = 1.0F - lightLevel;
-@@ -1154,39 +1176,6 @@
+@@ -1154,39 +1175,6 @@
          }
      }
  
@@ -169,7 +168,7 @@
  
      private void renderHotbarItem(int p_184044_1_, int p_184044_2_, float p_184044_3_, EntityPlayer player, @Nullable ItemStack stack)
      {
-@@ -1363,4 +1352,42 @@
+@@ -1363,4 +1351,42 @@
      {
          return this.overlayBoss;
      }

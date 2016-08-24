@@ -22,42 +22,51 @@
      public ModelBiped()
      {
          this(0.0F);
-@@ -177,39 +186,50 @@
+@@ -177,39 +186,51 @@
              this.bipedLeftLeg.rotateAngleZ = -0.07853982F;
          }
  
 -        this.bipedRightArm.rotateAngleY = 0.0F;
 -        this.bipedRightArm.rotateAngleZ = 0.0F;
- 
+-
 -        switch (this.leftArmPose)
 -        {
 -            case EMPTY:
 -                this.bipedLeftArm.rotateAngleY = 0.0F;
 -                break;
-+        if(isVrPlayer){
-+            PlayerModelController.RotInfo rotInfo=PlayerModelController.getInstance().getRotationsForPlayer(playerUuid);
- 
+-
 -            case BLOCK:
 -                this.bipedLeftArm.rotateAngleX = this.bipedLeftArm.rotateAngleX * 0.5F - 0.9424779F;
 -                this.bipedLeftArm.rotateAngleY = 0.5235988F;
 -                break;
-+            this.bipedHead.rotateAngleX = (float)  -rotInfo.head.x;
-+            this.bipedHead.rotateAngleY = (float) rotInfo.head.y  - entityIn.rotationYaw;
  
 -            case ITEM:
 -                this.bipedLeftArm.rotateAngleX = this.bipedLeftArm.rotateAngleX * 0.5F - ((float)Math.PI / 10F);
 -                this.bipedLeftArm.rotateAngleY = 0.0F;
 -        }
-+            this.bipedLeftArm.rotateAngleX=(float) rotInfo.leftArm.x;
-+            this.bipedLeftArm.rotateAngleY=(float) rotInfo.leftArm.y - entityIn.rotationYaw;
- 
+-
 -        switch (this.rightArmPose)
 -        {
 -            case EMPTY:
 -                this.bipedRightArm.rotateAngleY = 0.0F;
 -                break;
-+            this.bipedRightArm.rotateAngleX=(float) rotInfo.rightArm.x;
-+            this.bipedRightArm.rotateAngleY=(float) rotInfo.rightArm.y - entityIn.rotationYaw;
+-
+-            case BLOCK:
+-                this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * 0.5F - 0.9424779F;
+-                this.bipedRightArm.rotateAngleY = -0.5235988F;
+-                break;
++        if(isVrPlayer){
++            PlayerModelController.RotInfo rotInfo=PlayerModelController.getInstance().getRotationsForPlayer(playerUuid);
++            float yaw = (float) Math.toRadians(entityIn.rotationYaw);
++            
++            this.bipedHead.rotateAngleX = (float)  rotInfo.head.x;
++          //  this.bipedHead.rotateAngleY = (float) rotInfo.head.y  - yaw;
++
++            this.bipedLeftArm.rotateAngleX=(float) -rotInfo.leftArm.x;
++            this.bipedLeftArm.rotateAngleY=(float) rotInfo.leftArm.y - yaw;
++
++            this.bipedRightArm.rotateAngleX=(float) -rotInfo.rightArm.x;
++            this.bipedRightArm.rotateAngleY=(float) rotInfo.rightArm.y - yaw;
 +
 +        }else {
 +
@@ -65,24 +74,20 @@
 +                case EMPTY:
 +                    this.bipedLeftArm.rotateAngleY = 0.0F;
 +                    break;
- 
--            case BLOCK:
--                this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * 0.5F - 0.9424779F;
--                this.bipedRightArm.rotateAngleY = -0.5235988F;
--                break;
++
 +                case BLOCK:
 +                    this.bipedLeftArm.rotateAngleX = this.bipedLeftArm.rotateAngleX * 0.5F - 0.9424779F;
 +                    this.bipedLeftArm.rotateAngleY = 0.5235988F;
 +                    break;
- 
--            case ITEM:
--                this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * 0.5F - ((float)Math.PI / 10F);
--                this.bipedRightArm.rotateAngleY = 0.0F;
++
 +                case ITEM:
 +                    this.bipedLeftArm.rotateAngleX = this.bipedLeftArm.rotateAngleX * 0.5F - ((float) Math.PI / 10F);
 +                    this.bipedLeftArm.rotateAngleY = 0.0F;
 +            }
-+
+ 
+-            case ITEM:
+-                this.bipedRightArm.rotateAngleX = this.bipedRightArm.rotateAngleX * 0.5F - ((float)Math.PI / 10F);
+-                this.bipedRightArm.rotateAngleY = 0.0F;
 +            switch (this.rightArmPose) {
 +                case EMPTY:
 +                    this.bipedRightArm.rotateAngleY = 0.0F;
@@ -100,7 +105,7 @@
          }
  
          if (this.swingProgress > 0.0F)
-@@ -296,6 +316,8 @@
+@@ -296,6 +317,8 @@
              this.leftArmPose = modelbiped.leftArmPose;
              this.rightArmPose = modelbiped.rightArmPose;
              this.isSneak = modelbiped.isSneak;

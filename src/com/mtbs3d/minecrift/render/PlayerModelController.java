@@ -65,7 +65,7 @@ public class PlayerModelController {
 				ByteArrayInputStream by = new ByteArrayInputStream(arr);
 				DataInputStream da = new DataInputStream(by);
 
-				boolean bool;
+				boolean bool = false;
 				if(arr.length >=29)
 					bool = da.readBoolean();		
 
@@ -81,6 +81,10 @@ public class PlayerModelController {
 				
 				switch(i){
 				case 0:	
+					if(bool){ //seated
+						vivePlayers.remove(uuid);
+						return;
+					}
 					hmdpos = new Vec3d(posx, posy, posz);
 					hmdq = new Quaternion(rotw, rotx, roty, rotz);
 					break;

@@ -18,21 +18,24 @@
                          if (this.isOnLadder())
                          {
                              float f9 = 0.15F;
-@@ -2815,8 +2817,17 @@
+@@ -2815,8 +2817,20 @@
                      Vec3d vec3d1 = new Vec3d(((double)this.rand.nextFloat() - 0.5D) * 0.3D, d0, 0.6D);
                      vec3d1 = vec3d1.rotatePitch(-this.rotationPitch * 0.017453292F);
                      vec3d1 = vec3d1.rotateYaw(-this.rotationYaw * 0.017453292F);
 +                    
                      vec3d1 = vec3d1.addVector(this.posX, this.posY + (double)this.getEyeHeight(), this.posZ);
  
-+                    //does this mess up other players in multiplayer? YES IT DO
-+                    EnumHand hand = getActiveHand();
-+                    if(hand == EnumHand.MAIN_HAND){
-+                        vec3d1 = (Minecraft.getMinecraft().roomScale.getControllerPos_World(0));                    	
-+                    } else {
-+                    	vec3d1 = (Minecraft.getMinecraft().roomScale.getControllerPos_World(1));   
++                    if(Minecraft.getMinecraft().isSingleplayer() || this == Minecraft.getMinecraft().thePlayer){
++                    	//VIVE
++                    	//does this mess up other players in multiplayer? YES IT DO
++                    	EnumHand hand = getActiveHand();
++                    	if(hand == EnumHand.MAIN_HAND){
++                    		vec3d1 = (Minecraft.getMinecraft().roomScale.getControllerPos_World(0));                    	
++                    	} else {
++                    		vec3d1 = (Minecraft.getMinecraft().roomScale.getControllerPos_World(1));   
++                    	}
 +                    }
-+                    
++
                      if (stack.getHasSubtypes())
                      {
                          this.worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, vec3d1.xCoord, vec3d1.yCoord, vec3d1.zCoord, vec3d.xCoord, vec3d.yCoord + 0.05D, vec3d.zCoord, new int[] {Item.getIdFromItem(stack.getItem()), stack.getMetadata()});
