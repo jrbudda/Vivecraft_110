@@ -175,8 +175,13 @@ public class GuiMinecriftSettings extends BaseGuiSettings implements GuiEventEx
                     	this.isConfirm = true;
                     	return;
                     }
-
                 }
+    			else if(num== VRSettings.VrOptions.RESET_ORIGIN){
+    				MCOpenVR.resetPosition();
+    				Minecraft.getMinecraft().vrSettings.saveOptions();
+    				this.mc.displayGuiScreen(null);
+    				this.mc.setIngameFocus();
+    			}
 
                 this.guivrSettings.setOptionValue(((GuiSmallButtonEx)par1GuiButton).returnVrEnumOptions(), 1);
                 par1GuiButton.displayString = this.guivrSettings.getKeyBinding(VRSettings.VrOptions.getEnumOptions(par1GuiButton.id));
@@ -247,12 +252,6 @@ public class GuiMinecriftSettings extends BaseGuiSettings implements GuiEventEx
             	this.isConfirm = false;
             	this.reinit = true;
             }
-			else if(par1GuiButton.id == VRSettings.VrOptions.RESET_ORIGIN.ordinal()){
-				MCOpenVR.resetPosition();
-				Minecraft.getMinecraft().vrSettings.saveOptions();
-				this.mc.displayGuiScreen(null);
-				this.mc.setIngameFocus();
-			}
             else if (par1GuiButton.id == ID_GENERIC_DEFAULTS)
             {
                 mc.vrSettings.vrReverseHands = false;
