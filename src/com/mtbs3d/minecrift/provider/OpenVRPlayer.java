@@ -96,9 +96,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 
     public OpenVRPlayer()
     {
-        for (int i=0;i<50;i++) //Lol what is this?
-        {
-      }
+
     }
    
     public void setRoomOrigin(double x, double y, double z, boolean reset, boolean onframe ) { 
@@ -223,7 +221,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 
 	    mc.swimTracker.doProcess(mc,player);
 
-	    Minecraft.getMinecraft().climbTracker.doProcess(mc, player);
+	    mc.climbTracker.doProcess(mc, player);
 
 	    AutoCalibration.logHeadPos(MCOpenVR.hmdPivotHistory.latest());
 
@@ -1122,7 +1120,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
         						}
         					}
         				} else {
-        					if(canact && (!mc.vrSettings.realisticClimbEnabled || block.getBlock() != Blocks.LADDER)) { //TODO climbing option on.
+        					if(canact && (!mc.vrSettings.realisticClimbEnabled || block.getBlock() != Blocks.LADDER)) { 
         						int p = 3;
         						p += (speed - speedthresh) / 2;
 
@@ -1340,16 +1338,6 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 	public Vec3d getEyePos_Room(renderPass eye) {
 		return vecMult(MCOpenVR.getEyePosition(eye),worldScale).add(getWalkMultOffset());
 
-	}
-
-	@Override
-	public Vec3d getHeadPos_Room() {
-		return getHeadCenter(Minecraft.getMinecraft());
-	}
-
-	@Override
-	public Vec3d getHeadPos_World() {
-		return getHeadPos_Room().addVector(roomOrigin.xCoord, roomOrigin.yCoord, roomOrigin.zCoord);
 	}
 
 	@Override

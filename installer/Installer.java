@@ -713,19 +713,43 @@ public class Installer extends JPanel  implements PropertyChangeListener
         
         // VIVE START - install openVR dlls
         private boolean InstallOpenVR() {
-			File win32_dir = new File (targetDir, "win32" );
-			File win64_dir = new File (targetDir, "win64" );
-			win32_dir.mkdirs();
-			win64_dir.mkdirs();
+		
+			String osname = System.getProperty("os.name").toLowerCase();
+			String osarch= System.getProperty("os.arch").toLowerCase();
+
+			String osFolder = "win32";		
+			String resource = "win32/openvr_api.dll";
 			
-			InputStream openvrdll = Installer.class.getResourceAsStream("win64/openvr_api.dll");
-			File dll_out = new File (targetDir, "win64/openvr_api.dll");
+			if (osname.contains("windows")){	
+				if (osarch.contains("64"))
+				{
+					osFolder = "win64";
+					resource = "win64/openvr_api.dll";
+				}
+			}
+			else if( osname.contains("linux")){
+				osFolder = "linux32";
+				resource = "linux32/libopenvr_api.so";
+				if (osarch.contains("64"))
+				{
+					osFolder = "linux64";
+					resource = "linux64/libopenvr_api.so";
+				}
+			}
+			else if( osname.contains("mac")){
+				osFolder = "osx32";
+				resource = "osx32/libopenvr_api.dylib";			
+			}
+		
+			File win32_dir = new File (targetDir, osFolder);
+			win32_dir.mkdirs();
+			
+			InputStream openvrdll = Installer.class.getResourceAsStream(resource);
+			File dll_out = new File (targetDir, resource);
 			if (!copyInputStreamToFile(openvrdll, dll_out))
 				return false;
 				
-			openvrdll = Installer.class.getResourceAsStream("win32/openvr_api.dll");
-			dll_out = new File (targetDir, "win32/openvr_api.dll");
-			return copyInputStreamToFile(openvrdll, dll_out);
+			return true;
         }
         // VIVE END - install openVR dll
 

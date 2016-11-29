@@ -83,6 +83,7 @@ public class MinecriftClassTransformer implements IClassTransformer
 
     	if (minecriftClass == null) {
     		//debug(String.format("Minecrift: Passthrough '%s' -> '%s'", name, transformedName));
+    		writeToFile("original",transformedName , "", bytes);
     	}
     	else {
     		// Perform any additional mods using ASM
@@ -91,7 +92,7 @@ public class MinecriftClassTransformer implements IClassTransformer
     		if(bytes.length != minecriftClass.length)
     		debug(String.format("Minecrift: Overwrite " + name +" "+ transformedName + " " + bytes.length + " > "  + minecriftClass.length));
 
-    		//writeToFile("original", transformedName, name, bytes);
+    		writeToFile("original", transformedName, "", bytes);
     		//writeToFile("transformed", transformedName, name, minecriftClass);
     	}
     	
@@ -102,7 +103,7 @@ public class MinecriftClassTransformer implements IClassTransformer
     {
         FileOutputStream stream = null;
         ;
-        String filepath = String.format("%s/%s/%s/%s_%s.%s", System.getProperty("user.home"), "minecrift_transformed_classes", dir, transformedName.replace(".", "/"), name, "class");
+        String filepath = String.format("%s/%s/%s/%s%s.%s", System.getProperty("user.home"), "minecrift_transformed_classes", dir, transformedName.replace(".", "/"), name, "class");
         File file = new File(filepath);
         debug("Writing to: " + filepath);
         try {

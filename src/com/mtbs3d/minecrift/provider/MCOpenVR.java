@@ -271,11 +271,30 @@ public class MCOpenVR
 		mc = Minecraft.getMinecraft();
 		// look in .minecraft first for openvr_api.dll
 		File minecraftDir = Utils.getWorkingDirectory();
+		
+		String osname = System.getProperty("os.name").toLowerCase();
+		String osarch= System.getProperty("os.arch").toLowerCase();
+
 		String osFolder = "win32";
-		if (System.getProperty("os.arch").contains("64"))
-		{
-			osFolder = "win64";
+		
+		if (osname.contains("windows")){	
+			if (osarch.contains("64"))
+			{
+				osFolder = "win64";
+			}
 		}
+		else if( osname.contains("linux")){
+			osFolder = "linux32";
+			if (osarch.contains("64"))
+			{
+				osFolder = "linux64";
+			}
+		}
+		else if( osname.contains("mac")){
+			osFolder = "osx32";
+		}
+		
+		
 		File openVRDir = new File( minecraftDir, osFolder );
 		String openVRPath = openVRDir.getPath();
 		System.out.println( "Adding OpenVR search path: "+openVRPath);
@@ -1418,7 +1437,8 @@ private static void processGui() {
 						setKeyboardOverlayShowing(false, null);
 					}
 				}else
-					mc.displayInGameMenu();				
+					
+				if(!DEMO)mc.displayInGameMenu();				
 			}
 		}
 		
@@ -1429,6 +1449,7 @@ private static void processGui() {
 		}
 	}
 
+	public static boolean DEMO;
 	
 	private static void changeHotbar(int dir){
 		mc.thePlayer.inventory.changeCurrentItem(dir);
@@ -1751,7 +1772,7 @@ private static void processGui() {
 
 		}		
 		
-		// i am dead view / now uses main menu room
+		// i am dead view
 		if (mc.thePlayer!=null && !mc.thePlayer.isEntityAlive())
 		{
 			Matrix4f rot = Matrix4f.rotationY((float) Math.toRadians(mc.vrSettings.vrWorldRotation));

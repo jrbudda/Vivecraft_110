@@ -2523,8 +2523,8 @@
 +							i.getItem() == Items.POTIONITEM  
 +							) {
 +						//use r_hand aim
-+						entity.rotationYawHead=	entity.rotationYaw =  mc.roomScale.getControllerYaw_World(0);
-+						entity.rotationPitch = mc.roomScale.getControllerPitch_World(0);
++						entity.rotationYawHead =	entity.rotationYaw =  mc.roomScale.getControllerYaw_World(0);
++						entity.rotationPitch = - mc.roomScale.getControllerPitch_World(0);
 +					}
 +					else if(mc.vrPlayer.shouldIlookatMyHand[0]){
 +						Vec3d playerToMain = entity.getPositionEyes(1).subtract(mc.roomScale.getControllerPos_World(0)); //backwards

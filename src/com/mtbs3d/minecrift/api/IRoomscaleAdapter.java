@@ -26,15 +26,11 @@ public interface IRoomscaleAdapter  {
 	public float getHMDPitch_World(); //degrees
 	
 	public FloatBuffer getHMDMatrix_World();
-
-
 	public FloatBuffer getHMDMatrix_Room();
 	public FloatBuffer getControllerMatrix_World(int controller);
 	
 	public Vec3d getEyePos_World(renderPass currentPass);
 	public Vec3d getEyePos_Room(renderPass currentPass);
-	public Vec3d getHeadPos_Room();
-	public Vec3d getHeadPos_World();
 
 	public float getControllerYaw_Room(int controller); //degrees
 	public float getControllerPitch_Room(int controller); //degrees

@@ -54,6 +54,7 @@ public class ClimbTracker {
 			latchStartController = -1;
 			c1Latched = false;
 			c0Latched = false;
+			player.setNoGravity(false);
 			return;
 		}
 

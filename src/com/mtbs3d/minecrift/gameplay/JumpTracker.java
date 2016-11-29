@@ -25,7 +25,7 @@ public class JumpTracker {
 			return false;
 		if(p==null || p.isDead || !p.onGround)
 			return false;
-		if(p.isInWater() && p.isInLava())
+		if(p.isInWater() || p.isInLava())
 			return false;
 		if(p.isSneaking() || p.isRiding())
 			return false;

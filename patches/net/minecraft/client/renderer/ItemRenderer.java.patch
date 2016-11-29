@@ -422,7 +422,7 @@
              }
          }
  
-@@ -352,192 +419,459 @@
+@@ -352,192 +419,462 @@
          this.rotateArm(partialTicks);
          GlStateManager.enableRescaleNormal();
  
@@ -890,14 +890,17 @@
 +			} else {
 +				r = 1;
 +				a = percent;
++				if (player.isCreative()) a = 0;
 +			}
 +
 +
 +			if (player.isPlayerSleeping()){
++				r=g=b=0;
 +				a = .8f;
 +			}
 +			
 +			if (MCOpenVR.isWalkingAbout){
++				r=g=b=0;
 +				a = .8f;
 +			}
 +			
@@ -1012,7 +1015,7 @@
          vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
          vertexbuffer.pos(-1.0D, -1.0D, -0.5D).tex((double)f7, (double)f9).endVertex();
          vertexbuffer.pos(1.0D, -1.0D, -0.5D).tex((double)f6, (double)f9).endVertex();
-@@ -561,17 +895,14 @@
+@@ -561,17 +898,14 @@
              VertexBuffer vertexbuffer = tessellator.getBuffer();
              float f = this.mc.thePlayer.getBrightness(partialTicks);
              GlStateManager.color(f, f, f, 0.5F);
