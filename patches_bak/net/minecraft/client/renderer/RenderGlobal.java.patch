@@ -1,0 +1,228 @@
+--- a/net/minecraft/client/renderer/RenderGlobal.java
++++ b/net/minecraft/client/renderer/RenderGlobal.java
+@@ -4,6 +4,7 @@
+ import com.google.common.collect.Maps;
+ import com.google.common.collect.Sets;
+ import com.google.gson.JsonSyntaxException;
++
+ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+ import java.io.IOException;
+ import java.lang.reflect.Field;
+@@ -202,7 +203,7 @@
+     public Set chunksToResortTransparency = new LinkedHashSet();
+     public Set chunksToUpdateForced = new LinkedHashSet();
+     private Deque visibilityDeque = new ArrayDeque();
+-    private List<ContainerLocalRenderInformation> renderInfosEntities = new ArrayList(1024);
++    private List<ContainerLocalRenderInformation> renderInfosEntities = new ArrayList<ContainerLocalRenderInformation>(1024);
+     private List<ContainerLocalRenderInformation> renderInfosTileEntities = new ArrayList(1024);
+     private List renderInfosNormal = new ArrayList(1024);
+     private List renderInfosEntitiesNormal = new ArrayList(1024);
+@@ -740,7 +741,9 @@
+                             if (flag2)
+                             {
+                                 boolean flag3 = this.mc.getRenderViewEntity() instanceof EntityLivingBase ? ((EntityLivingBase)this.mc.getRenderViewEntity()).isPlayerSleeping() : false;
+-
++                                		
++                                flag3=false;//VIVE 
++                                
+                                 if ((entity2 != this.mc.getRenderViewEntity() || this.mc.gameSettings.thirdPersonView != 0 || flag3) && (entity2.posY < 0.0D || entity2.posY >= 256.0D || this.theWorld.isBlockLoaded(blockpos$pooledmutableblockpos.setPos(entity2))))
+                                 {
+                                     ++this.countEntitiesRendered;
+@@ -1118,15 +1121,18 @@
+         }
+ 
+         this.mc.mcProfiler.endStartSection("culling");
+-        BlockPos blockpos2 = new BlockPos(d3, d4 + (double)viewEntity.getEyeHeight(), d5);
++        //VIVE NO EYEHEIGHT
++        BlockPos blockpos2 = new BlockPos(d3, d4, d5);
+         RenderChunk renderchunk = this.viewFrustum.getRenderChunk(blockpos2);
+         new BlockPos(MathHelper.floor_double(d3 / 16.0D) * 16, MathHelper.floor_double(d4 / 16.0D) * 16, MathHelper.floor_double(d5 / 16.0D) * 16);
+         this.displayListEntitiesDirty = this.displayListEntitiesDirty || !this.chunksToUpdate.isEmpty() || viewEntity.posX != this.lastViewEntityX || viewEntity.posY != this.lastViewEntityY || viewEntity.posZ != this.lastViewEntityZ || (double)viewEntity.rotationPitch != this.lastViewEntityPitch || (double)viewEntity.rotationYaw != this.lastViewEntityYaw;
+         this.lastViewEntityX = viewEntity.posX;
+         this.lastViewEntityY = viewEntity.posY;
+         this.lastViewEntityZ = viewEntity.posZ;
++        
+         this.lastViewEntityPitch = (double)viewEntity.rotationPitch;
+         this.lastViewEntityYaw = (double)viewEntity.rotationYaw;
++        
+         boolean flag = this.debugFixedClippingHelper != null;
+         this.mc.mcProfiler.endStartSection("update");
+         Lagometer.timerVisibility.start();
+@@ -1206,8 +1212,11 @@
+ 
+                 if (set1.size() == 1)
+                 {
+-                    Vector3f vector3f = this.getViewVector(viewEntity, partialTicks);
+-                    EnumFacing enumfacing = EnumFacing.getFacingFromVector(vector3f.x, vector3f.y, vector3f.z).getOpposite();
++                	//VIVE
++                    //Vector3f vector3f = this.getViewVector(viewEntity, partialTicks);
++                	Vec3d dir = Minecraft.getMinecraft().roomScale.getHMDDir_World(); 
++                    EnumFacing enumfacing = EnumFacing.getFacingFromVector((float)dir.xCoord, (float)dir.yCoord, (float)dir.zCoord).getOpposite();
++                    //VIVE END
+                     set1.remove(enumfacing);
+                 }
+ 
+@@ -1450,22 +1459,22 @@
+         }
+     }
+ 
+-    protected Vector3f getViewVector(Entity entityIn, double partialTicks)
+-    {
+-        float f = (float)((double)entityIn.prevRotationPitch + (double)(entityIn.rotationPitch - entityIn.prevRotationPitch) * partialTicks);
+-        float f1 = (float)((double)entityIn.prevRotationYaw + (double)(entityIn.rotationYaw - entityIn.prevRotationYaw) * partialTicks);
+-
+-        if (Minecraft.getMinecraft().gameSettings.thirdPersonView == 2)
+-        {
+-            f += 180.0F;
+-        }
+-
+-        float f2 = MathHelper.cos(-f1 * 0.017453292F - (float)Math.PI);
+-        float f3 = MathHelper.sin(-f1 * 0.017453292F - (float)Math.PI);
+-        float f4 = -MathHelper.cos(-f * 0.017453292F);
+-        float f5 = MathHelper.sin(-f * 0.017453292F);
+-        return new Vector3f(f3 * f4, f5, f2 * f4);
+-    }
++//    protected Vector3f getViewVector(Entity entityIn, double partialTicks)
++//    {
++//        float f = (float)((double)entityIn.prevRotationPitch + (double)(entityIn.rotationPitch - entityIn.prevRotationPitch) * partialTicks);
++//        float f1 = (float)((double)entityIn.prevRotationYaw + (double)(entityIn.rotationYaw - entityIn.prevRotationYaw) * partialTicks);
++//
++//        if (Minecraft.getMinecraft().gameSettings.thirdPersonView == 2)
++//        {
++//            f += 180.0F;
++//        }
++//
++//        float f2 = MathHelper.cos(-f1 * 0.017453292F - (float)Math.PI);
++//        float f3 = MathHelper.sin(-f1 * 0.017453292F - (float)Math.PI);
++//        float f4 = -MathHelper.cos(-f * 0.017453292F);
++//        float f5 = MathHelper.sin(-f * 0.017453292F);
++//        return new Vector3f(f3 * f4, f5, f2 * f4);
++//    }
+ 
+     public int renderBlockLayer(BlockRenderLayer blockLayerIn, double partialTicks, int pass, Entity entityIn)
+     {
+@@ -1716,9 +1725,9 @@
+         else if (this.mc.theWorld.provider.isSurfaceWorld())
+         {
+             GlStateManager.disableTexture2D();
+-            boolean flag = Config.isShaders();
++            boolean shadersmod = Config.isShaders();
+ 
+-            if (flag)
++            if (shadersmod)
+             {
+                 Shaders.disableTexture2D();
+             }
+@@ -1726,7 +1735,7 @@
+             Vec3d vec3d = this.theWorld.getSkyColor(this.mc.getRenderViewEntity(), partialTicks);
+             vec3d = CustomColors.getSkyColor(vec3d, this.mc.theWorld, this.mc.getRenderViewEntity().posX, this.mc.getRenderViewEntity().posY + 1.0D, this.mc.getRenderViewEntity().posZ);
+ 
+-            if (flag)
++            if (shadersmod)
+             {
+                 Shaders.setSkyColor(vec3d);
+             }
+@@ -1751,14 +1760,14 @@
+             GlStateManager.depthMask(false);
+             GlStateManager.enableFog();
+ 
+-            if (flag)
++            if (shadersmod)
+             {
+                 Shaders.enableFog();
+             }
+ 
+             GlStateManager.color(f, f1, f2);
+ 
+-            if (flag)
++            if (shadersmod)
+             {
+                 Shaders.preSkyList();
+             }
+@@ -1782,7 +1791,7 @@
+ 
+             GlStateManager.disableFog();
+ 
+-            if (flag)
++            if (shadersmod)
+             {
+                 Shaders.disableFog();
+             }
+@@ -1797,7 +1806,7 @@
+             {
+                 GlStateManager.disableTexture2D();
+ 
+-                if (flag)
++                if (shadersmod)
+                 {
+                     Shaders.disableTexture2D();
+                 }
+@@ -1840,7 +1849,7 @@
+ 
+             GlStateManager.enableTexture2D();
+ 
+-            if (flag)
++            if (shadersmod)
+             {
+                 Shaders.enableTexture2D();
+             }
+@@ -1852,14 +1861,14 @@
+             GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
+             CustomSky.renderSky(this.theWorld, this.renderEngine, this.theWorld.getCelestialAngle(partialTicks), f15);
+ 
+-            if (flag)
++            if (shadersmod)
+             {
+                 Shaders.preCelestialRotate();
+             }
+ 
+             GlStateManager.rotate(this.theWorld.getCelestialAngle(partialTicks) * 360.0F, 1.0F, 0.0F, 0.0F);
+ 
+-            if (flag)
++            if (shadersmod)
+             {
+                 Shaders.postCelestialRotate();
+             }
+@@ -1899,7 +1908,7 @@
+ 
+             GlStateManager.disableTexture2D();
+ 
+-            if (flag)
++            if (shadersmod)
+             {
+                 Shaders.disableTexture2D();
+             }
+@@ -1930,7 +1939,7 @@
+             GlStateManager.enableAlpha();
+             GlStateManager.enableFog();
+ 
+-            if (flag)
++            if (shadersmod)
+             {
+                 Shaders.enableFog();
+             }
+@@ -1938,13 +1947,13 @@
+             GlStateManager.popMatrix();
+             GlStateManager.disableTexture2D();
+ 
+-            if (flag)
++            if (shadersmod)
+             {
+                 Shaders.disableTexture2D();
+             }
+ 
+             GlStateManager.color(0.0F, 0.0F, 0.0F);
+-            double d0 = this.mc.thePlayer.getPositionEyes(partialTicks).yCoord - this.theWorld.getHorizon();
++            double d0 = this.mc.thePlayer.getPositionVector().yCoord - this.theWorld.getHorizon();
+ 
+             if (d0 < 0.0D)
+             {
+@@ -2018,7 +2027,7 @@
+             GlStateManager.popMatrix();
+             GlStateManager.enableTexture2D();
+ 
+-            if (flag)
++            if (shadersmod)
+             {
+                 Shaders.enableTexture2D();
+             }

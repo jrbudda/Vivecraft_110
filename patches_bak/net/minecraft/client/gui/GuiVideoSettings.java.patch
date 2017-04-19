@@ -1,0 +1,19 @@
+--- a/net/minecraft/client/gui/GuiVideoSettings.java
++++ b/net/minecraft/client/gui/GuiVideoSettings.java
+@@ -157,11 +157,11 @@
+                     return;
+                 }
+ 
+-                if (Config.isFastRender())
+-                {
+-                    Config.showGuiMessage(Lang.get("of.message.shaders.fr1"), Lang.get("of.message.shaders.fr2"));
+-                    return;
+-                }
++//                if (Config.isFastRender())
++//                {
++//                    Config.showGuiMessage(Lang.get("of.message.shaders.fr1"), Lang.get("of.message.shaders.fr2"));
++//                    return;
++//                }
+ 
+                 if (Config.getGameSettings().anaglyph)
+                 {

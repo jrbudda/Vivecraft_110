@@ -1,0 +1,83 @@
+--- a/shadersmod/client/ShadersRender.java
++++ b/shadersmod/client/ShadersRender.java
+@@ -108,7 +108,7 @@
+             {
+                 Shaders.readCenterDepth();
+                 Shaders.beginHand();
+-                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
++                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                 er.renderHand(par1, par2);
+                 Shaders.endHand();
+                 Shaders.isHandRendered = true;
+@@ -123,7 +123,7 @@
+             Shaders.readCenterDepth();
+             GlStateManager.enableBlend();
+             Shaders.beginHand();
+-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
++            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+             er.renderHand(par1, par2);
+             Shaders.endHand();
+             Shaders.isHandRendered = true;
+@@ -134,7 +134,7 @@
+     {
+         GlStateManager.depthMask(true);
+         GlStateManager.depthFunc(515);
+-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
++        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+         itemRenderer.renderItemInFirstPerson(par1);
+     }
+ 
+@@ -180,7 +180,7 @@
+             RenderGlobal renderglobal = minecraft.renderGlobal;
+             Shaders.isShadowPass = true;
+             Shaders.shadowPassCounter = Shaders.shadowPassInterval;
+-            Shaders.preShadowPassThirdPersonView = minecraft.gameSettings.thirdPersonView;
++            Shaders.preShadowPassThirdPersonView = 0;// minecraft.gameSettings.thirdPersonView;
+             minecraft.gameSettings.thirdPersonView = 1;
+             Shaders.checkGLError("pre shadow");
+             GL11.glMatrixMode(GL11.GL_PROJECTION);
+@@ -192,7 +192,8 @@
+             Shaders.checkGLError("shadow bind sfb");
+             Shaders.useProgram(30);
+             minecraft.mcProfiler.endStartSection("shadow camera");
+-            entityRenderer.setupCameraTransform(partialTicks, 2);
++          entityRenderer.setupCameraTransform(partialTicks, 2);    
++          entityRenderer.applyCameraDepth(false);
+             Shaders.setCameraShadow(partialTicks);
+             ActiveRenderInfo.updateRenderInfo(minecraft.thePlayer, minecraft.gameSettings.thirdPersonView == 2);
+             Shaders.checkGLError("shadow camera");
+@@ -208,7 +209,7 @@
+             }
+ 
+             Shaders.checkFramebufferStatus("shadow fb");
+-            GL11.glClearColor(1.0F, 1.0F, 1.0F, 1.0F);
++            GlStateManager.clearColor(1.0F, 1.0F, 1.0F, 1.0F);
+             GL11.glClear(Shaders.usedShadowColorBuffers != 0 ? GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT : GL11.GL_DEPTH_BUFFER_BIT);
+             Shaders.checkGLError("shadow clear");
+             minecraft.mcProfiler.endStartSection("shadow frustum");
+@@ -240,7 +241,9 @@
+             GlStateManager.disableAlpha();
+             renderglobal.renderBlockLayer(BlockRenderLayer.SOLID, (double)partialTicks, 2, entity);
+             Shaders.checkGLError("shadow terrain solid");
++            GL11.glEnable(GL11.GL_ALPHA_TEST);
+             GlStateManager.enableAlpha();
++            GlStateManager.alphaFunc(516, 0.1F);
+             renderglobal.renderBlockLayer(BlockRenderLayer.CUTOUT_MIPPED, (double)partialTicks, 2, entity);
+             Shaders.checkGLError("shadow terrain cutoutmipped");
+             minecraft.getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
+@@ -371,7 +374,10 @@
+             GL11.glPopMatrix();
+             GL11.glMatrixMode(GL11.GL_MODELVIEW);
+             Shaders.checkGLError("shadow end");
++        } else{
++        	int a = 9;
+         }
++        	
+     }
+ 
+     public static void preRenderChunkLayer()
+@@ -450,3 +456,4 @@
+         }
+     }
+ }
++

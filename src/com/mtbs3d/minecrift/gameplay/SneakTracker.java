@@ -19,7 +19,7 @@ public class SneakTracker {
 	public boolean isActive(EntityPlayerSP p){
 		if(Minecraft.getMinecraft().vrSettings.seated)
 			return false;
-		if(!Minecraft.getMinecraft().vrSettings.vrFreeMove && !Minecraft.getMinecraft().vrSettings.simulateFalling)
+		if(!Minecraft.getMinecraft().vrPlayer.getFreeMove() && !Minecraft.getMinecraft().vrSettings.simulateFalling)
 			return false;
 		if(!Minecraft.getMinecraft().vrSettings.realisticSneakEnabled)
 			return false;
@@ -32,6 +32,7 @@ public class SneakTracker {
 
 	public void doProcess(Minecraft minecraft, EntityPlayerSP player){
 		if(!isActive(player)) {
+			sneakOverride = false;
 			return;
 		}
 

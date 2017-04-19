@@ -17,3 +17,19 @@
  
                  if (Config.getGameSettings().anaglyph)
                  {
+@@ -223,4 +223,15 @@
+     {
+         p_drawGradientRect_0_.drawGradientRect(p_drawGradientRect_1_, p_drawGradientRect_2_, p_drawGradientRect_3_, p_drawGradientRect_4_, p_drawGradientRect_5_, p_drawGradientRect_6_);
+     }
++    
++    // FORGE: fix for MC-64581 very laggy mipmap slider
++    /**
++     * Called when the screen is unloaded. Used to disable keyboard repeat events
++     */
++    @Override
++    public void onGuiClosed()
++    {
++    	super.onGuiClosed();
++    	this.mc.gameSettings.onGuiClosed();
++    }
+ }

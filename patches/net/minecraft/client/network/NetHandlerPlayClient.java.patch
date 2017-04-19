@@ -1,6 +1,6 @@
 --- a/net/minecraft/client/network/NetHandlerPlayClient.java
 +++ b/net/minecraft/client/network/NetHandlerPlayClient.java
-@@ -1,9 +1,16 @@
+@@ -1,14 +1,25 @@
  package net.minecraft.client.network;
  
 +import com.google.common.base.Charsets;
@@ -12,12 +12,30 @@
 +import com.mtbs3d.minecrift.api.NetworkHelper.PacketDiscriminators;
 +import com.mtbs3d.minecrift.provider.OpenVRPlayer;
 +import com.mtbs3d.minecrift.render.PlayerModelController;
++import com.mtbs3d.minecrift.utils.BlockWithData;
 +
-+import io.netty.buffer.ByteBuf;
  import io.netty.buffer.Unpooled;
++
++import java.io.ByteArrayInputStream;
  import java.io.File;
  import java.io.IOException;
-@@ -234,6 +241,8 @@
++import java.io.ObjectInputStream;
+ import java.net.URI;
+ import java.net.URISyntaxException;
++import java.util.ArrayList;
+ import java.util.Collection;
+ import java.util.List;
+ import java.util.Map;
+@@ -202,6 +213,8 @@
+ import net.minecraft.scoreboard.ScorePlayerTeam;
+ import net.minecraft.scoreboard.Scoreboard;
+ import net.minecraft.scoreboard.Team;
++import net.minecraft.src.Reflector;
++import net.minecraft.src.ReflectorMethod;
+ import net.minecraft.stats.Achievement;
+ import net.minecraft.stats.AchievementList;
+ import net.minecraft.stats.StatBase;
+@@ -234,6 +247,8 @@
  import net.minecraft.world.WorldSettings;
  import net.minecraft.world.chunk.Chunk;
  import net.minecraft.world.storage.MapData;
@@ -26,13 +44,47 @@
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  
-@@ -314,6 +323,17 @@
+@@ -285,6 +300,12 @@
+         this.guiScreenServer = p_i46300_2_;
+         this.netManager = networkManagerIn;
+         this.profile = profileIn;
++        
++        //VIVECRAFT
++        NetworkHelper.serverAllowsClimbey =false;
++        NetworkHelper.serverWantsData = false;
++        NetworkHelper.serverSupportsDirectTeleport = false;
++        //
+     }
+ 
+     /**
+@@ -303,7 +324,19 @@
+     {
+         PacketThreadUtil.checkThreadAndEnqueue(packetIn, this, this.gameController);
+         this.gameController.playerController = new PlayerControllerMP(this.gameController, this);
+-        this.clientWorldController = new WorldClient(this, new WorldSettings(0L, packetIn.getGameType(), false, packetIn.isHardcoreMode(), packetIn.getWorldType()), packetIn.getDimension(), packetIn.getDifficulty(), this.gameController.mcProfiler);
++        
++        //Forge
++        int dimension = packetIn.getDimension();
++        if(Reflector.forgeExists())
++        {
++        	Object nd = Reflector.call(Reflector.NetworkDispatcher_get, this.getNetworkManager());
++        	dimension = Reflector.callInt(nd, Reflector.NetworkDispatcher_getOverrideDimension, packetIn);
++        }
++        this.clientWorldController = new WorldClient(this, new WorldSettings(0L, packetIn.getGameType(), false, packetIn.isHardcoreMode(), packetIn.getWorldType()),
++        		dimension,
++        		packetIn.getDifficulty(), this.gameController.mcProfiler);
++        //
++        
+         this.gameController.gameSettings.difficulty = packetIn.getDifficulty();
+         this.gameController.loadWorld(this.clientWorldController);
+         this.gameController.player.dimension = packetIn.getDimension();
+@@ -314,6 +347,17 @@
          this.gameController.playerController.setGameType(packetIn.getGameType());
          this.gameController.gameSettings.sendSettingsToServer();
          this.netManager.sendPacket(new CPacketCustomPayload("MC|Brand", (new PacketBuffer(Unpooled.buffer())).writeString(ClientBrandRetriever.getClientModName())));
 +        
 +        // VIVE START - ask server if it's running this mod
-+        this.gameController.vrPlayer.setFreeMoveMode(true);
++        this.gameController.vrPlayer.setFreeMove(true);
 +        byte[] version = Minecraft.getMinecraft().minecriftVerString.getBytes(Charsets.UTF_8);
 +        String s = "Vivecraft";
 +        PacketBuffer pb = new PacketBuffer(Unpooled.buffer());
@@ -44,45 +96,122 @@
      }
  
      /**
-@@ -833,6 +853,10 @@
+@@ -805,10 +849,15 @@
+             BlockPos blockpos = new BlockPos(nbttagcompound.getInteger("x"), nbttagcompound.getInteger("y"), nbttagcompound.getInteger("z"));
+             TileEntity tileentity = this.clientWorldController.getTileEntity(blockpos);
+ 
++            //Forge
+             if (tileentity != null)
+             {
+-                tileentity.readFromNBT(nbttagcompound);
++            	if(Reflector.forgeExists())
++            		Reflector.call(tileentity, Reflector.ForgeTileEntity_handleUpdateTag, nbttagcompound);
++            	else
++            		tileentity.readFromNBT(nbttagcompound);
+             }
++            //
+         }
+     }
+ 
+@@ -833,6 +882,10 @@
      public void handleDisconnect(SPacketDisconnect packetIn)
      {
          this.netManager.closeChannel(packetIn.getReason());
 +        // VIVE START - no longer on a vanilla server, reset restricted state
 +    	this.gameController.vrPlayer.noTeleportClient = true;
-+        OpenVRPlayer.get().setFreeMoveMode(true);
++        OpenVRPlayer.get().setFreeMove(true);
 +        // VIVE END - no longer on a vanilla server, reset restricted state
      }
  
      /**
-@@ -904,8 +928,24 @@
-         }
-         else
+@@ -1116,7 +1169,10 @@
          {
--            this.gameController.ingameGUI.getChatGUI().printChatMessage(packetIn.getChatComponent());
--        }
-+        	boolean nochat = false;
-+            ITextComponent t = packetIn.getChatComponent();
-+//            if(t instanceof TextComponentTranslation){
-+//            	TextComponentTranslation tt = (TextComponentTranslation) t;
-+            	//vive its a nice thought but unrelable on non-vanilla
-+//            	if(tt.getKey() == "commands.tp.success.coordinates"){
-+//            		Minecraft.getMinecraft().vrPlayer.doTeleportCallback();
-+//            		nochat = true;
-+//            	}
-+//            }
+             this.doneLoadingTerrain = false;
+             Scoreboard scoreboard = this.clientWorldController.getScoreboard();
+-            this.clientWorldController = new WorldClient(this, new WorldSettings(0L, packetIn.getGameType(), false, this.gameController.world.getWorldInfo().isHardcoreModeEnabled(), packetIn.getWorldType()), packetIn.getDimensionID(), packetIn.getDifficulty(), this.gameController.mcProfiler);
++            int dimId = packetIn.getDimensionID();
++            if (Reflector.forgeExists())
++            	Reflector.call(Reflector.call(Reflector.NetworkDispatcher_get, getNetworkManager()), Reflector.NetworkDispatcher_getOverrideDimension, packetIn);
++            this.clientWorldController = new WorldClient(this, new WorldSettings(0L, packetIn.getGameType(), false, this.gameController.world.getWorldInfo().isHardcoreModeEnabled(), packetIn.getWorldType()), dimId, packetIn.getDifficulty(), this.gameController.mcProfiler);
+             this.clientWorldController.setWorldScoreboard(scoreboard);
+             this.gameController.loadWorld(this.clientWorldController);
+             this.gameController.player.dimension = packetIn.getDimensionID();
+@@ -1305,7 +1361,19 @@
+             {
+                 tileentity.readFromNBT(packetIn.getNbtCompound());
+             }
+-
++            //Forge
++            else
++            {
++            	if(tileentity == null)
++            	{
++            		LOGGER.error("Received invalid update packet for null tile entity at {} with data: {}", packetIn.getPos(), packetIn.getNbtCompound());
++            		return;
++            	}
++            	if(Reflector.forgeExists())
++            		Reflector.call(tileentity, Reflector.ForgeTileEntity_onDataPacket, netManager, packetIn);
++            }
++            //
 +            
-+            if(!nochat)this.gameController.ingameGUI.getChatGUI().printChatMessage(t);
-+        	
+             if (flag && this.gameController.currentScreen instanceof GuiCommandBlock)
+             {
+                 ((GuiCommandBlock)this.gameController.currentScreen).updateGui();
+@@ -1416,15 +1484,41 @@
+             }
+             else if (f == 101.0F)
+             {
+-                this.gameController.ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("demo.help.movement", new Object[] {GameSettings.getKeyDisplayString(gamesettings.keyBindForward.getKeyCode()), GameSettings.getKeyDisplayString(gamesettings.keyBindLeft.getKeyCode()), GameSettings.getKeyDisplayString(gamesettings.keyBindBack.getKeyCode()), GameSettings.getKeyDisplayString(gamesettings.keyBindRight.getKeyCode())}));
++            	//Forge
++            	String msg1 = GameSettings.getKeyDisplayString(this.gameController.gameSettings.keyBindForward.getKeyCode());
++            	String msg2 = GameSettings.getKeyDisplayString(this.gameController.gameSettings.keyBindLeft.getKeyCode());
++            	String msg3 = GameSettings.getKeyDisplayString(this.gameController.gameSettings.keyBindBack.getKeyCode());
++            	String msg4 = GameSettings.getKeyDisplayString(this.gameController.gameSettings.keyBindRight.getKeyCode());
 +
-+        }
-+        
-+       
-+        
-     }
++            	if (Reflector.forgeExists()){
++            		msg1 = Reflector.callString(this.gameController.gameSettings.keyBindForward,
++            				Reflector.ForgeKeyBinding_getDisplayName);
++           		msg2 = Reflector.callString(this.gameController.gameSettings.keyBindLeft,
++        				Reflector.ForgeKeyBinding_getDisplayName);       
++           		msg3 = Reflector.callString(this.gameController.gameSettings.keyBindBack,
++                				Reflector.ForgeKeyBinding_getDisplayName);
++           		msg4 = Reflector.callString(this.gameController.gameSettings.keyBindRight,
++        				Reflector.ForgeKeyBinding_getDisplayName);
++            	}
++            	//
++            	
++                this.gameController.ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("demo.help.movement", new Object[] {msg1, msg2, msg3, msg4}));
+             }
+             else if (f == 102.0F)
+             {
+-                this.gameController.ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("demo.help.jump", new Object[] {GameSettings.getKeyDisplayString(gamesettings.keyBindJump.getKeyCode())}));
++            	String msg1 = GameSettings.getKeyDisplayString(this.gameController.gameSettings.keyBindJump.getKeyCode());
++            	if (Reflector.forgeExists())
++            		msg1 = Reflector.callString(this.gameController.gameSettings.keyBindJump,
++            				Reflector.ForgeKeyBinding_getDisplayName);
++                this.gameController.ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("demo.help.jump", new Object[] {msg1}));
+             }
+             else if (f == 103.0F)
+             {
+-                this.gameController.ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("demo.help.inventory", new Object[] {GameSettings.getKeyDisplayString(gamesettings.keyBindInventory.getKeyCode())}));
++            	String msg1 = GameSettings.getKeyDisplayString(this.gameController.gameSettings.keyBindInventory.getKeyCode());
++            	if (Reflector.forgeExists())
++            		msg1 = Reflector.callString(this.gameController.gameSettings.keyBindInventory,
++            				Reflector.ForgeKeyBinding_getDisplayName);
++                this.gameController.ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("demo.help.inventory", new Object[] {msg1}));
+             }
+         }
+         else if (i == 6)
+@@ -1525,7 +1619,7 @@
  
-     /**
-@@ -1928,6 +1968,50 @@
+         if (entity instanceof EntityLivingBase)
+         {
+-            Potion potion = Potion.getPotionById(packetIn.getEffectId());
++            Potion potion = Potion.getPotionById(packetIn.getEffectId() & 0xff); //Forge adds the and
+ 
+             if (potion != null)
+             {
+@@ -1928,6 +2022,109 @@
              String s1 = packetbuffer2.readStringFromBuffer(256);
              this.gameController.getSoundHandler().stop(s1, SoundCategory.getByName(s));
          }
@@ -90,22 +219,81 @@
 +        else if ("MC|ViveOK".equals(packetIn.getChannelName()))
 +        { //allowed, set to user preference.
 +        	this.gameController.vrPlayer.noTeleportClient = false;
-+            this.gameController.vrPlayer.setFreeMoveMode(Minecraft.getMinecraft().vrSettings.vrFreeMove);
++            this.gameController.vrPlayer.setFreeMove(Minecraft.getMinecraft().vrPlayer.getFreeMove());
 +        } 
 +        else if ("Vivecraft".equals(packetIn.getChannelName()))
 +        { 
 +        	PacketBuffer packetbuffer = packetIn.getBufferData(); 	
-+        	PacketDiscriminators dis = PacketDiscriminators.values()[packetbuffer.readByte()];
++        	byte db = packetbuffer.readByte();
++        	PacketDiscriminators dis = PacketDiscriminators.values()[db];
 +          			
 +        	switch (dis){
 +        	case VERSION:
 +        		String v = packetbuffer.readStringFromBuffer(1024);
 +        		this.gameController.vrPlayer.noTeleportClient = false;
-+        		this.gameController.vrPlayer.setFreeMoveMode(Minecraft.getMinecraft().vrSettings.vrFreeMove);
++        		this.gameController.vrPlayer.setFreeMove(Minecraft.getMinecraft().vrSettings.vrFreeMove);
 +        		this.gameController.printChatMessage("Vivecraft server mod detected: " + v);
 +        		break;
 +        	case REQUESTDATA:
 +        		NetworkHelper.serverWantsData = true;
++        		break;
++        	case CLIMBING:
++        		NetworkHelper.serverAllowsClimbey = true;
++        		if(packetbuffer.readableBytes() > 0){
++        			byte[] b = new byte[packetbuffer.readableBytes()];
++        			packetbuffer.readBytes(b);
++        			final ByteArrayInputStream byteArrayInputStream =
++        					new ByteArrayInputStream(b);
++        			ObjectInputStream objectInputStream = null;
++        			try {
++        				objectInputStream = new ObjectInputStream(byteArrayInputStream);
++        				Minecraft.getMinecraft().climbTracker.serverblockmode = objectInputStream.readByte();
++        				ArrayList<String> temp = (ArrayList<String>) objectInputStream.readObject();
++        				objectInputStream.close();	
++        				Minecraft.getMinecraft().climbTracker.blocklist.clear();
++        				for (String string : temp) {
++        					String[] parts = string.split(":");
++        					String id, data = null;
++        					if(parts.length == 1){
++        						id = string;
++        					} else if(parts.length ==2){
++        						id = parts[0];
++        						data = parts[1];
++        					} else {
++        						//wut
++        						continue;
++        					}
++
++        					if(data != null && !tryParseInt(data)){
++        						continue;
++        					}
++
++        					Block test;
++        					if(tryParseInt(id)){
++        						test = Block.getBlockById(Integer.parseInt(id));
++        					} else {
++        						test = Block.getBlockFromName(id);
++        					}
++
++        					if(test == null){
++        						continue;
++        					}
++        					BlockWithData bd = null;
++
++        					if(data == null)
++        						bd = new BlockWithData(test);
++        					else
++        						bd = new BlockWithData(test, Integer.parseInt(data));
++
++        					Minecraft.getMinecraft().climbTracker.blocklist.add(bd);
++        				}
++        			} catch (Exception e) {
++        				System.out.println("Something went amiss processing climbey blocks: " + e.getMessage());
++					}
++        		}
++        		break;
++        	case TELEPORT:
++        		NetworkHelper.serverSupportsDirectTeleport = true;
 +        		break;
 +        	case UBERPACKET:
 +        		Long hi = packetbuffer.readLong();
@@ -133,3 +321,16 @@
      }
  
      /**
+@@ -2198,4 +2395,12 @@
+     {
+         return this.profile;
+     }
++	boolean tryParseInt(String value) {  
++	     try {  
++	         Integer.parseInt(value);  
++	         return true;  
++	      } catch (NumberFormatException e) {  
++	         return false;  
++	      }  
++	}
+ }

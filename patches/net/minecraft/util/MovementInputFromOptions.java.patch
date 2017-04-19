@@ -9,17 +9,41 @@
  import net.minecraft.client.settings.GameSettings;
  
  public class MovementInputFromOptions extends MovementInput
-@@ -56,13 +59,22 @@
+@@ -15,8 +18,15 @@
+     {
+         this.moveStrafe = 0.0F;
+         this.moveForward = 0.0F;
+-
+-        if (this.gameSettings.keyBindForward.isKeyDown())
++        Minecraft mc = Minecraft.getMinecraft();
++        
++        boolean flag = false;
++        if(mc.climbTracker.isClimbeyClimb() &&
++        		!mc.player.isInWater() &&
++        		(mc.climbTracker.isGrabbingLadder())) 
++        	flag = true;
++        
++        if (!flag && this.gameSettings.keyBindForward.isKeyDown()) 
+         {
+             ++this.moveForward;
+             this.forwardKeyDown = true;
+@@ -56,13 +66,28 @@
              this.rightKeyDown = false;
          }
  
 -        this.jump = this.gameSettings.keyBindJump.isKeyDown();
 -        this.sneak = this.gameSettings.keyBindSneak.isKeyDown();
-+        boolean ok = Minecraft.getMinecraft().currentScreen==null;
++
++        boolean ok = mc.currentScreen==null && (mc.vrPlayer.getFreeMove() || mc.vrSettings.simulateFalling); 
 +        
 +        //VIVECRAFT DO ok.
-+        this.jump = this.gameSettings.keyBindJump.isKeyDown() && ok;
-+        this.sneak = (Minecraft.getMinecraft().sneakTracker.sneakOverride || this.gameSettings.keyBindSneak.isKeyDown()) && ok;
++       	this.jump = this.gameSettings.keyBindJump.isKeyDown() && ok;
++
++        if(mc.jumpTracker.isClimbeyJump()) this.jump = false;
++   	
++        if(this.gameSettings.keyBindJump.isKeyDown() == false) this.jump = false; 
++        
++        this.sneak = (Minecraft.getMinecraft().sneakTracker.sneakOverride || this.gameSettings.keyBindSneak.isKeyDown()) && mc.currentScreen==null ;
  
          if (this.sneak)
          {

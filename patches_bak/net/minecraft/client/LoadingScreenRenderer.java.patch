@@ -1,0 +1,15 @@
+--- a/net/minecraft/client/LoadingScreenRenderer.java
++++ b/net/minecraft/client/LoadingScreenRenderer.java
+@@ -194,8 +194,10 @@
+                 GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+                 this.mc.fontRendererObj.drawStringWithShadow(this.currentlyDisplayedText, (float)((k - this.mc.fontRendererObj.getStringWidth(this.currentlyDisplayedText)) / 2), (float)(l / 2 - 4 - 16), 16777215);
+                 this.mc.fontRendererObj.drawStringWithShadow(this.message, (float)((k - this.mc.fontRendererObj.getStringWidth(this.message)) / 2), (float)(l / 2 - 4 + 8), 16777215);
+-                this.framebuffer.unbindFramebuffer();
+-
++                
++                
++                this.mc.guiFramebuffer.bindFramebuffer(true);
++                
+                 if (OpenGlHelper.isFramebufferEnabled())
+                 {
+                     this.framebuffer.framebufferRender(k * j, l * j);

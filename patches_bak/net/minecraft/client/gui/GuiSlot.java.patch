@@ -1,0 +1,33 @@
+--- a/net/minecraft/client/gui/GuiSlot.java
++++ b/net/minecraft/client/gui/GuiSlot.java
+@@ -222,7 +222,11 @@
+     public void drawScreen(int mouseXIn, int mouseYIn, float partialTicks)
+     {
+         if (this.visible)
+-        {
++     {
++        	//VIVCRAFT
++        	 handleMouseInput();
++        	//END
++        	 
+             this.mouseX = mouseXIn;
+             this.mouseY = mouseYIn;
+             this.drawBackground();
+@@ -317,7 +321,7 @@
+     {
+         if (this.isMouseYWithinSlotBounds(this.mouseY))
+         {
+-            if (Mouse.getEventButton() == 0 && Mouse.getEventButtonState() && this.mouseY >= this.top && this.mouseY <= this.bottom)
++            if ((Mouse.getEventButton() == 0 && Mouse.getEventButtonState()) && this.mouseY >= this.top && this.mouseY <= this.bottom)
+             {
+                 int i = (this.width - this.getListWidth()) / 2;
+                 int j = (this.width + this.getListWidth()) / 2;
+@@ -335,7 +339,7 @@
+                 }
+             }
+ 
+-            if (Mouse.isButtonDown(0) && this.getEnabled())
++            if ((Mouse.isButtonDown(0)  || GuiScreen.mouseDown) && this.getEnabled())
+             {
+                 if (this.initialClickY == -1)
+                 {

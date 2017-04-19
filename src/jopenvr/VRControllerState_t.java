@@ -8,14 +8,11 @@ import java.util.List;
  * a tool written by <a href="http://ochafik.com/">Olivier Chafik</a> that <a href="http://code.google.com/p/jnaerator/wiki/CreditsAndLicense">uses a few opensource projects.</a>.<br>
  * For help, please visit <a href="http://nativelibs4java.googlecode.com/">NativeLibs4Java</a> , <a href="http://rococoa.dev.java.net/">Rococoa</a>, or <a href="http://jna.dev.java.net/">JNA</a>.
  */
-public class VRControllerState_t extends Structure {
+public class VRControllerState_t extends AlignedStructure {
 	public int unPacketNum;
 	public long ulButtonPressed;
 	public long ulButtonTouched;
-	/**
-	 * struct vr::VRControllerAxis_t[5]<br>
-	 * C type : VRControllerAxis_t[5]
-	 */
+	/** struct vr::VRControllerAxis_t[5] */
 	public VRControllerAxis_t[] rAxis = new VRControllerAxis_t[5];
 	public VRControllerState_t() {
 		super();
@@ -23,10 +20,6 @@ public class VRControllerState_t extends Structure {
 	protected List<? > getFieldOrder() {
 		return Arrays.asList("unPacketNum", "ulButtonPressed", "ulButtonTouched", "rAxis");
 	}
-	/**
-	 * @param rAxis struct vr::VRControllerAxis_t[5]<br>
-	 * C type : VRControllerAxis_t[5]
-	 */
 	public VRControllerState_t(int unPacketNum, long ulButtonPressed, long ulButtonTouched, VRControllerAxis_t rAxis[]) {
 		super();
 		this.unPacketNum = unPacketNum;

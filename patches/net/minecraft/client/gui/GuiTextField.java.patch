@@ -9,7 +9,20 @@
  import net.minecraft.client.renderer.GlStateManager;
  import net.minecraft.client.renderer.Tessellator;
  import net.minecraft.client.renderer.VertexBuffer;
-@@ -511,7 +513,13 @@
+@@ -16,9 +18,10 @@
+     public int xPosition;
+     public int yPosition;
+ 
++    //Forge make public
+     /** The width of this text field. */
+-    private final int width;
+-    private final int height;
++    public int width;
++    public int height;
+ 
+     /** Has the current text being edited on the textbox. */
+     private String text = "";
+@@ -511,7 +514,13 @@
          if (this.canLoseFocus)
          {
              this.setFocused(flag);
@@ -24,7 +37,7 @@
  
          if (this.isFocused && flag && mouseButton == 0)
          {
-@@ -717,6 +725,12 @@
+@@ -717,6 +726,12 @@
          }
  
          this.isFocused = isFocusedIn;

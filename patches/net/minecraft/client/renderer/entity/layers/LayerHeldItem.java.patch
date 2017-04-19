@@ -1,6 +1,31 @@
 --- a/net/minecraft/client/renderer/entity/layers/LayerHeldItem.java
 +++ b/net/minecraft/client/renderer/entity/layers/LayerHeldItem.java
-@@ -58,7 +58,7 @@
+@@ -1,13 +1,24 @@
+ package net.minecraft.client.renderer.entity.layers;
+ 
++import java.util.UUID;
++
++import com.mtbs3d.minecrift.render.PlayerModelController;
++import com.mtbs3d.minecrift.render.PlayerModelController.RotInfo;
++
+ import net.minecraft.client.Minecraft;
+ import net.minecraft.client.model.ModelBiped;
++import net.minecraft.client.model.ModelPlayer;
++import net.minecraft.client.model.ModelPlayerVR;
+ import net.minecraft.client.renderer.GlStateManager;
+ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+ import net.minecraft.client.renderer.entity.RenderLivingBase;
++import net.minecraft.client.renderer.entity.RenderPlayerVR;
+ import net.minecraft.entity.EntityLivingBase;
++import net.minecraft.entity.player.EntityPlayer;
++import net.minecraft.init.Items;
+ import net.minecraft.item.ItemStack;
+ import net.minecraft.util.EnumHandSide;
++import net.minecraft.util.math.Vec3d;
+ 
+ public class LayerHeldItem implements LayerRenderer<EntityLivingBase>
+ {
+@@ -58,7 +69,7 @@
              GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
              boolean flag = handSide == EnumHandSide.LEFT;
              GlStateManager.translate((float)(flag ? -1 : 1) / 16.0F, 0.125F, -0.625F);

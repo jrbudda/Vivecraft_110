@@ -3,6 +3,7 @@ package com.mtbs3d.minecrift.control;
 import java.awt.event.KeyEvent;
 
 import com.mtbs3d.minecrift.utils.KeyboardSimulator;
+import com.mtbs3d.minecrift.utils.MCReflection;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -13,6 +14,7 @@ public class VRControllerButtonMapping {
 	public String FunctionDesc = "none";
 	public char FunctionExt = 0;
 	public KeyBinding key;
+	private boolean unpress;
 	
 	public VRControllerButtonMapping(ViveButtons button, String function) {
 		this.Button = button;
@@ -23,11 +25,19 @@ public class VRControllerButtonMapping {
 	public String toString() {
 		return Button.toString() + ":" + FunctionDesc + ( FunctionExt !=0  ? "_" + FunctionExt:"");
 	};
+	
+	public void tick() {
+		if (this.unpress) {
+			actuallyUnpress();
+			this.unpress = false;
+		}
+	}
 
 	public void press(){	
+		this.unpress = false;
 		if(this.FunctionDesc.equals("none")) return;
 		if(key!=null){
-			key.pressKey();
+			pressKey(key);
 			return;
 		}
 		if(FunctionExt!=0){
@@ -53,9 +63,13 @@ public class VRControllerButtonMapping {
 	}
 	
 	public void unpress(){
+		this.unpress = true;
+	}
+	
+	private void actuallyUnpress() {
 		if(this.FunctionDesc.equals("none")) return;
 		if(key!=null) {
-			key.unpressKey();
+			 unpressKey(key);
 			return ;
 		}
 		if(FunctionExt!=0){
@@ -79,4 +93,20 @@ public class VRControllerButtonMapping {
 			return;
 		}
 	}
+	
+
+    public static void setKeyBindState(KeyBinding kb, boolean pressed) {
+        if (kb != null) {
+            MCReflection.setField(MCReflection.KeyBinding_pressed, kb, pressed); //kb.pressed = pressed;
+            MCReflection.setField(MCReflection.KeyBinding_pressTime, kb, (Integer)MCReflection.getField(MCReflection.KeyBinding_pressTime, kb) + 1); //++kb.pressTime;
+        }       
+    }
+    
+    public static void pressKey(KeyBinding kb) {
+    	setKeyBindState(kb, true);
+    }
+    
+    public static void unpressKey(KeyBinding kb) {
+    	MCReflection.invokeMethod(MCReflection.KeyBinding_unpressKey, kb);
+    }
 }

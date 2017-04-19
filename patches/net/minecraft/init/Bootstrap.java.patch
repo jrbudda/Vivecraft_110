@@ -1,0 +1,102 @@
+--- a/net/minecraft/init/Bootstrap.java
++++ b/net/minecraft/init/Bootstrap.java
+@@ -1,9 +1,11 @@
+ package net.minecraft.init;
+ 
+ import com.mojang.authlib.GameProfile;
++
+ import java.io.PrintStream;
+ import java.util.Random;
+ import java.util.UUID;
++
+ import net.minecraft.block.Block;
+ import net.minecraft.block.BlockDispenser;
+ import net.minecraft.block.BlockFire;
+@@ -13,6 +15,7 @@
+ import net.minecraft.block.BlockTNT;
+ import net.minecraft.block.material.Material;
+ import net.minecraft.block.state.IBlockState;
++import net.minecraft.creativetab.CreativeTabs;
+ import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
+ import net.minecraft.dispenser.BehaviorProjectileDispense;
+ import net.minecraft.dispenser.IBehaviorDispenseItem;
+@@ -39,25 +42,30 @@
+ import net.minecraft.item.ItemArmor;
+ import net.minecraft.item.ItemBucket;
+ import net.minecraft.item.ItemDye;
++import net.minecraft.item.ItemFoodWonder;
+ import net.minecraft.item.ItemMonsterPlacer;
+ import net.minecraft.item.ItemStack;
++import net.minecraft.item.crafting.CraftingManager;
+ import net.minecraft.nbt.NBTTagCompound;
+ import net.minecraft.nbt.NBTUtil;
+ import net.minecraft.potion.Potion;
+ import net.minecraft.potion.PotionHelper;
+ import net.minecraft.potion.PotionType;
++import net.minecraft.src.Reflector;
+ import net.minecraft.stats.StatList;
+ import net.minecraft.tileentity.TileEntity;
+ import net.minecraft.tileentity.TileEntityDispenser;
+ import net.minecraft.tileentity.TileEntitySkull;
+ import net.minecraft.util.EnumFacing;
+ import net.minecraft.util.LoggingPrintStream;
++import net.minecraft.util.ResourceLocation;
+ import net.minecraft.util.SoundCategory;
+ import net.minecraft.util.SoundEvent;
+ import net.minecraft.util.StringUtils;
+ import net.minecraft.util.math.BlockPos;
+ import net.minecraft.world.World;
+ import net.minecraft.world.biome.Biome;
++
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
+ 
+@@ -267,6 +275,11 @@
+         };
+         BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(Items.LAVA_BUCKET, ibehaviordispenseitem);
+         BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(Items.WATER_BUCKET, ibehaviordispenseitem);
++        if (Reflector.forgeExists()) {
++        	BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(Items.MILK_BUCKET, (IBehaviorDispenseItem)Reflector.call(Reflector.DispenseFluidContainer_getInstance));
++        	BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(Items.BUCKET, (IBehaviorDispenseItem)Reflector.call(Reflector.DispenseFluidContainer_getInstance));
++        }
++        else
+         BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(Items.BUCKET, new BehaviorDefaultDispenseItem()
+         {
+             private final BehaviorDefaultDispenseItem dispenseBehavior = new BehaviorDefaultDispenseItem();
+@@ -541,12 +554,36 @@
+             BlockFire.init();
+             Potion.registerPotions();
+             Enchantment.registerEnchantments();
++            
++            //VIVECRAFT Avoid edit to item.java, this has to be exactly here.
++            Item.REGISTRY.register(22000, new ResourceLocation("eatme_cake"), (new ItemFoodWonder(2, 0.3F, false).setAlwaysEdible()).setUnlocalizedName("eatme_cake").setCreativeTab(CreativeTabs.BREWING));
++            Item.REGISTRY.register(22001, new ResourceLocation("drinkme_bottle"), (new ItemFoodWonder(1, 0.3F, false).setAlwaysEdible()).setUnlocalizedName("drinkme_bottle").setCreativeTab(CreativeTabs.BREWING));
++               
+             Item.registerItems();
++            
++            //VIVECRAFT
++            ItemStack is = new ItemStack(Items.LEATHER_BOOTS);
++            is.setStackDisplayName("Jump Boots");
++            is.getTagCompound().setBoolean("Unbreakable", true);
++            is.getTagCompound().setInteger("HideFlags",4);
++
++            ItemStack is2 = new ItemStack(Items.SHEARS);
++            is2.setStackDisplayName("Climb Claws");
++            is2.getTagCompound().setBoolean("Unbreakable", true);
++            is2.getTagCompound().setInteger("HideFlags",4);
++
++            CraftingManager.getInstance().addRecipe(is, new Object[] {"B", "S", 'S',Blocks.SLIME_BLOCK, 'B', Items.LEATHER_BOOTS});
++            CraftingManager.getInstance().addRecipe(is2, new Object[] {"S S", "C C", 'S',Items.SPIDER_EYE, 'C', Items.SHEARS});
++            CraftingManager.getInstance().addShapelessRecipe(new ItemStack(Items.EATME_CAKE),  new Object[] { Items.CAKE, Items.GLOWSTONE_DUST });
++            CraftingManager.getInstance().addShapelessRecipe(new ItemStack(Items.DRIINKME_BOTTLE),  new Object[] {Items.GLASS_BOTTLE, Items.WATER_BUCKET,Items.GLOWSTONE_DUST });
++            //
++            
+             PotionType.registerPotionTypes();
+             PotionHelper.init();
+             StatList.init();
+             Biome.registerBiomes();
+             registerDispenserBehaviors();
++            Reflector.callVoid(Reflector.GameData_vanillaSnapshot);
+         }
+     }
+ 

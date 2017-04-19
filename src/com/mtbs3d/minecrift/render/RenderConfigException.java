@@ -12,4 +12,9 @@ public class RenderConfigException extends Exception {
         this.title = title;
         this.error = error;
     }
+
+    public String toString(){
+		return error;   	
+    }
+    
 }

@@ -394,7 +394,7 @@ field_145823_b,activatorRailCooldown,2,Cooldown before command block logic runs 
 field_145824_a,commandBlockLogic,2,
 field_145846_f,tileEntityInvalid,2,
 field_145847_g,blockMetadata,2,
-field_145850_b,worldObj,2,the instance of the world the tile entity is in.
+field_145850_b,world,2,the instance of the world the tile entity is in.
 field_145852_a,LOGGER,2,
 field_145853_j,classToNameMap,2,A HashMap storing the classes and mapping to the string names (reverse of nameToClassMap).
 field_145854_h,blockType,2,the Block type that this TileEntity is contained within
@@ -1013,7 +1013,7 @@ field_147536_b,instance,0,
 field_147537_c,SKELETON_TEXTURES,0,
 field_147540_b,TEXTURE_BOOK,0,The texture for the book above the enchantment table.
 field_147541_c,modelBook,0,
-field_147550_f,worldObj,0,
+field_147550_f,world,0,
 field_147551_g,entity,0,
 field_147552_d,staticPlayerZ,0,The player's current Z position (same as playerZ)
 field_147553_e,renderEngine,0,
@@ -5239,7 +5239,7 @@ field_185991_j,minLimitPerlinNoise,2,
 field_185992_k,maxLimitPerlinNoise,2,
 field_185993_l,mainPerlinNoise,2,
 field_185994_m,surfaceNoise,2,
-field_185995_n,worldObj,2,
+field_185995_n,world,2,
 field_185996_o,mapFeaturesEnabled,2,
 field_185997_p,terrainType,2,
 field_185998_q,heightMap,2,
@@ -5459,14 +5459,14 @@ field_186456_d,bonusRolls,2,
 field_186464_a,EMPTY_LOOT_TABLE,2,
 field_186465_b,LOGGER,2,
 field_186466_c,pools,2,
-field_186474_a,worldObj,2,
+field_186474_a,world,2,
 field_186475_b,luck,2,
 field_186476_c,lootedEntity,2,
 field_186477_d,player,2,
 field_186478_e,damageSource,2,
 field_186488_d,targetType,2,
 field_186498_a,luck,2,
-field_186499_b,worldObj,2,
+field_186499_b,world,2,
 field_186500_c,lootTableManager,2,
 field_186501_d,lootedEntity,2,
 field_186502_e,player,2,
@@ -5659,7 +5659,7 @@ field_187107_a,playerTextures,0,
 field_187119_C,particleTexture,0,
 field_187120_G,boundingBox,0,
 field_187121_a,EMPTY_AABB,0,
-field_187122_b,worldObj,0,
+field_187122_b,world,0,
 field_187123_c,prevPosX,0,
 field_187124_d,prevPosY,0,
 field_187125_e,prevPosZ,0,
@@ -6674,7 +6674,7 @@ field_70165_t,posX,2,Entity position X
 field_70166_s,prevPosZ,2,
 field_70167_r,prevPosY,2,
 field_70169_q,prevPosX,2,
-field_70170_p,worldObj,2,Reference to the World object.
+field_70170_p,world,2,Reference to the World object.
 field_70171_ac,inWater,2,Whether this entity is currently inside of water (if it handles water movement that is)
 field_70172_ad,hurtResistantTime,2,"Remaining time an entity will be ""immune"" to further damage after being hurt."
 field_70173_aa,ticksExisted,2,How many ticks has this entity had ran since being alive
@@ -6734,7 +6734,7 @@ field_70467_a,stackResult,2,A list of one item containing the result of the craf
 field_70472_d,currentRecipe,2,
 field_70473_e,currentRecipeIndex,2,
 field_70474_b,theInventory,2,
-field_70475_c,thePlayer,2,
+field_70475_c,player,2,
 field_70476_a,theMerchant,2,
 field_70477_b,upperChest,2,Inventory object corresponding to double chest upper part
 field_70478_c,lowerChest,2,Inventory object corresponding to double chest lower part
@@ -7040,7 +7040,7 @@ field_71345_q,lanServerPing,0,
 field_71346_p,isPublic,0,
 field_71348_o,isGamePaused,0,
 field_71349_l,mc,0,The Minecraft instance.
-field_71350_m,theWorldSettings,0,
+field_71350_m,worldSettings,0,
 field_71412_D,mcDataDir,0,
 field_71415_G,inGameHasFocus,0,Does the actual gameplay have focus. If so then mouse and keys will effect the player instead of menus.
 field_71417_B,mouseHelper,0,Mouse helper instance.
@@ -7063,9 +7063,9 @@ field_71435_Y,tempDisplayHeight,0,Display height
 field_71436_X,tempDisplayWidth,0,Display width
 field_71437_Z,theIntegratedServer,0,Instance of IntegratedServer.
 field_71438_f,renderGlobal,0,
-field_71439_g,thePlayer,0,
+field_71439_g,player,0,
 field_71440_d,displayHeight,0,
-field_71441_e,theWorld,0,
+field_71441_e,world,0,
 field_71442_b,playerController,0,
 field_71443_c,displayWidth,0,
 field_71444_a,memoryReserve,0,A 10MiB preallocation to ensure the heap is reasonably sized.
@@ -7173,7 +7173,7 @@ field_72697_d,playerInstancesToUpdate,2,the playerInstances(chunks) that need to
 field_72698_e,playerViewRadius,2,Number of chunks the server sends to the client. Valid 3<=x<=15. In server.properties.
 field_72699_b,players,2,players in the current instance
 field_72700_c,playerInstances,2,the hash of all playerInstances created
-field_72701_a,theWorldServer,2,
+field_72701_a,worldServer,2,
 field_72738_E,damagedBlocks,0,Stores blocks currently being broken. Key is entity ID of the thing doing the breaking. Value is a DestroyBlockProgress
 field_72739_F,renderDistanceChunks,0,
 field_72740_G,renderEntitiesStartupCounter,0,Render entities startup counter (init value=2)
@@ -7181,21 +7181,21 @@ field_72748_H,countEntitiesTotal,0,Count entities total
 field_72749_I,countEntitiesRendered,0,Count entities rendered
 field_72750_J,countEntitiesHidden,0,Count entities hidden
 field_72755_R,renderInfos,0,List of OpenGL lists for the current render pass
-field_72769_h,theWorld,0,
+field_72769_h,world,0,
 field_72770_i,renderEngine,0,The RenderEngine instance used by RenderGlobal
 field_72771_w,glSkyList,0,OpenGL sky list
 field_72772_v,starGLCallList,0,The star GL Call list
 field_72773_u,cloudTickCounter,0,counts the cloud render updates. Used with mod to stagger some updates
 field_72777_q,mc,0,A reference to the Minecraft object.
 field_72781_x,glSkyList2,0,OpenGL sky list 2
-field_72782_b,theWorldServer,2,The WorldServer object.
+field_72782_b,worldServer,2,The WorldServer object.
 field_72783_a,mcServer,2,Reference to the MinecraftServer object.
 field_72792_d,maxTrackingDistanceThreshold,2,
 field_72793_b,trackedEntities,2,"List of tracked entities, used for iteration operations on tracked entities."
 field_72794_c,trackedEntityHashTable,2,Used for identity lookup of tracked entities.
-field_72795_a,theWorld,2,
+field_72795_a,world,2,
 field_72814_d,hasExtendedLevels,2,set by !chunk.getAreLevelsEmpty
-field_72815_e,worldObj,2,Reference to the World object.
+field_72815_e,world,2,Reference to the World object.
 field_72816_b,chunkZ,2,
 field_72817_c,chunkArray,2,
 field_72818_a,chunkX,2,
@@ -7236,7 +7236,7 @@ field_73038_N,previousActiveChunkSet,0,
 field_73058_d,disableLevelSaving,2,Whether level saving is disabled or not
 field_73061_a,mcServer,2,
 field_73062_L,theEntityTracker,2,The entity tracker for this server world.
-field_73063_M,thePlayerManager,2,The player chunk map for this server world.
+field_73063_M,playerManager,2,The player chunk map for this server world.
 field_73064_N,pendingTickListEntriesHashSet,2,
 field_73065_O,pendingTickListEntriesTreeSet,2,All work to do in future ticks.
 field_73068_P,allPlayersSleeping,2,is false if there are no players
@@ -7246,7 +7246,7 @@ field_73088_d,isDestroyingBlock,2,True if the player is destroying a block
 field_73089_e,initialDamage,2,
 field_73090_b,thisPlayerMP,2,The EntityPlayerMP object that this object is connected to.
 field_73091_c,gameType,2,
-field_73092_a,theWorld,2,The world object that this object is connected to.
+field_73092_a,world,2,The world object that this object is connected to.
 field_73093_n,initialBlockDamage,2,
 field_73094_o,durabilityRemainingOnBlock,2,
 field_73097_j,receivedFinishDiggingPacket,2,"Set to true when the ""finished destroying block"" packet is received but the block wasn't fully damaged yet. The block will not be destroyed while this is false."
@@ -7280,7 +7280,7 @@ field_73145_r,lastTrackedEntityPosZ,2,
 field_73146_q,lastTrackedEntityPosY,2,
 field_73147_p,lastTrackedEntityPosX,2,
 field_73161_b,random,2,
-field_73163_a,worldObj,2,
+field_73163_a,world,2,
 field_73168_g,noiseData4,2,
 field_73172_c,genNetherBridge,2,
 field_73174_n,netherrackExculsivityNoiseGen,2,Determines whether something other than nettherack can be generated at a location
@@ -7291,15 +7291,15 @@ field_73212_b,noiseGen6,2,A NoiseGeneratorOctaves used in generating terrain
 field_73214_a,noiseGen5,2,A NoiseGeneratorOctaves used in generating terrain
 field_73220_k,rand,2,RNG.
 field_73229_q,mapFeaturesEnabled,2,are map structures going to be generated (e.g. strongholds)
-field_73230_p,worldObj,2,Reference to the World object.
+field_73230_p,world,2,Reference to the World object.
 field_73231_z,biomesForGeneration,2,The biomes that are used to generate the chunk
-field_73235_d,worldObj,0,Reference to the World object.
+field_73235_d,world,0,Reference to the World object.
 field_73236_b,chunkMapping,0,The mapping between ChunkCoordinates and Chunks that ChunkProviderClient maintains.
 field_73238_a,blankChunk,0,The completely empty chunk used by ChunkProviderClient when chunkMapping doesn't contain the requested coordinates.
 field_73244_f,id2ChunkMap,2,map of chunk Id's to Chunk instances
 field_73247_e,chunkLoader,2,
 field_73248_b,droppedChunksSet,2,
-field_73251_h,worldObj,2,
+field_73251_h,world,2,
 field_73672_b,serverProperties,1,The server properties object.
 field_73673_c,serverPropertiesFile,1,The server properties file.
 field_73692_f,banEndDate,2,
@@ -7480,7 +7480,7 @@ field_75025_b,strongholdPortalRoom,2,
 field_75026_c,pendingChildren,2,
 field_75027_a,strongholdPieceWeight,2,
 field_75038_b,rand,2,The RNG used by the MapGen classes.
-field_75039_c,worldObj,2,This world object.
+field_75039_c,world,2,This world object.
 field_75040_a,range,2,The number of Chunks to gen-check in any given direction.
 field_75046_d,rs,2,
 field_75053_d,structureMap,2,"Used to store a list of all structures that have been recursively generated. Used so that during recursive generation, the structure generator can avoid generating structures that intersect ones that have already been placed."
@@ -7519,14 +7519,14 @@ field_75154_f,numRows,2,
 field_75155_e,lowerChestInventory,2,
 field_75158_e,tileFurnace,2,
 field_75160_f,craftResult,2,
-field_75161_g,worldObj,2,
+field_75161_g,world,2,
 field_75162_e,craftMatrix,2,The crafting matrix inventory (3x3).
 field_75167_g,enchantLevels,2,3-member array storing the enchantment levels of each slot
 field_75168_e,tableInventory,2,SlotEnchantmentTable object with ItemStack to be enchanted
 field_75169_l,rand,2,
 field_75172_h,worldPointer,2,current world (for bookshelf counting)
 field_75176_f,merchantInventory,2,
-field_75177_g,theWorld,2,Instance of World.
+field_75177_g,world,2,Instance of World.
 field_75178_e,theMerchant,2,Instance of Merchant.
 field_75179_f,craftResult,2,
 field_75180_g,isLocalWorld,2,Determines if inventory manipulation should be handled.
@@ -7548,13 +7548,13 @@ field_75223_e,xDisplayPosition,2,display position of the inventory slot on the s
 field_75224_c,inventory,2,The inventory we want to extract a slot from.
 field_75225_a,slotIndex,2,The index of the slot in the inventory.
 field_75228_b,removeCount,2,
-field_75229_a,thePlayer,2,The player that is using the GUI where this slot resides.
+field_75229_a,player,2,The player that is using the GUI where this slot resides.
 field_75231_g,removeCount,2,
-field_75232_b,thePlayer,2,The Player whos trying to buy/sell stuff.
+field_75232_b,player,2,The Player whos trying to buy/sell stuff.
 field_75233_a,theMerchantInventory,2,Merchant's inventory.
 field_75234_h,theMerchant,2,"""Instance"" of the Merchant."
 field_75237_g,amountCrafted,2,The number of items that have been crafted so far. Gets passed to ItemStack.onCrafting before being reset.
-field_75238_b,thePlayer,2,The player that is using the GUI where this slot resides.
+field_75238_b,player,2,The player that is using the GUI where this slot resides.
 field_75239_a,craftMatrix,2,The craft matrix inventory linked to this result slot.
 field_75244_a,player,2,The player that has this container open.
 field_75254_a,mutexBits,2,"A bitmask telling which other tasks may not run concurrently. The test is a simple bitwise AND - if it yields zero, the two tasks may run concurrently, if not - they must run exclusively from each other."
@@ -7634,7 +7634,7 @@ field_75338_d,thePet,2,
 field_75339_e,theOwner,2,
 field_75340_b,maxDist,2,
 field_75341_c,minDist,2,
-field_75342_a,theWorld,2,
+field_75342_a,world,2,
 field_75343_h,timeToRecalcPath,2,
 field_75344_i,oldWaterCost,2,
 field_75345_d,delayCounter,2,
@@ -7649,7 +7649,7 @@ field_75358_j,previousBreakProgress,2,
 field_75359_i,breakingTime,2,
 field_75360_j,closeDoorTemporisation,2,"The temporisation before the entity close the door (in ticks, always 20 = 1 second)"
 field_75361_i,closeDoor,2,If the entity close the door
-field_75367_f,theWorld,2,
+field_75367_f,world,2,
 field_75368_d,shelterZ,2,
 field_75369_e,movementSpeed,2,
 field_75370_b,shelterX,2,
@@ -7664,21 +7664,21 @@ field_75379_c,nearSpeed,2,
 field_75380_a,theEntity,2,The entity we are attached to
 field_75383_d,minPlayerDistance,2,
 field_75384_e,timeoutCounter,2,
-field_75385_b,thePlayer,2,
-field_75386_c,worldObject,2,
+field_75385_b,player,2,
+field_75386_c,worldect,2,
 field_75387_a,theWolf,2,
 field_75390_d,theAnimal,2,
 field_75391_e,targetMate,2,
 field_75392_b,spawnBabyDelay,2,Delay preventing a baby from spawning immediately when two mate-able animals find each other.
 field_75393_c,moveSpeed,2,The speed the creature moves at during mating behavior.
-field_75394_a,theWorld,2,
+field_75394_a,world,2,
 field_75395_b,theVillager,2,
 field_75396_c,lookTime,2,
 field_75397_a,theGolem,2,
 field_75408_d,attackCountdown,2,
 field_75409_b,theEntity,2,
 field_75410_c,theVictim,2,
-field_75411_a,theWorld,2,
+field_75411_a,world,2,
 field_75415_f,doorList,2,
 field_75416_d,doorInfo,2,
 field_75417_e,isNocturnal,2,
@@ -7706,9 +7706,9 @@ field_75438_g,entityPathEntity,2,The PathEntity of our entity.
 field_75439_d,attackTick,2,An amount of decrementing ticks that allows the entity to attack once the tick reaches 0.
 field_75440_e,speedTowardsTarget,2,The speed with which the mob will approach the target
 field_75441_b,attacker,2,
-field_75443_a,worldObj,2,
+field_75443_a,world,2,
 field_75445_i,delayCounter,2,
-field_75448_d,worldObj,2,
+field_75448_d,world,2,
 field_75449_e,matingTimeout,2,
 field_75450_b,villagerObj,2,
 field_75451_c,mate,2,
@@ -7726,7 +7726,7 @@ field_75482_h,doorOpeningRestrictionCounter,2,
 field_75510_g,totalTicks,2,"Time, in number of ticks, following the current path"
 field_75511_d,speed,2,
 field_75512_e,pathSearchRange,2,The number of blocks (extra) +/- in each axis that get pulled out as cache for the pathfinder's search space
-field_75513_b,worldObj,2,
+field_75513_b,world,2,
 field_75514_c,currentPath,2,The PathEntity being followed.
 field_75515_a,theEntity,2,
 field_75520_h,ticksAtLastPos,2,The time when the last position check was done (to detect successful movement)
@@ -7740,21 +7740,21 @@ field_75533_d,siegeCount,2,
 field_75534_e,nextSpawnTime,2,
 field_75535_b,hasSetupSiege,2,
 field_75536_c,siegeState,2,
-field_75537_a,worldObj,2,
+field_75537_a,world,2,
 field_75538_h,spawnY,2,
 field_75539_i,spawnZ,2,
 field_75552_d,villageList,2,
 field_75553_e,tickCounter,2,
 field_75554_b,villagerPositionsList,2,"This is a black hole. You can add data to this list through a public interface, but you can't query that information in any way and it's not used internally either."
 field_75555_c,newDoors,2,
-field_75556_a,worldObj,2,
+field_75556_a,world,2,
 field_75580_f,lastAddDoorTimestamp,2,
 field_75581_g,tickCounter,2,
 field_75582_d,center,2,This is the actual village center.
 field_75583_e,villageRadius,2,
 field_75584_b,villageDoorInfoList,2,list of VillageDoorInfo objects
 field_75585_c,centerHelper,2,This is the sum of all door coordinates and used to calculate the actual village center by dividing by the number of doors.
-field_75586_a,worldObj,2,
+field_75586_a,world,2,
 field_75587_j,numIronGolems,2,
 field_75588_h,numVillagers,2,
 field_75589_i,villageAgressors,2,
@@ -7914,7 +7914,7 @@ field_76111_s,hardcore,2,Hardcore mode flag
 field_76112_r,mapFeaturesEnabled,2,Whether the map features (e.g. strongholds) generation is enabled or disabled.
 field_76113_q,theGameType,2,The Game Type.
 field_76114_p,thunderTime,2,Number of ticks untils next thunderbolt.
-field_76115_a,theWorldInfo,2,Instance of WorldInfo.
+field_76115_a,worldInfo,2,Instance of WorldInfo.
 field_76117_a,internalMap,2,
 field_76144_a,SIN_TABLE,2,"A table of sin values computed from 0 (inclusive) to 2*pi (exclusive), with steps of 2*PI / 65536."
 field_76189_a,dirty,2,Whether this MapDataBase needs saving to disk.
@@ -8046,13 +8046,13 @@ field_76575_d,isHellWorld,2,States whether the Hell world provider is used(true)
 field_76576_e,hasNoSky,2,A boolean that tells if a world does not have a sky. Used in calculating weather and skylight
 field_76577_b,terrainType,2,
 field_76578_c,biomeProvider,2,World chunk manager being used to generate chunks
-field_76579_a,worldObj,2,world object being used
+field_76579_a,world,2,world object being used
 field_76580_h,colorsSunriseSunset,2,Array for sunrise/sunset colors (RGBA)
 field_76585_a,data,2,Byte array of data stored in this holder. Possibly a light map or some chunk data. Data is accessed in 4-bit pieces.
 field_76634_f,heightMap,2,
 field_76635_g,xPosition,2,The x coordinate of the chunk.
 field_76636_d,isChunkLoaded,2,Whether or not this Chunk is currently loaded into the World
-field_76637_e,worldObj,2,Reference to the World object.
+field_76637_e,world,2,Reference to the World object.
 field_76638_b,precipitationHeightMap,2,"A map, similar to heightMap, that tracks how far down precipitation can fall."
 field_76639_c,updateSkylightColumns,2,Which columns need their skylightMaps updated.
 field_76641_n,lastSaveTime,2,The time according to World.worldTime when this chunk was last saved
@@ -8223,7 +8223,7 @@ field_77283_e,exploder,2,
 field_77284_b,explosionX,2,
 field_77285_c,explosionY,2,
 field_77286_a,isFlaming,2,whether or not the explosion sets fire to blocks around it
-field_77287_j,worldObj,2,
+field_77287_j,world,2,
 field_77288_k,playerKnockbackMap,2,"Maps players to the knockback vector applied by the explosion, to send to the client"
 field_77290_i,explosionRNG,2,
 field_77329_d,FIRE_PROTECTION,2,Protection against fire
@@ -8557,7 +8557,7 @@ field_78561_f,projectionMatrixBuffer,0,
 field_78562_g,modelviewMatrixBuffer,0,
 field_78563_e,instance,0,
 field_78564_h,floatBuffer16,0,
-field_78722_g,worldObj,0,Reference to the World object.
+field_78722_g,world,0,Reference to the World object.
 field_78723_d,renderPosZ,0,
 field_78724_e,renderEngine,0,
 field_78725_b,renderPosX,0,
@@ -8621,7 +8621,7 @@ field_78866_a,ipAddress,0,
 field_78875_d,rand,0,RNG.
 field_78876_b,fxLayers,0,
 field_78877_c,renderer,0,
-field_78878_a,worldObj,0,Reference to the World object.
+field_78878_a,world,0,Reference to the World object.
 field_78892_f,maxZ,2,The second z coordinate of a bounding box.
 field_78893_d,maxX,2,The second x coordinate of a bounding box.
 field_78894_e,maxY,2,The second y coordinate of a bounding box.
@@ -8679,7 +8679,7 @@ field_82578_b,NBT_TYPES,2,
 field_82596_a,registryObjects,2,Objects registered on this registry.
 field_82597_b,defaultObject,2,"Default object for this registry, returned when an object is not found."
 field_82609_l,VALUES,2,All facings in D-U-N-S-W-E order
-field_82627_a,worldObj,2,
+field_82627_a,world,2,
 field_82628_b,y,2,
 field_82629_c,z,2,
 field_82630_a,x,2,
@@ -8745,11 +8745,11 @@ field_82843_f,itemFrame,2,"Item frame this stack is on, or null if not on an ite
 field_82852_f,outputSlot,2,Here comes out item you merged and/or renamed.
 field_82853_g,inputSlots,2,The 2slots where you put your items in that you want to merge and/or rename.
 field_82854_e,maximumCost,2,The maximum cost of repairing/renaming in the anvil.
-field_82855_n,thePlayer,2,The player that has this container open.
+field_82855_n,player,2,The player that has this container open.
 field_82856_l,materialCost,2,determined by damage of input item and stackSize of repair materials
 field_82857_m,repairedItemName,2,
-field_82860_h,theWorld,2,
-field_82862_h,thePlayer,2,
+field_82860_h,world,2,
+field_82862_h,player,2,
 field_82864_f,beaconSlot,2,"This beacon's slot where you put in Emerald, Diamond, Gold or Iron Ingot."
 field_82866_e,tileBeacon,2,
 field_82881_y,pauseOnLostFocus,0,"Whether to pause when the game loses focus, toggled by F3+P"
@@ -8775,7 +8775,7 @@ field_82908_p,offsetY,0,
 field_82912_p,heightMapMinimum,2,Lowest value in the heightmap.
 field_82913_c,generatorSettings,2,
 field_82914_M,spawnableCaveCreatureList,2,
-field_82915_S,theWorldGenerator,2,
+field_82915_S,worldGenerator,2,
 field_83001_bt,invulnerable,2,
 field_83002_am,debugCrashKeyPressTime,0,"Keeps track of how long the debug crash keycombo (F3+C) has been pressed for, in order to crash after 10 seconds."
 field_83016_L,theCalendar,2,

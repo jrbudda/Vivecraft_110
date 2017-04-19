@@ -1,14 +1,40 @@
 --- a/net/minecraft/client/renderer/RenderGlobal.java
 +++ b/net/minecraft/client/renderer/RenderGlobal.java
-@@ -4,6 +4,7 @@
+@@ -4,7 +4,9 @@
  import com.google.common.collect.Maps;
  import com.google.common.collect.Sets;
  import com.google.gson.JsonSyntaxException;
 +
  import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
++
  import java.io.IOException;
  import java.lang.reflect.Field;
-@@ -202,7 +203,7 @@
+ import java.util.ArrayDeque;
+@@ -20,7 +22,9 @@
+ import java.util.Map;
+ import java.util.Random;
+ import java.util.Set;
++
+ import javax.annotation.Nullable;
++
+ import net.minecraft.block.Block;
+ import net.minecraft.block.BlockChest;
+ import net.minecraft.block.BlockEnderChest;
+@@ -106,11 +110,13 @@
+ import net.minecraft.world.border.WorldBorder;
+ import net.minecraft.world.chunk.Chunk;
+ import net.minecraft.world.chunk.IChunkProvider;
++
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
+ import org.lwjgl.input.Keyboard;
+ import org.lwjgl.util.vector.Vector3f;
+ import org.lwjgl.util.vector.Vector4f;
++
+ import shadersmod.client.Shaders;
+ import shadersmod.client.ShadersRender;
+ 
+@@ -202,7 +208,7 @@
      public Set chunksToResortTransparency = new LinkedHashSet();
      public Set chunksToUpdateForced = new LinkedHashSet();
      private Deque visibilityDeque = new ArrayDeque();
@@ -17,18 +43,52 @@
      private List<ContainerLocalRenderInformation> renderInfosTileEntities = new ArrayList(1024);
      private List renderInfosNormal = new ArrayList(1024);
      private List renderInfosEntitiesNormal = new ArrayList(1024);
-@@ -740,7 +741,9 @@
-                             if (flag2)
+@@ -389,7 +395,7 @@
+         }
+     }
+ 
+-    private void renderSky(VertexBuffer worldRendererIn, float posY, boolean reverseX)
++    public void renderSky(VertexBuffer worldRendererIn, float posY, boolean reverseX)
+     {
+         int i = 64;
+         int j = 6;
+@@ -452,7 +458,7 @@
+         }
+     }
+ 
+-    private void renderStars(VertexBuffer worldRendererIn)
++    public void renderStars(VertexBuffer worldRendererIn)
+     {
+         Random random = new Random(10842L);
+         worldRendererIn.begin(7, DefaultVertexFormats.POSITION);
+@@ -641,7 +647,7 @@
+ 
+         if (Reflector.MinecraftForgeClient_getRenderPass.exists())
+         {
+-            i = Reflector.callInt(Reflector.MinecraftForgeClient_getRenderPass, new Object[0]);
++            i = Reflector.callInt(Reflector.MinecraftForgeClient_getRenderPass);
+         }
+ 
+         if (this.renderEntitiesStartupCounter > 0)
+@@ -741,6 +747,8 @@
                              {
                                  boolean flag3 = this.mc.getRenderViewEntity() instanceof EntityLivingBase ? ((EntityLivingBase)this.mc.getRenderViewEntity()).isPlayerSleeping() : false;
--
-+                                		
-+                                flag3=false;//VIVE 
+ 
++                                flag3 =false; //VIVE -wat is this.
 +                                
-                                 if ((entity2 != this.mc.getRenderViewEntity() || this.mc.gameSettings.thirdPersonView != 0 || flag3) && (entity2.posY < 0.0D || entity2.posY >= 256.0D || this.theWorld.isBlockLoaded(blockpos$pooledmutableblockpos.setPos(entity2))))
+                                 if ((entity2 != this.mc.getRenderViewEntity() || this.mc.gameSettings.thirdPersonView != 0 || flag3) && (entity2.posY < 0.0D || entity2.posY >= 256.0D || this.world.isBlockLoaded(blockpos$pooledmutableblockpos.setPos(entity2))))
                                  {
                                      ++this.countEntitiesRendered;
-@@ -1118,15 +1121,18 @@
+@@ -917,7 +925,7 @@
+ 
+                             if (Reflector.callBoolean(tileentity1, Reflector.ForgeTileEntity_shouldRenderInPass, new Object[] {Integer.valueOf(i)}))
+                             {
+-                                AxisAlignedBB axisalignedbb = (AxisAlignedBB)Reflector.call(tileentity1, Reflector.ForgeTileEntity_getRenderBoundingBox, new Object[0]);
++                                AxisAlignedBB axisalignedbb = (AxisAlignedBB)Reflector.call(tileentity1, Reflector.ForgeTileEntity_getRenderBoundingBox);
+ 
+                                 if (axisalignedbb == null || camera.isBoundingBoxInFrustum(axisalignedbb))
+                                 {
+@@ -1118,10 +1126,12 @@
          }
  
          this.mc.mcProfiler.endStartSection("culling");
@@ -36,19 +96,15 @@
 +        //VIVE NO EYEHEIGHT
 +        BlockPos blockpos2 = new BlockPos(d3, d4, d5);
          RenderChunk renderchunk = this.viewFrustum.getRenderChunk(blockpos2);
-         new BlockPos(MathHelper.floor_double(d3 / 16.0D) * 16, MathHelper.floor_double(d4 / 16.0D) * 16, MathHelper.floor_double(d5 / 16.0D) * 16);
-         this.displayListEntitiesDirty = this.displayListEntitiesDirty || !this.chunksToUpdate.isEmpty() || viewEntity.posX != this.lastViewEntityX || viewEntity.posY != this.lastViewEntityY || viewEntity.posZ != this.lastViewEntityZ || (double)viewEntity.rotationPitch != this.lastViewEntityPitch || (double)viewEntity.rotationYaw != this.lastViewEntityYaw;
+-        new BlockPos(MathHelper.floor_double(d3 / 16.0D) * 16, MathHelper.floor_double(d4 / 16.0D) * 16, MathHelper.floor_double(d5 / 16.0D) * 16);
+-        this.displayListEntitiesDirty = this.displayListEntitiesDirty || !this.chunksToUpdate.isEmpty() || viewEntity.posX != this.lastViewEntityX || viewEntity.posY != this.lastViewEntityY || viewEntity.posZ != this.lastViewEntityZ || (double)viewEntity.rotationPitch != this.lastViewEntityPitch || (double)viewEntity.rotationYaw != this.lastViewEntityYaw;
++        new BlockPos(MathHelper.floor(d3 / 16.0D) * 16, MathHelper.floor(d4 / 16.0D) * 16, MathHelper.floor(d5 / 16.0D) * 16);
++        // VIVE FIX CULLING ISSUES WITH MIRROR
++        this.displayListEntitiesDirty = true; //this.displayListEntitiesDirty || !this.chunksToUpdate.isEmpty() || viewEntity.posX != this.lastViewEntityX || viewEntity.posY != this.lastViewEntityY || viewEntity.posZ != this.lastViewEntityZ || (double)viewEntity.rotationPitch != this.lastViewEntityPitch || (double)viewEntity.rotationYaw != this.lastViewEntityYaw;
          this.lastViewEntityX = viewEntity.posX;
          this.lastViewEntityY = viewEntity.posY;
          this.lastViewEntityZ = viewEntity.posZ;
-+        
-         this.lastViewEntityPitch = (double)viewEntity.rotationPitch;
-         this.lastViewEntityYaw = (double)viewEntity.rotationYaw;
-+        
-         boolean flag = this.debugFixedClippingHelper != null;
-         this.mc.mcProfiler.endStartSection("update");
-         Lagometer.timerVisibility.start();
-@@ -1206,8 +1212,11 @@
+@@ -1206,8 +1216,11 @@
  
                  if (set1.size() == 1)
                  {
@@ -62,47 +118,34 @@
                      set1.remove(enumfacing);
                  }
  
-@@ -1450,22 +1459,22 @@
+@@ -1450,6 +1463,7 @@
          }
      }
  
--    protected Vector3f getViewVector(Entity entityIn, double partialTicks)
--    {
--        float f = (float)((double)entityIn.prevRotationPitch + (double)(entityIn.rotationPitch - entityIn.prevRotationPitch) * partialTicks);
--        float f1 = (float)((double)entityIn.prevRotationYaw + (double)(entityIn.rotationYaw - entityIn.prevRotationYaw) * partialTicks);
--
--        if (Minecraft.getMinecraft().gameSettings.thirdPersonView == 2)
--        {
--            f += 180.0F;
--        }
--
--        float f2 = MathHelper.cos(-f1 * 0.017453292F - (float)Math.PI);
--        float f3 = MathHelper.sin(-f1 * 0.017453292F - (float)Math.PI);
--        float f4 = -MathHelper.cos(-f * 0.017453292F);
--        float f5 = MathHelper.sin(-f * 0.017453292F);
--        return new Vector3f(f3 * f4, f5, f2 * f4);
++    //unused
+     protected Vector3f getViewVector(Entity entityIn, double partialTicks)
+     {
+         float f = (float)((double)entityIn.prevRotationPitch + (double)(entityIn.rotationPitch - entityIn.prevRotationPitch) * partialTicks);
+@@ -1465,7 +1479,7 @@
+         float f4 = -MathHelper.cos(-f * 0.017453292F);
+         float f5 = MathHelper.sin(-f * 0.017453292F);
+         return new Vector3f(f3 * f4, f5, f2 * f4);
 -    }
-+//    protected Vector3f getViewVector(Entity entityIn, double partialTicks)
-+//    {
-+//        float f = (float)((double)entityIn.prevRotationPitch + (double)(entityIn.rotationPitch - entityIn.prevRotationPitch) * partialTicks);
-+//        float f1 = (float)((double)entityIn.prevRotationYaw + (double)(entityIn.rotationYaw - entityIn.prevRotationYaw) * partialTicks);
-+//
-+//        if (Minecraft.getMinecraft().gameSettings.thirdPersonView == 2)
-+//        {
-+//            f += 180.0F;
-+//        }
-+//
-+//        float f2 = MathHelper.cos(-f1 * 0.017453292F - (float)Math.PI);
-+//        float f3 = MathHelper.sin(-f1 * 0.017453292F - (float)Math.PI);
-+//        float f4 = -MathHelper.cos(-f * 0.017453292F);
-+//        float f5 = MathHelper.sin(-f * 0.017453292F);
-+//        return new Vector3f(f3 * f4, f5, f2 * f4);
-+//    }
++  }
  
      public int renderBlockLayer(BlockRenderLayer blockLayerIn, double partialTicks, int pass, Entity entityIn)
      {
-@@ -1716,9 +1725,9 @@
-         else if (this.mc.theWorld.provider.isSurfaceWorld())
+@@ -1700,7 +1714,7 @@
+         if (Reflector.ForgeWorldProvider_getSkyRenderer.exists())
+         {
+             WorldProvider worldprovider = this.mc.world.provider;
+-            Object object = Reflector.call(worldprovider, Reflector.ForgeWorldProvider_getSkyRenderer, new Object[0]);
++            Object object = Reflector.call(worldprovider, Reflector.ForgeWorldProvider_getSkyRenderer);
+ 
+             if (object != null)
+             {
+@@ -1716,9 +1730,9 @@
+         else if (this.mc.world.provider.isSurfaceWorld())
          {
              GlStateManager.disableTexture2D();
 -            boolean flag = Config.isShaders();
@@ -113,16 +156,16 @@
              {
                  Shaders.disableTexture2D();
              }
-@@ -1726,7 +1735,7 @@
-             Vec3d vec3d = this.theWorld.getSkyColor(this.mc.getRenderViewEntity(), partialTicks);
-             vec3d = CustomColors.getSkyColor(vec3d, this.mc.theWorld, this.mc.getRenderViewEntity().posX, this.mc.getRenderViewEntity().posY + 1.0D, this.mc.getRenderViewEntity().posZ);
+@@ -1726,7 +1740,7 @@
+             Vec3d vec3d = this.world.getSkyColor(this.mc.getRenderViewEntity(), partialTicks);
+             vec3d = CustomColors.getSkyColor(vec3d, this.mc.world, this.mc.getRenderViewEntity().posX, this.mc.getRenderViewEntity().posY + 1.0D, this.mc.getRenderViewEntity().posZ);
  
 -            if (flag)
 +            if (shadersmod)
              {
                  Shaders.setSkyColor(vec3d);
              }
-@@ -1751,14 +1760,14 @@
+@@ -1751,14 +1765,14 @@
              GlStateManager.depthMask(false);
              GlStateManager.enableFog();
  
@@ -139,7 +182,7 @@
              {
                  Shaders.preSkyList();
              }
-@@ -1782,7 +1791,7 @@
+@@ -1782,7 +1796,7 @@
  
              GlStateManager.disableFog();
  
@@ -148,7 +191,7 @@
              {
                  Shaders.disableFog();
              }
-@@ -1797,7 +1806,7 @@
+@@ -1797,7 +1811,7 @@
              {
                  GlStateManager.disableTexture2D();
  
@@ -157,7 +200,7 @@
                  {
                      Shaders.disableTexture2D();
                  }
-@@ -1840,7 +1849,7 @@
+@@ -1840,7 +1854,7 @@
  
              GlStateManager.enableTexture2D();
  
@@ -166,9 +209,9 @@
              {
                  Shaders.enableTexture2D();
              }
-@@ -1852,14 +1861,14 @@
+@@ -1852,14 +1866,14 @@
              GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
-             CustomSky.renderSky(this.theWorld, this.renderEngine, this.theWorld.getCelestialAngle(partialTicks), f15);
+             CustomSky.renderSky(this.world, this.renderEngine, this.world.getCelestialAngle(partialTicks), f15);
  
 -            if (flag)
 +            if (shadersmod)
@@ -176,14 +219,14 @@
                  Shaders.preCelestialRotate();
              }
  
-             GlStateManager.rotate(this.theWorld.getCelestialAngle(partialTicks) * 360.0F, 1.0F, 0.0F, 0.0F);
+             GlStateManager.rotate(this.world.getCelestialAngle(partialTicks) * 360.0F, 1.0F, 0.0F, 0.0F);
  
 -            if (flag)
 +            if (shadersmod)
              {
                  Shaders.postCelestialRotate();
              }
-@@ -1899,7 +1908,7 @@
+@@ -1899,7 +1913,7 @@
  
              GlStateManager.disableTexture2D();
  
@@ -192,7 +235,7 @@
              {
                  Shaders.disableTexture2D();
              }
-@@ -1930,7 +1939,7 @@
+@@ -1930,7 +1944,7 @@
              GlStateManager.enableAlpha();
              GlStateManager.enableFog();
  
@@ -201,7 +244,7 @@
              {
                  Shaders.enableFog();
              }
-@@ -1938,13 +1947,13 @@
+@@ -1938,7 +1952,7 @@
              GlStateManager.popMatrix();
              GlStateManager.disableTexture2D();
  
@@ -210,14 +253,7 @@
              {
                  Shaders.disableTexture2D();
              }
- 
-             GlStateManager.color(0.0F, 0.0F, 0.0F);
--            double d0 = this.mc.thePlayer.getPositionEyes(partialTicks).yCoord - this.theWorld.getHorizon();
-+            double d0 = this.mc.thePlayer.getPositionVector().yCoord - this.theWorld.getHorizon();
- 
-             if (d0 < 0.0D)
-             {
-@@ -2018,7 +2027,7 @@
+@@ -2018,7 +2032,7 @@
              GlStateManager.popMatrix();
              GlStateManager.enableTexture2D();
  
@@ -226,3 +262,21 @@
              {
                  Shaders.enableTexture2D();
              }
+@@ -2034,7 +2048,7 @@
+             if (Reflector.ForgeWorldProvider_getCloudRenderer.exists())
+             {
+                 WorldProvider worldprovider = this.mc.world.provider;
+-                Object object = Reflector.call(worldprovider, Reflector.ForgeWorldProvider_getCloudRenderer, new Object[0]);
++                Object object = Reflector.call(worldprovider, Reflector.ForgeWorldProvider_getCloudRenderer);
+ 
+                 if (object != null)
+                 {
+@@ -2577,7 +2591,7 @@
+ 
+                         if (tileentity != null)
+                         {
+-                            flag1 = Reflector.callBoolean(tileentity, Reflector.ForgeTileEntity_canRenderBreaking, new Object[0]);
++                            flag1 = Reflector.callBoolean(tileentity, Reflector.ForgeTileEntity_canRenderBreaking);
+                         }
+                     }
+ 

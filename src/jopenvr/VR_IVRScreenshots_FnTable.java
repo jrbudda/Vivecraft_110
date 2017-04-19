@@ -10,20 +10,13 @@ import java.util.List;
  * a tool written by <a href="http://ochafik.com/">Olivier Chafik</a> that <a href="http://code.google.com/p/jnaerator/wiki/CreditsAndLicense">uses a few opensource projects.</a>.<br>
  * For help, please visit <a href="http://nativelibs4java.googlecode.com/">NativeLibs4Java</a> , <a href="http://rococoa.dev.java.net/">Rococoa</a>, or <a href="http://jna.dev.java.net/">JNA</a>.
  */
-public class VR_IVRScreenshots_FnTable extends Structure {
-	/** C type : RequestScreenshot_callback* */
+public class VR_IVRScreenshots_FnTable extends AlignedStructure {
 	public VR_IVRScreenshots_FnTable.RequestScreenshot_callback RequestScreenshot;
-	/** C type : HookScreenshot_callback* */
 	public VR_IVRScreenshots_FnTable.HookScreenshot_callback HookScreenshot;
-	/** C type : GetScreenshotPropertyType_callback* */
 	public VR_IVRScreenshots_FnTable.GetScreenshotPropertyType_callback GetScreenshotPropertyType;
-	/** C type : GetScreenshotPropertyFilename_callback* */
 	public VR_IVRScreenshots_FnTable.GetScreenshotPropertyFilename_callback GetScreenshotPropertyFilename;
-	/** C type : UpdateScreenshotProgress_callback* */
 	public VR_IVRScreenshots_FnTable.UpdateScreenshotProgress_callback UpdateScreenshotProgress;
-	/** C type : TakeStereoScreenshot_callback* */
 	public VR_IVRScreenshots_FnTable.TakeStereoScreenshot_callback TakeStereoScreenshot;
-	/** C type : SubmitScreenshot_callback* */
 	public VR_IVRScreenshots_FnTable.SubmitScreenshot_callback SubmitScreenshot;
 	public interface RequestScreenshot_callback extends Callback {
 		int apply(IntByReference pOutScreenshotHandle, int type, Pointer pchPreviewFilename, Pointer pchVRFilename);
@@ -52,15 +45,6 @@ public class VR_IVRScreenshots_FnTable extends Structure {
 	protected List<? > getFieldOrder() {
 		return Arrays.asList("RequestScreenshot", "HookScreenshot", "GetScreenshotPropertyType", "GetScreenshotPropertyFilename", "UpdateScreenshotProgress", "TakeStereoScreenshot", "SubmitScreenshot");
 	}
-	/**
-	 * @param RequestScreenshot C type : RequestScreenshot_callback*<br>
-	 * @param HookScreenshot C type : HookScreenshot_callback*<br>
-	 * @param GetScreenshotPropertyType C type : GetScreenshotPropertyType_callback*<br>
-	 * @param GetScreenshotPropertyFilename C type : GetScreenshotPropertyFilename_callback*<br>
-	 * @param UpdateScreenshotProgress C type : UpdateScreenshotProgress_callback*<br>
-	 * @param TakeStereoScreenshot C type : TakeStereoScreenshot_callback*<br>
-	 * @param SubmitScreenshot C type : SubmitScreenshot_callback*
-	 */
 	public VR_IVRScreenshots_FnTable(VR_IVRScreenshots_FnTable.RequestScreenshot_callback RequestScreenshot, VR_IVRScreenshots_FnTable.HookScreenshot_callback HookScreenshot, VR_IVRScreenshots_FnTable.GetScreenshotPropertyType_callback GetScreenshotPropertyType, VR_IVRScreenshots_FnTable.GetScreenshotPropertyFilename_callback GetScreenshotPropertyFilename, VR_IVRScreenshots_FnTable.UpdateScreenshotProgress_callback UpdateScreenshotProgress, VR_IVRScreenshots_FnTable.TakeStereoScreenshot_callback TakeStereoScreenshot, VR_IVRScreenshots_FnTable.SubmitScreenshot_callback SubmitScreenshot) {
 		super();
 		this.RequestScreenshot = RequestScreenshot;

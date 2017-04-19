@@ -1,0 +1,39 @@
+--- a/net/minecraft/util/math/MathHelper.java
++++ b/net/minecraft/util/math/MathHelper.java
+@@ -63,6 +63,11 @@
+     {
+         return (float)Math.sqrt(value);
+     }
++    
++    public static float sqrt(double value)
++    {
++        return (float)Math.sqrt(value);
++    }
+ 
+     /**
+      * Returns the greatest integer less than or equal to the float argument
+@@ -90,6 +95,12 @@
+         return value < (double)i ? i - 1 : i;
+     }
+ 
++    public static int floor(double value)
++    {
++        int i = (int)value;
++        return value < (double)i ? i - 1 : i;
++    }
++    
+     /**
+      * Long version of floor_double
+      */
+@@ -147,6 +158,11 @@
+         return num < min ? min : (num > max ? max : num);
+     }
+ 
++    public static float clamp(float num, float min, float max)
++    {
++        return num < min ? min : (num > max ? max : num);
++    }
++    
+     public static double clamp_double(double num, double min, double max)
+     {
+         return num < min ? min : (num > max ? max : num);

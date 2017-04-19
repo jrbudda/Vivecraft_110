@@ -54,7 +54,7 @@ public class GuiQuickCommandsInGame extends GuiScreen
             default:
             	if(button.id >= 200) {
                 	this.mc.displayGuiScreen(null);
-            		Minecraft.getMinecraft().thePlayer.sendChatMessage(button.displayString);
+            		Minecraft.getMinecraft().player.sendChatMessage(button.displayString);
             	}
         }
     }

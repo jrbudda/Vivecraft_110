@@ -1,0 +1,48 @@
+--- a/net/minecraft/client/settings/GameSettings.java
++++ b/net/minecraft/client/settings/GameSettings.java
+@@ -1877,18 +1877,18 @@
+ 
+         if (p_setOptionValueOF_1_ == GameSettings.Options.FAST_RENDER)
+         {
+-            if (!this.ofFastRender && Config.isShaders())
+-            {
+-                Config.showGuiMessage(Lang.get("of.message.fr.shaders1"), Lang.get("of.message.fr.shaders2"));
+-                return;
+-            }
++//            if (!this.ofFastRender && Config.isShaders())
++//            {
++//                Config.showGuiMessage(Lang.get("of.message.fr.shaders1"), Lang.get("of.message.fr.shaders2"));
++//                return;
++//            }
+ 
+             this.ofFastRender = !this.ofFastRender;
+ 
+-            if (this.ofFastRender)
+-            {
+-                this.mc.entityRenderer.stopUseShader();
+-            }
++//            if (this.ofFastRender)
++//            {
++//                this.mc.entityRenderer.stopUseShader();
++//            }
+ 
+             Config.updateFramebufferSize();
+         }
+@@ -2927,7 +2927,7 @@
+         this.guiScale = 0;
+         this.particleSetting = 0;
+         this.heldItemTooltips = true;
+-        this.useVbo = false;
++        this.useVbo = true;
+         this.forceUnicodeFont = false;
+         this.ofFogType = 1;
+         this.ofFogStart = 0.8F;
+@@ -2938,7 +2938,7 @@
+         this.ofSmoothWorld = Config.isSingleProcessor();
+         this.ofLazyChunkLoading = Config.isSingleProcessor();
+         this.ofFastMath = false;
+-        this.ofFastRender = false;
++        this.ofFastRender = true;
+         this.ofTranslucentBlocks = 0;
+         this.ofDynamicFov = true;
+         this.ofAlternateBlocks = true;

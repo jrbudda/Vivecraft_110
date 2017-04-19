@@ -22,6 +22,8 @@ import jopenvr.VR_IVRSystem_FnTable.GetTrackedDeviceIndexForControllerRole_callb
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.init.Items;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.math.Vec3d;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
@@ -78,63 +80,46 @@ public class VRSettings
 
     public int version = UNKNOWN_VERSION;
 
-    public float movementSpeedMultiplier = 1.0f;   // VIVE - use full speed by default
-    public float hudOpacity = 0.95f;
-    public boolean menuBackground = false;
     public int renderFullFirstPersonModelMode = RENDER_FIRST_PERSON_HAND;   // VIVE - hand only by default
     public int shaderIndex = NO_SHADER;
-    public float  renderScaleFactor = 1.0f;
-    public int displayMirrorMode = MIRROR_ON_FULL_FRAME_RATE_SINGLE_VIEW;
-    public boolean walkUpBlocks = true;     // VIVE default to enable climbing
-    public float   menuCrosshairScale = 1f;
-    public boolean useCrosshairOcclusion = false;
-    public boolean simulateFalling = false;  // VIVE if HMD is over empty space, fall
-    public boolean weaponCollision = true;  // VIVE weapon hand collides with blocks/enemies
-    public float hudScale = 1.5f;
-    public float hudDistance = 1.25f;
-    public float hudPitchOffset = -2f;
-    public float hudYawOffset = 0.0f;
-    public boolean floatInventory = true; //false not working yet, have to account for rotation and tilt in MCOpenVR>processGui()
-    public boolean useFsaa = false;   // default to off
     public String stereoProviderPluginID = "openvr";
     public String badStereoProviderPluginID = "";
-    public float crosshairScale = 1.0f;
-    public int renderInGameCrosshairMode = RENDER_CROSSHAIR_MODE_ALWAYS;
-    public int renderBlockOutlineMode = RENDER_BLOCK_OUTLINE_MODE_ALWAYS;
-    public boolean hudOcclusion = false;
-    public int inertiaFactor = INERTIA_NORMAL;
     public boolean storeDebugAim = false;
     public int smoothRunTickCount = 20;
     public boolean smoothTick = false;
-    public boolean hideGui = false;     // VIVE show gui
     //Jrbudda's Options
-    public boolean vrFreeMove = false;
-    public boolean vrAllowLocoModeSwotch = true;
-    public boolean vrLimitedSurvivalTeleport = true;
-    public boolean vrAllowCrawling = false;
+
+    public String[] vrQuickCommands;
+
+    //Control
     public boolean vrReverseHands = false;
     public boolean vrReverseShootingEye = false;
     public VRControllerButtonMapping[] buttonMappings;
-    public boolean vrUseStencil = true;
-    public boolean vrShowBlueCircleBuddy = true;
     public float vrWorldScale = 1.0f;
     public float vrWorldRotation = 0f;
+	public float vrWorldRotationCached;
     public float vrWorldRotationIncrement = 45f;
-    public String[] vrQuickCommands;
-    public float vrFixedCamposX = 0;
-    public float vrFixedCamposY = 0;
-    public float vrFixedCamposZ = 0;
-    public float vrFixedCamrotYaw = 0;
-    public float vrFixedCamrotPitch = 0;
-    public float vrFixedCamrotRoll = 0;
-    public int vrHudLockMode = HUD_LOCK_HAND;
-    public Color mixedRealityKeyColor = new Color();
-    public float mixedRealityAspectRatio = 16F / 9F;
-    public boolean mixedRealityRenderHands = false;
-    public boolean insideBlockSolidColor = false;
-    public boolean vrTouchHotbar = true;
+    public float xSensitivity=1f;
+    public float ySensitivity=1f;
+    public float keyholeX=15;
+    public double headToHmdLength=0.10f;
+    public float autoCalibration=-1;
+    public float manualCalibration=-1;
+    public float playerEyeHeight = 1.62f;
+    //
+    
+    //Locomotion
+    public int inertiaFactor = INERTIA_NORMAL;
+    public boolean walkUpBlocks = true;     // VIVE default to enable climbing
+    public boolean simulateFalling = true;  // VIVE if HMD is over empty space, fall
+    public boolean weaponCollision = true;  // VIVE weapon hand collides with blocks/enemies
+    public float movementSpeedMultiplier = 1.0f;   // VIVE - use full speed by default
+    public boolean vrFreeMove = false;
+    public int vrFreeMoveMode = this.FREEMOVE_CONTROLLER;
+    public boolean vrAllowLocoModeSwotch = true;
+    public boolean vrLimitedSurvivalTeleport = true;
     public boolean seated = false;
-    private Minecraft mc;
+    public boolean seatedUseHMD = false;
     public float jumpThreshold=0.05f;
     public float sneakThreshold=0.4f;
     public boolean realisticJumpEnabled=true;
@@ -143,19 +128,69 @@ public class VRSettings
     public boolean realisticSwimEnabled=true;
     public boolean realisticRowEnabled=true;
     public float walkMultiplier=1;
-    public int vrFreeMoveMode = this.FREEMOVE_CONTROLLER;
-
-    public double headToHmdLength=0.10f;
-
-    public float xSensitivity=1f;
-    public float ySensitivity=1f;
-    public float keyholeX=15;
-
-    public float autoCalibration=-1;
-    public float manualCalibration=-1;
-    public float playerEyeHeight = 1.62f;
-    public boolean vehicleRotation = false;
+    public boolean vrAllowCrawling = false; //unused
+    public boolean vrShowBlueCircleBuddy = true;
+    public boolean vehicleRotation = false; //unused
+    public boolean animaltouching = true;
+    //
     
+    //Rendering
+    public boolean useFsaa = true;   // default to off
+    public boolean useFOVReduction = false;   // default to off
+    public boolean vrUseStencil = true;
+    public boolean insideBlockSolidColor = false; //unused
+    public float renderScaleFactor = 1.0f;
+    public int displayMirrorMode = MIRROR_ON_FULL_FRAME_RATE_SINGLE_VIEW;
+    //
+    
+    //Mixed Reality
+    public Color mixedRealityKeyColor = new Color();
+    public float mixedRealityAspectRatio = 16F / 9F;
+    public boolean mixedRealityRenderHands = false;
+    public boolean mixedRealityUnityLike = true;
+    public boolean mixedRealityMRPlusUndistorted = true;
+    public boolean mixedRealityAlphaMask = false;
+    public float mixedRealityFov = 40;
+    public float vrFixedCamposX = 0;
+    public float vrFixedCamposY = 0;
+    public float vrFixedCamposZ = 0;
+    public float vrFixedCamrotPitch = 0;
+    public float vrFixedCamrotYaw = 0;
+    public float vrFixedCamrotRoll = 0;
+    public float mrMovingCamOffsetX = 0;
+    public float mrMovingCamOffsetY = 0;
+    public float mrMovingCamOffsetZ = 0;
+    public float mrMovingCamOffsetPitch = 0;
+    public float mrMovingCamOffsetYaw = 0;
+    public float mrMovingCamOffsetRoll = 0;
+    //
+    
+    //HUD/GUI
+    public boolean vrTouchHotbar = true;    
+    public float hudScale = 1.5f;
+    public float hudDistance = 1.25f;
+    public float hudPitchOffset = -2f;
+    public float hudYawOffset = 0.0f;
+    public boolean floatInventory = true; //false not working yet, have to account for rotation and tilt in MCOpenVR>processGui()
+	public boolean menuAlwaysFollowFace;
+    public int vrHudLockMode = HUD_LOCK_HAND;
+    public boolean hideGui = false;     // VIVE show gui
+    public boolean hudOcclusion = false;
+    public float crosshairScale = 1.0f;
+	public boolean crosshairScalesWithDistance = false;
+    public int renderInGameCrosshairMode = RENDER_CROSSHAIR_MODE_ALWAYS;
+    public int renderBlockOutlineMode = RENDER_BLOCK_OUTLINE_MODE_ALWAYS;
+    public float hudOpacity = 0.95f;
+    public boolean menuBackground = false;
+    public float   menuCrosshairScale = 1f;
+    public boolean useCrosshairOcclusion = false;
+	public boolean seatedHudAltMode = true;
+    //
+     	
+    private Minecraft mc;
+
+
+	
     public VRSettings( Minecraft minecraft, File dataDir )
     {
         // Assumes GameSettings (and hence optifine's settings) have been read first
@@ -264,6 +299,26 @@ public class VRSettings
                         this.mixedRealityRenderHands = optionTokens[1].equals("true");
                     }
 
+                    if (optionTokens[0].equals("mixedRealityUnityLike"))
+                    {
+                        this.mixedRealityUnityLike = optionTokens[1].equals("true");
+                    }
+
+                    if (optionTokens[0].equals("mixedRealityUndistorted"))
+                    {
+                        this.mixedRealityMRPlusUndistorted = optionTokens[1].equals("true");
+                    }
+
+                    if (optionTokens[0].equals("mixedRealityAlphaMask"))
+                    {
+                        this.mixedRealityAlphaMask = optionTokens[1].equals("true");
+                    }
+                    
+                    if (optionTokens[0].equals("mixedRealityFov"))
+                    {
+                        this.mixedRealityFov = this.parseFloat(optionTokens[1]);
+                    }
+
                     if (optionTokens[0].equals("insideBlockSolidColor"))
                     {
                         this.insideBlockSolidColor = optionTokens[1].equals("true");
@@ -313,6 +368,11 @@ public class VRSettings
                     {
                         this.renderInGameCrosshairMode = Integer.parseInt(optionTokens[1]);
                     }
+                    
+                    if (optionTokens[0].equals("crosshairScalesWithDistance"))
+                    {
+                    	 this.crosshairScalesWithDistance = optionTokens[1].equals("true");
+                    }
 
                     if (optionTokens[0].equals("renderBlockOutlineMode"))
                     {
@@ -342,6 +402,11 @@ public class VRSettings
                     if (optionTokens[0].equals("hudOcclusion"))
                     {
                         this.hudOcclusion = optionTokens[1].equals("true");
+                    }
+
+                    if (optionTokens[0].equals("menuAlwaysFollowFace"))
+                    {
+                        this.menuAlwaysFollowFace = optionTokens[1].equals("true");
                     }
 
                     if (optionTokens[0].equals("useCrosshairOcclusion"))
@@ -377,6 +442,10 @@ public class VRSettings
                     if (optionTokens[0].equals("weaponCollision"))
                     {
                         this.weaponCollision = optionTokens[1].equals("true");
+                    }
+                    if (optionTokens[0].equals("animalTouching"))
+                    {
+                        this.animaltouching = optionTokens[1].equals("true");
                     }
                     // VIVE END - new options
                     //JRBUDDA
@@ -444,6 +513,30 @@ public class VRSettings
                     {
                         this.vrFixedCamrotRoll =this.parseFloat(optionTokens[1]);
                     }
+                    if (optionTokens[0].equals("mrMovingCamOffsetX"))
+                    {
+                        this.mrMovingCamOffsetX =  this.parseFloat(optionTokens[1]);
+                    }
+                    if (optionTokens[0].equals("mrMovingCamOffsetY"))
+                    {
+                        this.mrMovingCamOffsetY =  this.parseFloat(optionTokens[1]);
+                    }
+                    if (optionTokens[0].equals("mrMovingCamOffsetZ"))
+                    {
+                        this.mrMovingCamOffsetZ =  this.parseFloat(optionTokens[1]);
+                    }
+                    if (optionTokens[0].equals("mrMovingCamOffsetPitch"))
+                    {
+                        this.mrMovingCamOffsetPitch =this.parseFloat(optionTokens[1]);
+                    }
+                    if (optionTokens[0].equals("mrMovingCamOffsetYaw"))
+                    {
+                        this.mrMovingCamOffsetYaw =this.parseFloat(optionTokens[1]);
+                    }
+                    if (optionTokens[0].equals("mrMovingCamOffsetRoll"))
+                    {
+                        this.mrMovingCamOffsetRoll =this.parseFloat(optionTokens[1]);
+                    }
                     if (optionTokens[0].equals("vrTouchHotbar"))
                     {
                     	  this.vrTouchHotbar = optionTokens[1].equals("true");
@@ -464,7 +557,12 @@ public class VRSettings
                     if(optionTokens[0].equals("realisticSneakEnabled")){
                         this.realisticSneakEnabled=optionTokens[1].equals("true");
                     }
-
+                    if(optionTokens[0].equals("seatedhmd")){
+                        this.seatedUseHMD=optionTokens[1].equals("true");
+                    }
+                    if(optionTokens[0].equals("seatedHudAltMode")){
+                        this.seatedHudAltMode=optionTokens[1].equals("true");
+                    }
                     if(optionTokens[0].equals("realisticJumpEnabled")){
                         this.realisticJumpEnabled=optionTokens[1].equals("true");
                     }
@@ -514,8 +612,12 @@ public class VRSettings
                     if(optionTokens[0].equals("vehicleRotation")){
                         this.vehicleRotation=optionTokens[1].equals("true");
                     }
+                    
+                    if(optionTokens[0].equals("fovReduction")){
+                        this.useFOVReduction=optionTokens[1].equals("true");
+                    }
 
-                    if (optionTokens[0].startsWith("BUTTON_"))
+                    if (optionTokens[0].startsWith("BUTTON_") || optionTokens[0].startsWith("OCULUS_"))
                     {
                        VRControllerButtonMapping vb = new VRControllerButtonMapping(
                     		   Enum.valueOf(ViveButtons.class, optionTokens[0]),"");
@@ -561,12 +663,13 @@ public class VRSettings
     }
 
 	public void processBindings() {
-		//process button mappings           
-		for (int i = 0; i < 16;i++){
+		//process button mappings     
+		int offset = 0;
+		for (int i = 0; i < buttonMappings.length;i++){
 			VRControllerButtonMapping vb = buttonMappings[i];
 
 			if(vb==null) { //shouldnt
-		        vb = new VRControllerButtonMapping(ViveButtons.values()[i],"none");
+		        vb = new VRControllerButtonMapping(ViveButtons.values()[i + offset],"none");
 		        buttonMappings[i] = vb;
 			}
 			
@@ -667,6 +770,14 @@ public class VRSettings
                 return var4 + this.mixedRealityKeyColor.getRed() + " " + this.mixedRealityKeyColor.getGreen() + " " + this.mixedRealityKeyColor.getBlue();
              case MIXED_REALITY_RENDER_HANDS:
                 return this.mixedRealityRenderHands ? var4 + "YES" : var4 + "NO";
+            case MIXED_REALITY_UNITY_LIKE:
+                 return this.mixedRealityUnityLike ? var4 + "Unity" : var4 + "Side-by-Side";
+            case MIXED_REALITY_UNDISTORTED:
+                return this.mixedRealityMRPlusUndistorted ? var4 + "YES" : var4 + "NO";
+            case MIXED_REALITY_ALPHA_MASK:
+                return this.mixedRealityAlphaMask ? var4 + "YES" : var4 + "NO";
+            case MIXED_REALITY_FOV:
+            	return var4 + String.format("%.0f\u00B0", new Object[] { Float.valueOf(this.mc.vrSettings.mixedRealityFov) });
             case INSIDE_BLOCK_SOLID_COLOR:
             	return this.insideBlockSolidColor ? var4 + "SOLID COLOR" : var4 + "TEXTURE";
             case WALK_UP_BLOCKS:
@@ -699,6 +810,8 @@ public class VRSettings
 	            return var4 + String.format("%.2f", new Object[] { Float.valueOf(this.crosshairScale) });
             case MENU_CROSSHAIR_SCALE:
                 return var4 + String.format("%.2f", new Object[] { Float.valueOf(this.menuCrosshairScale) });
+            case CROSSHAIR_SCALES_WITH_DISTANCE:
+	        	return this.crosshairScalesWithDistance ? var4 + "ON" : var4 + "OFF";
 	        case RENDER_CROSSHAIR_MODE:
                 if (this.renderInGameCrosshairMode == RENDER_CROSSHAIR_MODE_HUD)
                     return var4 + "With HUD";
@@ -715,6 +828,8 @@ public class VRSettings
                     return var4 + "Never";
 	        case HUD_OCCLUSION:
 	        	return this.hudOcclusion ? var4 + "ON" : var4 + "OFF";
+	        case MENU_ALWAYS_FOLLOW_FACE:
+	        	return this.menuAlwaysFollowFace ? var4 + "ALWAYS" : var4 + "SEATED";
 	        case CROSSHAIR_OCCLUSION:
 	        	return this.useCrosshairOcclusion ? var4 + "ON" : var4 + "OFF";
 	        case MONO_FOV:
@@ -733,6 +848,8 @@ public class VRSettings
                 return this.simulateFalling ? var4 + "ON" : var4 + "OFF";
             case WEAPON_COLLISION:
                 return this.weaponCollision ? var4 + "ON" : var4 + "OFF";
+            case ANIMAL_TOUCHING:
+                return this.animaltouching ? var4 + "ON" : var4 + "OFF";
                 // VIVE END - new options
                 //JRBUDDA
             case ALLOW_MODE_SWITCH:
@@ -764,6 +881,10 @@ public class VRSettings
                 //END JRBUDDA
             case REALISTIC_JUMP:
                 return this.realisticJumpEnabled ? var4 + "ON" : var4 + "OFF";
+            case SEATED_HMD:
+                return this.seatedUseHMD ? var4 + "HMD" : var4 + "CROSSHAIR";
+            case SEATED_HUD_XHAIR:
+                return this.seatedHudAltMode ? var4 + "CROSSHAIR" : var4 + "HMD";
             case REALISTIC_SNEAK:
                 return this.realisticSneakEnabled ? var4 + "ON" : var4 + "OFF";
             case REALISTIC_CLIMB:
@@ -796,6 +917,8 @@ public class VRSettings
                 case FREEMOVE_RUNINPLACE:
                 	return var4 + " RunInPlace";
                 }
+            case FOV_REDUCTION:
+                return this.useFOVReduction ? var4 + "ON" : var4 + "OFF";
  	        default:
 	        	return "";
         }
@@ -857,6 +980,8 @@ public class VRSettings
             	return 0;
             case MONO_FOV:
             	return this.mc.gameSettings.fovSetting;
+			case MIXED_REALITY_FOV:
+				return this.mixedRealityFov;
             case RENDER_SCALEFACTOR:
             	return this.renderScaleFactor;
             // VIVE END - new options
@@ -909,6 +1034,18 @@ public class VRSettings
             case MIXED_REALITY_RENDER_HANDS:
             	this.mixedRealityRenderHands = !this.mixedRealityRenderHands;
             	break;
+            case MIXED_REALITY_UNITY_LIKE:
+            	this.mixedRealityUnityLike = !this.mixedRealityUnityLike;
+            	mc.reinitFramebuffers = true;
+            	break;
+            case MIXED_REALITY_UNDISTORTED:
+            	this.mixedRealityMRPlusUndistorted = !this.mixedRealityMRPlusUndistorted;
+            	mc.reinitFramebuffers = true;
+            	break;
+            case MIXED_REALITY_ALPHA_MASK:
+            	this.mixedRealityAlphaMask = !this.mixedRealityAlphaMask;
+            	mc.reinitFramebuffers = true;
+            	break;
             case INSIDE_BLOCK_SOLID_COLOR:
             	this.insideBlockSolidColor = !this.insideBlockSolidColor;
             	break;
@@ -948,6 +1085,9 @@ public class VRSettings
 	        case HUD_OCCLUSION:
 	            this.hudOcclusion = !this.hudOcclusion;
 	            break;
+	        case MENU_ALWAYS_FOLLOW_FACE:
+	            this.menuAlwaysFollowFace = !this.menuAlwaysFollowFace;
+	            break;
             case CROSSHAIR_OCCLUSION:
                 this.useCrosshairOcclusion = !this.useCrosshairOcclusion;
                 break;
@@ -963,6 +1103,9 @@ public class VRSettings
             case WEAPON_COLLISION:
                 this.weaponCollision = !this.weaponCollision;
                 break;
+            case ANIMAL_TOUCHING:
+                this.animaltouching = !this.animaltouching;
+                break;
             // VIVE END - new options
                 //JRBUDDA
             case ALLOW_MODE_SWITCH:
@@ -970,7 +1113,7 @@ public class VRSettings
                 break;
             case MOVE_MODE:
                 this.vrFreeMove = !this.vrFreeMove;
-                Minecraft.getMinecraft().vrPlayer.setFreeMoveMode(vrFreeMove);
+                Minecraft.getMinecraft().vrPlayer.setFreeMove(vrFreeMove);
                 break;
             case ALLOW_CRAWLING:
                 this.vrAllowCrawling = !this.vrAllowCrawling;
@@ -996,6 +1139,12 @@ public class VRSettings
                 //JRBUDDA
             case REALISTIC_JUMP:
                 realisticJumpEnabled = !realisticJumpEnabled;
+                break;
+            case SEATED_HMD:
+                seatedUseHMD = !seatedUseHMD;
+                break;
+            case SEATED_HUD_XHAIR:
+                seatedHudAltMode = !seatedHudAltMode;
                 break;
             case REALISTIC_SWIM:
                 realisticSwimEnabled = !realisticSwimEnabled;
@@ -1031,9 +1180,14 @@ public class VRSettings
                 	break;
                 }
                 break;
-                
+            case FOV_REDUCTION:
+            	useFOVReduction = !useFOVReduction;
+            	break;     
+            case CROSSHAIR_SCALES_WITH_DISTANCE:
+            	crosshairScalesWithDistance = !crosshairScalesWithDistance;
+            	break;
             default:
-                    break;
+            	break;
     	}
 
         this.saveOptions();
@@ -1110,6 +1264,9 @@ public class VRSettings
             case MONO_FOV:
             	this.mc.gameSettings.fovSetting = par2;
             	break;
+	        case MIXED_REALITY_FOV:
+	            this.mixedRealityFov = par2;
+	        	break;
             case RENDER_SCALEFACTOR:
             	this.renderScaleFactor = par2;
             	break;
@@ -1153,6 +1310,10 @@ public class VRSettings
             var5.println("displayMirrorMode:" + this.displayMirrorMode);
             var5.println("mixedRealityKeyColor:" + this.mixedRealityKeyColor.getRed() + "," + this.mixedRealityKeyColor.getGreen() + "," + this.mixedRealityKeyColor.getBlue());
             var5.println("mixedRealityRenderHands:" + this.mixedRealityRenderHands);
+            var5.println("mixedRealityUnityLike:" + this.mixedRealityUnityLike);
+            var5.println("mixedRealityUndistorted:" + this.mixedRealityMRPlusUndistorted);
+            var5.println("mixedRealityAlphaMask:" + this.mixedRealityAlphaMask);
+            var5.println("mixedRealityFov:" + this.mixedRealityFov);
             var5.println("insideBlockSolidColor:" + this.insideBlockSolidColor);
             var5.println("walkUpBlocks:" + this.walkUpBlocks);
             var5.println("hudScale:" + this.hudScale);
@@ -1166,9 +1327,11 @@ public class VRSettings
             var5.println("renderInGameCrosshairMode:" + this.renderInGameCrosshairMode);
             var5.println("renderBlockOutlineMode:" + this.renderBlockOutlineMode);
             var5.println("hudOcclusion:" + this.hudOcclusion);
+            var5.println("menuAlwaysFollowFace:" + this.menuAlwaysFollowFace);
             var5.println("useCrosshairOcclusion:" + this.useCrosshairOcclusion);
             var5.println("crosshairScale:" + this.crosshairScale);
             var5.println("menuCrosshairScale:" + this.menuCrosshairScale);
+            var5.println("crosshairScalesWithDistance:" + this.crosshairScalesWithDistance);
             var5.println("inertiaFactor:" + this.inertiaFactor);
             var5.println("smoothRunTickCount:" + this.smoothRunTickCount);
             var5.println("smoothTick:" + this.smoothTick);
@@ -1176,6 +1339,7 @@ public class VRSettings
             //VIVE
             var5.println("simulateFalling:" + this.simulateFalling);
             var5.println("weaponCollision:" + this.weaponCollision);
+            var5.println("animalTouching:" + this.animaltouching);
             //END VIVE
             
             //JRBUDDA
@@ -1195,7 +1359,15 @@ public class VRSettings
             var5.println("vrFixedCamrotPitch:" + this.vrFixedCamrotPitch);
             var5.println("vrFixedCamrotYaw:" + this.vrFixedCamrotYaw);
             var5.println("vrFixedCamrotRoll:" + this.vrFixedCamrotRoll);
+            var5.println("mrMovingCamOffsetX:" + this.mrMovingCamOffsetX);
+            var5.println("mrMovingCamOffsetY:" + this.mrMovingCamOffsetY);
+            var5.println("mrMovingCamOffsetZ:" + this.mrMovingCamOffsetZ);
+            var5.println("mrMovingCamOffsetPitch:" + this.mrMovingCamOffsetPitch);
+            var5.println("mrMovingCamOffsetYaw:" + this.mrMovingCamOffsetYaw);
+            var5.println("mrMovingCamOffsetRoll:" + this.mrMovingCamOffsetRoll);
             var5.println("vrTouchHotbar:" + this.vrTouchHotbar);
+            var5.println("seatedhmd:" + this.seatedUseHMD);
+            var5.println("seatedHudAltMode:" + this.seatedHudAltMode);
             var5.println("seated:" + this.seated);
             var5.println("jumpThreshold:" + this.jumpThreshold);
             var5.println("sneakThreshold:" + this.sneakThreshold);
@@ -1213,6 +1385,7 @@ public class VRSettings
             var5.println("autoCalibration:" + this.autoCalibration);
             var5.println("manualCalibration:" + this.manualCalibration);
             var5.println("vehicleRotation:" + this.vehicleRotation);
+            var5.println("fovReduction:" + this.useFOVReduction);
 
             if (vrQuickCommands == null) vrQuickCommands = getQuickCommandsDefaults(); //defaults
             
@@ -1223,7 +1396,7 @@ public class VRSettings
            
             if (buttonMappings == null) resetBindings(); //defaults
               
-            for (int i = 0; i<16;i++){
+            for (int i = 0; i<buttonMappings.length;i++){
             	VRControllerButtonMapping vb = buttonMappings[i];
             	var5.println(vb.toString());
 			}
@@ -1292,11 +1465,6 @@ public class VRSettings
 
     public static enum VrOptions
     {
-        // Minecrift below here
-
-        // TODO: Port to Mark's excellent VROption implementation
-
-        //General
         HUD_SCALE("HUD Size", true, false),
         HUD_DISTANCE("HUD Distance", true, false),
         HUD_PITCH("HUD Vertical Offset", true, false),
@@ -1306,6 +1474,7 @@ public class VRSettings
         RENDER_MENU_BACKGROUND("Menu Background", false, true),
         HUD_HIDE("Hide HUD (F1)", false, true),
         HUD_OCCLUSION("HUD Occlusion", false, true),
+        MENU_ALWAYS_FOLLOW_FACE("Main Menu Follow", false, true),
         CROSSHAIR_OCCLUSION("Crosshair Occlusion", false, true),
         CHAT_FADE_AWAY("Chat Persistence", false, true),
         DUMMY("Dummy", false, true),
@@ -1321,9 +1490,7 @@ public class VRSettings
         CROSSHAIR_SCALES_WITH_DISTANCE("Crosshair Scaling", false, true),
         RENDER_BLOCK_OUTLINE_MODE("Show Block Outline", false, true),
         LOAD_MUMBLE_LIB("Load Mumble Lib", false, true),
-
-        // Player
-         RENDER_OWN_HEADWEAR("Render Own Headwear", false, true),
+        RENDER_OWN_HEADWEAR("Render Own Headwear", false, true),
         RENDER_FULL_FIRST_PERSON_MODEL_MODE("First Person Model", false, true),
         RENDER_PLAYER_OFFSET("View Body Offset", true, false),
 
@@ -1331,8 +1498,13 @@ public class VRSettings
         //HMD/render
         FSAA("FSAA", false, true),
         MIRROR_DISPLAY("Mirror Display", false, true),
-        MIXED_REALITY_KEY_COLOR("MR Key Color", false, false),
-        MIXED_REALITY_RENDER_HANDS("MR Show Hands", false, true),
+        MIXED_REALITY_KEY_COLOR("Key Color", false, false),
+        MIXED_REALITY_RENDER_HANDS("Show Hands", false, true),
+        MIXED_REALITY_UNITY_LIKE("Layout", false, true),
+        MIXED_REALITY_UNDISTORTED("Undistorted Pass", false, true),
+        MIXED_REALITY_ALPHA_MASK("Alpha Mask", false, true),
+        MIXED_REALITY_FOV("Camera FOV", true, false),
+        
         INSIDE_BLOCK_SOLID_COLOR("Inside Block", false, true),
         WALK_UP_BLOCKS("Walk up blocks", false, true),
         //Movement/aiming controls
@@ -1352,6 +1524,7 @@ public class VRSettings
         // VIVE START - new options
         SIMULATE_FALLING("Simulate falling", false, true),
         WEAPON_COLLISION("Weapon collision", false, true),
+        ANIMAL_TOUCHING("Animal Interaction", false, true),
         // VIVE END - new options
 
         //JRBUDDA VIVE
@@ -1368,7 +1541,7 @@ public class VRSettings
         TOUCH_HOTBAR("Touch Hotbar Enabled", false, true),
         PLAY_MODE_SEATED("Play Mode", false, true),
         RENDER_SCALEFACTOR("Render Scale Factor", true, false),
-        MONO_FOV("Mono FOV", true, false),
+        MONO_FOV("Undistorted FOV", true, false),
         //END JRBUDDA
         REALISTIC_JUMP("Roomscale Jumping",false,true),
         REALISTIC_SNEAK("Roomscale Sneaking",false,true),
@@ -1377,18 +1550,20 @@ public class VRSettings
         REALISTIC_ROW("Roomscale Rowing",false,true),
         CALIBRATE_HEIGHT("Calibrate Height",false,true),
         WALK_MULTIPLIER("Walking Multipier",true,false),
-        FREEMOVE_MODE("Move Type", false, true),
+        FREEMOVE_MODE("Free Move Type", false, true),
         VEHICLE_ROTATION("Vechile Rotation",false,true),
         //SEATED
         RESET_ORIGIN("Reset Origin",false,true),
         X_SENSITIVITY("Rotation Speed",true,false),
         Y_SENSITIVITY("Y Sensitivity",true,false),
         KEYHOLE("Keyhole",true,false),
-        
+        FOV_REDUCTION("FOV Comfort Reduction",false,true),
         // OTher buttons
         OTHER_HUD_SETTINGS("Overlay/Crosshair/Chat...", false, true),
         OTHER_RENDER_SETTINGS("IPD / FOV...", false, true),
-        LOCOMOTION_SETTINGS("Locomotion Settings...", false, true); 
+        LOCOMOTION_SETTINGS("Locomotion Settings...", false, true), 
+        SEATED_HMD("Forward Direction",false,true),
+        SEATED_HUD_XHAIR("HUD Follows",false,true); 
 
 //        ANISOTROPIC_FILTERING("options.anisotropicFiltering", true, false, 1.0F, 16.0F, 0.0F)
 //                {
@@ -1659,31 +1834,70 @@ public class VRSettings
     }
 
     private VRControllerButtonMapping[] getBindingsDefaults(){
-   	
-    	VRControllerButtonMapping[] out = new VRControllerButtonMapping[16];
-    	
-    	out[ViveButtons.BUTTON_RIGHT_TRIGGER.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_RIGHT_TRIGGER, "key.attack");
-    	out[ViveButtons.BUTTON_RIGHT_TRIGGER_FULLCLICK.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_RIGHT_TRIGGER_FULLCLICK, "none");
-    	out[ViveButtons.BUTTON_RIGHT_GRIP.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_RIGHT_GRIP, "key.pickItem");
-    	out[ViveButtons.BUTTON_RIGHT_APPMENU.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_RIGHT_APPMENU, "key.drop");
-    	out[ViveButtons.BUTTON_RIGHT_TOUCHPAD_BL.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_RIGHT_TOUCHPAD_BL, "key.use");
-    	out[ViveButtons.BUTTON_RIGHT_TOUCHPAD_BR.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_RIGHT_TOUCHPAD_BR, "key.use");
-    	out[ViveButtons.BUTTON_RIGHT_TOUCHPAD_UL.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_RIGHT_TOUCHPAD_UL, "key.use");
-    	out[ViveButtons.BUTTON_RIGHT_TOUCHPAD_UR.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_RIGHT_TOUCHPAD_UR, "key.use");
-  
-    	out[ViveButtons.BUTTON_LEFT_TRIGGER.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_LEFT_TRIGGER, "key.forward");
-    	out[ViveButtons.BUTTON_LEFT_TRIGGER_FULLCLICK.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_LEFT_TRIGGER_FULLCLICK, "key.sprint");
-    	out[ViveButtons.BUTTON_LEFT_GRIP.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_LEFT_GRIP, "key.sneak");
-    	out[ViveButtons.BUTTON_LEFT_APPMENU.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_LEFT_APPMENU, "none");
-    	out[ViveButtons.BUTTON_LEFT_TOUCHPAD_BL.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_LEFT_TOUCHPAD_BL, "key.jump");
-    	out[ViveButtons.BUTTON_LEFT_TOUCHPAD_BR.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_LEFT_TOUCHPAD_BR, "key.jump");
-    	out[ViveButtons.BUTTON_LEFT_TOUCHPAD_UL.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_LEFT_TOUCHPAD_UL, "key.inventory");
-    	out[ViveButtons.BUTTON_LEFT_TOUCHPAD_UR.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_LEFT_TOUCHPAD_UR, "key.inventory");
-    	
-    	
+
+    	VRControllerButtonMapping[] out = new VRControllerButtonMapping[ViveButtons.values().length];
+    		//vive
+    		out[ViveButtons.BUTTON_RIGHT_TRIGGER.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_RIGHT_TRIGGER, "key.attack");
+    		out[ViveButtons.BUTTON_RIGHT_TRIGGER_FULLCLICK.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_RIGHT_TRIGGER_FULLCLICK, "none");
+    		out[ViveButtons.BUTTON_RIGHT_GRIP.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_RIGHT_GRIP, "key.pickItem");
+    		out[ViveButtons.BUTTON_RIGHT_APPMENU.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_RIGHT_APPMENU, "key.drop");
+    		out[ViveButtons.BUTTON_RIGHT_TOUCHPAD_BL.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_RIGHT_TOUCHPAD_BL, "key.use");
+    		out[ViveButtons.BUTTON_RIGHT_TOUCHPAD_BR.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_RIGHT_TOUCHPAD_BR, "key.use");
+    		out[ViveButtons.BUTTON_RIGHT_TOUCHPAD_UL.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_RIGHT_TOUCHPAD_UL, "key.use");
+    		out[ViveButtons.BUTTON_RIGHT_TOUCHPAD_UR.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_RIGHT_TOUCHPAD_UR, "key.use");
+    		out[ViveButtons.BUTTON_LEFT_TRIGGER.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_LEFT_TRIGGER, "key.forward");
+    		out[ViveButtons.BUTTON_LEFT_TRIGGER_FULLCLICK.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_LEFT_TRIGGER_FULLCLICK, "key.sprint");
+    		out[ViveButtons.BUTTON_LEFT_GRIP.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_LEFT_GRIP, "key.sneak");
+    		out[ViveButtons.BUTTON_LEFT_APPMENU.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_LEFT_APPMENU, "none");
+    		out[ViveButtons.BUTTON_LEFT_TOUCHPAD_BL.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_LEFT_TOUCHPAD_BL, "key.jump");
+    		out[ViveButtons.BUTTON_LEFT_TOUCHPAD_BR.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_LEFT_TOUCHPAD_BR, "key.jump");
+    		out[ViveButtons.BUTTON_LEFT_TOUCHPAD_UL.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_LEFT_TOUCHPAD_UL, "key.inventory");
+    		out[ViveButtons.BUTTON_LEFT_TOUCHPAD_UR.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_LEFT_TOUCHPAD_UR, "key.inventory");
+    		out[ViveButtons.BUTTON_LEFT_TOUCHPAD_SWIPE_UP.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_LEFT_TOUCHPAD_SWIPE_UP, "none");
+    		out[ViveButtons.BUTTON_LEFT_TOUCHPAD_SWIPE_DOWN.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_LEFT_TOUCHPAD_SWIPE_DOWN, "none");
+    		out[ViveButtons.BUTTON_LEFT_TOUCHPAD_SWIPE_LEFT.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_LEFT_TOUCHPAD_SWIPE_LEFT, "Hotbar Prev");
+    		out[ViveButtons.BUTTON_LEFT_TOUCHPAD_SWIPE_RIGHT.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_LEFT_TOUCHPAD_SWIPE_RIGHT, "Hotbar Next");
+    		out[ViveButtons.BUTTON_RIGHT_TOUCHPAD_SWIPE_UP.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_RIGHT_TOUCHPAD_SWIPE_UP, "none");
+    		out[ViveButtons.BUTTON_RIGHT_TOUCHPAD_SWIPE_DOWN.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_RIGHT_TOUCHPAD_SWIPE_DOWN, "none");
+    		out[ViveButtons.BUTTON_RIGHT_TOUCHPAD_SWIPE_LEFT.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_RIGHT_TOUCHPAD_SWIPE_LEFT, "Hotbar Prev");
+    		out[ViveButtons.BUTTON_RIGHT_TOUCHPAD_SWIPE_RIGHT.ordinal()] = new VRControllerButtonMapping(ViveButtons.BUTTON_RIGHT_TOUCHPAD_SWIPE_RIGHT, "Hotbar Next");
+
+    		//touch
+    		out[ViveButtons.OCULUS_RIGHT_INDEX_TRIGGER_PRESS.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_RIGHT_INDEX_TRIGGER_PRESS, "key.attack");
+    		out[ViveButtons.OCULUS_RIGHT_INDEX_TRIGGER_TOUCH.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_RIGHT_INDEX_TRIGGER_TOUCH, "none");
+    		out[ViveButtons.OCULUS_RIGHT_A_PRESS.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_RIGHT_A_PRESS, "key.use");
+    		out[ViveButtons.OCULUS_RIGHT_B_PRESS.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_RIGHT_B_PRESS, "key.drop");
+    		out[ViveButtons.OCULUS_RIGHT_A_TOUCH.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_RIGHT_A_TOUCH, "none");
+    		out[ViveButtons.OCULUS_RIGHT_B_TOUCH.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_RIGHT_B_TOUCH, "none");
+    		out[ViveButtons.OCULUS_RIGHT_HAND_TRIGGER_PRESS.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_RIGHT_HAND_TRIGGER_PRESS, "key.pickItem");
+    		out[ViveButtons.OCULUS_RIGHT_HAND_TRIGGER_TOUCH.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_RIGHT_HAND_TRIGGER_TOUCH, "none");
+    		out[ViveButtons.OCULUS_RIGHT_STICK_PRESS.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_RIGHT_STICK_PRESS, "key.inventory");
+    		out[ViveButtons.OCULUS_RIGHT_STICK_TOUCH.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_RIGHT_STICK_TOUCH, "none");
+    		//out[ViveButtons.OCULUS_RIGHT_THUMBPAD_TOUCH.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_RIGHT_THUMBPAD_TOUCH, "none");
+    		out[ViveButtons.OCULUS_LEFT_INDEX_TRIGGER_PRESS.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_LEFT_INDEX_TRIGGER_PRESS, "key.forward");
+    		out[ViveButtons.OCULUS_LEFT_INDEX_TRIGGER_TOUCH.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_LEFT_INDEX_TRIGGER_TOUCH, "none");
+    		out[ViveButtons.OCULUS_LEFT_X_PRESS.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_LEFT_X_PRESS, "key.chat");
+    		out[ViveButtons.OCULUS_LEFT_Y_PRESS.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_LEFT_Y_PRESS, "none");
+    		out[ViveButtons.OCULUS_LEFT_X_TOUCH.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_LEFT_X_TOUCH, "none");
+    		out[ViveButtons.OCULUS_LEFT_Y_TOUCH.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_LEFT_Y_TOUCH, "none");
+    		out[ViveButtons.OCULUS_LEFT_HAND_TRIGGER_PRESS.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_LEFT_HAND_TRIGGER_PRESS, "key.playerlist");
+    		out[ViveButtons.OCULUS_LEFT_HAND_TRIGGER_TOUCH.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_LEFT_HAND_TRIGGER_TOUCH, "none");
+    		out[ViveButtons.OCULUS_LEFT_STICK_PRESS.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_LEFT_STICK_PRESS, "key.sprint");
+    		out[ViveButtons.OCULUS_LEFT_STICK_TOUCH.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_LEFT_STICK_TOUCH, "none");
+    		out[ViveButtons.OCULUS_LEFT_STICK_LEFT.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_LEFT_STICK_LEFT, "Rotate Left");
+    		out[ViveButtons.OCULUS_LEFT_STICK_RIGHT.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_LEFT_STICK_RIGHT, "Rotate Right");
+    		out[ViveButtons.OCULUS_LEFT_STICK_UP.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_LEFT_STICK_UP, "key.jump");
+    		out[ViveButtons.OCULUS_LEFT_STICK_DOWN.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_LEFT_STICK_DOWN, "key.sneak");
+    		out[ViveButtons.OCULUS_RIGHT_STICK_UP.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_RIGHT_STICK_UP, "none");
+    		out[ViveButtons.OCULUS_RIGHT_STICK_DOWN.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_RIGHT_STICK_DOWN, "none");
+    		out[ViveButtons.OCULUS_RIGHT_STICK_LEFT.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_RIGHT_STICK_LEFT, "Hotbar Prev");
+    		out[ViveButtons.OCULUS_RIGHT_STICK_RIGHT.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_RIGHT_STICK_RIGHT, "Hotbar Next");
+
+    		//out[ViveButtons.OCULUS_LEFT_THUMBPAD_TOUCH.ordinal()] = new VRControllerButtonMapping(ViveButtons.OCULUS_LEFT_THUMBPAD_TOUCH, "none");
     	return out;
-    	
+
     }
+    
     
 }
 

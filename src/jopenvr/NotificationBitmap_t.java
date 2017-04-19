@@ -8,11 +8,8 @@ import java.util.List;
  * a tool written by <a href="http://ochafik.com/">Olivier Chafik</a> that <a href="http://code.google.com/p/jnaerator/wiki/CreditsAndLicense">uses a few opensource projects.</a>.<br>
  * For help, please visit <a href="http://nativelibs4java.googlecode.com/">NativeLibs4Java</a> , <a href="http://rococoa.dev.java.net/">Rococoa</a>, or <a href="http://jna.dev.java.net/">JNA</a>.
  */
-public class NotificationBitmap_t extends Structure {
-	/**
-	 * void *<br>
-	 * C type : void*
-	 */
+public class NotificationBitmap_t extends AlignedStructure {
+	/** void * */
 	public Pointer m_pImageData;
 	public int m_nWidth;
 	public int m_nHeight;
@@ -23,10 +20,6 @@ public class NotificationBitmap_t extends Structure {
 	protected List<? > getFieldOrder() {
 		return Arrays.asList("m_pImageData", "m_nWidth", "m_nHeight", "m_nBytesPerPixel");
 	}
-	/**
-	 * @param m_pImageData void *<br>
-	 * C type : void*
-	 */
 	public NotificationBitmap_t(Pointer m_pImageData, int m_nWidth, int m_nHeight, int m_nBytesPerPixel) {
 		super();
 		this.m_pImageData = m_pImageData;

@@ -1,6 +1,112 @@
 --- a/net/minecraft/client/settings/GameSettings.java
 +++ b/net/minecraft/client/settings/GameSettings.java
-@@ -1877,18 +1877,18 @@
+@@ -102,7 +102,7 @@
+     public float chatOpacity = 1.0F;
+     public boolean snooperEnabled = true;
+     public boolean fullScreen;
+-    public boolean enableVsync = true;
++    public boolean enableVsync = false;
+     public boolean useVbo = true;
+     public boolean reducedDebugInfo;
+     public boolean hideServerAddress;
+@@ -162,7 +162,9 @@
+     public EnumDifficulty difficulty;
+     public boolean hideGUI;
+     public int thirdPersonView;
++    private boolean needsResourceRefresh = false;
+ 
++    
+     /** true if debug info should be displayed instead of version */
+     public boolean showDebugInfo;
+     public boolean showDebugProfilerChart;
+@@ -212,7 +214,7 @@
+     public boolean ofStars = true;
+     public boolean ofSunMoon = true;
+     public int ofVignette = 0;
+-    public int ofChunkUpdates = 1;
++    public int ofChunkUpdates = 5;
+     public boolean ofChunkUpdatesDynamic = false;
+     public int ofTime = 0;
+     public boolean ofClearWater = false;
+@@ -409,7 +411,7 @@
+                 this.mc.getTextureMapBlocks().setMipmapLevels(this.mipmapLevels);
+                 this.mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+                 this.mc.getTextureMapBlocks().setBlurMipmapDirect(false, this.mipmapLevels > 0);
+-                this.mc.scheduleResourcesRefresh();
++                this.needsResourceRefresh = true; // FORGE: fix for MC-64581 very laggy mipmap slider
+             }
+         }
+ 
+@@ -1098,19 +1100,25 @@
+ 
+                     for (KeyBinding keybinding : this.keyBindings)
+                     {
+-                        if (s1.equals("key_" + keybinding.getKeyDescription()))
+-                        {
+-                            if (Reflector.KeyModifier_valueFromString.exists() && s2.indexOf(58) != -1)
+-                            {
+-                                String[] astring = s2.split(":");
+-                                Object object = Reflector.call(Reflector.KeyModifier_valueFromString, new Object[] {astring[1]});
+-                                Reflector.call(keybinding, Reflector.ForgeKeyBinding_setKeyModifierAndCode, new Object[] {object, Integer.valueOf(Integer.parseInt(astring[0]))});
+-                            }
+-                            else
+-                            {
+-                                keybinding.setKeyCode(Integer.parseInt(s2));
+-                            }
+-                        }
++                    	if (s1.equals("key_" + keybinding.getKeyDescription()))
++                    	{
++                    		//FORGE
++                    		if (Reflector.forgeExists()){
++                    			if(s2.indexOf(':') != -1)
++                    			{
++                    				String[] astring = s2.split(":");
++                    				Object object = Reflector.call(Reflector.KeyModifier_valueFromString, new Object[] {astring[1]});
++                    				Reflector.call(keybinding, Reflector.ForgeKeyBinding_setKeyModifierAndCode, new Object[] {object, Integer.valueOf(Integer.parseInt(astring[0]))});
++                    			}
++                    			else
++                    			{
++                    				Reflector.call(keybinding, Reflector.ForgeKeyBinding_setKeyModifierAndCode, new Object[] {Reflector.getFieldValue(Reflector.KeyModifier_NONE), Integer.valueOf(Integer.parseInt(s2))});
++                    			}
++                    		}else{
++                    			keybinding.setKeyCode(Integer.parseInt(s2));
++                    		}
++                    		//
++                    	}
+                     }
+ 
+                     for (SoundCategory soundcategory : SoundCategory.values())
+@@ -1177,9 +1185,9 @@
+     {
+         if (Reflector.FMLClientHandler.exists())
+         {
+-            Object object = Reflector.call(Reflector.FMLClientHandler_instance, new Object[0]);
++            Object object = Reflector.call(Reflector.FMLClientHandler_instance);
+ 
+-            if (object != null && Reflector.callBoolean(object, Reflector.FMLClientHandler_isLoading, new Object[0]))
++            if (object != null && Reflector.callBoolean(object, Reflector.FMLClientHandler_isLoading))
+             {
+                 return;
+             }
+@@ -1263,7 +1271,7 @@
+                 if (Reflector.ForgeKeyBinding_getKeyModifier.exists())
+                 {
+                     String s = "key_" + keybinding.getKeyDescription() + ":" + keybinding.getKeyCode();
+-                    Object object1 = Reflector.call(keybinding, Reflector.ForgeKeyBinding_getKeyModifier, new Object[0]);
++                    Object object1 = Reflector.call(keybinding, Reflector.ForgeKeyBinding_getKeyModifier);
+                     Object object2 = Reflector.getFieldValue(Reflector.KeyModifier_NONE);
+                     printwriter.println(object1 != object2 ? s + ":" + object1 : s);
+                 }
+@@ -1773,7 +1781,7 @@
+         {
+             ++this.ofChunkUpdates;
+ 
+-            if (this.ofChunkUpdates > 5)
++            if (this.ofChunkUpdates > 15)
+             {
+                 this.ofChunkUpdates = 1;
+             }
+@@ -1877,18 +1885,18 @@
  
          if (p_setOptionValueOF_1_ == GameSettings.Options.FAST_RENDER)
          {
@@ -28,7 +134,16 @@
  
              Config.updateFramebufferSize();
          }
-@@ -2927,7 +2927,7 @@
+@@ -2650,7 +2658,7 @@
+                     if (astring[0].equals("ofChunkUpdates") && astring.length >= 2)
+                     {
+                         this.ofChunkUpdates = Integer.valueOf(astring[1]).intValue();
+-                        this.ofChunkUpdates = Config.limit(this.ofChunkUpdates, 1, 5);
++                        this.ofChunkUpdates = Config.limit(this.ofChunkUpdates, 1, 15);
+                     }
+ 
+                     if (astring[0].equals("ofChunkUpdatesDynamic") && astring.length >= 2)
+@@ -2927,7 +2935,7 @@
          this.guiScale = 0;
          this.particleSetting = 0;
          this.heldItemTooltips = true;
@@ -37,7 +152,7 @@
          this.forceUnicodeFont = false;
          this.ofFogType = 1;
          this.ofFogStart = 0.8F;
-@@ -2938,7 +2938,7 @@
+@@ -2938,7 +2946,7 @@
          this.ofSmoothWorld = Config.isSingleProcessor();
          this.ofLazyChunkLoading = Config.isSingleProcessor();
          this.ofFastMath = false;
@@ -46,3 +161,37 @@
          this.ofTranslucentBlocks = 0;
          this.ofDynamicFov = true;
          this.ofAlternateBlocks = true;
+@@ -2960,7 +2968,7 @@
+         this.ofStars = true;
+         this.ofSunMoon = true;
+         this.ofVignette = 0;
+-        this.ofChunkUpdates = 1;
++        this.ofChunkUpdates = 5;
+         this.ofChunkUpdatesDynamic = false;
+         this.ofTime = 0;
+         this.ofClearWater = false;
+@@ -3104,6 +3112,7 @@
+             }
+         }
+     }
++    ////
+ 
+     public static enum Options
+     {
+@@ -3307,4 +3316,16 @@
+             return value;
+         }
+     }
++    
++    //FORGE
++    public void onGuiClosed()
++    {
++        if (this.needsResourceRefresh)
++        {
++            this.mc.scheduleResourcesRefresh();
++            this.needsResourceRefresh = false;
++        }
++    }
++    ////
++    
+ }

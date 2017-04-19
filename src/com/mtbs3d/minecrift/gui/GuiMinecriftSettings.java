@@ -32,7 +32,7 @@ public class GuiMinecriftSettings extends BaseGuiSettings implements GuiEventEx
             new VROption(202,                                      VROption.Position.POS_RIGHT,  2,  VROption.ENABLED, "HUD Settings..."),
             new VROption(206,                                      VROption.Position.POS_LEFT,   1f, VROption.ENABLED, "Stereo Rendering..."),
             new VROption(207,								         VROption.Position.POS_RIGHT,  1f, VROption.ENABLED, "Quick Commands..."),
-            new VROption(210, 							           VROption.Position.POS_RIGHT,  3f, VROption.ENABLED, "Chat/Crosshair Settings..."),
+            new VROption(210, 							           VROption.Position.POS_RIGHT,  3f, VROption.ENABLED, "Crosshair Settings..."),
             new VROption(VRSettings.VrOptions.PLAY_MODE_SEATED,       VROption.Position.POS_LEFT,   4.5f, VROption.ENABLED, null),
             new VROption(VRSettings.VrOptions.WORLD_SCALE,       	VROption.Position.POS_LEFT,   6f, VROption.ENABLED, null),
             new VROption(VRSettings.VrOptions.WORLD_ROTATION,       VROption.Position.POS_RIGHT,   6f, VROption.ENABLED, null),
@@ -330,9 +330,8 @@ public class GuiMinecriftSettings extends BaseGuiSettings implements GuiEventEx
                 };
             case 202:
                 return new String[] {
-                        "Open this configuration screen to adjust the Head",
+                        "Open this configuration screen to adjust the Heads-",
                         "Up Display (HUD) overlay properties.",
-                        "  Ex: HUD size, HUD distance, Crosshair options"
                 };
             case 203:
                 return new String[] {
@@ -348,16 +347,13 @@ public class GuiMinecriftSettings extends BaseGuiSettings implements GuiEventEx
 	    		};
 	    	case 206:
 	    		return new String[] {
-	    			"Open this configuration screen to adjust the Head ",
-	    			"  Mounted Display optics or other rendering features.",
-	    			"  Ex: FOV, Distortion, FSAA, Chromatic Abberation"
+	    			"Options for how the game is rendered and displayed on",
+	    			"the HMD and desktop mirror."
 	    		};
 	    	case 207:
 	    		return new String[] {
-	    			"Open this configuration screen to adjust the Head",
-	    			"  Tracker position settings. ",
-	    			"  Ex: Head Position Selection (Hydra/None), " ,
-	    			"       Hydra head placement (left, right, top etc)"
+	    			"Edit a list of commands or chat strings that will",
+	    			"be available in-game in the Quick Commands menu."
 	    		};
 	    	case 208:
 	    		return new String[] {
@@ -371,11 +367,19 @@ public class GuiMinecriftSettings extends BaseGuiSettings implements GuiEventEx
                         "Configure the locomotion based settings: movement",
                         "attributes, VR comfort mode etc..."
                 } ;
+            case 210:
+                return new String[] {
+                        "Options for how the game crosshair displays"
+                } ;
             case 211:
                 return new String[] {
-                        "Resets the origin point to your current head",
-                        "position. HOTKEY - F12 or RCtrl-Ret"
+                        "Options for Seated Play mode"
                 };
+            case 220:
+                return new String[] {
+                        "Rebind the VR motion controller buttons to in-game",
+                        "actions"
+                } ;
             case PROFILES_ID:
                 return new String[] {
                         "Open this configuration screen to manage",

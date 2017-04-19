@@ -1,0 +1,49 @@
+--- a/net/minecraft/entity/projectile/EntityThrowable.java
++++ b/net/minecraft/entity/projectile/EntityThrowable.java
+@@ -4,6 +4,7 @@
+ import java.util.UUID;
+ import javax.annotation.Nullable;
+ import net.minecraft.block.Block;
++import net.minecraft.client.Minecraft;
+ import net.minecraft.entity.Entity;
+ import net.minecraft.entity.EntityLivingBase;
+ import net.minecraft.entity.IProjectile;
+@@ -50,12 +51,22 @@
+     public EntityThrowable(World worldIn, double x, double y, double z)
+     {
+         this(worldIn);
+-        this.setPosition(x, y, z);
++
++    	//VIVE SET SPAWNPOS
++        if (this.thrower instanceof EntityPlayer)
++        {
++	        Vec3d aimSource = Minecraft.getMinecraft().roomScale.getControllerPos_World(0);
++	        this.setPosition(aimSource.xCoord, aimSource.yCoord, aimSource.zCoord);
++        } else 
++	        this.setPosition(x, y, z);
++        ///
+     }
+ 
+     public EntityThrowable(World worldIn, EntityLivingBase throwerIn)
+     {
+         this(worldIn, throwerIn.posX, throwerIn.posY + (double)throwerIn.getEyeHeight() - 0.10000000149011612D, throwerIn.posZ);
++
++       
+         this.thrower = throwerIn;
+     }
+ 
+@@ -84,6 +95,14 @@
+      */
+     public void setHeadingFromThrower(Entity entityThrower, float rotationPitchIn, float rotationYawIn, float pitchOffset, float velocity, float inaccuracy)
+     {
++    	//VIVE USE CONTROLLER
++        if (entityThrower instanceof EntityPlayer)
++        {
++        	rotationYawIn = Minecraft.getMinecraft().roomScale.getControllerYaw_World(0);
++        	rotationPitchIn = -Minecraft.getMinecraft().roomScale.getControllerPitch_World(0);
++        }
++        //END VIVE
++        
+         float f = -MathHelper.sin(rotationYawIn * 0.017453292F) * MathHelper.cos(rotationPitchIn * 0.017453292F);
+         float f1 = -MathHelper.sin((rotationPitchIn + pitchOffset) * 0.017453292F);
+         float f2 = MathHelper.cos(rotationYawIn * 0.017453292F) * MathHelper.cos(rotationPitchIn * 0.017453292F);

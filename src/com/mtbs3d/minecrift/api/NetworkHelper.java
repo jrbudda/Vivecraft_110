@@ -29,7 +29,9 @@ public class NetworkHelper {
 		WORLDSCALE,
 		DRAW,
 		MOVEMODE,
-		UBERPACKET
+		UBERPACKET,
+		TELEPORT,
+		CLIMBING
 	}
 	private final static String channel = "Vivecraft";
 	
@@ -58,9 +60,12 @@ public class NetworkHelper {
 	}
 	
 	
-public static boolean serverWantsData = false;
+	public static boolean serverWantsData = false;
+	public static boolean serverAllowsClimbey = false;
+	public static boolean serverSupportsDirectTeleport = false;
 	
 	private static float worldScallast = 0;
+
 	public static void sendVRPlayerPositions(IRoomscaleAdapter player) {
 		if(!serverWantsData) return;
 		float worldScale = Minecraft.getMinecraft().vrPlayer.worldScale;
@@ -81,7 +86,6 @@ public static boolean serverWantsData = false;
 			buffer.rewind();
 			Matrix4f matrix = new Matrix4f();
 			matrix.load(buffer);
-			matrix.transpose();
 
 			Vec3d headPosition = player.getHMDPos_World();
 			Quaternion headRotation = new Quaternion(matrix);
@@ -100,6 +104,7 @@ public static boolean serverWantsData = false;
 			a = out;
 			CPacketCustomPayload pack = getVivecraftClientPacket(PacketDiscriminators.HEADDATA,out);
 			Minecraft.getMinecraft().getConnection().sendPacket(pack);
+			
 		}	
 		
 		for (int i = 0; i < 2; i++) {
@@ -127,7 +132,7 @@ public static boolean serverWantsData = false;
 			Minecraft.getMinecraft().getConnection().sendPacket(pack);
 		}
 		
-		PlayerModelController.getInstance().Update(Minecraft.getMinecraft().thePlayer.getUniqueID(), a, b, c);
+		PlayerModelController.getInstance().Update(Minecraft.getMinecraft().player.getUniqueID(), a, b, c);
 		
 	}
 }

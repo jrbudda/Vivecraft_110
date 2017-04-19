@@ -10,12 +10,9 @@ import java.util.List;
  * a tool written by <a href="http://ochafik.com/">Olivier Chafik</a> that <a href="http://code.google.com/p/jnaerator/wiki/CreditsAndLicense">uses a few opensource projects.</a>.<br>
  * For help, please visit <a href="http://nativelibs4java.googlecode.com/">NativeLibs4Java</a> , <a href="http://rococoa.dev.java.net/">Rococoa</a>, or <a href="http://jna.dev.java.net/">JNA</a>.
  */
-public class VR_IVRExtendedDisplay_FnTable extends Structure {
-	/** C type : GetWindowBounds_callback* */
+public class VR_IVRExtendedDisplay_FnTable extends AlignedStructure {
 	public VR_IVRExtendedDisplay_FnTable.GetWindowBounds_callback GetWindowBounds;
-	/** C type : GetEyeOutputViewport_callback* */
 	public VR_IVRExtendedDisplay_FnTable.GetEyeOutputViewport_callback GetEyeOutputViewport;
-	/** C type : GetDXGIOutputInfo_callback* */
 	public VR_IVRExtendedDisplay_FnTable.GetDXGIOutputInfo_callback GetDXGIOutputInfo;
 	public interface GetWindowBounds_callback extends Callback {
 		void apply(IntByReference pnX, IntByReference pnY, IntByReference pnWidth, IntByReference pnHeight);
@@ -32,11 +29,6 @@ public class VR_IVRExtendedDisplay_FnTable extends Structure {
 	protected List<? > getFieldOrder() {
 		return Arrays.asList("GetWindowBounds", "GetEyeOutputViewport", "GetDXGIOutputInfo");
 	}
-	/**
-	 * @param GetWindowBounds C type : GetWindowBounds_callback*<br>
-	 * @param GetEyeOutputViewport C type : GetEyeOutputViewport_callback*<br>
-	 * @param GetDXGIOutputInfo C type : GetDXGIOutputInfo_callback*
-	 */
 	public VR_IVRExtendedDisplay_FnTable(VR_IVRExtendedDisplay_FnTable.GetWindowBounds_callback GetWindowBounds, VR_IVRExtendedDisplay_FnTable.GetEyeOutputViewport_callback GetEyeOutputViewport, VR_IVRExtendedDisplay_FnTable.GetDXGIOutputInfo_callback GetDXGIOutputInfo) {
 		super();
 		this.GetWindowBounds = GetWindowBounds;

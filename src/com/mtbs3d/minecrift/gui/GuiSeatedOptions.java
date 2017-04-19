@@ -19,7 +19,7 @@ public class GuiSeatedOptions extends BaseGuiSettings implements GuiEventEx
 			VRSettings.VrOptions.X_SENSITIVITY,
 			VRSettings.VrOptions.Y_SENSITIVITY,
 			VRSettings.VrOptions.KEYHOLE,
-
+            VRSettings.VrOptions.SEATED_HUD_XHAIR
 	};
 	
 	
@@ -31,7 +31,8 @@ public class GuiSeatedOptions extends BaseGuiSettings implements GuiEventEx
     };
     static VRSettings.VrOptions[] freeMoveSettings = new VRSettings.VrOptions[]
     {
-
+        VRSettings.VrOptions.SEATED_HMD,
+        VRSettings.VrOptions.FOV_REDUCTION,
     };
 
 	public GuiSeatedOptions(GuiScreen guiScreen, VRSettings guivrSettings) {
@@ -47,7 +48,8 @@ public class GuiSeatedOptions extends BaseGuiSettings implements GuiEventEx
 		this.buttonList.clear();
 		this.buttonList.add(new GuiButtonEx(ID_GENERIC_DEFAULTS, this.width / 2 - 155 ,  this.height -25 ,150,20, "Reset To Defaults"));
 		this.buttonList.add(new GuiButtonEx(ID_GENERIC_DONE, this.width / 2 - 155  + 160, this.height -25,150,20, "Done"));
-      
+        mc.vrSettings.vrFreeMove = mc.vrPlayer.getFreeMove();
+
 		GuiSmallButtonEx mode = new GuiSmallButtonEx(VRSettings.VrOptions.MOVE_MODE.returnEnumOrdinal(), this.width / 2 - 68, this.height / 6 + 80,VRSettings.VrOptions.MOVE_MODE, this.guivrSettings.getKeyBinding(VRSettings.VrOptions.MOVE_MODE));
         mode.setEventHandler(this);
         this.buttonList.add(mode);
@@ -56,7 +58,7 @@ public class GuiSeatedOptions extends BaseGuiSettings implements GuiEventEx
 
 		addButtons(buttons, 0);
 		
-        if(mc.vrSettings.vrFreeMove)
+        if(mc.vrPlayer.getFreeMove())
         	addButtons(freeMoveSettings,105);
         else
         	addButtons(teleportSettings,105); 
@@ -126,7 +128,11 @@ public class GuiSeatedOptions extends BaseGuiSettings implements GuiEventEx
 				vrSettings.xSensitivity=1;
 				vrSettings.ySensitivity=1;
 				vrSettings.vrFreeMove = true;
-				
+				vrSettings.useFOVReduction = false;
+				vrSettings.vrFreeMove = true;
+				vrSettings.seatedUseHMD = false;
+				vrSettings.seatedHudAltMode = false;
+				mc.vrPlayer.setFreeMove(true);
 				Minecraft.getMinecraft().vrSettings.saveOptions();
 				this.reinit = true;
 			}
@@ -179,6 +185,21 @@ public class GuiSeatedOptions extends BaseGuiSettings implements GuiEventEx
                 return new String[] {
                         "If enabled the player will falls to the ground in TP mode",
                         "when standing above empty space. Also allows jumping"
+                } ;
+            case SEATED_HMD:
+                return new String[] {
+                        "The direction the forward (W) key will go. You can ",
+                        "HMD view direction or crosshair pointing direction"
+                } ;
+            case SEATED_HUD_XHAIR:
+                return new String[] {
+                        "The direction the HUD will be placed.",
+                        "HMD view direction or crosshair pointing direction"
+                } ;
+            case FOV_REDUCTION:
+                return new String[] {
+                        "Shrinks the field of view while moving. Can help with",
+                        "motion sickness."
                 } ;
             default:
                 return null;

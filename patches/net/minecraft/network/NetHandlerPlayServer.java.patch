@@ -22,7 +22,16 @@
  import net.minecraft.crash.CrashReport;
  import net.minecraft.crash.CrashReportCategory;
  import net.minecraft.crash.ICrashReportDetail;
-@@ -371,8 +376,11 @@
+@@ -84,6 +89,8 @@
+ import net.minecraft.network.play.server.SPacketSetSlot;
+ import net.minecraft.network.play.server.SPacketTabComplete;
+ import net.minecraft.server.MinecraftServer;
++import net.minecraft.src.Reflector;
++import net.minecraft.src.ReflectorMethod;
+ import net.minecraft.stats.AchievementList;
+ import net.minecraft.tileentity.CommandBlockBaseLogic;
+ import net.minecraft.tileentity.TileEntity;
+@@ -371,8 +378,11 @@
  
                  if (d10 > 0.0625D)
                  {
@@ -36,20 +45,49 @@
                  }
  
                  entity.setPositionAndRotation(d3, d4, d5, f, f1);
-@@ -518,8 +526,10 @@
+@@ -643,8 +653,14 @@
+                 double d1 = this.playerEntity.posY - ((double)blockpos.getY() + 0.5D) + 1.5D;
+                 double d2 = this.playerEntity.posZ - ((double)blockpos.getZ() + 0.5D);
+                 double d3 = d0 * d0 + d1 * d1 + d2 * d2;
++                
++                double dist = 262144.0D;
++                if (Reflector.forgeExists()) {
++	                dist = Reflector.callDouble(this.playerEntity.interactionManager, Reflector.PlayerInteractionManager_getBlockReachDistance) + 1;
++	                dist *= dist;
++                }
  
-                         if (!this.playerEntity.isInvulnerableDimensionChange() && d11 > 0.0625D && !this.playerEntity.isPlayerSleeping() && !this.playerEntity.interactionManager.isCreative() && this.playerEntity.interactionManager.getGameType() != GameType.SPECTATOR)
-                         {
--                            flag = true;
--                            LOGGER.warn("{} moved wrongly!", new Object[] {this.playerEntity.getName()});
-+                        	//VIVE
-+//                            flag = true;
-+//                            LOGGER.warn("{} moved wrongly!", new Object[] {this.playerEntity.getName()});
-+                        	//END VIVE
-                         }
+-                if (d3 > 36.0D)
++                if (d3 > dist)
+                 {
+                     return;
+                 }
+@@ -702,7 +718,13 @@
  
-                         this.playerEntity.setPositionAndRotation(d4, d5, d6, f, f1);
-@@ -1790,5 +1800,24 @@
+         if (blockpos.getY() < this.serverController.getBuildLimit() - 1 || enumfacing != EnumFacing.UP && blockpos.getY() < this.serverController.getBuildLimit())
+         {
+-            if (this.targetPos == null && this.playerEntity.getDistanceSq((double)blockpos.getX() + 0.5D, (double)blockpos.getY() + 0.5D, (double)blockpos.getZ() + 0.5D) < 64.0D && !this.serverController.isBlockProtected(worldserver, blockpos, this.playerEntity) && worldserver.getWorldBorder().contains(blockpos))
++        	double dist = 64;
++        	if(Reflector.forgeExists()) {
++        		dist = Reflector.callDouble(this.playerEntity.interactionManager, Reflector.PlayerInteractionManager_getBlockReachDistance) + 3;
++        		dist *= dist;
++        	}
++        	 
++            if (this.targetPos == null && this.playerEntity.getDistanceSq((double)blockpos.getX() + 0.5D, (double)blockpos.getY() + 0.5D, (double)blockpos.getZ() + 0.5D) < dist && !this.serverController.isBlockProtected(worldserver, blockpos, this.playerEntity) && worldserver.getWorldBorder().contains(blockpos))
+             {
+                 this.playerEntity.interactionManager.processRightClickBlock(this.playerEntity, worldserver, itemstack, enumhand, blockpos, enumfacing, packetIn.getFacingX(), packetIn.getFacingY(), packetIn.getFacingZ());
+             }
+@@ -1110,7 +1132,9 @@
+                 if (this.playerEntity.playerConqueredTheEnd)
+                 {
+                     this.playerEntity.playerConqueredTheEnd = false;
+-                    this.playerEntity = this.serverController.getPlayerList().recreatePlayerEntity(this.playerEntity, 0, true);
++                    //FORGE (adds dimension)
++                    this.playerEntity = this.serverController.getPlayerList().recreatePlayerEntity(this.playerEntity, this.playerEntity.dimension, true);
++                    //
+                 }
+                 else
+                 {
+@@ -1790,5 +1814,26 @@
                  LOGGER.error((String)"Couldn\'t pick item", (Throwable)exception);
              }
          }
@@ -64,6 +102,8 @@
 +            	String ver = Minecraft.getMinecraft().minecriftVerString;
 +            	sendPacket(NetworkHelper.getVivecraftServerPacket(PacketDiscriminators.VERSION,ver));
 +            	sendPacket(NetworkHelper.getVivecraftServerPacket(PacketDiscriminators.REQUESTDATA, new byte[]{}));  
++            	sendPacket(NetworkHelper.getVivecraftServerPacket(PacketDiscriminators.CLIMBING, new byte[]{}));
++            	sendPacket(NetworkHelper.getVivecraftServerPacket(PacketDiscriminators.TELEPORT, new byte[]{}));  
 +
 +        		break;
 +        		

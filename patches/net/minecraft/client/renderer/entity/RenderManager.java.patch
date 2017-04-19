@@ -1,0 +1,72 @@
+--- a/net/minecraft/client/renderer/entity/RenderManager.java
++++ b/net/minecraft/client/renderer/entity/RenderManager.java
+@@ -1,6 +1,8 @@
+ package net.minecraft.client.renderer.entity;
+ 
+ import com.google.common.collect.Maps;
++import com.mtbs3d.minecrift.render.PlayerModelController;
++
+ import java.util.Collections;
+ import java.util.Map;
+ import javax.annotation.Nullable;
+@@ -221,10 +223,12 @@
+         this.skinMap.put("slim", new RenderPlayer(this, true));
+         PlayerItemsLayer.register(this.skinMap);
+ 
++        //Forge
+         if (Reflector.RenderingRegistry_loadEntityRenderers.exists())
+         {
+             Reflector.call(Reflector.RenderingRegistry_loadEntityRenderers, new Object[] {this, this.entityRenderMap});
+         }
++        ///
+     }
+ 
+     public void setRenderPosition(double renderPosXIn, double renderPosYIn, double renderPosZIn)
+@@ -247,19 +251,26 @@
+         return (Render<T>) render;
+     }
+ 
++    RenderPlayerVR n = new RenderPlayerVR(this);
++    
+     @Nullable
+     public <T extends Entity> Render<T> getEntityRenderObject(T entityIn)
+     {
+-        if (entityIn instanceof AbstractClientPlayer)
+-        {
+-            String s = ((AbstractClientPlayer)entityIn).getSkinType();
+-            RenderPlayer renderplayer = (RenderPlayer)this.skinMap.get(s);
+-            return (Render<T>) (renderplayer != null ? renderplayer : this.playerRenderer);
+-        }
+-        else
+-        {
+-            return this.<T>getEntityClassRenderObject(entityIn.getClass());
+-        }
++    	if (entityIn instanceof AbstractClientPlayer)
++    	{
++    		String s = ((AbstractClientPlayer)entityIn).getSkinType();
++    		RenderPlayer renderplayer = (RenderPlayer)this.skinMap.get(s);
++
++    		if(PlayerModelController.getInstance().isTracked(((AbstractClientPlayer) entityIn).getGameProfile().getId()))
++    		{
++    			return (Render<T>) n;            	
++    		}  else 
++    			return (Render<T>) (renderplayer != null ? renderplayer : this.playerRenderer);
++    	}      
++    	else
++    	{
++    		return this.<T>getEntityClassRenderObject(entityIn.getClass());
++    	}
+     }
+ 
+     public void cacheActiveRenderInfo(World worldIn, FontRenderer textRendererIn, Entity livingPlayerIn, Entity pointedEntityIn, GameSettings optionsIn, float partialTicks)
+@@ -533,8 +544,10 @@
+         return this.entityRenderMap;
+     }
+ 
++    //Forge
+     public Map<String, RenderPlayer> getSkinMap()
+     {
+         return Collections.<String, RenderPlayer>unmodifiableMap(this.skinMap);
+     }
++    ///
+ }

@@ -1,6 +1,14 @@
 --- a/net/minecraft/client/renderer/RenderItem.java
 +++ b/net/minecraft/client/renderer/RenderItem.java
-@@ -166,16 +166,37 @@
+@@ -56,6 +56,7 @@
+ import net.minecraft.tileentity.TileEntityStructure;
+ import net.minecraft.util.BlockRenderLayer;
+ import net.minecraft.util.EnumFacing;
++import net.minecraft.util.EnumHand;
+ import net.minecraft.util.ReportedException;
+ import net.minecraft.util.ResourceLocation;
+ import net.minecraft.util.math.MathHelper;
+@@ -166,16 +167,47 @@
          }
      }
  
@@ -8,6 +16,10 @@
 +    public static boolean ismainhand = false;
 +    public static boolean isfphand = false;
 +
++    public void renderItem(ItemStack stack, IBakedModel model){
++    	this.renderItem(0, stack, model);
++    }
++    
 +    public void renderItem(float par1, ItemStack stack, IBakedModel model)
      {
          if (stack != null)
@@ -16,46 +28,70 @@
              GlStateManager.translate(-0.5F, -0.5F, -0.5F);
  
 +            float fade = 1;
-+            
-+            EntityPlayerSP p = Minecraft.getMinecraft().thePlayer;
-+            
-+            if(p!=null){
-+            	fade= p.getCooledAttackStrength(par1);
-+              
++
++            EntityPlayerSP p = Minecraft.getMinecraft().player;
++
++            if(p!=null && isfphand){
++
++            	fade= p.getCooledAttackStrength(0)*.75f + .25f;
++
 +            	if(p.isSneaking()) 
-+                	fade =0.75f;
-+                
-+                if(p.isActiveItemStackBlocking() && p.getActiveItemStack() != stack) 
-+                	fade =0.75f;   
++            		fade =0.75f;
++
++            	if(p.isActiveItemStackBlocking() && p.getActiveItemStack() != stack) 
++            		fade =0.75f;   
++
++            	if(stack.getItem() == Items.SHIELD)
++            		if(p.isActiveItemStackBlocking())
++            			fade = 1;
++            		else
++            			fade = 0.75f;
++
++            	if(fade < 0.1) fade = 0.1f;
++            	if(fade > 1) fade = 1f;
 +            }
-+                    
-+            if(fade < 0.1) fade = 0.1f;
-+            if(!isfphand) fade = 1;
 +            
              if (model.isBuiltInRenderer())
              {
 -                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-+            	//VIVE do things.      	
-+                GlStateManager.color(1.0F, 1.0F, 1.0F, fade );
++                GlStateManager.color(1.0F, 1.0F, 1.0F, fade);
                  GlStateManager.enableRescaleNormal();
                  TileEntityItemStackRenderer.instance.renderByItem(stack);
              }
-@@ -187,7 +208,13 @@
+@@ -187,7 +219,21 @@
                      this.modelLocation = null;
                  }
  
 -                this.renderModel(model, stack);
 +                int c = -1;
-+                
 +                if(fade < 1){
-+                    c =  (int)(fade*255) << 24 | 255 << 16 | 255 << 8 | 255;
++                    int b = (int) (fade * 255);
++                    c =  b << 24 | 255 << 16 | 255 << 8 | 255;
++                }
++                   
++                if (Minecraft.getMinecraft().jumpTracker.isBoots(stack))
++                {
++                	c = (255) << 24 | 255 << 8 ;
++                } else if (Minecraft.getMinecraft().climbTracker.isClaws(stack))
++                {
++                	c = (255) << 24 | 130 <<16 | 0 << 8 | 75 ;
 +                }
 +                              
 +                this.renderModel(model,c, stack);
  
                  if (stack.hasEffect() && (!Config.isCustomItems() || !CustomItems.renderCustomEffect(this, stack, model)))
                  {
-@@ -304,7 +331,7 @@
+@@ -289,7 +335,8 @@
+                 k = k | -16777216;
+             }
+ 
+-            this.renderQuad(renderer, bakedquad, k);
++            if (Reflector.forgeExists()) Reflector.callVoid(Reflector.LightUtil_renderQuadColor, renderer, bakedquad, k);
++            else this.renderQuad(renderer, bakedquad, k);
+         }
+     }
+ 
+@@ -304,7 +351,7 @@
          if (stack != null)
          {
              IBakedModel ibakedmodel = this.getItemModelWithOverrides(stack, (World)null, (EntityLivingBase)null);
@@ -64,7 +100,7 @@
          }
      }
  
-@@ -333,16 +360,16 @@
+@@ -333,16 +380,16 @@
          }
      }
  
@@ -73,9 +109,9 @@
      {
          if (stack != null && entitylivingbaseIn != null && stack.getItem() != null)
          {
-             IBakedModel ibakedmodel = this.getItemModelWithOverrides(stack, entitylivingbaseIn.worldObj, entitylivingbaseIn);
+             IBakedModel ibakedmodel = this.getItemModelWithOverrides(stack, entitylivingbaseIn.world, entitylivingbaseIn);
 -            this.renderItemModel(stack, ibakedmodel, transform, leftHanded);
-+            this.renderItemModel(par1, stack, ibakedmodel, transform, leftHanded);
++            this.renderItemModel(0,stack, ibakedmodel, transform, leftHanded);
          }
      }
  
@@ -84,7 +120,7 @@
      {
          if (stack.getItem() != null)
          {
-@@ -370,7 +397,7 @@
+@@ -370,7 +417,7 @@
                  }
              }
  
@@ -93,7 +129,7 @@
              GlStateManager.cullFace(GlStateManager.CullFace.BACK);
              GlStateManager.popMatrix();
              GlStateManager.disableRescaleNormal();
-@@ -415,7 +442,7 @@
+@@ -415,7 +462,7 @@
              bakedmodel.getItemCameraTransforms().applyTransform(ItemCameraTransforms.TransformType.GUI);
          }
  
@@ -102,13 +138,14 @@
          GlStateManager.disableAlpha();
          GlStateManager.disableRescaleNormal();
          GlStateManager.disableLighting();
-@@ -1108,6 +1135,9 @@
+@@ -1108,6 +1155,10 @@
          this.registerItem(Items.DIAMOND_HORSE_ARMOR, "diamond_horse_armor");
          this.registerItem(Items.LEAD, "lead");
          this.registerItem(Items.NAME_TAG, "name_tag");
 +        this.registerItem(Items.EATME_CAKE, "cake");
 +        this.registerItem(Items.DRIINKME_BOTTLE, "bottle_drinkable");
-+        
++    //  this.registerItem(Items.JUMP_BOOTS, "leather_boots");
++    //  this.registerItem(Items.CLIMB_CLAWS, "shears");
          this.itemModelMesher.register(Items.BANNER, new ItemMeshDefinition()
          {
              public ModelResourceLocation getModelLocation(ItemStack stack)

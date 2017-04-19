@@ -1,0 +1,14 @@
+--- a/net/minecraft/client/renderer/texture/TextureUtil.java
++++ b/net/minecraft/client/renderer/texture/TextureUtil.java
+@@ -159,9 +159,9 @@
+     {
+         Object object = TextureUtil.class;
+ 
+-        if (Reflector.SplashScreen.exists())
++        if (Reflector.SplashProgress.exists())
+         {
+-            object = Reflector.SplashScreen.getTargetClass();
++            object = Reflector.SplashProgress.getTargetClass();
+         }
+ 
+         synchronized (object)

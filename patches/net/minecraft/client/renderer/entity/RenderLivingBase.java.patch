@@ -1,0 +1,54 @@
+--- a/net/minecraft/client/renderer/entity/RenderLivingBase.java
++++ b/net/minecraft/client/renderer/entity/RenderLivingBase.java
+@@ -1,11 +1,18 @@
+ package net.minecraft.client.renderer.entity;
+ 
+ import com.google.common.collect.Lists;
++import com.mtbs3d.minecrift.render.PlayerModelController;
++
+ import java.nio.FloatBuffer;
+ import java.util.List;
++import java.util.UUID;
++
+ import net.minecraft.client.Minecraft;
+ import net.minecraft.client.entity.EntityPlayerSP;
+ import net.minecraft.client.model.ModelBase;
++import net.minecraft.client.model.ModelBiped;
++import net.minecraft.client.model.ModelPlayer;
++import net.minecraft.client.model.ModelPlayerVR;
+ import net.minecraft.client.renderer.GLAllocation;
+ import net.minecraft.client.renderer.GlStateManager;
+ import net.minecraft.client.renderer.OpenGlHelper;
+@@ -18,6 +25,7 @@
+ import net.minecraft.src.Config;
+ import net.minecraft.src.Reflector;
+ import net.minecraft.util.math.MathHelper;
++import net.minecraft.util.math.Vec3d;
+ import net.minecraft.util.text.TextFormatting;
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
+@@ -34,6 +42,7 @@
+     public static float NAME_TAG_RANGE = 64.0F;
+     public static float NAME_TAG_RANGE_SNEAK = 32.0F;
+ 
++    
+     public RenderLivingBase(RenderManager renderManagerIn, ModelBase modelBaseIn, float shadowSizeIn)
+     {
+         super(renderManagerIn);
+@@ -41,6 +50,7 @@
+         this.shadowSize = shadowSizeIn;
+     }
+ 
++    //Forge makes this public but its already public?
+     public <V extends EntityLivingBase, U extends LayerRenderer<V>> boolean addLayer(U layer)
+     {
+         return this.layerRenderers.add((LayerRenderer<T>) layer);
+@@ -96,7 +106,7 @@
+ 
+             if (Reflector.ForgeEntity_shouldRiderSit.exists())
+             {
+-                this.mainModel.isRiding = entity.isRiding() && entity.getRidingEntity() != null && Reflector.callBoolean(entity.getRidingEntity(), Reflector.ForgeEntity_shouldRiderSit, new Object[0]);
++                this.mainModel.isRiding = entity.isRiding() && entity.getRidingEntity() != null && Reflector.callBoolean(entity.getRidingEntity(), Reflector.ForgeEntity_shouldRiderSit);
+             }
+ 
+             this.mainModel.isChild = entity.isChild();

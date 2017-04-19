@@ -70,7 +70,7 @@ def create_install(mcp_dir):
         for abs_path, _, filelist in os.walk(reobf, followlinks=True):
             arc_path = os.path.relpath( abs_path, reobf ).replace('\\','/').replace('.','')+'/'
             for cur_file in fnmatch.filter(filelist, '*.class'):
-                if cur_file in {'MinecriftClassTransformer.class','MinecriftForgeTweaker.class','MinecriftClassTransformer$Stage.class','MinecriftClassTransformer$1.class','MinecriftClassTransformer$2.class','MinecriftClassTransformer$3.class','MinecriftClassTransformer$4.class'}:
+                #if cur_file in {'MinecriftClassTransformer.class','MinecriftForgeTweaker.class','MinecriftClassTransformer$Stage.class','MinecriftClassTransformer$1.class','MinecriftClassTransformer$2.class','MinecriftClassTransformer$3.class','MinecriftClassTransformer$4.class'}:
                 #if cur_file in {'abt.class','abu.class','abv.class', 'abw.class', 'abx.class', 'aby.class', 'abz.class', 'aca.class', 'acb.class', 'acc.class', 'acd.class', 'ace.class', 'acf.class'}: #skip CreativeTabs
                  #continue
                  in_file= os.path.join(abs_path,cur_file) 

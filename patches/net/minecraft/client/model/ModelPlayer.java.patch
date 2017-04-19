@@ -1,0 +1,127 @@
+--- a/net/minecraft/client/model/ModelPlayer.java
++++ b/net/minecraft/client/model/ModelPlayer.java
+@@ -1,8 +1,13 @@
+ package net.minecraft.client.model;
+ 
++import java.util.UUID;
++
++import com.mtbs3d.minecrift.render.PlayerModelController;
++
+ import net.minecraft.client.renderer.GlStateManager;
+ import net.minecraft.entity.Entity;
+ import net.minecraft.util.EnumHandSide;
++import net.minecraft.util.math.Vec3d;
+ 
+ public class ModelPlayer extends ModelBiped
+ {
+@@ -15,6 +20,12 @@
+     private final ModelRenderer bipedDeadmau5Head;
+     private final boolean smallArms;
+ 
++    //VIVE START
++    public boolean isVrPlayer;
++    public UUID playerUuid;
++    public Vec3d renderPos;
++    //VIVE END
++    
+     public ModelPlayer(float modelSize, boolean smallArmsIn)
+     {
+         super(modelSize, 0.0F, 64, 64);
+@@ -124,6 +135,97 @@
+     public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn)
+     {
+         super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
++        
++        if(isVrPlayer){ //Lasciate ogne speranza, voi ch'intrate
++        	PlayerModelController.RotInfo rotInfo=PlayerModelController.getInstance().getRotationsForPlayer(playerUuid);
++        	if(rotInfo == null) {
++
++        	} else {
++
++        		double minecraftBullshit = -1.501F;
++
++            	Vec3d pos = this.renderPos;
++            	float eyaw = (float) Math.toRadians(entityIn.rotationYaw);
++        		float yaw1 = (float) Math.atan2(-rotInfo.headRot.xCoord, -rotInfo.headRot.zCoord); 
++        		float pitch1 = (float) Math.asin(rotInfo.headRot.yCoord/rotInfo.headRot.lengthVector()); 
++
++        		float yaw3 = (float) Math.atan2(-rotInfo.leftArmRot.xCoord, -rotInfo.leftArmRot.zCoord); 
++        		float pitch3 = (float) Math.asin(rotInfo.leftArmRot.yCoord/rotInfo.leftArmRot.lengthVector());           	
++        		
++        		this.bipedHead.rotateAngleX = (float) -pitch1;
++        		
++        		Vec3d diff = rotInfo.leftArmPos.subtract(rotInfo.rightArmPos);
++        		if(rotInfo.reverse) diff = diff.scale(-1);
++
++        		double ltor = Math.atan2(-diff.xCoord, diff.zCoord) + Math.PI/2;       		
++        		if(rotInfo.seated) ltor = -yaw1;
++        		
++        		this.bipedHead.rotateAngleY = (float) (-yaw1);
++        		this.bipedBody.rotateAngleY = (float) (ltor);
++        		this.bipedRightLeg.rotateAngleY = (float) (ltor);
++        		this.bipedLeftLeg.rotateAngleY = (float) (ltor);
++        		this.bipedRightArm.rotateAngleY = (float) (ltor);
++        		this.bipedLeftArm.rotateAngleY = (float) (ltor);
++        		
++                this.bipedRightLeg.setRotationPoint(-1.9F, 12.0F + 0, 0.0F);
++        		Vec3d rotatedrleg = new Vec3d(bipedRightLeg.rotationPointX, bipedRightLeg.rotationPointY, bipedRightLeg.rotationPointZ)
++        				.rotateYaw((float) ((float) ltor));
++        		this.bipedRightLeg.setRotationPoint((float)rotatedrleg.xCoord, (float)rotatedrleg.yCoord, (float)rotatedrleg.zCoord);
++        		
++        		this.bipedLeftLeg.setRotationPoint(1.9F, 12.0F + 0, 0.0F);
++        		Vec3d rotatedlleg = new Vec3d(bipedLeftLeg.rotationPointX, bipedLeftLeg.rotationPointY, bipedLeftLeg.rotationPointZ)
++        				.rotateYaw((float) ((float)ltor));
++        		this.bipedLeftLeg.setRotationPoint((float)rotatedlleg.xCoord, (float)rotatedlleg.yCoord, (float)rotatedlleg.zCoord);
++        		
++                this.bipedLeftArm.setRotationPoint(5.0F, 2.0F , 0.0F);
++        		Vec3d rotatedlarm = new Vec3d(bipedLeftArm.rotationPointX, bipedLeftArm.rotationPointY, bipedLeftArm.rotationPointZ)
++        				.rotateYaw((float) ((float)ltor));
++        		this.bipedLeftArm.setRotationPoint((float)rotatedlarm.xCoord, (float)rotatedlarm.yCoord, (float)rotatedlarm.zCoord);
++      
++                this.bipedRightArm.setRotationPoint(-5.0F, 2.0F , 0.0F);
++        		Vec3d rotatedrarm = new Vec3d(bipedRightArm.rotationPointX, bipedRightArm.rotationPointY, bipedRightArm.rotationPointZ)
++        				.rotateYaw((float) ((float)ltor));
++        		this.bipedRightArm.setRotationPoint((float)rotatedrarm.xCoord, (float)rotatedrarm.yCoord, (float)rotatedrarm.zCoord);
++        		
++        		
++        		if(!rotInfo.seated){
++			
++            		//Vec3d head = rotInfo.Headpos.subtract(pos).addVector(0,minecraftBullshit-0.18f,0);
++            		//head = head.scale(-1/scaleFactor);         
++            		//this.bipedHead.setRotationPoint((float)head.xCoord, (float)head.yCoord, -(float)head.zCoord);
++            		//this.bipedBody.setRotationPoint((float)head.xCoord, (float)head.yCoord, -(float)head.zCoord);
++            		//this.bipedBody.scaleY = (float) (rotInfo.Headpos.subtract(pos).yCoord / 1.62f);
++
++            		//this.bipedRightLeg.scaleY = (float) (rotInfo.Headpos.subtract(pos).yCoord / 1.62f);
++            		//this.bipedLeftLeg.setRotationPoint((float)head.xCoord, (float)head.yCoord, -(float)head.zCoord);
++            		//this.bipedLeftLeg.scaleY = (float) (rotInfo.Headpos.subtract(pos).yCoord / 1.62f);         		
++            		
++            		float yaw2 = (float) Math.atan2(-rotInfo.rightArmRot.xCoord, -rotInfo.rightArmRot.zCoord); 
++            		float pitch2 = (float) Math.asin(rotInfo.rightArmRot.yCoord/rotInfo.rightArmRot.lengthVector()); 
++
++        			Vec3d larm = rotInfo.leftArmPos.subtract(pos).addVector(0,minecraftBullshit,0);
++        			larm = larm.add(rotInfo.leftArmRot.scale(-0.2)).scale(-1/scaleFactor);      		      		        		
++        			this.bipedLeftArm.setRotationPoint((float)larm.xCoord, (float)larm.yCoord, -(float)larm.zCoord);          
++        			this.bipedLeftArm.rotateAngleX=(float) (-pitch3+ 3*Math.PI/2);
++        			this.bipedLeftArm.rotateAngleY=(float) (2*Math.PI-yaw3);
++
++        			Vec3d rarm = rotInfo.rightArmPos.subtract(pos).addVector(0,minecraftBullshit,0);
++        			rarm = rarm.add(rotInfo.rightArmRot.scale(-0.2)).scale(-1/scaleFactor);           
++        			this.bipedRightArm.setRotationPoint((float)rarm.xCoord, (float)rarm.yCoord, -(float)rarm.zCoord);   
++        			this.bipedRightArm.rotateAngleX=(float) (-pitch2+ 3*Math.PI/2);
++        			this.bipedRightArm.rotateAngleY=(float) (2*Math.PI-yaw2);
++        			
++//            		this.bipedLeftArm.scaleX = 0.85f;
++//            		this.bipedLeftArm.scaleY = 0.5f;
++//            		this.bipedLeftArm.scaleZ = 0.85f;
++//            		this.bipedRightArm.scaleX = 0.85f;
++//            		this.bipedRightArm.scaleY = 0.5f;
++//            		this.bipedRightArm.scaleZ = 0.85f;      
++        		}
++        	}
++        }
++        
++        copyModelAngles(this.bipedHead, this.bipedHeadwear);        
+         copyModelAngles(this.bipedLeftLeg, this.bipedLeftLegwear);
+         copyModelAngles(this.bipedRightLeg, this.bipedRightLegwear);
+         copyModelAngles(this.bipedLeftArm, this.bipedLeftArmwear);

@@ -3,6 +3,7 @@ package com.mtbs3d.minecrift.provider;
 
 import com.mtbs3d.minecrift.render.PlayerModelController;
 import com.mtbs3d.minecrift.settings.AutoCalibration;
+
 import de.fruitfly.ovr.enums.EyeType;
 import de.fruitfly.ovr.structs.EulerOrient;
 import de.fruitfly.ovr.structs.Matrix4f;
@@ -16,11 +17,13 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockStateBase;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Minecraft.renderPass;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecart;
@@ -62,6 +65,7 @@ import com.mtbs3d.minecrift.gameplay.ParticleVRTeleportFX;
 import com.mtbs3d.minecrift.gameplay.VRMovementStyle;
 import com.mtbs3d.minecrift.render.QuaternionHelper;
 import com.mtbs3d.minecrift.settings.VRSettings;
+import com.mtbs3d.minecrift.utils.MCReflection;
 
 // VIVE
 public class OpenVRPlayer implements IRoomscaleAdapter
@@ -78,7 +82,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
     public VRMovementStyle vrMovementStyle = new VRMovementStyle();
     public Vec3d[] movementTeleportArc = new Vec3d[50];
     public int movementTeleportArcSteps = 0;
-    private boolean freeMoveMode = true;        // true when connected to another server that doesn't have this mod
+    private boolean isFreeMoveCurrent = true;        // true when connected to another server that doesn't have this mod
     public double lastTeleportArcDisplayOffset = 0;
     public boolean noTeleportClient = true;
     
@@ -105,18 +109,18 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 		    		lastroomOrigin = new Vec3d(x, y, z);
 		    		Minecraft.getMinecraft().entityRenderer.interPolatedRoomOrigin = new Vec3d(x, y, z);
 		    	} else {
-		    		lastroomOrigin = new Vec3d(roomOrigin.xCoord, roomOrigin.yCoord, roomOrigin.zCoord);
 		    	}
 	    }
 	    roomOrigin = new Vec3d(x, y, z);
         lastRoomUpdateTime = Minecraft.getMinecraft().stereoProvider.getCurrentTimeSecs();
         Minecraft.getMinecraft().entityRenderer.irpUpdatedThisFrame = onframe;
-    }
+      //  System.out.println(x + " " + y + " " + z);
+    } 
     
     private int roomScaleMovementDelay = 0;
     
     //set room 
-    public void snapRoomOriginToPlayerEntity(EntityPlayerSP player, boolean reset, boolean onFrame)
+    public void snapRoomOriginToPlayerEntity(EntityPlayerSP player, boolean reset, boolean onFrame, float nano)
     {
         if (Thread.currentThread().getName().equals("Server thread"))
             return;
@@ -134,19 +138,19 @@ public class OpenVRPlayer implements IRoomscaleAdapter
         if(onFrame){
         	x = mc.entityRenderer.interpolatedPlayerPos.xCoord - campos.xCoord;
          
-        	if(player.isRiding() && !player.isRidingHorse()) 
-        		y = player.getRidingEntity().posY;
-            else
+        	if(player.isRiding()){	
+        			y = player.getRidingEntity().getPositionEyes(nano).yCoord - player.getRidingEntity().getEyeHeight() + player.getRidingEntity().getMountedYOffset();
+        	} else
             	y = mc.entityRenderer.interpolatedPlayerPos.yCoord;
 
           	z = mc.entityRenderer.interpolatedPlayerPos.zCoord - campos.zCoord;
         } else {
-             x = player.posX - campos.xCoord;
-             if(player.isRiding() && !player.isRidingHorse()) 
-            	 y = player.getRidingEntity().posY;
-             else
-            	 y = player.posY;
-             z = player.posZ - campos.zCoord;
+        	x = player.posX - campos.xCoord;
+        	if(player.isRiding()){
+        			y = player.getRidingEntity().posY + player.getRidingEntity().getMountedYOffset();        	}
+        	else
+        		y = player.posY;
+        	z = player.posZ - campos.zCoord;
         }
         
         setRoomOrigin(x, y, z, reset, onFrame);
@@ -160,8 +164,10 @@ public class OpenVRPlayer implements IRoomscaleAdapter
     private float lastworldRotation= 0f;
 	private float lastWorldScale;
     
-	public void checkandUpdateRotateScale(boolean onFrame){
+	public void checkandUpdateRotateScale(boolean onFrame, float nano){
 		Minecraft mc = Minecraft.getMinecraft();
+		if(!onFrame && mc.currentScreen!=null) return;
+		
 		if(!onFrame) {
 			if(this.wfCount > 0){
 				if(this.wfCount < 40){
@@ -175,26 +181,33 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 				}
 				this.wfCount--;
 			} else 	this.worldScale =  mc.vrSettings.vrWorldScale;
+		} else {
+
 		}
+		
+		this.interpolatedWorldScale = this.worldScale*nano + this.lastWorldScale*(1-nano);
+		
 	    this.worldRotationRadians = (float) Math.toRadians(mc.vrSettings.vrWorldRotation);
 	    
 	    if (worldRotationRadians!= lastworldRotation || worldScale != lastWorldScale) {
-	    	if(mc.thePlayer!=null) 
-	    		snapRoomOriginToPlayerEntity(mc.thePlayer, true, onFrame);
+	    	if(mc.player!=null) 
+	    		snapRoomOriginToPlayerEntity(mc.player, true, onFrame, nano);
 	    }
-	    lastworldRotation = worldRotationRadians;
-	    if(!onFrame)    lastWorldScale = worldScale;		
 	}
 
 	
 	boolean initdone =false;
 	
+	public void preTick(){
+		lastWorldScale = worldScale;	
+	    lastworldRotation = worldRotationRadians;
+		lastroomOrigin = new Vec3d(roomOrigin.xCoord, roomOrigin.yCoord, roomOrigin.zCoord);
+	}
+	
     public void onLivingUpdate(EntityPlayerSP player, Minecraft mc, Random rand)
     {
     	if(!player.initFromServer) return;
     	
-        updateSwingAttack();
-
 	    if(!initdone){
 
 		    System.out.println("<Debug info start>");
@@ -211,17 +224,19 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 
 	    mc.rowTracker.doProcess(mc, player);
 
-	    mc.jumpTracker.doProcess(mc, player);
+	    mc.jumpTracker.doProcess(player);
    
 	    mc.sneakTracker.doProcess(mc, player);
 	    
 		mc.autoFood.doProcess(mc,player);
            		
-        this.checkandUpdateRotateScale(false);
+		this.checkandUpdateRotateScale(false,1);
 
-	    mc.swimTracker.doProcess(mc,player);
+        mc.swimTracker.doProcess(mc,player);
 
-	    mc.climbTracker.doProcess(mc, player);
+	    mc.climbTracker.doProcess(player);
+	    
+        updateSwingAttack();
 
 	    AutoCalibration.logHeadPos(MCOpenVR.hmdPivotHistory.latest());
 
@@ -243,7 +258,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 
        
         // don't do teleport movement if on a server that doesn't have this mod installed
-        if (getFreeMoveMode()) {
+        if (getFreeMove()) {
         	
         		if(player.movementInput.moveForward ==0) doPlayerMoveInRoom(player);
 	
@@ -311,7 +326,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 
                                 double speed = -0.6;
 //                                EntityFX particle = new ParticleVRTeleportFX(
-//                                        player.worldObj,
+//                                        player.world,
 //                                        sparkPos.xCoord, sparkPos.yCoord, sparkPos.zCoord,
 //                                        motionDir.xCoord * speed, motionDir.yCoord * speed, motionDir.zCoord * speed,
 //                                        1.0f);
@@ -347,7 +362,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
                         // spark at dest point
                         if (vrMovementStyle.destinationSparkles)
                         {
-                          //  player.worldObj.spawnParticle("instantSpell", dest.xCoord, dest.yCoord, dest.zCoord, 0, 1.0, 0);
+                          //  player.world.spawnParticle("instantSpell", dest.xCoord, dest.yCoord, dest.zCoord, 0, 1.0, 0);
                         }
 
                         // cloud of sparks moving past you
@@ -371,7 +386,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 
                                 double speed = -0.6;
 //                                EntityFX particle = new ParticleVRTeleportFX(
-//                                        player.worldObj,
+//                                        player.world,
 //                                        sparkPos.xCoord, sparkPos.yCoord, sparkPos.zCoord,
 //                                        motionDir.xCoord * speed, motionDir.yCoord * speed, motionDir.zCoord * speed,
 //                                        1.0f);
@@ -422,9 +437,10 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 
      	   //execute teleport               
             if(this.noTeleportClient){
-            	String tp = "/tp " + mc.thePlayer.getName() + " " + dest.xCoord + " " +dest.yCoord + " " + dest.zCoord;      
-            	mc.thePlayer.sendChatMessage(tp);
-            } else {
+            	String tp = "/tp " + mc.player.getName() + " " + dest.xCoord + " " +dest.yCoord + " " + dest.zCoord;      
+            	mc.player.sendChatMessage(tp);
+            } else {          
+            	if(NetworkHelper.serverSupportsDirectTeleport)	player.teleported = true;
                 player.setPositionAndUpdate(dest.xCoord, dest.yCoord, dest.zCoord);
             }
 
@@ -469,16 +485,16 @@ public class OpenVRPlayer implements IRoomscaleAdapter
         this.disableSwing = 3;
 
         if(mc.vrSettings.vrLimitedSurvivalTeleport){
-          mc.thePlayer.addExhaustion((float) (movementTeleportDistance / 16 * 1.2f));    
+          mc.player.addExhaustion((float) (movementTeleportDistance / 16 * 1.2f));    
           
-          if (!mc.vrPlayer.getFreeMoveMode() && mc.playerController.isNotCreative() && mc.vrPlayer.vrMovementStyle.arcAiming){
+          if (!mc.vrPlayer.getFreeMove() && mc.playerController.isNotCreative() && mc.vrPlayer.vrMovementStyle.arcAiming){
           	teleportEnergy -= movementTeleportDistance * 4;	
           }       
         }
         
-        mc.thePlayer.fallDistance = 0.0F;
+        mc.player.fallDistance = 0.0F;
 
-        mc.thePlayer.movementTeleportTimer = -1;
+        mc.player.movementTeleportTimer = -1;
         
     }
     
@@ -490,15 +506,16 @@ public class OpenVRPlayer implements IRoomscaleAdapter
     		roomScaleMovementDelay--;
     		return;
     	}
+    	Minecraft mc = Minecraft.getMinecraft();
+
     	if(player.isSneaking()) {return;} //jrbudda : prevent falling off things or walking up blocks while moving in room scale.
     	if(player.isRiding()) return; //dont fall off the tracks man
     	if(player.isDead) return; //
     	if(player.isPlayerSleeping()) return; //
-    	
+    	if(mc.jumpTracker.isjumping()) return; //
     	if(Math.abs(player.motionX) > 0.01) return;
     	if(Math.abs(player.motionZ) > 0.01) return;
     	
-    	Minecraft mc = Minecraft.getMinecraft();
     	float playerHalfWidth = player.width / 2.0F;
 
     	// move player's X/Z coords as the HMD moves around the room
@@ -522,23 +539,23 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 
     	// valid place to move player to?
     	float var27 = 0.0625F;
-    	boolean emptySpot = mc.theWorld.getCollisionBoxes(player, bb).isEmpty();
+    	boolean emptySpot = mc.world.getCollisionBoxes(player, bb).isEmpty();
 
     	if (emptySpot)
     	{
     		// don't call setPosition style functions to avoid shifting room origin
-    		player.lastTickPosX = player.prevPosX = player.posX = x;
+    		player.posX = x;
     		if (!mc.vrSettings.simulateFalling)	{
-    			player.lastTickPosY = player.prevPosY = player.posY = y;                	
+    			 player.posY = y;                	
     		}
-    		player.lastTickPosZ = player.prevPosZ = player.posZ = z;
+    		player.posZ = z;
     
     		 if(player.getRidingEntity()!=null){ //you're coming with me, horse! //TODO: use mount's bounding box.
-    				player.getRidingEntity().lastTickPosX = player.getRidingEntity().prevPosX =  player.getRidingEntity().posX = x;
+    				player.getRidingEntity().posX = x;
     				if (!mc.vrSettings.simulateFalling)	{
-    					player.getRidingEntity().lastTickPosY = player.getRidingEntity().prevPosY =  	 player.getRidingEntity().posY = y;                	
+    					player.getRidingEntity().posY = y;                	
     	    		}
-    				player.getRidingEntity().lastTickPosZ = player.getRidingEntity().prevPosZ =  	 player.getRidingEntity().posZ = z;
+    			  	 player.getRidingEntity().posZ = z;
     		 }
     		 
     		player.setEntityBoundingBox(new AxisAlignedBB(bb.minX, bb.minY, bb.minZ, bb.maxX, bb.minY + player.height, bb.maxZ));
@@ -550,7 +567,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
     	}
 
     	//             test for climbing up a block
-    	else if ((mc.vrSettings.walkUpBlocks || (player.isOnLadder() && mc.vrSettings.realisticClimbEnabled)) && player.fallDistance == 0)
+    	else if ((mc.vrSettings.walkUpBlocks || (mc.climbTracker.isGrabbingLadder() && mc.vrSettings.realisticClimbEnabled)) && player.fallDistance == 0)
     	{
     		if (torso == null)
     		{
@@ -568,7 +585,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
     				bb.maxY,
     				torso.zCoord + shrunkClimbHalfWidth);
 
-    		boolean iscollided = !mc.theWorld.getCollisionBoxes(player, bbClimb).isEmpty();
+    		boolean iscollided = !mc.world.getCollisionBoxes(player, bbClimb).isEmpty();
 
     		if(iscollided){
     			double xOffset = torso.xCoord - x;
@@ -584,16 +601,16 @@ public class OpenVRPlayer implements IRoomscaleAdapter
     			{
     				bb = bb.offset(0, .1, 0);
 
-    				emptySpot = mc.theWorld.getCollisionBoxes(player, bb).isEmpty();
+    				emptySpot = mc.world.getCollisionBoxes(player, bb).isEmpty();
     				if (emptySpot)
     				{
     	    			x += xOffset;  	
     	    			z += zOffset;
     					y += 0.1f*i;
     					
-    					player.lastTickPosX = player.prevPosX = player.posX = x;
-    					player.lastTickPosY = player.prevPosY = player.posY = y;
-    					player.lastTickPosZ = player.prevPosZ = player.posZ = z;
+    					player.posX = x;
+    					player.posY = y;
+    					player.posZ = z;
     					
     					player.setEntityBoundingBox(new AxisAlignedBB(bb.minX, bb.minY, bb.minZ, bb.maxX, bb.maxY, bb.maxZ));
 
@@ -615,7 +632,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 	   
     public void playFootstepSound( Minecraft mc, double x, double y, double z )
     { //TODO: re-implement
-//        Block block = mc.theWorld.getBlockState(MathHelper.floor_double(x),
+//        Block block = mc.world.getBlockState(MathHelper.floor_double(x),
 //                MathHelper.floor_double(y - 0.5f),
 //                MathHelper.floor_double(z));
 //
@@ -631,7 +648,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
     // use simple neck modeling to estimate torso location
     public Vec3d getEstimatedTorsoPosition(double x, double y, double z)
     {
-        Entity player = Minecraft.getMinecraft().thePlayer;
+        Entity player = Minecraft.getMinecraft().player;
         Vec3d look = player.getLookVec();
         Vec3d forward = new Vec3d(look.xCoord, 0, look.zCoord).normalize();
         float factor = (float)look.yCoord * 0.25f;
@@ -707,10 +724,19 @@ public class OpenVRPlayer implements IRoomscaleAdapter
             pos.yCoord + velocity.yCoord,
             pos.zCoord + velocity.zCoord);
 
-            RayTraceResult collision = mc.theWorld.rayTraceBlocks(pos, newPos, !mc.thePlayer.isInWater(), true, false);
+      	
+            boolean	water =false;
+            if(mc.vrSettings.seated )
+            	water = mc.entityRenderer.itemRenderer.inwater;
+            else{
+                water = mc.entityRenderer.itemRenderer.isInsideOfMaterial(start, Material.WATER);
+            }
+            
+            RayTraceResult collision = tpRaytrace(player.world, pos, newPos, !water, true, false);
 			
             if (collision != null && collision.typeOfHit != Type.MISS)
             {
+        		
                 movementTeleportArc[i] = new Vec3d(
                 		collision.hitVec.xCoord,
                 		collision.hitVec.yCoord,
@@ -741,12 +767,198 @@ public class OpenVRPlayer implements IRoomscaleAdapter
         }
     }
 
+    /**
+     * Performs a raycast against all blocks in the world. Args : Vec1, Vec2, stopOnLiquid,
+     * ignoreBlockWithoutBoundingBox, returnLastUncollidableBlock
+     */
+    public RayTraceResult tpRaytrace(World w, Vec3d vec31, Vec3d vec32, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock)
+    {
+        if (!Double.isNaN(vec31.xCoord) && !Double.isNaN(vec31.yCoord) && !Double.isNaN(vec31.zCoord))
+        {
+            if (!Double.isNaN(vec32.xCoord) && !Double.isNaN(vec32.yCoord) && !Double.isNaN(vec32.zCoord))
+            {
+                int i = MathHelper.floor(vec32.xCoord);
+                int j = MathHelper.floor(vec32.yCoord);
+                int k = MathHelper.floor(vec32.zCoord);
+                int l = MathHelper.floor(vec31.xCoord);
+                int i1 = MathHelper.floor(vec31.yCoord);
+                int j1 = MathHelper.floor(vec31.zCoord);
+                BlockPos blockpos = new BlockPos(l, i1, j1);
+                IBlockState iblockstate = w.getBlockState(blockpos);
+                Block block = iblockstate.getBlock();
+                if(iblockstate.getBlock() == Blocks.WATER){
+                	ignoreBlockWithoutBoundingBox = !stopOnLiquid;
+                }
+                if (block == Blocks.WATERLILY || (!ignoreBlockWithoutBoundingBox || iblockstate.getCollisionBoundingBox(w, blockpos) != Block.NULL_AABB) && block.canCollideCheck(iblockstate, stopOnLiquid))
+                {
+                    RayTraceResult raytraceresult = iblockstate.collisionRayTrace(w, blockpos, vec31, vec32);
+
+                    if (raytraceresult != null)
+                    {
+                        return raytraceresult;
+                    }
+                }
+
+                RayTraceResult raytraceresult2 = null;
+                int k1 = 200;
+
+                while (k1-- >= 0)
+                {
+                    if (Double.isNaN(vec31.xCoord) || Double.isNaN(vec31.yCoord) || Double.isNaN(vec31.zCoord))
+                    {
+                        return null;
+                    }
+
+                    if (l == i && i1 == j && j1 == k)
+                    {
+                        return returnLastUncollidableBlock ? raytraceresult2 : null;
+                    }
+
+                    boolean flag2 = true;
+                    boolean flag = true;
+                    boolean flag1 = true;
+                    double d0 = 999.0D;
+                    double d1 = 999.0D;
+                    double d2 = 999.0D;
+
+                    if (i > l)
+                    {
+                        d0 = (double)l + 1.0D;
+                    }
+                    else if (i < l)
+                    {
+                        d0 = (double)l + 0.0D;
+                    }
+                    else
+                    {
+                        flag2 = false;
+                    }
+
+                    if (j > i1)
+                    {
+                        d1 = (double)i1 + 1.0D;
+                    }
+                    else if (j < i1)
+                    {
+                        d1 = (double)i1 + 0.0D;
+                    }
+                    else
+                    {
+                        flag = false;
+                    }
+
+                    if (k > j1)
+                    {
+                        d2 = (double)j1 + 1.0D;
+                    }
+                    else if (k < j1)
+                    {
+                        d2 = (double)j1 + 0.0D;
+                    }
+                    else
+                    {
+                        flag1 = false;
+                    }
+
+                    double d3 = 999.0D;
+                    double d4 = 999.0D;
+                    double d5 = 999.0D;
+                    double d6 = vec32.xCoord - vec31.xCoord;
+                    double d7 = vec32.yCoord - vec31.yCoord;
+                    double d8 = vec32.zCoord - vec31.zCoord;
+
+                    if (flag2)
+                    {
+                        d3 = (d0 - vec31.xCoord) / d6;
+                    }
+
+                    if (flag)
+                    {
+                        d4 = (d1 - vec31.yCoord) / d7;
+                    }
+
+                    if (flag1)
+                    {
+                        d5 = (d2 - vec31.zCoord) / d8;
+                    }
+
+                    if (d3 == -0.0D)
+                    {
+                        d3 = -1.0E-4D;
+                    }
+
+                    if (d4 == -0.0D)
+                    {
+                        d4 = -1.0E-4D;
+                    }
+
+                    if (d5 == -0.0D)
+                    {
+                        d5 = -1.0E-4D;
+                    }
+
+                    EnumFacing enumfacing;
+
+                    if (d3 < d4 && d3 < d5)
+                    {
+                        enumfacing = i > l ? EnumFacing.WEST : EnumFacing.EAST;
+                        vec31 = new Vec3d(d0, vec31.yCoord + d7 * d3, vec31.zCoord + d8 * d3);
+                    }
+                    else if (d4 < d5)
+                    {
+                        enumfacing = j > i1 ? EnumFacing.DOWN : EnumFacing.UP;
+                        vec31 = new Vec3d(vec31.xCoord + d6 * d4, d1, vec31.zCoord + d8 * d4);
+                    }
+                    else
+                    {
+                        enumfacing = k > j1 ? EnumFacing.NORTH : EnumFacing.SOUTH;
+                        vec31 = new Vec3d(vec31.xCoord + d6 * d5, vec31.yCoord + d7 * d5, d2);
+                    }
+
+                    l = MathHelper.floor(vec31.xCoord) - (enumfacing == EnumFacing.EAST ? 1 : 0);
+                    i1 = MathHelper.floor(vec31.yCoord) - (enumfacing == EnumFacing.UP ? 1 : 0);
+                    j1 = MathHelper.floor(vec31.zCoord) - (enumfacing == EnumFacing.SOUTH ? 1 : 0);
+                    blockpos = new BlockPos(l, i1, j1);
+                    IBlockState iblockstate1 = w.getBlockState(blockpos);
+                    Block block1 = iblockstate1.getBlock();
+
+                    if (!ignoreBlockWithoutBoundingBox || iblockstate1.getMaterial() == Material.PORTAL || iblockstate1.getCollisionBoundingBox(w, blockpos) != Block.NULL_AABB)
+                    {
+                        if (block1.canCollideCheck(iblockstate1, stopOnLiquid))
+                        {
+                            RayTraceResult raytraceresult1 = iblockstate1.collisionRayTrace(w, blockpos, vec31, vec32);
+
+                            if (raytraceresult1 != null)
+                            {
+                                return raytraceresult1;
+                            }
+                        }
+                        else
+                        {
+                            raytraceresult2 = new RayTraceResult(RayTraceResult.Type.MISS, vec31, enumfacing, blockpos);
+                        }
+                    }
+                }
+
+                return returnLastUncollidableBlock ? raytraceresult2 : null;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        else
+        {
+            return null;
+        }
+    }
+    
     public void updateTeleportDestinations(EntityRenderer renderer, Minecraft mc, Entity player)
     {
         mc.mcProfiler.startSection("updateTeleportDestinations");
 
         // no teleporting if on a server that disallows teleporting
-        if (getFreeMoveMode())
+        if (getFreeMove())
         {
             movementTeleportDestination=new Vec3d(0,0,0);
             movementTeleportArcSteps = 0;
@@ -773,7 +985,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
                     aimDir.xCoord * movementTeleportDistance,
                     aimDir.yCoord * movementTeleportDistance,
                     aimDir.zCoord * movementTeleportDistance);
-            RayTraceResult collision = mc.theWorld.rayTraceBlocks(start, movementTeleportPos, !mc.thePlayer.isInWater(), true, false);
+            RayTraceResult collision = mc.world.rayTraceBlocks(start, movementTeleportPos, !mc.player.isInWater(), true, false);
             Vec3d traceDir = start.subtract(movementTeleportPos).normalize();
             Vec3d reverseEpsilon = new Vec3d(-traceDir.xCoord * 0.02, -traceDir.yCoord * 0.02, -traceDir.zCoord * 0.02);
 
@@ -792,131 +1004,88 @@ public class OpenVRPlayer implements IRoomscaleAdapter
     // look for a valid place to stand on the block that the trace collided with
     private boolean checkAndSetTeleportDestination(Minecraft mc, Entity player, Vec3d start, RayTraceResult collision, Vec3d reverseEpsilon)
     {
-    	boolean bFoundValidSpot = false;
 
+    	BlockPos bp = collision.getBlockPos();
+    	IBlockState testClimb = player.world.getBlockState(bp);
+    	if (testClimb.getBlock() == Blocks.WATER){
+    		Vec3d hitVec = new Vec3d(collision.hitVec.xCoord, bp.getY(), collision.hitVec.zCoord );
 
-    	if (collision.sideHit != EnumFacing.UP) 
-    	{ //sides
-    		//jrbudda require arc hitting top of block.	unless ladder or vine.
-    		BlockPos bp = collision.getBlockPos();
-    		Block testClimb = player.worldObj.getBlockState(bp).getBlock();
-    		//	System.out.println(testClimb.getUnlocalizedName() + " " + collision.typeOfHit + " " + collision.sideHit);
+    		Vec3d offset = hitVec.subtract(player.posX, player.getEntityBoundingBox().minY, player.posZ);
+    		AxisAlignedBB bb = player.getEntityBoundingBox().offset(offset.xCoord, offset.yCoord, offset.zCoord);
+    		boolean emptySpotReq = mc.world.getCollisionBoxes(player,bb).isEmpty();
 
-    		if ( testClimb == Blocks.LADDER || testClimb == Blocks.VINE) {
+    		if(!emptySpotReq){
+    			Vec3d center = new Vec3d(bp).addVector(0.5, 0, 0.5);
+    			offset = center.subtract(player.posX, player.getEntityBoundingBox().minY, player.posZ);
+    			bb = player.getEntityBoundingBox().offset(offset.xCoord, offset.yCoord, offset.zCoord);
+    			emptySpotReq = mc.world.getCollisionBoxes(player,bb).isEmpty(); 	
+    		}
+    		float ex = 0;
+    		if(mc.vrSettings.seated)ex = 0.5f;
+    		if(emptySpotReq){
+    			movementTeleportDestination = new Vec3d(bb.minX + 0.5f,bb.minY+ex, bb.minZ+ 0.5f);
+
+    			movementTeleportDestinationSideHit = collision.sideHit;
+    			return true;
+    		}
+
+    	} else if (collision.sideHit != EnumFacing.UP) 
+    	{ //sides  		    		
+    		//jrbudda require arc hitting top of block.	unless ladder or vine or creative or limits off.
+
+    		if (testClimb.getBlock() == Blocks.LADDER || testClimb.getBlock() == Blocks.VINE) {
     			Vec3d dest = new Vec3d(bp.getX()+0.5, bp.getY() + 0.5, bp.getZ()+0.5);
 
-    			Block playerblock = mc.theWorld.getBlockState(bp.down()).getBlock();
-    			if(playerblock == testClimb) dest = dest.addVector(0,-1,0);
+    			Block playerblock = mc.world.getBlockState(bp.down()).getBlock();
+    			if(playerblock == testClimb.getBlock()) dest = dest.addVector(0,-1,0);
 
     			movementTeleportDestination = dest.scale(1);
 
     			movementTeleportDestinationSideHit = collision.sideHit;
     			return true; //really should check if the block above is passable. Maybe later.
     		} else {
-    			if (!mc.thePlayer.capabilities.allowFlying && mc.vrSettings.vrLimitedSurvivalTeleport) {return false;} //if creative, check if can hop on top.
+    			if (!mc.player.capabilities.allowFlying && mc.vrSettings.vrLimitedSurvivalTeleport) {return false;} //if creative, check if can hop on top.
     		}
     	}
 
     	double y = 0;
     	BlockPos hitBlock = collision.getBlockPos().down();
-    	   	
+
     	for(int k = 0; k<2; k++){
 
-        	IBlockState testClimb = player.worldObj.getBlockState(hitBlock);
-        	Vec3d hitVec = new Vec3d(collision.hitVec.xCoord, hitBlock.getY() + testClimb.getBoundingBox(mc.theWorld, hitBlock).maxY, collision.hitVec.zCoord );
-	   	   	Vec3d offset = hitVec.subtract(player.posX, player.getEntityBoundingBox().minY, player.posZ);
-	    	AxisAlignedBB bb = player.getEntityBoundingBox().offset(offset.xCoord, offset.yCoord, offset.zCoord);
-			boolean emptySpotReq = mc.theWorld.getCollisionBoxes(player,bb).isEmpty() &&
-					!mc.theWorld.getCollisionBoxes(player,bb.expand(0, .125, 0)).isEmpty();     
-	    	
-			if(!emptySpotReq){
-				Vec3d center = new Vec3d(hitBlock).addVector(0.5, testClimb.getBoundingBox(mc.theWorld, hitBlock).maxY, 0.5);
-				offset = center.subtract(player.posX, player.getEntityBoundingBox().minY, player.posZ);
-				bb = player.getEntityBoundingBox().offset(offset.xCoord, offset.yCoord, offset.zCoord);
-				emptySpotReq = mc.theWorld.getCollisionBoxes(player,bb).isEmpty() &&
-					!mc.theWorld.getCollisionBoxes(player,bb.expand(0, .125, 0)).isEmpty();     	
-			}
-	    	
-			if(emptySpotReq){
-				Vec3d dest = new Vec3d(bb.func_189972_c().xCoord, hitBlock.getY() + testClimb.getBoundingBox(mc.theWorld, hitBlock).maxY, bb.func_189972_c().zCoord);
-				float maxTeleportDist = 16.0f;		
+    		testClimb = player.world.getBlockState(hitBlock);
+    		Vec3d hitVec = new Vec3d(collision.hitVec.xCoord, hitBlock.getY() + testClimb.getBoundingBox(mc.world, hitBlock).maxY, collision.hitVec.zCoord );
+    		Vec3d offset = hitVec.subtract(player.posX, player.getEntityBoundingBox().minY, player.posZ);
+    		AxisAlignedBB bb = player.getEntityBoundingBox().offset(offset.xCoord, offset.yCoord, offset.zCoord);
+    		double ex = 0;
+    		if (testClimb.getBlock() == Blocks.SOUL_SAND) ex = 0.05;
 
-				if (start.distanceTo(dest)  > maxTeleportDist) return false;
-				
-				movementTeleportDestination = dest.scale(1);
-				movementTeleportDistance = start.distanceTo(movementTeleportDestination);
-				bFoundValidSpot = true;
-				return true;
-			}
-			
-			hitBlock = hitBlock.up();
+    		boolean emptySpotReq = mc.world.getCollisionBoxes(player,bb).isEmpty() &&
+    				!mc.world.getCollisionBoxes(player,bb.expand(0, .125 + ex, 0)).isEmpty();     
+
+    		if(!emptySpotReq){
+    			Vec3d center = new Vec3d(hitBlock).addVector(0.5, testClimb.getBoundingBox(mc.world, hitBlock).maxY, 0.5);
+    			offset = center.subtract(player.posX, player.getEntityBoundingBox().minY, player.posZ);
+    			bb = player.getEntityBoundingBox().offset(offset.xCoord, offset.yCoord, offset.zCoord);
+    			emptySpotReq = mc.world.getCollisionBoxes(player,bb).isEmpty() &&
+    					!mc.world.getCollisionBoxes(player,bb.expand(0, .125 + ex, 0)).isEmpty();     	
+    		}
+
+    		if(emptySpotReq){
+    			Vec3d dest = new Vec3d(bb.minX + 0.5f, hitBlock.getY() + testClimb.getBoundingBox(mc.world, hitBlock).maxY, bb.minZ + 0.5f);
+    			float maxTeleportDist = 16.0f;		
+
+    			if (start.distanceTo(dest)  > maxTeleportDist) return false;
+
+    			movementTeleportDestination = dest.scale(1);
+    			movementTeleportDistance = start.distanceTo(movementTeleportDestination);
+    			return true;
+    		}
+
+    		hitBlock = hitBlock.up();
     	}
 
-//    	// search for a solid block with two empty blocks above it
-//    	int startBlockY = hitBlock.getY() -1 ; 
-//    	startBlockY = Math.max(startBlockY, 0);
-//    	for (int by = startBlockY; by < startBlockY + 2; by++)
-//    	{
-//    		if (canStand(player.worldObj,hitBlock))
-//    		{
-//
-//    			float var27 = 0.0625F; //uhhhh? carpet?
-//
-//    			double ox = hitVec.xCoord - player.posX;
-//    			double oy = by + 1 - player.posY;
-//    			double oz = hitVec.zCoord - player.posZ;
-//    			AxisAlignedBB bb = player.getEntityBoundingBox().contract((double)var27).offset(ox, oy, oz); 
-//    			bb=new AxisAlignedBB(bb.minX,by+1f +var27 , bb.minZ, bb.maxX, by+2.8f- var27, bb.maxZ);
-//    			boolean emptySpotReq = mc.theWorld.getCollisionBoxes(player,bb).isEmpty();
-//
-//    			double ox2 = hitBlock.getX() + 0.5f - player.posX;
-//    			double oy2 = by + 1.0f - player.posY;
-//    			double oz2 = hitBlock.getZ() + 0.5f - player.posZ;
-//    			AxisAlignedBB bb2 = player.getEntityBoundingBox().contract(var27).offset(ox2, oy2, oz2);
-//    			bb2=new AxisAlignedBB(bb2.minX,by+ 1f +var27  , bb2.minZ, bb2.maxX, by+2.8f - var27, bb2.maxZ);
-//
-//    			boolean emptySpotCenter = mc.theWorld.getCollisionBoxes(player,bb2).isEmpty();
-//
-//    			//List l = mc.theWorld.getCollisionBoxes(player,bb2);
-//
-//    			Vec3d dest;
-//
-//    			//teleport to exact spot unless collision, then teleport to center.
-//
-//    			if (emptySpotReq) {           	
-//    				dest = new Vec3d(hitVec.xCoord, by + 1 ,hitVec.zCoord);
-//    			}
-//    			else {
-//    				dest = new Vec3d(hitBlock.getX() + 0.5f, by + 1f, hitBlock.getZ() + 0.5f);
-//    			}
-//
-//    			IBlockState testClimb = player.worldObj.getBlockState(new BlockPos(dest));
-//    			if(!testClimb.isFullBlock()) 
-//    				dest = new Vec3d(dest.xCoord, dest.yCoord+testClimb.getBoundingBox(mc.theWorld, hitBlock).maxY, dest.zCoord);
-//
-//    			float maxTeleportDist = 16.0f;		
-//    			
-//    			if (start.distanceTo(dest) <= maxTeleportDist && (emptySpotReq || emptySpotCenter))
-//    			{
-//
-//    				double y = 1; //TODO: Re-implement testClimb.getBlockBoundsMaxY();
-//    				if (testClimb == Blocks.FARMLAND) y = 1f; //cheeky bastard
-//
-//    				movementTeleportDestination = dest.scale(1);
-//
-//    				bFoundValidSpot = true;
-//
-//    				break;
-//
-//    			}
-//    		}
-//
-//    	}
-//
-//    	if(bFoundValidSpot) { movementTeleportDistance = start.distanceTo(movementTeleportDestination);}
-//
-//    	return bFoundValidSpot;
-		return false;
+    	return false;
     }
 
     private boolean canStand(World w, BlockPos bp){
@@ -976,11 +1145,14 @@ public class OpenVRPlayer implements IRoomscaleAdapter
     public void updateSwingAttack()
     {
         Minecraft mc = Minecraft.getMinecraft();
-        EntityPlayerSP player = mc.thePlayer;
+        EntityPlayerSP player = mc.player;
 
         if (!mc.vrSettings.weaponCollision)
             return;
 
+        if (mc.vrSettings.seated)
+            return;
+        
         if(mc.vrSettings.vrFreeMoveMode == mc.vrSettings.FREEMOVE_RUNINPLACE && player.moveForward > 0){
         	return; //dont hit things while RIPing.
         }
@@ -989,12 +1161,16 @@ public class OpenVRPlayer implements IRoomscaleAdapter
         	return; //dont hit things while blocking.
         }
         
+        if(mc.jumpTracker.isjumping()) return;
+        
         mc.mcProfiler.startSection("updateSwingAttack");
-
+        
+        Vec3d forward = new Vec3d(0,0,-1);
+        
         for(int c =0 ;c<2;c++){
 
         	Vec3d handPos = this.getControllerPos_World(c);
-        	Vec3d handDirection = this.getControllerDir_World(c);
+        	Vec3d handDirection = getCustomHandVector(c, forward);
 
         	ItemStack is = player.getHeldItem(c==0?EnumHand.MAIN_HAND:EnumHand.OFF_HAND);
         	Item item = null;
@@ -1046,9 +1222,9 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 
 //        	int passes = (int) (tickDist / .1f); //TODO someday....
 
-        	int bx = (int) MathHelper.floor_double(weaponEnd[c].xCoord);
-        	int by = (int) MathHelper.floor_double(weaponEnd[c].yCoord);
-        	int bz = (int) MathHelper.floor_double(weaponEnd[c].zCoord);
+        	int bx = (int) MathHelper.floor(weaponEnd[c].xCoord);
+        	int by = (int) MathHelper.floor(weaponEnd[c].yCoord);
+        	int bz = (int) MathHelper.floor(weaponEnd[c].zCoord);
 
         	boolean inAnEntity = false;
         	boolean insolidBlock = false;
@@ -1070,20 +1246,23 @@ public class OpenVRPlayer implements IRoomscaleAdapter
         													handPos.zCoord > extWeapon.zCoord ? handPos.zCoord : extWeapon.zCoord  
         			);
 
-        	List entities = mc.theWorld.getEntitiesWithinAABBExcludingEntity(
+        	List entities = mc.world.getEntitiesWithinAABBExcludingEntity(
         			mc.getRenderViewEntity(), weaponBB);
         	for (int e = 0; e < entities.size(); ++e)
         	{
         		Entity hitEntity = (Entity) entities.get(e);
         		if (hitEntity.canBeCollidedWith() && !(hitEntity == mc.getRenderViewEntity().getRidingEntity()) )			{
-        			if(hitEntity instanceof EntityAnimal && !tool && !lastWeaponSolid[c]){
-        				mc.playerController.interactWithEntity(player, hitEntity, is, c==0?EnumHand.MAIN_HAND:EnumHand.OFF_HAND);
+        			if(mc.vrSettings.animaltouching && hitEntity instanceof EntityAnimal && !tool && !lastWeaponSolid[c]){
+        				mc.playerController.interactWithEntity(player, hitEntity, is,c==0?EnumHand.MAIN_HAND:EnumHand.OFF_HAND);
+        				MCOpenVR.triggerHapticPulse(c, 250);
+        				lastWeaponSolid[c] = true;
+        				inAnEntity = true;
         			} 
         			else 
         			{
         				if(canact){
         					mc.playerController.attackEntity(player, hitEntity);
-        					this.triggerHapticPulse(c, 1000);
+        					MCOpenVR.triggerHapticPulse(c, 1000);
         					lastWeaponSolid[c] = true;
         				}
         				inAnEntity = true;
@@ -1091,30 +1270,34 @@ public class OpenVRPlayer implements IRoomscaleAdapter
         		}
         	}
 
-
         	if(!inAnEntity){
+        		if(mc.climbTracker.isClimbeyClimb()){
+        			if(c == 0 && mc.gameSettings.keyBindAttack.isKeyDown() || !tool ) continue;
+        			if(c == 1 && mc.gameSettings.keyBindForward.isKeyDown() || !tool ) continue;
+        		}
+        		
         		BlockPos bp =null;
         		bp = new BlockPos(weaponEnd[c]);
-        		IBlockState block = mc.theWorld.getBlockState(bp);
+        		IBlockState block = mc.world.getBlockState(bp);
         		Material material = block.getMaterial();
 
         		// every time end of weapon enters a solid for the first time, trace from our previous air position
         		// and damage the block it collides with... 
 
-        		RayTraceResult col = mc.theWorld.rayTraceBlocks(lastWeaponEndAir[c], weaponEnd[c], true, false, true);
-
-        		if (shouldIlookatMyHand[c] || (col != null && col.typeOfHit == Type.BLOCK))
+        		RayTraceResult col = mc.world.rayTraceBlocks(lastWeaponEndAir[c], weaponEnd[c], true, false, true);
+        		boolean flag = col!=null && col.getBlockPos().equals(bp); //fix ladder but prolly break everything else.
+        		if (flag && (shouldIlookatMyHand[c] || (col != null && col.typeOfHit == Type.BLOCK)))
         		{
         			this.shouldIlookatMyHand[c] = false;
         			if (!(material == material.AIR))
         			{
         				if (block.getMaterial().isLiquid()) {
         					if(item == Items.BUCKET) {       						
-        						//mc.playerController.onPlayerRightClick(player, player.worldObj,is, col.blockX, col.blockY, col.blockZ, col.sideHit,col.hitVec);
+        						//mc.playerController.onPlayerRightClick(player, player.world,is, col.blockX, col.blockY, col.blockZ, col.sideHit,col.hitVec);
         						this.shouldIlookatMyHand[c] = true;
         						if (IAmLookingAtMyHand[c]){
 
-        							if(	Minecraft.getMinecraft().playerController.processRightClick(player, player.worldObj,is,c==0?EnumHand.MAIN_HAND:EnumHand.OFF_HAND)==EnumActionResult.SUCCESS){
+        							if(	Minecraft.getMinecraft().playerController.processRightClick(player, player.world,is,c==0?EnumHand.MAIN_HAND:EnumHand.OFF_HAND)==EnumActionResult.SUCCESS){
         								mc.entityRenderer.itemRenderer.resetEquippedProgress(c==0?EnumHand.MAIN_HAND:EnumHand.OFF_HAND);					
         							}
         						}
@@ -1122,34 +1305,40 @@ public class OpenVRPlayer implements IRoomscaleAdapter
         				} else {
         					if(canact && (!mc.vrSettings.realisticClimbEnabled || block.getBlock() != Blocks.LADDER)) { 
         						int p = 3;
-        						p += (speed - speedthresh) / 2;
+        						if(item instanceof ItemHoe){
+        							Minecraft.getMinecraft().playerController.
+        							processRightClickBlock(player, (WorldClient) player.world,is,bp,col.sideHit, col.hitVec, c==0?EnumHand.MAIN_HAND:EnumHand.OFF_HAND);
+        						}else{
+        							p += (speed - speedthresh) / 2;
 
-        						for (int i = 0; i < p; i++)
-        						{
-        							//set delay to 0
-        							clearBlockHitDelay();			
+        							for (int i = 0; i < p; i++)
+        							{
+        								//set delay to 0
+        								clearBlockHitDelay();			
+        								boolean test = mc.climbTracker.isGrabbingLadder();
+        								//all this comes from plaeyrControllerMP clickMouse and friends.
 
-        							//all this comes from plaeyrControllerMP clickMouse and friends.
+        								//all this does is sets the block you're currently hitting, has no effect in survival mode after that.
+        								//but if in creaive mode will clickCreative on the block
+        								mc.playerController.clickBlock(col.getBlockPos(), col.sideHit);
 
-        							//all this does is sets the block you're currently hitting, has no effect in survival mode after that.
-        							//but if in creaive mode will clickCreative on the block
-        							mc.playerController.clickBlock(col.getBlockPos(), col.sideHit);
+        								if(!getIsHittingBlock()) //seems to be the only way to tell it broke.
+        									break;
 
-        							if(!getIsHittingBlock()) //seems to be the only way to tell it broke.
-        								break;
+        								//apply destruction for survival only
+        								mc.playerController.onPlayerDamageBlock(col.getBlockPos(), col.sideHit);
 
-        							//apply destruction for survival only
-        							mc.playerController.onPlayerDamageBlock(col.getBlockPos(), col.sideHit);
+        								if(!getIsHittingBlock()) //seems to be the only way to tell it broke.
+        									break;
 
-        							if(!getIsHittingBlock()) //seems to be the only way to tell it broke.
-        								break;
+        								//something effects
+        								mc.effectRenderer.addBlockHitEffects(col.getBlockPos(), col.sideHit);
 
-        							//something effects
-        							mc.effectRenderer.addBlockHitEffects(col.getBlockPos(), col.sideHit);
-
+        							}
         						}
+        						blockDust(col.hitVec.xCoord, col.hitVec.yCoord, col.hitVec.zCoord, 3*p, block);
 
-        						this.triggerHapticPulse(c, 250*p);
+        						MCOpenVR.triggerHapticPulse(c, 250*p);
         						//   System.out.println("Hit block speed =" + speed + " mot " + mot + " thresh " + speedthresh) ;            				
         						lastWeaponSolid[c] = true;
         					}
@@ -1175,23 +1364,38 @@ public class OpenVRPlayer implements IRoomscaleAdapter
         mc.mcProfiler.endSection();
     }
     
+	private Random rand = new Random();
+
+    
+	public void blockDust(double x, double y, double z, int count, IBlockState bs){
+		for (int i = 0; i < count; ++i)
+		{
+			Minecraft.getMinecraft().world.spawnParticle(EnumParticleTypes.BLOCK_DUST,
+					x+ ((double)this.rand.nextFloat() - 0.5D)*.02f,
+					y + ((double)this.rand.nextFloat() - 0.5D)*.02f,
+					z + ((double)this.rand.nextFloat()- 0.5D)*.02f,
+					((double)this.rand.nextFloat()- 0.5D)*.1f,((double)this.rand.nextFloat()- 0.5D)*.05f,((double)this.rand.nextFloat()- 0.5D)*.1f,
+					new int[] {Block.getStateId(bs)});      	
+		}
+	}
+    
 	private boolean getIsHittingBlock(){
-		return	Minecraft.getMinecraft().playerController.isHittingBlock;
+		return (Boolean)MCReflection.getField(MCReflection.PlayerControllerMP_isHittingBlock, Minecraft.getMinecraft().playerController);
 	}
 	
     // VIVE START - function to allow damaging blocks immediately
 	private void clearBlockHitDelay() { 
-		Minecraft.getMinecraft().playerController.blockHitDelay = 0;
+		MCReflection.setField(MCReflection.PlayerControllerMP_blockHitDelay, Minecraft.getMinecraft().playerController, 0);
 	}
         
-	public boolean getFreeMoveMode() { return freeMoveMode; }
+	public boolean getFreeMove() { return isFreeMoveCurrent; }
 	
-	public void setFreeMoveMode(boolean free) { 
-		boolean was = freeMoveMode;
-		freeMoveMode = free;
+	public void setFreeMove(boolean free) { 
+		boolean was = isFreeMoveCurrent;
+		isFreeMoveCurrent = free;
 
 		if(free != was){
-			CPacketCustomPayload pack =	NetworkHelper.getVivecraftClientPacket(PacketDiscriminators.MOVEMODE, freeMoveMode ?  new byte[]{1} : new byte[]{0});
+			CPacketCustomPayload pack =	NetworkHelper.getVivecraftClientPacket(PacketDiscriminators.MOVEMODE, isFreeMoveCurrent ?  new byte[]{1} : new byte[]{0});
 			
 			if(Minecraft.getMinecraft().getConnection() !=null)
 				Minecraft.getMinecraft().getConnection().sendPacket(pack);
@@ -1214,12 +1418,12 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 	public float getTeleportEnergy () {return teleportEnergy;}
 
 
-	Vec3d getWalkMultOffset(){
-		EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+	public Vec3d getWalkMultOffset(){
+		EntityPlayerSP player = Minecraft.getMinecraft().player;
 		if(player==null || !player.initFromServer)
 			return Vec3d.ZERO;
 		float walkmult=Minecraft.getMinecraft().vrSettings.walkMultiplier;
-		Vec3d pos=vecMult(MCOpenVR.getCenterEyePosition(),worldScale);
+		Vec3d pos=vecMult(MCOpenVR.getCenterEyePosition(),interpolatedWorldScale);
 		return new Vec3d(pos.xCoord*walkmult,pos.yCoord,pos.zCoord*walkmult).subtract(pos);
 	}
 
@@ -1228,6 +1432,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 	
 	public float worldScale =  Minecraft.getMinecraft().vrSettings.vrWorldScale;
 	public float worldRotationRadians;
+	public float interpolatedWorldScale =  Minecraft.getMinecraft().vrSettings.vrWorldScale;
 	
 	@Override
 	public boolean isHMDTracking() {
@@ -1240,8 +1445,8 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 	
 	@Override
 	public Vec3d getHMDPos_World() {
-		Vec3d out = vecMult(MCOpenVR.getCenterEyePosition(),worldScale).rotateYaw(worldRotationRadians)
-				.add(getWalkMultOffset());
+		Vec3d out = vecMult(MCOpenVR.getCenterEyePosition(),interpolatedWorldScale).add(getWalkMultOffset()).rotateYaw(worldRotationRadians);
+				
 		return out.addVector(roomOrigin.xCoord, roomOrigin.yCoord, roomOrigin.zCoord);
 	}
 
@@ -1269,7 +1474,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 		return roomOrigin;
 	}
 	
-	private Vec3d getInterpolatedRoomOriginPos_World(float nano) {
+	public Vec3d getInterpolatedRoomOriginPos_World(float nano) {
 		Vec3d out = new Vec3d(
 		lastroomOrigin.xCoord + (roomOrigin.xCoord - lastroomOrigin.xCoord) * (double)nano,
 		lastroomOrigin.yCoord + (roomOrigin.yCoord - lastroomOrigin.yCoord) * (double)nano,
@@ -1283,11 +1488,6 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 	}
 	
 	@Override
-	public void triggerHapticPulse(int controller, int strength) {
-		MCOpenVR.triggerHapticPulse(controller, strength);
-	}
-
-	@Override
 	public FloatBuffer getHMDMatrix_World() {
 		Matrix4f out = MCOpenVR.hmdRotation;
 		Matrix4f rot = Matrix4f.rotationY(worldRotationRadians);
@@ -1296,14 +1496,19 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 	
 	@Override
 	public Vec3d getEyePos_World(renderPass eye) {
-		Vec3d out = vecMult(MCOpenVR.getEyePosition(eye),worldScale).rotateYaw(worldRotationRadians)
-				.add(getWalkMultOffset());
+		Vec3d out = vecMult(MCOpenVR.getEyePosition(eye),interpolatedWorldScale).add(getWalkMultOffset()).rotateYaw(worldRotationRadians);			
 		return out.addVector(roomOrigin.xCoord, roomOrigin.yCoord, roomOrigin.zCoord);
 	}
 	
 
 	@Override
 	public FloatBuffer getControllerMatrix_World(int controller) {
+		Matrix4f out = MCOpenVR.getAimRotation(controller);
+		Matrix4f rot = Matrix4f.rotationY(worldRotationRadians);
+		return Matrix4f.multiply(rot,out).toFloatBuffer();
+	}
+	
+	public FloatBuffer getControllerMatrix_World_Transposed(int controller) {
 		Matrix4f out = MCOpenVR.getAimRotation(controller);
 		Matrix4f rot = Matrix4f.rotationY(worldRotationRadians);
 		return Matrix4f.multiply(rot,out).transposed().toFloatBuffer();
@@ -1325,19 +1530,18 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 	
 	@Override
 	public Vec3d getHMDPos_Room() {
-		return vecMult(MCOpenVR.getCenterEyePosition(),worldScale).add(getWalkMultOffset());
+		return vecMult(MCOpenVR.getCenterEyePosition(),interpolatedWorldScale).add(getWalkMultOffset());
 
 	}
 
 	@Override
 	public Vec3d getControllerPos_Room(int i) {
-		return vecMult(MCOpenVR.getAimSource(i),worldScale).add(getWalkMultOffset());
+		return vecMult(MCOpenVR.getAimSource(i),interpolatedWorldScale).add(getWalkMultOffset());
 	}
 	
 	@Override
 	public Vec3d getEyePos_Room(renderPass eye) {
-		return vecMult(MCOpenVR.getEyePosition(eye),worldScale).add(getWalkMultOffset());
-
+		return vecMult(MCOpenVR.getEyePosition(eye),interpolatedWorldScale).add(getWalkMultOffset());
 	}
 
 	@Override
@@ -1345,6 +1549,10 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 		return MCOpenVR.hmdRotation.toFloatBuffer();
 	}
 
+	public FloatBuffer getHMDMatrix_Roomalt() {
+		return MCOpenVR.hmdRotation.inverted().toFloatBuffer();
+	}
+	
 	@Override
 	public float getControllerYaw_Room(int controller) {
 		if(controller == 0) return MCOpenVR.aimYaw;
@@ -1359,7 +1567,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 
 	@Override
 	public Vec3d getControllerPos_World(int c) {
-		Vec3d out = vecMult(MCOpenVR.getAimSource(c),worldScale).add(getWalkMultOffset());
+		Vec3d out = vecMult(MCOpenVR.getAimSource(c),interpolatedWorldScale).add(getWalkMultOffset());
 		out =out.rotateYaw(worldRotationRadians);
 		return out.addVector(roomOrigin.xCoord, roomOrigin.yCoord, roomOrigin.zCoord);
 	}
@@ -1383,8 +1591,15 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 	}
 
 	@Override
+	public float getControllerRoll_World(int controller) {
+		org.lwjgl.util.vector.Matrix4f mat = (org.lwjgl.util.vector.Matrix4f)new org.lwjgl.util.vector.Matrix4f().load(getControllerMatrix_World(controller));
+		return (float)-Math.toDegrees(Math.atan2(mat.m10, mat.m11));
+	}
+
+	@Override
 	public Vec3d getControllerDir_World(int c) {
 		Vector3f v3 = c==0?MCOpenVR.controllerDirection : MCOpenVR.lcontrollerDirection;
+		if(c==2)v3=MCOpenVR.thirdcontrollerDirection;
 		Vec3d out = new Vec3d(v3.x, v3.y, v3.z).rotateYaw(worldRotationRadians);
 		return out;
 	}
@@ -1394,7 +1609,11 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 		return MCOpenVR.controllerTracking[c];
 	}
 	
-
+	public Vec3d getCustomHandVector(int controller, Vec3d axis) {
+		Vector3f v3 = MCOpenVR.getHandRotation(controller).transform(new Vector3f((float)axis.xCoord, (float)axis.yCoord,(float) axis.zCoord));
+		Vec3d out =  new Vec3d(v3.x, v3.y, v3.z).rotateYaw(worldRotationRadians);
+		return out;
+	}
 	
 }
 

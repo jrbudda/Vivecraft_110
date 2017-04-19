@@ -23,6 +23,7 @@ public class ItemFoodWonder extends ItemFood
 	public ItemFoodWonder(int amount, float saturation, boolean isWolfFood) {
 		super(amount, saturation, isWolfFood);
 		if (amount == 1) this.isDrink =true;
+		this.setAlwaysEdible();
 	}
 
 	private boolean isDrink =false; 
@@ -30,12 +31,13 @@ public class ItemFoodWonder extends ItemFood
     /**
      * returns the action that specifies what animation to play when the items is being used
      */
+	 @Override
     public EnumAction getItemUseAction(ItemStack stack)
     {
     	if(this.isDrink) return EnumAction.DRINK;
         return EnumAction.EAT;
     }
-	
+    @Override
     protected void onFoodEaten(ItemStack stack, World worldIn, EntityPlayer player)
     {
     	if(player instanceof EntityPlayerSP){
@@ -44,12 +46,15 @@ public class ItemFoodWonder extends ItemFood
     	}
     }
 	
-    public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(ItemStack item, World worldIn, EntityPlayer playerIn, EnumHand handIn)
     {
-            playerIn.setActiveHand(hand);
-            return new ActionResult(EnumActionResult.SUCCESS, itemStackIn);
+    		ItemStack itemstack = playerIn.getHeldItem(handIn);
+            playerIn.setActiveHand(handIn);
+            return new ActionResult(EnumActionResult.SUCCESS, itemstack);
     }
     
+    @Override
     public String getItemStackDisplayName(ItemStack stack)
     {
     	if(isDrink) return "\"DRINK ME\"";

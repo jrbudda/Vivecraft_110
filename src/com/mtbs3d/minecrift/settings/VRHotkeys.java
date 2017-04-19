@@ -120,11 +120,11 @@ public class VRHotkeys {
 		{
 			// for testing restricted client mode
 			
-			if (mc.vrPlayer.getFreeMoveMode()) {
-				mc.vrPlayer.setFreeMoveMode(false);
+			if (mc.vrPlayer.getFreeMove()) {
+				mc.vrPlayer.setFreeMove(false);
 							mc.printChatMessage("Restricted movement disabled (teleporting allowed)");
 				} else {
-				mc.vrPlayer.setFreeMoveMode(true);
+				mc.vrPlayer.setFreeMove(true);
 				mc.printChatMessage("Restricted movement enabled (no teleporting)");
 			}
 			
@@ -132,32 +132,32 @@ public class VRHotkeys {
 		}
 		
 		
-		if (Keyboard.getEventKey() == Keyboard.KEY_LEFT && Keyboard.isKeyDown(Keyboard.KEY_RCONTROL))
+		if (Keyboard.getEventKey() == Keyboard.KEY_LEFT && Keyboard.isKeyDown(Keyboard.KEY_RCONTROL) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 		{
 			mc.vrSettings.vrFixedCamposX -= 0.01;
 			gotKey = true;
 		}
-		if (Keyboard.getEventKey() == Keyboard.KEY_RIGHT&& Keyboard.isKeyDown(Keyboard.KEY_RCONTROL))
+		if (Keyboard.getEventKey() == Keyboard.KEY_RIGHT&& Keyboard.isKeyDown(Keyboard.KEY_RCONTROL) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 		{
 			mc.vrSettings.vrFixedCamposX += 0.01;
 			gotKey = true;
 		}
-		if (Keyboard.getEventKey() == Keyboard.KEY_UP&& Keyboard.isKeyDown(Keyboard.KEY_RCONTROL))
+		if (Keyboard.getEventKey() == Keyboard.KEY_UP&& Keyboard.isKeyDown(Keyboard.KEY_RCONTROL) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 		{
 			mc.vrSettings.vrFixedCamposZ -= 0.01;
 			gotKey = true;
 		}
-		if (Keyboard.getEventKey() == Keyboard.KEY_DOWN && Keyboard.isKeyDown(Keyboard.KEY_RCONTROL))
+		if (Keyboard.getEventKey() == Keyboard.KEY_DOWN && Keyboard.isKeyDown(Keyboard.KEY_RCONTROL) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 		{
 			mc.vrSettings.vrFixedCamposZ += 0.01;
 			gotKey = true;
 		}
-		if (Keyboard.getEventKey() == Keyboard.KEY_PRIOR && Keyboard.isKeyDown(Keyboard.KEY_RCONTROL))
+		if (Keyboard.getEventKey() == Keyboard.KEY_PRIOR && Keyboard.isKeyDown(Keyboard.KEY_RCONTROL) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 		{
 			mc.vrSettings.vrFixedCamposY += 0.01;
 			gotKey = true;
 		}
-		if (Keyboard.getEventKey() == Keyboard.KEY_NEXT && Keyboard.isKeyDown(Keyboard.KEY_RCONTROL))
+		if (Keyboard.getEventKey() == Keyboard.KEY_NEXT && Keyboard.isKeyDown(Keyboard.KEY_RCONTROL) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 		{
 			mc.vrSettings.vrFixedCamposY -= 0.01;
 			gotKey = true;
@@ -207,7 +207,7 @@ public class VRHotkeys {
 		}
 		if (Keyboard.getEventKey() == Keyboard.KEY_HOME && Keyboard.isKeyDown(Keyboard.KEY_RCONTROL))
 		{
-			snapMRCam(mc);
+			snapMRCam(mc, 0);
 			gotKey = true;
 		}
 		if(Keyboard.getEventKey() == Keyboard.KEY_F12){
@@ -224,14 +224,15 @@ public class VRHotkeys {
 		return gotKey;
 	}
 
-	public static void snapMRCam(Minecraft mc) {
-		Vec3d pos = Minecraft.getMinecraft().roomScale.getControllerPos_Room(0);
-		mc.vrSettings.vrFixedCamposX = (float) pos.xCoord /mc.vrPlayer.worldScale;
-		mc.vrSettings.vrFixedCamposY = (float) pos.yCoord /mc.vrPlayer.worldScale;
-		mc.vrSettings.vrFixedCamposZ = (float) pos.zCoord /mc.vrPlayer.worldScale;
+	public static void snapMRCam(Minecraft mc, int controller) {
+		
+		mc.vrSettings.vrFixedCamposX =(float) MCOpenVR.getAimSource(controller).xCoord;
+		mc.vrSettings.vrFixedCamposY =(float) MCOpenVR.getAimSource(controller).yCoord;
+		mc.vrSettings.vrFixedCamposZ =(float) MCOpenVR.getAimSource(controller).zCoord;	
+		
+		mc.vrSettings.vrFixedCamrotPitch = mc.vrPlayer.getControllerPitch_Room(controller);
+		mc.vrSettings.vrFixedCamrotYaw = mc.vrPlayer.getControllerYaw_Room(controller);
+		mc.vrSettings.vrFixedCamrotRoll = mc.vrPlayer.getControllerRoll_World(controller);
 
-		mc.vrSettings.vrFixedCamrotPitch = -Minecraft.getMinecraft().roomScale.getControllerPitch_World(0);
-		mc.vrSettings.vrFixedCamrotYaw = Minecraft.getMinecraft().roomScale.getControllerYaw_World(0) + mc.vrSettings.vrWorldRotation;
-		mc.vrSettings.saveOptions();
 	}
 }

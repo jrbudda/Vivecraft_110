@@ -261,6 +261,7 @@ public class Vector3 {
 
 	@Override
 	public String toString() {
-		return "Vector3{" + "x=" + x + ", y=" + y + ", z=" + z + '}';
+        return "(" + String.format("%.2f", this.x) + ", " + String.format("%.2f", this.y)+ ", " + String.format("%.2f", this.z) + ")";
+
 	}
 }

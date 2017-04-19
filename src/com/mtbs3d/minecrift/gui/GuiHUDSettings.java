@@ -23,6 +23,7 @@ public class GuiHUDSettings extends BaseGuiSettings
             VRSettings.VrOptions.HUD_OPACITY,
             VRSettings.VrOptions.RENDER_MENU_BACKGROUND,
             VRSettings.VrOptions.TOUCH_HOTBAR,
+            VRSettings.VrOptions.MENU_ALWAYS_FOLLOW_FACE,
     };
 
     public GuiHUDSettings(GuiScreen guiScreen, VRSettings guivrSettings) {
@@ -123,8 +124,9 @@ public class GuiHUDSettings extends BaseGuiSettings
                 this.guivrSettings.hideGui = false;
                 this.guivrSettings.hudOpacity = 0.95f;
                 this.guivrSettings.menuBackground = false;
-                this.guivrSettings.vrHudLockMode = guivrSettings.HUD_LOCK_WRIST;
+                this.guivrSettings.vrHudLockMode = guivrSettings.HUD_LOCK_HAND;
                 this.guivrSettings.hudOcclusion = false;
+                this.guivrSettings.menuAlwaysFollowFace = false;
 
                 Minecraft.getMinecraft().vrSettings.saveOptions();
                 this.reinit = true;
@@ -179,6 +181,12 @@ public class GuiHUDSettings extends BaseGuiSettings
                             "       be hidden completely in confined environments!",
                             "  OFF: The HUD is always visible. Stereo depth issues",
                             "       may be noticable."
+                    };
+                case MENU_ALWAYS_FOLLOW_FACE:
+                    return new String[] {
+                            "Specifies when the main menu follows your look direction.",
+                            "  SEATED: The main menu will only follow in seated mode.",
+                            "  ALWAYS The main menu will always follow."
                     };
                 case RENDER_MENU_BACKGROUND:
                     return new String[] {

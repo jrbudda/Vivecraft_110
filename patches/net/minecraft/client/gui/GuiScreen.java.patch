@@ -10,19 +10,47 @@
  import java.awt.Toolkit;
  import java.awt.datatransfer.ClipboardOwner;
  import java.awt.datatransfer.DataFlavor;
-@@ -48,6 +51,11 @@
-     private static final Set<String> PROTOCOLS = Sets.newHashSet(new String[] {"http", "https"});
+@@ -15,6 +18,7 @@
+ import java.util.Arrays;
+ import java.util.List;
+ import java.util.Set;
++
+ import net.minecraft.client.Minecraft;
+ import net.minecraft.client.renderer.GlStateManager;
+ import net.minecraft.client.renderer.RenderHelper;
+@@ -22,12 +26,14 @@
+ import net.minecraft.client.renderer.Tessellator;
+ import net.minecraft.client.renderer.VertexBuffer;
+ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
++import net.minecraft.command.CommandHandler;
+ import net.minecraft.entity.EntityList;
+ import net.minecraft.item.ItemStack;
+ import net.minecraft.nbt.JsonToNBT;
+ import net.minecraft.nbt.NBTBase;
+ import net.minecraft.nbt.NBTException;
+ import net.minecraft.nbt.NBTTagCompound;
++import net.minecraft.src.Reflector;
+ import net.minecraft.stats.Achievement;
+ import net.minecraft.stats.StatBase;
+ import net.minecraft.stats.StatList;
+@@ -36,6 +42,7 @@
+ import net.minecraft.util.text.TextFormatting;
+ import net.minecraft.util.text.event.ClickEvent;
+ import net.minecraft.util.text.event.HoverEvent;
++
+ import org.apache.commons.lang3.StringUtils;
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
+@@ -49,7 +56,7 @@
      private static final Splitter NEWLINE_SPLITTER = Splitter.on('\n');
  
-+	/** MINECRIFT */
-+	public static int mouseOffsetX = 0;
-+	public static int mouseOffsetY = 0;
-+	/** END MINECRIFT */
-+    
      /** Reference to the Minecraft object. */
-     protected Minecraft mc;
+-    protected Minecraft mc;
++    public Minecraft mc;
  
-@@ -66,7 +74,7 @@
+     /**
+      * Holds a instance of RenderItem, used to draw the achievement icons on screen (is based on ItemStack)
+@@ -66,7 +73,7 @@
      public boolean allowUserInput;
  
      /** The FontRenderer used by GuiScreen */
@@ -31,10 +59,11 @@
  
      /** The button that was just pressed. */
      private GuiButton selectedButton;
-@@ -78,6 +86,7 @@
+@@ -78,6 +85,8 @@
       */
      private int touchValue;
      private URI clickedLinkURI;
++    protected boolean keyHandled, mouseHandled; // Forge: allow canceling key and mouse Post events from handleMouseInput and handleKeyboardInput
 +	public static boolean pressShiftFake;
  
      /**
@@ -50,45 +79,147 @@
              this.mc.displayGuiScreen((GuiScreen)null);
  
              if (this.mc.currentScreen == null)
-@@ -567,6 +580,12 @@
+@@ -111,6 +124,10 @@
+             }
+         }
+     }
++    
++    public void keyTypedPublic(char typedChar, int keyCode) throws IOException {
++    	keyTyped(typedChar, keyCode);
++    }
+ 
+     protected <T extends GuiButton> T func_189646_b(T p_189646_1_)
+     {
+@@ -175,7 +192,14 @@
+             }
+         }
+ 
+-        this.drawHoveringText(list, x, y);
++        if (Reflector.forgeExists()) {
++	        FontRenderer font = (FontRenderer)Reflector.call(stack.getItem(), Reflector.ForgeItem_getFontRenderer, stack);
++	        Reflector.callVoid(Reflector.GuiUtils_preItemToolTip, stack);
++	        this.drawHoveringText(list, x, y, (font == null ? fontRendererObj : font));
++	        Reflector.callVoid(Reflector.GuiUtils_postItemToolTip);
++        } else {
++        	this.drawHoveringText(list, x, y);
++        }
+     }
+ 
+     /**
+@@ -192,7 +216,16 @@
+      */
+     protected void drawHoveringText(List<String> textLines, int x, int y)
+     {
+-        if (!textLines.isEmpty())
++        drawHoveringText(textLines, x, y, fontRendererObj);
++    }
++
++    protected void drawHoveringText(List<String> textLines, int x, int y, FontRenderer font)
++    {
++    	if (Reflector.forgeExists())
++    	{
++    		Reflector.callVoid(Reflector.GuiUtils_drawHoveringText, textLines, x, y, width, height, -1, font);
++    	} 
++    	else if (!textLines.isEmpty())
+         {
+             GlStateManager.disableRescaleNormal();
+             RenderHelper.disableStandardItemLighting();
+@@ -474,6 +507,10 @@
+         {
+             this.mc.ingameGUI.getChatGUI().addToSentMessages(msg);
+         }
++        if (Reflector.forgeExists()) {
++        	CommandHandler cmd = (CommandHandler)Reflector.getFieldValue(Reflector.ClientCommandHandler_instance);
++        	if (cmd.executeCommand(mc.player, msg) != 0) return;
++        }
+ 
+         this.mc.player.sendChatMessage(msg);
+     }
+@@ -491,9 +528,19 @@
+ 
+                 if (guibutton.mousePressed(this.mc, mouseX, mouseY))
+                 {
++                	Object event = null;
++                	if (Reflector.forgeExists()) {
++	                    event = Reflector.newInstance(Reflector.GuiScreenEvent_ActionPerformedEvent_Pre_Constructor, this, guibutton, this.buttonList);
++	                    if (Reflector.postForgeBusEvent(event))
++	                        break;
++	                    guibutton = (GuiButton)Reflector.call(event, Reflector.GuiScreenEvent_ActionPerformedEvent_getButton);
++                	}
+                     this.selectedButton = guibutton;
+                     guibutton.playPressSound(this.mc.getSoundHandler());
+                     this.actionPerformed(guibutton);
++                    if (Reflector.forgeExists() && this.equals(this.mc.currentScreen)) {
++                    	Reflector.postForgeBusEvent(Reflector.GuiScreenEvent_ActionPerformedEvent_Post_Constructor, this, Reflector.call(event, Reflector.GuiScreenEvent_ActionPerformedEvent_getButton), this.buttonList);
++                    }
+                 }
+             }
+         }
+@@ -537,8 +584,11 @@
+         this.fontRendererObj = mc.fontRendererObj;
+         this.width = width;
+         this.height = height;
+-        this.buttonList.clear();
+-        this.initGui();
++        if (!Reflector.forgeExists() || !Reflector.postForgeBusEvent(Reflector.GuiScreenEvent_InitGuiEvent_Pre_Constructor, this, this.buttonList)) {
++	        this.buttonList.clear();
++	        this.initGui();
++	        if (Reflector.forgeExists()) Reflector.postForgeBusEvent(Reflector.GuiScreenEvent_InitGuiEvent_Post_Constructor, this, this.buttonList);
++        }
+     }
+ 
+     /**
+@@ -567,7 +617,22 @@
          {
              while (Mouse.next())
              {
-+            	if (mc.stereoProvider.isStereo()){
-+            		if(!MCOpenVR.controllerMouseValid){
++            	if (mc.stereoProvider.isStereo()) {
++            		if (!MCOpenVR.controllerMouseValid) {
 +            			MCOpenVR.controllerMouseValid = true;
 +            			MCOpenVR.controllerMouseTicks = 20;
-+				}}
++            		}
++            	}
 +            	
++            	this.mouseHandled = false;
++            	if (Reflector.forgeExists() && Reflector.postForgeBusEvent(Reflector.GuiScreenEvent_MouseInputEvent_Pre_Constructor, this)) continue;
                  this.handleMouseInput();
++                if (Reflector.forgeExists() && this.equals(this.mc.currentScreen) && !this.mouseHandled) Reflector.postForgeBusEvent(Reflector.GuiScreenEvent_MouseInputEvent_Post_Constructor, this);
++                
++            	if(mc.currentScreen == null){
++            		int a = 9; // wtf is this?
++            	}
++            	
              }
          }
-@@ -589,6 +608,24 @@
+ 
+@@ -575,7 +640,10 @@
+         {
+             while (Keyboard.next())
+             {
++            	this.keyHandled = false;
++            	if (Reflector.forgeExists() && Reflector.postForgeBusEvent(Reflector.GuiScreenEvent_KeyboardInputEvent_Pre_Constructor, this)) continue;
+                 this.handleKeyboardInput();
++                if (Reflector.forgeExists() && this.equals(this.mc.currentScreen) && !this.keyHandled) Reflector.postForgeBusEvent(Reflector.GuiScreenEvent_KeyboardInputEvent_Post_Constructor, this);
+             }
+         }
+     }
+@@ -589,6 +657,15 @@
          int j = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
          int k = Mouse.getEventButton();
  
 +		/** MINECRIFT */
-+
 +    	if (mc.stereoProvider.isStereo()){
 +    		if(!MCOpenVR.controllerMouseValid){
 +				if (mc.mouseHelper.deltaX > 0 || mc.mouseHelper.deltaY> 0 )
 +        			MCOpenVR.controllerMouseValid = true;
 +				}
-+			}
-+    	
-+        // Reset mouse offset
-+        mouseOffsetX = -1;
-+        mouseOffsetY = -1;
-+
-+        int var1 = getMouseX();
-+        int var2 = getMouseY();
-+        int var3 = Mouse.getEventButton();
++			}  	      
 +		/** END MINECRIFT */
 +        
          if (Mouse.getEventButtonState())
          {
              if (this.mc.gameSettings.touchscreen && this.touchValue++ > 0)
-@@ -622,13 +659,20 @@
+@@ -622,13 +699,20 @@
       */
      public void handleKeyboardInput() throws IOException
      {
@@ -110,9 +241,16 @@
          this.mc.dispatchKeypresses();
      }
  
-@@ -658,7 +702,16 @@
+@@ -652,13 +736,23 @@
+     public void drawDefaultBackground()
      {
-         if (this.mc.theWorld != null)
+         this.drawWorldBackground(0);
++        if (Reflector.forgeExists()) Reflector.postForgeBusEvent(Reflector.GuiScreenEvent_BackgroundDrawnEvent_Constructor, this);
+     }
+ 
+     public void drawWorldBackground(int tint)
+     {
+         if (this.mc.world != null)
          {
 -            this.drawGradientRect(0, 0, this.width, this.height, -1072689136, -804253680);
 +            /** MINECRIFT */
@@ -128,7 +266,7 @@
          }
          else
          {
-@@ -736,7 +789,7 @@
+@@ -736,7 +830,7 @@
       */
      public static boolean isShiftKeyDown()
      {
@@ -137,7 +275,7 @@
      }
  
      /**
-@@ -774,4 +827,93 @@
+@@ -774,4 +868,75 @@
      {
          this.setWorldAndResolution(mcIn, w, h);
      }
@@ -202,32 +340,14 @@
 +    public int getMouseX()
 +    {
 +        int mX = Mouse.getX() * this.mc.currentScreen.width / this.mc.displayWidth;
-+        mX += (this.mouseOffsetX == -1 ? 0 : this.mouseOffsetX);
 +        return mX;
 +    }
 +
 +    public int getMouseY()
 +    {
 +        int mY = this.mc.currentScreen.height - Mouse.getY() * this.mc.currentScreen.height / this.mc.displayHeight - 1;
-+        mY += (this.mouseOffsetY == -1 ? 0 : this.mouseOffsetY);
 +        return mY;
 +    }
 +
-+    public int getActualMouseX()
-+    {
-+        int mX = Mouse.getX() * this.mc.currentScreen.width / this.mc.displayHeight;
-+        return mX;
-+    }
-+
-+    public int getActualMouseY()
-+    {
-+        int mY = this.mc.currentScreen.height - Mouse.getY() * this.mc.currentScreen.height / this.mc.displayHeight - 1;
-+        return mY;
-+    }
-+
-+    public List getButtonList()
-+    {
-+        return this.buttonList;
-+    }
 +    
  }

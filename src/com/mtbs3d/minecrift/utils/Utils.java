@@ -1,16 +1,33 @@
 package com.mtbs3d.minecrift.utils;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Formatter;
+import java.util.List;
 
 import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
 import net.minecraft.util.math.Vec3d;
-
-import javax.vecmath.Vector3d;
 
 public class Utils
 {
@@ -45,7 +62,23 @@ public class Utils
 		return field;
 	}
 	
-    /* With thanks to http://ramblingsrobert.wordpress.com/2011/04/13/java-word-wrap-algorithm/ */
+  	public static Vector3f convertVector(de.fruitfly.ovr.structs.Vector3f vector) {
+		return new Vector3f(vector.x, vector.y, vector.z);
+	}
+
+	public static de.fruitfly.ovr.structs.Vector3f convertToOVRVector(Vector3f vector) {
+		return new de.fruitfly.ovr.structs.Vector3f(vector.x, vector.y, vector.z);
+	}
+
+	
+	public static Vector3f directionFromMatrix(Matrix4f matrix, float x, float y, float z) {
+		Vector4f vec = new Vector4f(x, y, z, 0);
+		Matrix4f.transform(matrix, vec, vec);
+		vec.normalise(vec);
+		return new Vector3f(vec.x, vec.y, vec.z);
+	}
+	
+	/* With thanks to http://ramblingsrobert.wordpress.com/2011/04/13/java-word-wrap-algorithm/ */
     public static void wordWrap(String in, int length, ArrayList<String> wrapped)
     {
         String newLine = "\n";
@@ -114,10 +147,6 @@ public class Utils
 		return new Vector3f((float)vector.xCoord, (float)vector.yCoord, (float)vector.zCoord);
 	}
 
-	public static Vector3d convertToVector3d(Vec3d vector){
-		return new Vector3d(vector.xCoord,vector.yCoord, vector.zCoord);
-	}
-
 	public static Quaternion quatLerp(Quaternion start, Quaternion end, float fraction) {
 		Quaternion quat = new Quaternion();
 		quat.w = start.w + (end.w - start.w) * fraction;
@@ -140,5 +169,136 @@ public class Utils
 		mat.m22 = matrix.m22;
 		return mat;
 	}
-    
+
+	public static String httpReadLine(String url) throws IOException {
+		HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+		conn.setReadTimeout(3000);
+		conn.setUseCaches(false);
+		conn.setDoInput(true);
+		BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		String line = br.readLine();
+		br.close();
+		conn.disconnect();
+		return line;
+	}
+
+	public static byte[] httpReadAll(String url) throws IOException {
+		HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+		conn.setReadTimeout(3000);
+		conn.setUseCaches(false);
+		conn.setDoInput(true);
+		InputStream is = conn.getInputStream();
+		ByteArrayOutputStream bout = new ByteArrayOutputStream(conn.getContentLength());
+		byte[] bytes = new byte[4096];
+		int count;
+		while ((count = is.read(bytes, 0, bytes.length)) != -1) {
+			bout.write(bytes, 0, count);
+		}
+		is.close();
+		conn.disconnect();
+		return bout.toByteArray();
+	}
+
+	public static String httpReadAllString(String url) throws IOException {
+		return new String(httpReadAll(url), StandardCharsets.UTF_8);
+	}
+
+	public static void httpReadToFile(String url, File file, boolean writeWhenComplete) throws MalformedURLException, IOException {
+		HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+		conn.setReadTimeout(3000);
+		conn.setUseCaches(false);
+		conn.setDoInput(true);
+		InputStream is = conn.getInputStream();
+		if (writeWhenComplete) {
+			ByteArrayOutputStream bout = new ByteArrayOutputStream(conn.getContentLength());
+			byte[] bytes = new byte[4096];
+			int count;
+			while ((count = is.read(bytes, 0, bytes.length)) != -1) {
+				bout.write(bytes, 0, count);
+			}
+			OutputStream out = new FileOutputStream(file);
+			out.write(bout.toByteArray());
+			out.flush();
+			out.close();
+		} else {
+			OutputStream out = new FileOutputStream(file);
+			byte[] bytes = new byte[4096];
+			int count;
+			while ((count = is.read(bytes, 0, bytes.length)) != -1) {
+				out.write(bytes, 0, count);
+			}
+			out.flush();
+			out.close();
+		}
+		is.close();
+		conn.disconnect();
+	}
+	
+    public static void httpReadToFile(String url, File file) throws IOException {
+        httpReadToFile(url, file, false);
+    }
+
+	public static List<String> httpReadList(String url) throws IOException {
+		HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+		conn.setReadTimeout(3000);
+		conn.setUseCaches(false);
+		conn.setDoInput(true);
+		BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		List<String> list = new ArrayList<String>();
+		String line;
+		while ((line = br.readLine()) != null) {
+			list.add(line);
+		}
+		br.close();
+		conn.disconnect();
+		return list;
+	}
+
+	public static String getFileChecksum(File file, String algorithm) throws FileNotFoundException, IOException, NoSuchAlgorithmException {
+		InputStream is = new FileInputStream(file);
+		byte[] bytes = new byte[(int)file.length()];
+		is.read(bytes);
+		is.close();
+		MessageDigest md = MessageDigest.getInstance(algorithm);
+		md.update(bytes);
+		Formatter fmt = new Formatter();
+		for (byte b : md.digest()) {
+			fmt.format("%02x", b);
+		}
+		String str = fmt.toString();
+		fmt.close();
+		return str;
+	}
+
+	public static byte[] readFile(File file) throws FileNotFoundException, IOException {
+		FileInputStream is = new FileInputStream(file);
+		return readFully(is);
+	}
+
+	public static String readFileString(File file) throws FileNotFoundException, IOException {
+		return new String(readFile(file), "UTF-8");
+	}
+	
+	public static byte[] readFully(InputStream in) throws IOException {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		byte[] bytes = new byte[4096];
+		int count;
+		while ((count = in.read(bytes, 0, bytes.length)) != -1) {
+			out.write(bytes, 0, count);
+		}
+		in.close();
+		return out.toByteArray();
+	}
+	
+	public static Vec3d convertToVec3d(Vector3 vector) {
+		return new Vec3d(vector.getX(), vector.getY(), vector.getZ());
+	}
+	
+	public static Vec3d vecLerp(Vec3d start, Vec3d end, double fraction) {
+		double x = start.xCoord + (end.xCoord - start.xCoord) * fraction;
+		double y = start.yCoord + (end.yCoord - start.yCoord) * fraction;
+		double z = start.zCoord + (end.zCoord - start.zCoord) * fraction;
+		return new Vec3d(x, y, z);
+	}
+
 }

@@ -1,13 +1,21 @@
 package com.mtbs3d.minecrift.tweaker;
 
-import net.minecraft.launchwrapper.IClassTransformer;
-
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import net.minecraft.launchwrapper.IClassTransformer;
 
 // With apologies to Optifine. Copyright sp614x, this is built on his work.
 // The existing classes are overwritten by all of the classes in the minecrift library. The
@@ -16,40 +24,56 @@ import java.util.zip.ZipFile;
 
 public class MinecriftClassTransformer implements IClassTransformer
 {
+	private static final boolean DEBUG = Boolean.parseBoolean(System.getProperty("legacy.debugClassLoading", "false"));
+	
     private ZipFile mcZipFile = null;
+    private final Stage stage;
+    
+    private final Map<String, byte[]> cache;
+	private static Set<String> myClasses = new HashSet<String>();
+    
+    public MinecriftClassTransformer() {
+    	this(Stage.MAIN, null);
+    }
 
-    public MinecriftClassTransformer()
+    public MinecriftClassTransformer(Stage stage, Map<String, byte[]> cache)
     {
-        try
-        {
-            URLClassLoader e = (URLClassLoader)MinecriftClassTransformer.class.getClassLoader();
-            URL[] urls = e.getURLs();
-
-            for (int i = 0; i < urls.length; ++i)
-            {
-                URL url = urls[i];
-                ZipFile zipFile = getMinecriftZipFile(url);
-
-                if (zipFile != null)
-                {
-                    this.mcZipFile = zipFile;
-                    debug("Minecrift ClassTransformer");
-                    debug("Minecrift URL: " + url);
-                    debug("Minecrift ZIP file: " + zipFile);
-                    break;
-                }
-            }
-        }
-        catch (Exception var6)
-        {
-            var6.printStackTrace();
-        }
-
-        if (this.mcZipFile == null)
-        {
-            debug("*** Can not find the Minecrift JAR in the classpath ***");
-            debug("*** Minecrift will not be loaded! ***");
-        }
+    	this.stage = stage;
+    	this.cache = cache;
+    	if (stage == Stage.MAIN) {
+	        try
+	        {
+	            URLClassLoader e = (URLClassLoader)MinecriftClassTransformer.class.getClassLoader();
+	            URL[] urls = e.getURLs();
+	
+	            for (int i = 0; i < urls.length; ++i)
+	            {
+	                URL url = urls[i];
+	                ZipFile zipFile = getMinecriftZipFile(url);
+	
+	                if (zipFile != null)
+	                {
+	                    this.mcZipFile = zipFile;
+	                    debug("Minecrift ClassTransformer");
+	                    debug("Minecrift URL: " + url);
+	                    debug("Minecrift ZIP file: " + zipFile);
+	                    break;
+	                }
+	            }
+	        }
+	        catch (Exception var6)
+	        {
+	            var6.printStackTrace();
+	        }
+	
+	        if (this.mcZipFile == null)
+	        {
+	            debug("*** Can not find the Minecrift JAR in the classpath ***");
+	            debug("*** Minecrift will not be loaded! ***");
+	        }
+    	} else if (cache == null) {
+    		throw new IllegalArgumentException("Cache map required for cache/replace stage");
+    	}
     }
 
     private static ZipFile getMinecriftZipFile(URL url)
@@ -79,24 +103,43 @@ public class MinecriftClassTransformer implements IClassTransformer
     
     public byte[] transform(String name, String transformedName, byte[] bytes)
     {
-    	byte[] minecriftClass = this.getMinecriftClass(name);
-
-    	if (minecriftClass == null) {
-    		//debug(String.format("Minecrift: Passthrough '%s' -> '%s'", name, transformedName));
-    		writeToFile("original",transformedName , "", bytes);
+    	switch (stage) {
+    		case MAIN:
+		    	byte[] minecriftClass = this.getMinecriftClass(name);
+		
+		    	if (minecriftClass == null) {
+		    		if (DEBUG) debug(String.format("Minecrift: Passthrough %s %s", name, transformedName));
+		    		if (DEBUG) writeToFile("original", transformedName , "", bytes);
+		    	}
+		    	else {
+		    		myClasses.add(name);
+		    		
+		    		// Perform any additional mods using ASM
+		    		minecriftClass = performAsmModification(minecriftClass, transformedName);
+		    		
+		    		if(bytes.length != minecriftClass.length) {
+		    			debug(String.format("Minecrift: Overwrite %s %s (%d != %d)", name, transformedName, bytes.length, minecriftClass.length));
+		    			myClasses.add(transformedName);
+		    		}
+		    		if (DEBUG) writeToFile("original", transformedName, "", bytes);
+		    		//if (DEBUG) writeToFile("transformed", transformedName, name, minecriftClass);
+		    	}
+		    	
+		    	return minecriftClass != null ? minecriftClass : bytes;
+    		case CACHE:
+    			if(myClasses.contains(transformedName)) {
+    				if(DEBUG) debug(String.format("Cache '%s' - '%s'", name, transformedName));
+    				cache.put(transformedName, bytes);
+    			}
+    			return bytes;
+    		case REPLACE:
+    			if(cache.containsKey(transformedName)){
+    				if(DEBUG) debug(String.format("Replace '%s' - '%s'", name, transformedName));
+    				return cache.get(transformedName);
+    			}
+    			return bytes;
     	}
-    	else {
-    		// Perform any additional mods using ASM
-    		minecriftClass = performAsmModification(minecriftClass, transformedName);
-    		
-    		if(bytes.length != minecriftClass.length)
-    		debug(String.format("Minecrift: Overwrite " + name +" "+ transformedName + " " + bytes.length + " > "  + minecriftClass.length));
-
-    		writeToFile("original", transformedName, "", bytes);
-    		//writeToFile("transformed", transformedName, name, minecriftClass);
-    	}
-    	
-    	return minecriftClass != null ? minecriftClass : bytes;
+    	return bytes;
     }
 
     private void writeToFile(String dir, String transformedName, String name, byte[] bytes)
@@ -207,4 +250,9 @@ public class MinecriftClassTransformer implements IClassTransformer
         return origBytecode;
     }
 
+	public enum Stage {
+		MAIN,
+		CACHE,
+		REPLACE
+	}
 }

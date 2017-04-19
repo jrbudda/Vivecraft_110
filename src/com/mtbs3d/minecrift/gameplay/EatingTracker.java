@@ -73,7 +73,7 @@ private Random r = new Random();
 				}
 
 				if(!eating[c]){
-					if(	Minecraft.getMinecraft().playerController.processRightClick(player, player.worldObj,is,c==0?EnumHand.MAIN_HAND:EnumHand.OFF_HAND)==EnumActionResult.SUCCESS){
+					if(	Minecraft.getMinecraft().playerController.processRightClick(player, player.world,is,c==0?EnumHand.MAIN_HAND:EnumHand.OFF_HAND)==EnumActionResult.SUCCESS){
 						minecraft.entityRenderer.itemRenderer.resetEquippedProgress(c==0?EnumHand.MAIN_HAND:EnumHand.OFF_HAND);
 						eating[c]=true;
 						eatStart=Minecraft.getSystemTime();
@@ -88,7 +88,7 @@ private Random r = new Random();
 				long t = player.getItemInUseCount();
 				if(t>0)
 					if(t%5 <= crunchiness)
-						minecraft.vrPlayer.triggerHapticPulse(c, 700 );
+						MCOpenVR.triggerHapticPulse(c, 700 );
 
 				if(Minecraft.getSystemTime()-eatStart > eattime)
 					eating[c]=false;

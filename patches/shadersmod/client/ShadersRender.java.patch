@@ -44,7 +44,7 @@
 +          entityRenderer.setupCameraTransform(partialTicks, 2);    
 +          entityRenderer.applyCameraDepth(false);
              Shaders.setCameraShadow(partialTicks);
-             ActiveRenderInfo.updateRenderInfo(minecraft.thePlayer, minecraft.gameSettings.thirdPersonView == 2);
+             ActiveRenderInfo.updateRenderInfo(minecraft.player, minecraft.gameSettings.thirdPersonView == 2);
              Shaders.checkGLError("shadow camera");
 @@ -208,7 +209,7 @@
              }

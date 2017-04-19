@@ -1,6 +1,6 @@
 --- a/net/minecraft/entity/projectile/EntityThrowable.java
 +++ b/net/minecraft/entity/projectile/EntityThrowable.java
-@@ -4,6 +4,7 @@
+@@ -4,12 +4,14 @@
  import java.util.UUID;
  import javax.annotation.Nullable;
  import net.minecraft.block.Block;
@@ -8,7 +8,14 @@
  import net.minecraft.entity.Entity;
  import net.minecraft.entity.EntityLivingBase;
  import net.minecraft.entity.IProjectile;
-@@ -50,12 +51,22 @@
+ import net.minecraft.entity.player.EntityPlayer;
+ import net.minecraft.init.Blocks;
+ import net.minecraft.nbt.NBTTagCompound;
++import net.minecraft.src.Reflector;
+ import net.minecraft.util.EnumParticleTypes;
+ import net.minecraft.util.ResourceLocation;
+ import net.minecraft.util.datafix.DataFixer;
+@@ -50,12 +52,22 @@
      public EntityThrowable(World worldIn, double x, double y, double z)
      {
          this(worldIn);
@@ -32,7 +39,7 @@
          this.thrower = throwerIn;
      }
  
-@@ -84,6 +95,14 @@
+@@ -84,6 +96,14 @@
       */
      public void setHeadingFromThrower(Entity entityThrower, float rotationPitchIn, float rotationYawIn, float pitchOffset, float velocity, float inaccuracy)
      {
@@ -47,3 +54,13 @@
          float f = -MathHelper.sin(rotationYawIn * 0.017453292F) * MathHelper.cos(rotationPitchIn * 0.017453292F);
          float f1 = -MathHelper.sin((rotationPitchIn + pitchOffset) * 0.017453292F);
          float f2 = MathHelper.cos(rotationYawIn * 0.017453292F) * MathHelper.cos(rotationPitchIn * 0.017453292F);
+@@ -259,7 +279,8 @@
+             }
+             else
+             {
+-                this.onImpact(raytraceresult);
++            	if(!Reflector.ForgeHooks_onThrowableImpact.exists() || !Reflector.callBoolean(Reflector.ForgeHooks_onThrowableImpact, new Object[]{this, raytraceresult}))
++            		this.onImpact(raytraceresult);
+             }
+         }
+ 

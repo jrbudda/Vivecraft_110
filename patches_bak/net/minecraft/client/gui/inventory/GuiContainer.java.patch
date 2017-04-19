@@ -1,0 +1,11 @@
+--- a/net/minecraft/client/gui/inventory/GuiContainer.java
++++ b/net/minecraft/client/gui/inventory/GuiContainer.java
+@@ -419,7 +419,7 @@
+                         }
+                         else
+                         {
+-                            boolean flag2 = l != -999 && (Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54));
++                            boolean flag2 = l != -999 && (Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54) || pressShiftFake);
+                             ClickType clicktype = ClickType.PICKUP;
+ 
+                             if (flag2)
