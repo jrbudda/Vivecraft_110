@@ -21,7 +21,7 @@ public class MCReflection {
 	public static Field KeyBinding_pressed = getDeclaredField(KeyBinding.class, "pressed", "h", "field_74513_e");
 	public static Field KeyBinding_pressTime = getDeclaredField(KeyBinding.class, "pressTime", "i", "field_151474_i");
 	public static Method KeyBinding_unpressKey = getDeclaredMethod(KeyBinding.class, "unpressKey", "k", "func_74505_d");
-	public static Field WorldProvider_terrainType = getDeclaredField(WorldProvider.class, "terrainType", "h", "field_76577_b");
+	public static Field WorldProvider_terrainType = getDeclaredField(WorldProvider.class, "terrainType", "g", "field_76577_b");
 	
 	public static Object getField(Field field, Object obj) {
 		try {

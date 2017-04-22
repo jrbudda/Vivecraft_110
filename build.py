@@ -58,25 +58,49 @@ def process_json( addon, version ):
         return json.dumps( json_obj, indent=1 )
 
 def create_install(mcp_dir):
-    print("Creating Installer...")
+    print "Creating Installer..."
     reobf = os.path.join(mcp_dir,'reobf','minecraft')
-    
+    assets = os.path.join(base_dir,"assets")
     # VIVE - removed from inner loop. blk.class is EntityPlayerSP, not anything to do with sound?
     #if cur_file=='blk.class': #skip SoundManager
-		#continue
-    
+    #continue
     in_mem_zip = StringIO.StringIO()
     with zipfile.ZipFile( in_mem_zip,'w', zipfile.ZIP_DEFLATED) as zipout:
         for abs_path, _, filelist in os.walk(reobf, followlinks=True):
             arc_path = os.path.relpath( abs_path, reobf ).replace('\\','/').replace('.','')+'/'
             for cur_file in fnmatch.filter(filelist, '*.class'):
                 #if cur_file in {'MinecriftClassTransformer.class','MinecriftForgeTweaker.class','MinecriftClassTransformer$Stage.class','MinecriftClassTransformer$1.class','MinecriftClassTransformer$2.class','MinecriftClassTransformer$3.class','MinecriftClassTransformer$4.class'}:
-                #if cur_file in {'abt.class','abu.class','abv.class', 'abw.class', 'abx.class', 'aby.class', 'abz.class', 'aca.class', 'acb.class', 'acc.class', 'acd.class', 'ace.class', 'acf.class'}: #skip CreativeTabs
-                 #continue
-                 in_file= os.path.join(abs_path,cur_file) 
-                 arcname =  arc_path + cur_file
-                 zipout.write(in_file, arcname)
-
+                #if cur_file in {'brl.class', 'brl$1.class', 'brl$2.class', 'brl$3.class', 'brl$4.class', 'brl$5.class', 'brl$a.class'}: #skip facebakery
+                #    continue
+                #if cur_file in {'big.class', 'bip.class', 'bip$a.class', 'bip$b.class'}: #skip guicontainer and guicontainercreative - asm
+                #    continue
+                #if cur_file in {'Matrix4f.class'}: #why
+                #    continue
+				# Just don't ask about this nonsense because I don't have any idea
+                #if cur_file in {'brd.class'}: #skip bakedquad
+                #    continue
+                #if cur_file in {'bsz.class', 'bsz$1.class', 'bsz$2.class', 'bsz$3.class', 'bsz$a.class'}: #skip chunkrenderdispatcher
+                #    continue
+                #if cur_file in {'atm.class', 'atm$1.class', 'atm$a.class', 'atm$Builder.class'}: #skip blockstatecontainer
+                #    continue
+                #if cur_file in {'byz.class', 'byz$1.class'}: #skip textureatlassprite
+                #    continue
+                #if cur_file in {'byy.class', 'byy$1.class', 'byy$2.class', 'byy$3.class'}: #skip texturemap
+                #    continue
+                #if cur_file in {'bpy.class', 'bpy$1.class', 'bpy$2.class', 'bpy$a.class'}: #skip vertexbuffer
+                #    continue
+                in_file= os.path.join(abs_path,cur_file)
+                arcname =  arc_path + cur_file
+                zipout.write(in_file, arcname)
+        print "Checking Assets..."
+        for a, b, c in os.walk(assets):
+            print a
+            arc_path = os.path.relpath(a,base_dir).replace('\\','/').replace('.','')+'/'
+            for cur_file in c:
+                print "Adding asset %s..." % cur_file
+                in_file= os.path.join(a,cur_file) 
+                arcname =  arc_path + cur_file
+                zipout.write(in_file, arcname)
     os.chdir( base_dir )
 
     
@@ -125,6 +149,7 @@ def create_install(mcp_dir):
             
         # Add json files
         install_out.writestr("version.json", process_json("", version))
+        install_out.writestr( "version-forge.json", process_json("-forge", version))
         
         # Add release notes
         install_out.write("CHANGES.md", "release_notes.txt")

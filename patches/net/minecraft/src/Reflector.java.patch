@@ -27,7 +27,7 @@
  import net.minecraft.client.renderer.tileentity.RenderItemFrame;
  import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
  import net.minecraft.client.renderer.vertex.VertexFormatElement;
-@@ -26,896 +32,1062 @@
+@@ -26,896 +32,1064 @@
  import net.minecraft.entity.EntityLivingBase;
  import net.minecraft.entity.EnumCreatureType;
  import net.minecraft.entity.item.EntityItemFrame;
@@ -1271,7 +1271,9 @@
 +	public static ReflectorMethod EnderTeleportEvent_getTargetX = new ReflectorMethod(EnderTeleportEvent, "getTargetX");
 +	public static ReflectorMethod EnderTeleportEvent_getTargetY = new ReflectorMethod(EnderTeleportEvent, "getTargetY");
 +	public static ReflectorMethod EnderTeleportEvent_getTargetZ = new ReflectorMethod(EnderTeleportEvent, "getTargetZ");
-+
++    public static ReflectorClass Event = new ReflectorClass("net.minecraftforge.fml.common.eventhandler.Event");
++    public static ReflectorMethod Event_isCanceled = new ReflectorMethod(Event, "isCanceled");
++    
 +	public static boolean forgeExists()
 +	{
 +		return EventBus.exists();
