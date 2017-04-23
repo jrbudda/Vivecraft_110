@@ -159,7 +159,7 @@
 		"serverreq": true
 	},
 	{
-		"name": "net.minecraftforge:MercuriusUpdater:1.11.2",
+		"name": "net.minecraftforge:MercuriusUpdater:1.10.2",
 		"url": "http://files.minecraftforge.net/maven/"
 	},
 	{

@@ -448,7 +448,7 @@
 +		}
 +		if( fmlClientHandler != null)
 +		{
-+			Reflector.callVoid(fmlClientHandler, Reflector.FMLClientHandler_beginMinecraftLoading, new Object[] {this, this.defaultResourcePacks,this.mcResourceManager, this.metadataSerializer_});
++			Reflector.callVoid(fmlClientHandler, Reflector.FMLClientHandler_beginMinecraftLoading, new Object[] {this, this.defaultResourcePacks,this.mcResourceManager});
 +		}
 +		else {
 +			this.refreshResources();
@@ -1149,7 +1149,7 @@
 -            this.debugUpdateTime += 1000L;
 -            this.fpsCounter = 0;
 -            this.usageSnooper.addMemoryStatsToSnooper();
- 
+-
 -            if (!this.usageSnooper.isSnooperRunning())
 -            {
 -                this.usageSnooper.startSnooper();
@@ -1162,7 +1162,7 @@
 -            Display.sync(this.getLimitFramerate());
 -            this.mcProfiler.endSection();
 -        }
--
+ 
 -        this.mcProfiler.endSection();
 +			this.debugUpdateTime += 1000L;
 +			this.fpsCounter = 0;
@@ -1798,7 +1798,14 @@
              String s = this.theIntegratedServer.getUserMessage();
  
              if (s != null)
-@@ -2449,6 +3148,13 @@
+@@ -2443,12 +3142,19 @@
+                 ;
+             }
+         }
+-
++        integratedServerLaunchInProgress = false;
+         this.displayGuiScreen(new GuiScreenWorking());
+         SocketAddress socketaddress = this.theIntegratedServer.getNetworkSystem().addLocalEndpoint();
          NetworkManager networkmanager = NetworkManager.provideLocalClient(socketaddress);
          networkmanager.setNetHandler(new NetHandlerLoginClient(networkmanager, this, (GuiScreen)null));
          networkmanager.sendPacket(new C00Handshake(210, socketaddress.toString(), 0, EnumConnectionState.LOGIN));
@@ -2306,7 +2313,7 @@
 +
 +				EyeTextureSize.w  = renderTextureInfo.LeftFovTextureResolution.w ;
 +				EyeTextureSize.h  = renderTextureInfo.LeftFovTextureResolution.h ;
-+
++				System.out.println(EyeTextureSize.w + EyeTextureSize.h);
 +			}
 +
 +			if (this.framebuffer != null) {

@@ -162,7 +162,11 @@ public class MenuWorldRenderer {
 										if (i != 2) continue;
 										break;
 								}
-								blockRenderer.renderBlock(state, pos, blockAccess, vertBuffer);
+								try {
+									blockRenderer.renderBlock(state, pos, blockAccess, vertBuffer);
+								} catch (Exception e) {
+									// TODO: handle exception
+								}
 							}
 						}
 					}

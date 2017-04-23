@@ -52,3 +52,33 @@
              }
  
              this.mainModel.isChild = entity.isChild();
+@@ -135,7 +145,29 @@
+                 float f7 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks;
+                 this.renderLivingAt(entity, x, y, z);
+                 float f8 = this.handleRotationFloat(entity, partialTicks);
++                
++                //VIVECRAFT
++                if(this.mainModel instanceof ModelPlayerVR && entity instanceof EntityPlayer){
++                    UUID uuid=((EntityPlayer) entity).getGameProfile().getId();
++                    ModelPlayerVR mp = (ModelPlayerVR) mainModel;
++                    double d3 = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * (double)partialTicks;
++                    double d4 = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * (double)partialTicks;
++                    double d5 = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * (double)partialTicks;
++                    mp.renderPos = new Vec3d(d3, d4, d5);
++                	if(PlayerModelController.getInstance().isTracked(uuid)){
++                     	PlayerModelController.RotInfo rotInfo=PlayerModelController.getInstance().getRotationsForPlayer(uuid);	
++                		Vec3d diff = rotInfo.leftArmPos.subtract(rotInfo.rightArmPos).rotateYaw((float)-Math.PI/2);
++                		if(rotInfo.reverse) diff = diff.scale(-1);
++                		if(rotInfo.seated) diff = rotInfo.rightArmRot;
++                		double ltor = Math.atan2(-diff.xCoord, diff.zCoord);  
++                		f = (float) Math.toDegrees(ltor);
++                	}
++                }
++
++                float wasyaw = entity.rotationYaw;
++
+                 this.rotateCorpse(entity, f8, f, partialTicks);
++
+                 float f4 = this.prepareScale(entity, partialTicks);
+                 float f5 = 0.0F;
+                 float f6 = 0.0F;

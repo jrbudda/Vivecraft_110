@@ -76,7 +76,36 @@
              {
                  this.playerEntity.interactionManager.processRightClickBlock(this.playerEntity, worldserver, itemstack, enumhand, blockpos, enumfacing, packetIn.getFacingX(), packetIn.getFacingY(), packetIn.getFacingZ());
              }
-@@ -1110,7 +1132,9 @@
+@@ -932,7 +954,14 @@
+             else
+             {
+                 ITextComponent itextcomponent = new TextComponentTranslation("chat.type.text", new Object[] {this.playerEntity.getDisplayName(), s});
+-                this.serverController.getPlayerList().sendChatMsgImpl(itextcomponent, false);
++            	//FORGE
++            	if(Reflector.forgeExists()){
++            		itextcomponent = new TextComponentTranslation("chat.type.text", this.playerEntity.getDisplayName(), (ITextComponent)Reflector.call(Reflector.ForgeHooks_newChatWithLinks, s));
++            		itextcomponent = (ITextComponent) Reflector.call(Reflector.ForgeHooks_onServerChatEvent, new Object[]{this, s, itextcomponent});
++                	if(itextcomponent==null)return;
++            	}
++            	////
++            	this.serverController.getPlayerList().sendChatMsgImpl(itextcomponent, false);
+             }
+ 
+             this.chatSpamThresholdCount += 20;
+@@ -1076,7 +1105,12 @@
+                 else if (packetIn.getAction() == CPacketUseEntity.Action.INTERACT_AT)
+                 {
+                     EnumHand enumhand1 = packetIn.getHand();
++                	//FORGE
+                     ItemStack itemstack1 = this.playerEntity.getHeldItem(enumhand1);
++                	if(Reflector.forgeExists()){
++                		if(Reflector.call(Reflector.ForgeHooks_onInteractEntityAtAction, this.playerEntity, entity, packetIn.getHitVec(), itemstack1, enumhand1) != null)
++                			return;
++                	}
+                     entity.applyPlayerInteraction(this.playerEntity, packetIn.getHitVec(), itemstack1, enumhand1);
+                 }
+                 else if (packetIn.getAction() == CPacketUseEntity.Action.ATTACK)
+@@ -1110,7 +1144,9 @@
                  if (this.playerEntity.playerConqueredTheEnd)
                  {
                      this.playerEntity.playerConqueredTheEnd = false;
@@ -87,7 +116,7 @@
                  }
                  else
                  {
-@@ -1790,5 +1814,26 @@
+@@ -1790,5 +1826,26 @@
                  LOGGER.error((String)"Couldn\'t pick item", (Throwable)exception);
              }
          }

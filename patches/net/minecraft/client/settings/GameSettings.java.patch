@@ -170,19 +170,10 @@
          this.ofChunkUpdatesDynamic = false;
          this.ofTime = 0;
          this.ofClearWater = false;
-@@ -3104,6 +3112,7 @@
-             }
+@@ -3105,6 +3113,17 @@
          }
      }
-+    ////
  
-     public static enum Options
-     {
-@@ -3307,4 +3316,16 @@
-             return value;
-         }
-     }
-+    
 +    //FORGE
 +    public void onGuiClosed()
 +    {
@@ -193,5 +184,7 @@
 +        }
 +    }
 +    ////
-+    
- }
++
+     public static enum Options
+     {
+         INVERT_MOUSE("options.invertMouse", false, true),

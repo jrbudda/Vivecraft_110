@@ -21,3 +21,39 @@
              this.pickupStatus = EntityArrow.PickupStatus.ALLOWED;
          }
      }
+@@ -116,18 +123,26 @@
+         this.dataManager.register(CRITICAL, Byte.valueOf((byte)0));
+     }
+ 
+-    public void setAim(Entity p_184547_1_, float p_184547_2_, float p_184547_3_, float p_184547_4_, float p_184547_5_, float p_184547_6_)
++    public void setAim(Entity shooter, float pitch, float yaw, float p_184547_4_, float velocity, float inaccuracy)
+     {
+-        float f = -MathHelper.sin(p_184547_3_ * 0.017453292F) * MathHelper.cos(p_184547_2_ * 0.017453292F);
+-        float f1 = -MathHelper.sin(p_184547_2_ * 0.017453292F);
+-        float f2 = MathHelper.cos(p_184547_3_ * 0.017453292F) * MathHelper.cos(p_184547_2_ * 0.017453292F);
+-        this.setThrowableHeading((double)f, (double)f1, (double)f2, p_184547_5_, p_184547_6_);
+-        this.motionX += p_184547_1_.motionX;
+-        this.motionZ += p_184547_1_.motionZ;
++        float f = -MathHelper.sin(yaw * 0.017453292F) * MathHelper.cos(pitch * 0.017453292F);
++        float f1 = -MathHelper.sin(pitch * 0.017453292F);
++        float f2 = MathHelper.cos(yaw * 0.017453292F) * MathHelper.cos(pitch * 0.017453292F);
++        
++        //VIVE SET VELOCITY
++        if(this.shootingEntity instanceof EntityPlayer && !Minecraft.getMinecraft().vrSettings.seated ){
++        	velocity = (float) (Minecraft.getMinecraft().bowTracker.getDrawPercent() * 3f);
++        	this.damage *= 2;
++        }
++        ///
++        
++        this.setThrowableHeading((double)f, (double)f1, (double)f2, velocity, inaccuracy);
++        this.motionX += shooter.motionX;
++        this.motionZ += shooter.motionZ;
+ 
+-        if (!p_184547_1_.onGround)
++        if (!shooter.onGround)
+         {
+-            this.motionY += p_184547_1_.motionY;
++            this.motionY += shooter.motionY;
+         }
+     }
+ 

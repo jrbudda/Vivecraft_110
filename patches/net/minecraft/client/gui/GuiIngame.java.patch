@@ -40,7 +40,33 @@
          if (Config.isVignetteEnabled())
          {
              this.renderVignette(this.mc.player.getBrightness(partialTicks), scaledresolution);
-@@ -184,20 +193,55 @@
+@@ -160,21 +169,13 @@
+         }
+ 
+         ItemStack itemstack = this.mc.player.inventory.armorItemInSlot(3);
+-
+-        if (this.mc.gameSettings.thirdPersonView == 0 && itemstack != null && itemstack.getItem() == Item.getItemFromBlock(Blocks.PUMPKIN))
++        mc.pumpkineffect = 0;
++        if (this.mc.gameSettings.thirdPersonView == 0 && itemstack !=null && itemstack.getItem() == Item.getItemFromBlock(Blocks.PUMPKIN))
+         {
+-            this.renderPumpkinOverlay(scaledresolution);
++        	mc.pumpkineffect = 1f;
++           // this.renderPumpkinOverlay(scaledresolution);
+         }
+ 
+-        if (!this.mc.player.isPotionActive(MobEffects.NAUSEA))
+-        {
+-            float f = this.mc.player.prevTimeInPortal + (this.mc.player.timeInPortal - this.mc.player.prevTimeInPortal) * partialTicks;
+-
+-            if (f > 0.0F)
+-            {
+-                this.renderPortal(f, scaledresolution);
+-            }
+-        }
+ 
+         if (this.mc.playerController.isSpectator())
+         {
+@@ -184,20 +185,55 @@
          {
              this.renderHotbar(scaledresolution, partialTicks);
          }
@@ -101,7 +127,7 @@
              this.renderPlayerStats(scaledresolution);
          }
  
-@@ -379,7 +423,7 @@
+@@ -379,7 +415,7 @@
          GlStateManager.enableAlpha();
      }
  
@@ -110,7 +136,7 @@
      {
          GameSettings gamesettings = this.mc.gameSettings;
  
-@@ -552,6 +596,7 @@
+@@ -552,6 +588,7 @@
              int j = 182;
              int k = 91;
              this.zLevel = -90.0F;
@@ -118,7 +144,7 @@
              this.drawTexturedModalRect(i - 91, sr.getScaledHeight() - 22, 0, 0, 182, 22);
              this.drawTexturedModalRect(i - 91 - 1 + entityplayer.inventory.currentItem * 20, sr.getScaledHeight() - 22 - 1, 0, 22, 24, 22);
  
-@@ -570,7 +615,7 @@
+@@ -570,7 +607,7 @@
              this.zLevel = f;
              GlStateManager.enableRescaleNormal();
              GlStateManager.enableBlend();
@@ -127,7 +153,7 @@
              RenderHelper.enableGUIStandardItemLighting();
  
              for (int l = 0; l < 9; ++l)
-@@ -744,7 +789,7 @@
+@@ -744,7 +781,7 @@
          this.mc.mcProfiler.endSection();
      }
  
@@ -136,7 +162,7 @@
      {
          Scoreboard scoreboard = objective.getScoreboard();
          Collection<Score> collection = scoreboard.getSortedScores(objective);
-@@ -961,7 +1006,7 @@
+@@ -961,7 +998,7 @@
                      }
                  }
              }
@@ -145,7 +171,7 @@
              Entity entity = entityplayer.getRidingEntity();
  
              if (entity == null)
-@@ -1025,7 +1070,7 @@
+@@ -1025,7 +1062,7 @@
          }
      }
  
@@ -154,7 +180,7 @@
      {
          if (this.mc.getRenderViewEntity() instanceof EntityPlayer)
          {
-@@ -1079,7 +1124,7 @@
+@@ -1079,7 +1116,7 @@
          }
      }
  
@@ -163,7 +189,7 @@
      {
          GlStateManager.disableDepth();
          GlStateManager.depthMask(false);
-@@ -1104,8 +1149,13 @@
+@@ -1104,8 +1141,13 @@
      /**
       * Renders a Vignette arount the entire screen that changes with light level.
       */
@@ -178,7 +204,45 @@
          if (Config.isVignetteEnabled())
          {
              lightLevel = 1.0F - lightLevel;
-@@ -1363,4 +1413,42 @@
+@@ -1156,36 +1198,7 @@
+ 
+     private void renderPortal(float timeInPortal, ScaledResolution scaledRes)
+     {
+-        if (timeInPortal < 1.0F)
+-        {
+-            timeInPortal = timeInPortal * timeInPortal;
+-            timeInPortal = timeInPortal * timeInPortal;
+-            timeInPortal = timeInPortal * 0.8F + 0.2F;
+-        }
+-
+-        GlStateManager.disableAlpha();
+-        GlStateManager.disableDepth();
+-        GlStateManager.depthMask(false);
+-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+-        GlStateManager.color(1.0F, 1.0F, 1.0F, timeInPortal);
+-        this.mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+-        TextureAtlasSprite textureatlassprite = this.mc.getBlockRendererDispatcher().getBlockModelShapes().getTexture(Blocks.PORTAL.getDefaultState());
+-        float f = textureatlassprite.getMinU();
+-        float f1 = textureatlassprite.getMinV();
+-        float f2 = textureatlassprite.getMaxU();
+-        float f3 = textureatlassprite.getMaxV();
+-        Tessellator tessellator = Tessellator.getInstance();
+-        VertexBuffer vertexbuffer = tessellator.getBuffer();
+-        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+-        vertexbuffer.pos(0.0D, (double)scaledRes.getScaledHeight(), -90.0D).tex((double)f, (double)f3).endVertex();
+-        vertexbuffer.pos((double)scaledRes.getScaledWidth(), (double)scaledRes.getScaledHeight(), -90.0D).tex((double)f2, (double)f3).endVertex();
+-        vertexbuffer.pos((double)scaledRes.getScaledWidth(), 0.0D, -90.0D).tex((double)f2, (double)f1).endVertex();
+-        vertexbuffer.pos(0.0D, 0.0D, -90.0D).tex((double)f, (double)f1).endVertex();
+-        tessellator.draw();
+-        GlStateManager.depthMask(true);
+-        GlStateManager.enableDepth();
+-        GlStateManager.enableAlpha();
+-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
++    	// Forge needs this for inheritance reasons
+     }
+ 
+     private void renderHotbarItem(int p_184044_1_, int p_184044_2_, float p_184044_3_, EntityPlayer player, @Nullable ItemStack stack)
+@@ -1363,4 +1376,42 @@
      {
          return this.overlayBoss;
      }

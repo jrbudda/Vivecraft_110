@@ -8,12 +8,24 @@
  import net.minecraft.world.World;
  import shadersmod.client.Shaders;
  
-@@ -375,7 +376,7 @@
+@@ -369,13 +370,17 @@
+ 
+         if (d0 <= (double)(maxDistance * maxDistance))
+         {
++    		//VIVE redo to fix nameplates being not right
+             boolean flag = entityIn.isSneaking();
+-            float f = this.renderManager.playerViewY;
+-            float f1 = this.renderManager.playerViewX;
++            //float f = this.renderManager.playerViewY;
++            //float f1 = this.renderManager.playerViewX;
              boolean flag1 = this.renderManager.options.thirdPersonView == 2;
              float f2 = entityIn.height + 0.5F - (flag ? 0.25F : 0.0F);
++    		y=y+f2;
++    		float f = (float)Math.toDegrees(Math.atan2(-x, z));     
++    		float f1 = -(float)Math.toDegrees(Math.asin(y/Math.sqrt(x*x+y*y+z*z))); 
              int i = "deadmau5".equals(str) ? -10 : 0;
 -            EntityRenderer.func_189692_a(this.getFontRendererFromRenderManager(), str, (float)x, (float)y + f2, (float)z, i, f, f1, flag1, flag);
-+            EntityRenderer.drawNameplate(this.getFontRendererFromRenderManager(), str, (float)x, (float)y + f2, (float)z, i, f, f1, flag1, flag);
++    		EntityRenderer.drawNameplate(this.getFontRendererFromRenderManager(), str, (float)x, (float)y, (float)z, i, f, f1, flag1, flag);
          }
      }
  

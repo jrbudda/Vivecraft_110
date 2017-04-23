@@ -280,3 +280,11 @@
                          }
                      }
  
+@@ -3236,6 +3250,7 @@
+                 if (block.getDefaultState().getMaterial() != Material.AIR)
+                 {
+                     SoundType soundtype = block.getSoundType();
++
+                     this.world.playSound(blockPosIn, soundtype.getBreakSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F, false);
+                 }
+ 

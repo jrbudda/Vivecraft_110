@@ -47,7 +47,28 @@
              else
              {
                  GuiOptionButton guioptionbutton = new GuiOptionButton(gamesettings$options.returnEnumOrdinal(), this.width / 2 - 155 + i % 2 * 160, this.height / 6 - 12 + 24 * (i >> 1), gamesettings$options, this.settings.getKeyBinding(gamesettings$options));
-@@ -185,6 +200,14 @@
+@@ -108,6 +123,20 @@
+     }
+ 
+     /**
++     * Fired when a key is typed (except F11 which toggles full screen). This is the equivalent of
++     * KeyListener.keyTyped(KeyEvent e). Args : character (character on the key), keyCode (lwjgl Keyboard key code)
++     */
++    protected void keyTyped(char typedChar, int keyCode) throws IOException
++    {
++        if (keyCode == 1)
++        {
++            this.mc.gameSettings.saveOptions();
++        }
++
++        super.keyTyped(typedChar, keyCode);
++    }
++
++    /**
+      * Called by the controls from the buttonList when activated. (Mouse pressed for buttons)
+      */
+     protected void actionPerformed(GuiButton button) throws IOException
+@@ -185,6 +214,14 @@
                  this.mc.gameSettings.saveOptions();
                  this.mc.displayGuiScreen(new GuiScreenOptionsSounds(this, this.settings));
              }
