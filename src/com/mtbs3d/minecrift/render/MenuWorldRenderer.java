@@ -162,11 +162,8 @@ public class MenuWorldRenderer {
 										if (i != 2) continue;
 										break;
 								}
-								try {
-									blockRenderer.renderBlock(state, pos, blockAccess, vertBuffer);
-								} catch (Exception e) {
-									// TODO: handle exception
-								}
+								MCReflection.invokeMethod(MCReflection.VertexBuffer_growBuffer, vertBuffer, vertBuffer.getVertexFormat().getNextOffset()); //vertBuffer.growBuffer(vertBuffer.getVertexFormat().getNextOffset());
+								blockRenderer.renderBlock(state, pos, blockAccess, vertBuffer);
 							}
 						}
 					}

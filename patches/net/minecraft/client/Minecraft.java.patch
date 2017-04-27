@@ -304,7 +304,7 @@
 +	 * The minecriftVerString will be automatically updated by the build scripts, do not modify here.
 +	 * Modify minecriftversion.py in root minecrift dir.
 +	 */
-+    public final String minecriftVerString = "Vivecraft 1.10.2 Vivecraft-jrbudda-8alpha1";
++    public final String minecriftVerString = "Vivecraft 1.10.2 Vivecraft-jrbudda-8alpha2";
 +	/* end version */
 +	/** END MINECRIFT */
 +    
@@ -1808,7 +1808,8 @@
          SocketAddress socketaddress = this.theIntegratedServer.getNetworkSystem().addLocalEndpoint();
          NetworkManager networkmanager = NetworkManager.provideLocalClient(socketaddress);
          networkmanager.setNetHandler(new NetHandlerLoginClient(networkmanager, this, (GuiScreen)null));
-         networkmanager.sendPacket(new C00Handshake(210, socketaddress.toString(), 0, EnumConnectionState.LOGIN));
+-        networkmanager.sendPacket(new C00Handshake(210, socketaddress.toString(), 0, EnumConnectionState.LOGIN));
++        networkmanager.sendPacket(new C00Handshake(210, socketaddress.toString(), 0, EnumConnectionState.LOGIN, Reflector.forgeExists()));
 +        if(Reflector.forgeExists())
 +        	if (!Reflector.callBoolean(this.getSession(), Reflector.ForgeSession_hasCachedProperties))
 +        	{

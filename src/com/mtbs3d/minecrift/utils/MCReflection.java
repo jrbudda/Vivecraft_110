@@ -9,6 +9,7 @@ import com.google.common.base.Throwables;
 import net.minecraft.client.audio.SoundManager;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.world.WorldProvider;
 
@@ -22,6 +23,7 @@ public class MCReflection {
 	public static Field KeyBinding_pressTime = getDeclaredField(KeyBinding.class, "pressTime", "i", "field_151474_i");
 	public static Method KeyBinding_unpressKey = getDeclaredMethod(KeyBinding.class, "unpressKey", "k", "func_74505_d");
 	public static Field WorldProvider_terrainType = getDeclaredField(WorldProvider.class, "terrainType", "g", "field_76577_b");
+	public static Method VertexBuffer_growBuffer = getDeclaredMethod(VertexBuffer.class, "growBuffer", "b", "func_181670_b", Integer.TYPE);
 	
 	public static Object getField(Field field, Object obj) {
 		try {

@@ -52,7 +52,7 @@
          buf.writeVarIntToBuffer(this.protocolVersion);
 -        buf.writeString(this.ip);
 +        
-+        if(!Reflector.forgeExists()) buf.writeString(this.ip);
++        if(!hasFMLMarker) buf.writeString(this.ip);
 +        else buf.writeString(this.ip + "\0FML\0");
          buf.writeShort(this.port);
          buf.writeVarIntToBuffer(this.requestedState.getId());

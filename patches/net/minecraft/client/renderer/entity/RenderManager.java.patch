@@ -59,7 +59,18 @@
      }
  
      public void cacheActiveRenderInfo(World worldIn, FontRenderer textRendererIn, Entity livingPlayerIn, Entity pointedEntityIn, GameSettings optionsIn, float partialTicks)
-@@ -533,8 +544,10 @@
+@@ -344,6 +355,10 @@
+ 
+     public void renderEntityStatic(Entity p_188388_1_, float p_188388_2_, boolean p_188388_3_)
+     {
++    	
++    	//pixelmon no 1st person model
++    	if(p_188388_1_ == Minecraft.getMinecraft().player) return;
++    	
+         if (p_188388_1_.ticksExisted == 0)
+         {
+             p_188388_1_.lastTickPosX = p_188388_1_.posX;
+@@ -533,8 +548,10 @@
          return this.entityRenderMap;
      }
  

@@ -17,11 +17,12 @@ import com.mtbs3d.minecrift.asm.ASMMethodHandler;
 import com.mtbs3d.minecrift.asm.ASMUtil;
 import com.mtbs3d.minecrift.asm.ClassTuple;
 import com.mtbs3d.minecrift.asm.MethodTuple;
+import com.mtbs3d.minecrift.asm.ObfNames;
 
 public class ASMHandlerGuiContainerCreative extends ASMClassHandler {
 	@Override
 	public ClassTuple getDesiredClass() {
-		return new ClassTuple("net.minecraft.client.gui.inventory.GuiContainerCreative", "bip");
+		return new ClassTuple("net.minecraft.client.gui.inventory.GuiContainerCreative", ObfNames.GUICONTAINERCREATIVE);
 	}
 
 	@Override

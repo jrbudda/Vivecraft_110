@@ -25,3 +25,4 @@ jars/
 *.ex_
 mcppatches - Copy/
 hs_err_pid*.log
+build.txt

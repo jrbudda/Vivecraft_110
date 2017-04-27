@@ -37,12 +37,15 @@
  
          if (this.isFocused && flag && mouseButton == 0)
          {
-@@ -717,6 +726,12 @@
+@@ -717,6 +726,15 @@
          }
  
          this.isFocused = isFocusedIn;
 +        
 +        // VIVE START - show keyboard
++        for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
++            if(ste.getClassName().contains("GuiChattableCamera")) return;
++        }
 +       if(isFocusedIn) MCOpenVR.setKeyboardOverlayShowing(isFocusedIn, this);
 +        // VIVE END - show keyboard
 +        
