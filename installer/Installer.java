@@ -1526,7 +1526,7 @@ public class Installer extends JPanel  implements PropertyChangeListener
         
         
         this.add(Box.createVerticalGlue());
-        JLabel github = linkify("Vivecraft is open source. find it on Github","https://github.com/jrbudda/Vivecraft_111","Vivecraft 1.11 Github");
+        JLabel github = linkify("Vivecraft is open source. find it on Github","https://github.com/jrbudda/Vivecraft_110","Vivecraft 1.10 Github");
         JLabel wiki = linkify("Vivecraft home page","http://www.vivecraft.org","Vivecraft Home");
         JLabel donate = linkify("If you think Vivecraft is awesome, please consider donating.","https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=JVBJLN5HJJS52&lc=US&item_name=jrbudda&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)","jrbudda's Paypal");
         JLabel optifine = linkify("Vivecraft includes OptiFine for performance. Consider donating to them as well.","http://optifine.net/donate.php","http://optifine.net/donate.php");

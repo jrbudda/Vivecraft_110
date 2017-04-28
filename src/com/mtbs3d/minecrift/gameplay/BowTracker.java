@@ -272,7 +272,7 @@ public class BowTracker {
 
     protected boolean isArrow(ItemStack stack)
     {
-        return stack.getItem() instanceof ItemArrow;
+        return stack !=null && stack.getItem() instanceof ItemArrow;
     }
 	
 }

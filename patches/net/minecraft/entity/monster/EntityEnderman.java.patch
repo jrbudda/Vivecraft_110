@@ -48,7 +48,7 @@
 +           event = Reflector.newInstance(Reflector.EnderTeleportEvent_Constuctor, new Object[] {this,x,y,z,0});
 +           if (Reflector.postForgeBusEvent(event))
 +               return false;
-+            flag = this.attemptTeleport(Reflector.callDouble(Reflector.EnderTeleportEvent_getTargetX),Reflector.callDouble(Reflector.EnderTeleportEvent_getTargetY),Reflector.callDouble(Reflector.EnderTeleportEvent_getTargetZ));
++            flag = this.attemptTeleport(Reflector.callDouble(event, Reflector.EnderTeleportEvent_getTargetX),Reflector.callDouble(event, Reflector.EnderTeleportEvent_getTargetY),Reflector.callDouble(event, Reflector.EnderTeleportEvent_getTargetZ));
 +        } else {
 +            flag = this.attemptTeleport(x, y, z);
 +        }

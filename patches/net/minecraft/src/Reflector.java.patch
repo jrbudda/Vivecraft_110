@@ -27,7 +27,7 @@
  import net.minecraft.client.renderer.tileentity.RenderItemFrame;
  import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
  import net.minecraft.client.renderer.vertex.VertexFormatElement;
-@@ -26,896 +32,1064 @@
+@@ -26,896 +32,1065 @@
  import net.minecraft.entity.EntityLivingBase;
  import net.minecraft.entity.EnumCreatureType;
  import net.minecraft.entity.item.EntityItemFrame;
@@ -1119,6 +1119,7 @@
 +	public static ReflectorField KeyModifier_NONE = new ReflectorField(KeyModifier, "NONE");
 +
 +	//Vivecraft Forge
++	public static ReflectorMethod ForgeKeyBinding_getKeyConflictContext= new ReflectorMethod(ForgeKeyBinding, "getKeyConflictContext");
 +	public static ReflectorMethod FMLClientHandler_beginMinecraftLoading = new ReflectorMethod(FMLClientHandler, "beginMinecraftLoading"); //
 +	public static ReflectorMethod FMLClientHandler_finishMinecraftLoading = new ReflectorMethod(FMLClientHandler, "finishMinecraftLoading");
 +	public static ReflectorMethod FMLClientHandler_connectToServerAtStartup = new ReflectorMethod(FMLClientHandler, "connectToServerAtStartup");
