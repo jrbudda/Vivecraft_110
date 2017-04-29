@@ -322,6 +322,8 @@ public class Installer extends JPanel  implements PropertyChangeListener
                     fo.delete();
                     success = false;
                 }
+			} else {
+        		JOptionPane.showMessageDialog(null, "Could not download file: " + surl, "Download File", JOptionPane.INFORMATION_MESSAGE);
 			}
             return success;
         }
@@ -1069,6 +1071,8 @@ public class Installer extends JPanel  implements PropertyChangeListener
                 monitor.setProgress(55);
                 monitor.setNote("Downloading Forge " + FULL_FORGE_VERSION + "...");
                 downloadedForge = downloadFile(forge_url, forgeInstaller);
+				if(!downloadedForge)
+        		JOptionPane.showMessageDialog(null, "Could not download Forge. Please exit this installer and download it manually", "Forge Installation", JOptionPane.WARNING_MESSAGE);
             }
             if (downloadedForge && useForge.isSelected() && !forgeVersionInstalled) {
                 monitor.setProgress(65);

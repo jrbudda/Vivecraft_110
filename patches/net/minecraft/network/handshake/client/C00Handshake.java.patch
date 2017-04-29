@@ -46,18 +46,17 @@
      }
  
      /**
-@@ -42,7 +52,9 @@
+@@ -42,7 +52,8 @@
      public void writePacketData(PacketBuffer buf) throws IOException
      {
          buf.writeVarIntToBuffer(this.protocolVersion);
 -        buf.writeString(this.ip);
-+        
-+        if(!hasFMLMarker) buf.writeString(this.ip);
++        if(!Reflector.forgeExists()) buf.writeString(this.ip);
 +        else buf.writeString(this.ip + "\0FML\0");
          buf.writeShort(this.port);
          buf.writeVarIntToBuffer(this.requestedState.getId());
      }
-@@ -64,4 +76,8 @@
+@@ -64,4 +75,8 @@
      {
          return this.protocolVersion;
      }

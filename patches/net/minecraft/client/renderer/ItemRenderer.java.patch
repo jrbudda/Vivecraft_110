@@ -117,7 +117,7 @@
 -            {
 -                GlStateManager.depthMask(false);
 -            }
-+            boolean flag = this.itemRenderer.shouldRenderItemIn3D(heldStack) && block.getBlockLayer() == BlockRenderLayer.TRANSLUCENT;
++            boolean flag = this.itemRenderer.shouldRenderItemIn3D(heldStack) && block != null && block.getBlockLayer() == BlockRenderLayer.TRANSLUCENT;
  
 -            this.itemRenderer.renderItem(heldStack, entitylivingbaseIn, transform, p_187462_4_);
 -
