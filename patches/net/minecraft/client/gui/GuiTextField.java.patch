@@ -22,13 +22,17 @@
  
      /** Has the current text being edited on the textbox. */
      private String text = "";
-@@ -511,7 +514,13 @@
+@@ -511,7 +514,17 @@
          if (this.canLoseFocus)
          {
              this.setFocused(flag);
 -        }
 +       }  else {
 +           	
++           for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
++               if(ste.getClassName().contains("GuiChattableCamera")) return;
++           }
++    	   
 +            // VIVE START - show keyboard
 +             MCOpenVR.setKeyboardOverlayShowing(true, this);
 +           // VIVE END - show keyboard
@@ -37,7 +41,7 @@
  
          if (this.isFocused && flag && mouseButton == 0)
          {
-@@ -717,6 +726,15 @@
+@@ -717,6 +730,15 @@
          }
  
          this.isFocused = isFocusedIn;

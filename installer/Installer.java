@@ -1423,6 +1423,7 @@ public class Installer extends JPanel  implements PropertyChangeListener
         AbstractAction actf = new updateActionF();
         actf.putValue(AbstractAction.NAME, "Install Vivecraft with Forge " + FORGE_VERSION);
         useForge.setAction(actf);
+		useForge.setSelected(true);
         forgeVersion = new JComboBox();
         if (!ALLOW_FORGE_INSTALL)
             useForge.setEnabled(false);
