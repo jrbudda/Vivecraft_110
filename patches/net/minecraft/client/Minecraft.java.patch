@@ -304,7 +304,7 @@
 +	 * The minecriftVerString will be automatically updated by the build scripts, do not modify here.
 +	 * Modify minecriftversion.py in root minecrift dir.
 +	 */
-+    public final String minecriftVerString = "Vivecraft 1.10.2 Vivecraft-jrbudda-8r2";
++    public final String minecriftVerString = "Vivecraft 1.10.2 Vivecraft-jrbudda-9pre";
 +	/* end version */
 +	/** END MINECRIFT */
 +    
@@ -419,7 +419,7 @@
      public void run()
 @@ -494,7 +713,8 @@
       */
-     private void startGame() throws LWJGLException, IOException
+     private void init() throws LWJGLException, IOException
      {
 -        this.gameSettings = new GameSettings(this, this.mcDataDir);
 +        //VIVECRAFT DONT DO THIS CAUSE ??? (DO IT IN 1.10 CAUSE NULL!!!)
@@ -1660,7 +1660,7 @@
              }
          }
  
-@@ -2207,9 +2844,10 @@
+@@ -2207,7 +2844,7 @@
                  }
              }
          }
@@ -1668,19 +1668,8 @@
 +      
          while (this.gameSettings.keyBindInventory.isPressed())
          {
-+        	System.out.print("WHAT!!!!!");
              this.getConnection().sendPacket(new CPacketClientStatus(CPacketClientStatus.State.OPEN_INVENTORY_ACHIEVEMENT));
- 
-             if (this.playerController.isRidingHorse())
-@@ -2218,6 +2856,7 @@
-             }
-             else
-             {
-+            	System.out.print("WHAT!!");
-                 this.displayGuiScreen(new GuiInventory(this.player));
-             }
-         }
-@@ -2242,11 +2881,26 @@
+@@ -2242,11 +2879,26 @@
  
          if (flag)
          {
@@ -1712,7 +1701,7 @@
              if (this.currentScreen == null && this.gameSettings.keyBindCommand.isPressed())
              {
                  this.displayGuiScreen(new GuiChat("/"));
-@@ -2255,9 +2909,10 @@
+@@ -2255,9 +2907,10 @@
  
          if (this.player.isHandActive())
          {
@@ -1725,7 +1714,7 @@
              }
  
              label472:
-@@ -2283,17 +2938,30 @@
+@@ -2283,17 +2936,30 @@
                  }
              }
          }
@@ -1763,7 +1752,7 @@
  
              while (this.gameSettings.keyBindPickBlock.isPressed())
              {
-@@ -2301,18 +2969,23 @@
+@@ -2301,18 +2967,23 @@
              }
          }
  
@@ -1790,7 +1779,7 @@
              int i = Mouse.getEventButton();
              KeyBinding.setKeyBindState(i - 100, Mouse.getEventButtonState());
  
-@@ -2327,6 +3000,13 @@
+@@ -2327,6 +2998,13 @@
                      KeyBinding.onTick(i - 100);
                  }
              }
@@ -1804,7 +1793,7 @@
  
              long j = getSystemTime() - this.systemTime;
  
-@@ -2381,6 +3061,15 @@
+@@ -2381,6 +3059,15 @@
       */
      public void launchIntegratedServer(String folderName, String worldName, @Nullable WorldSettings worldSettingsIn)
      {
@@ -1820,7 +1809,7 @@
          this.loadWorld((WorldClient)null);
          System.gc();
          ISaveHandler isavehandler = this.saveLoader.getSaveLoader(folderName, false);
-@@ -2423,6 +3112,16 @@
+@@ -2423,6 +3110,16 @@
  
          while (!this.theIntegratedServer.serverIsInRunLoop())
          {
@@ -1837,7 +1826,7 @@
              String s = this.theIntegratedServer.getUserMessage();
  
              if (s != null)
-@@ -2443,12 +3142,19 @@
+@@ -2443,12 +3140,19 @@
                  ;
              }
          }
@@ -1859,7 +1848,7 @@
          networkmanager.sendPacket(new CPacketLoginStart(this.getSession().getProfile()));
          this.myNetworkManager = networkmanager;
      }
-@@ -2458,6 +3164,9 @@
+@@ -2458,6 +3162,9 @@
       */
      public void loadWorld(WorldClient worldClientIn)
      {
@@ -1869,7 +1858,7 @@
          this.loadWorld(worldClientIn, "");
      }
  
-@@ -2466,6 +3175,11 @@
+@@ -2466,6 +3173,11 @@
       */
      public void loadWorld(@Nullable WorldClient worldClientIn, String loadingMessage)
      {
@@ -1881,7 +1870,7 @@
          if (worldClientIn == null)
          {
              NetHandlerPlayClient nethandlerplayclient = this.getConnection();
-@@ -2477,9 +3191,25 @@
+@@ -2477,9 +3189,25 @@
  
              if (this.theIntegratedServer != null && this.theIntegratedServer.isAnvilFileSet())
              {
@@ -1909,7 +1898,7 @@
              this.theIntegratedServer = null;
              this.guiAchievement.clearAchievements();
              this.entityRenderer.getMapItemRenderer().clearLoadedMaps();
-@@ -2501,6 +3231,11 @@
+@@ -2501,6 +3229,11 @@
              this.ingameGUI.resetPlayersOverlayFooterHeader();
              this.setServerData((ServerData)null);
              this.integratedServerIsRunning = false;
@@ -1921,7 +1910,7 @@
          }
  
          this.mcSoundHandler.stopSounds();
-@@ -2607,6 +3342,7 @@
+@@ -2607,6 +3340,7 @@
          return theMinecraft == null || !theMinecraft.gameSettings.hideGUI;
      }
  
@@ -1929,7 +1918,7 @@
      public static boolean isFancyGraphicsEnabled()
      {
          return theMinecraft != null && theMinecraft.gameSettings.fancyGraphics;
-@@ -2623,8 +3359,16 @@
+@@ -2623,8 +3357,16 @@
      /**
       * Called when user clicked he's mouse middle button (pick block)
       */
@@ -1947,7 +1936,7 @@
          if (this.objectMouseOver != null && this.objectMouseOver.typeOfHit != RayTraceResult.Type.MISS)
          {
              boolean flag = this.player.capabilities.isCreativeMode;
-@@ -2788,7 +3532,8 @@
+@@ -2788,7 +3530,8 @@
          }
      }
  
@@ -1957,7 +1946,7 @@
      {
          NBTTagCompound nbttagcompound = te.writeToNBT(new NBTTagCompound());
  
-@@ -3098,6 +3843,11 @@
+@@ -3098,6 +3841,11 @@
       */
      public static int getGLMaximumTextureSize()
      {
@@ -1969,7 +1958,7 @@
          for (int i = 16384; i > 0; i >>= 1)
          {
              GlStateManager.glTexImage2D(32868, 0, 6408, i, i, 0, 6408, 5121, (IntBuffer)null);
-@@ -3264,7 +4014,7 @@
+@@ -3264,7 +4012,7 @@
      }
  
      public void dispatchKeypresses()
@@ -1978,7 +1967,7 @@
          int i = Keyboard.getEventKey() == 0 ? Keyboard.getEventCharacter() + 256 : Keyboard.getEventKey();
  
          if (i != 0 && !Keyboard.isRepeatEvent())
-@@ -3417,4 +4167,1209 @@
+@@ -3417,4 +4165,1209 @@
      {
          return this.player != null && this.player.hasReducedDebug() || this.gameSettings.reducedDebugInfo;
      }

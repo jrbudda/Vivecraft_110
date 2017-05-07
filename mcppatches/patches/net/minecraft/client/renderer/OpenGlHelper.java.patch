@@ -1,0 +1,216 @@
+--- a/net/minecraft/client/renderer/OpenGlHelper.java
++++ b/net/minecraft/client/renderer/OpenGlHelper.java
+@@ -648,17 +648,17 @@
+     {
+         if (framebufferSupported)
+         {
+-            switch (null.$SwitchMap$net$minecraft$client$renderer$OpenGlHelper$FboMode[framebufferType.ordinal()])
++            switch (framebufferType)
+             {
+-                case 1:
++                case BASE:
+                     GL30.glBindFramebuffer(target, framebufferIn);
+                     break;
+ 
+-                case 2:
++                case ARB:
+                     ARBFramebufferObject.glBindFramebuffer(target, framebufferIn);
+                     break;
+ 
+-                case 3:
++                case EXT:
+                     EXTFramebufferObject.glBindFramebufferEXT(target, framebufferIn);
+             }
+         }
+@@ -668,17 +668,17 @@
+     {
+         if (framebufferSupported)
+         {
+-            switch (null.$SwitchMap$net$minecraft$client$renderer$OpenGlHelper$FboMode[framebufferType.ordinal()])
++            switch (framebufferType)
+             {
+-                case 1:
++                case BASE:
+                     GL30.glBindRenderbuffer(target, renderbuffer);
+                     break;
+ 
+-                case 2:
++                case ARB:
+                     ARBFramebufferObject.glBindRenderbuffer(target, renderbuffer);
+                     break;
+ 
+-                case 3:
++                case EXT:
+                     EXTFramebufferObject.glBindRenderbufferEXT(target, renderbuffer);
+             }
+         }
+@@ -688,17 +688,17 @@
+     {
+         if (framebufferSupported)
+         {
+-            switch (null.$SwitchMap$net$minecraft$client$renderer$OpenGlHelper$FboMode[framebufferType.ordinal()])
++            switch (framebufferType)
+             {
+-                case 1:
++                case BASE:
+                     GL30.glDeleteRenderbuffers(renderbuffer);
+                     break;
+ 
+-                case 2:
++                case ARB:
+                     ARBFramebufferObject.glDeleteRenderbuffers(renderbuffer);
+                     break;
+ 
+-                case 3:
++                case EXT:
+                     EXTFramebufferObject.glDeleteRenderbuffersEXT(renderbuffer);
+             }
+         }
+@@ -708,17 +708,17 @@
+     {
+         if (framebufferSupported)
+         {
+-            switch (null.$SwitchMap$net$minecraft$client$renderer$OpenGlHelper$FboMode[framebufferType.ordinal()])
++            switch (framebufferType)
+             {
+-                case 1:
++                case BASE:
+                     GL30.glDeleteFramebuffers(framebufferIn);
+                     break;
+ 
+-                case 2:
++                case ARB:
+                     ARBFramebufferObject.glDeleteFramebuffers(framebufferIn);
+                     break;
+ 
+-                case 3:
++                case EXT:
+                     EXTFramebufferObject.glDeleteFramebuffersEXT(framebufferIn);
+             }
+         }
+@@ -735,15 +735,15 @@
+         }
+         else
+         {
+-            switch (null.$SwitchMap$net$minecraft$client$renderer$OpenGlHelper$FboMode[framebufferType.ordinal()])
++            switch (framebufferType)
+             {
+-                case 1:
++                case BASE:
+                     return GL30.glGenFramebuffers();
+ 
+-                case 2:
++                case ARB:
+                     return ARBFramebufferObject.glGenFramebuffers();
+ 
+-                case 3:
++                case EXT:
+                     return EXTFramebufferObject.glGenFramebuffersEXT();
+ 
+                 default:
+@@ -760,15 +760,15 @@
+         }
+         else
+         {
+-            switch (null.$SwitchMap$net$minecraft$client$renderer$OpenGlHelper$FboMode[framebufferType.ordinal()])
++            switch (framebufferType)
+             {
+-                case 1:
++                case BASE:
+                     return GL30.glGenRenderbuffers();
+ 
+-                case 2:
++                case ARB:
+                     return ARBFramebufferObject.glGenRenderbuffers();
+ 
+-                case 3:
++                case EXT:
+                     return EXTFramebufferObject.glGenRenderbuffersEXT();
+ 
+                 default:
+@@ -781,17 +781,17 @@
+     {
+         if (framebufferSupported)
+         {
+-            switch (null.$SwitchMap$net$minecraft$client$renderer$OpenGlHelper$FboMode[framebufferType.ordinal()])
++            switch (framebufferType)
+             {
+-                case 1:
++                case BASE:
+                     GL30.glRenderbufferStorage(target, internalFormat, width, height);
+                     break;
+ 
+-                case 2:
++                case ARB:
+                     ARBFramebufferObject.glRenderbufferStorage(target, internalFormat, width, height);
+                     break;
+ 
+-                case 3:
++                case EXT:
+                     EXTFramebufferObject.glRenderbufferStorageEXT(target, internalFormat, width, height);
+             }
+         }
+@@ -801,17 +801,17 @@
+     {
+         if (framebufferSupported)
+         {
+-            switch (null.$SwitchMap$net$minecraft$client$renderer$OpenGlHelper$FboMode[framebufferType.ordinal()])
++            switch (framebufferType)
+             {
+-                case 1:
++                case BASE:
+                     GL30.glFramebufferRenderbuffer(target, attachment, renderBufferTarget, renderBuffer);
+                     break;
+ 
+-                case 2:
++                case ARB:
+                     ARBFramebufferObject.glFramebufferRenderbuffer(target, attachment, renderBufferTarget, renderBuffer);
+                     break;
+ 
+-                case 3:
++                case EXT:
+                     EXTFramebufferObject.glFramebufferRenderbufferEXT(target, attachment, renderBufferTarget, renderBuffer);
+             }
+         }
+@@ -825,15 +825,15 @@
+         }
+         else
+         {
+-            switch (null.$SwitchMap$net$minecraft$client$renderer$OpenGlHelper$FboMode[framebufferType.ordinal()])
++            switch (framebufferType)
+             {
+-                case 1:
++                case BASE:
+                     return GL30.glCheckFramebufferStatus(target);
+ 
+-                case 2:
++                case ARB:
+                     return ARBFramebufferObject.glCheckFramebufferStatus(target);
+ 
+-                case 3:
++                case EXT:
+                     return EXTFramebufferObject.glCheckFramebufferStatusEXT(target);
+ 
+                 default:
+@@ -846,17 +846,17 @@
+     {
+         if (framebufferSupported)
+         {
+-            switch (null.$SwitchMap$net$minecraft$client$renderer$OpenGlHelper$FboMode[framebufferType.ordinal()])
++            switch (framebufferType)
+             {
+-                case 1:
++                case BASE:
+                     GL30.glFramebufferTexture2D(target, attachment, textarget, texture, level);
+                     break;
+ 
+-                case 2:
++                case ARB:
+                     ARBFramebufferObject.glFramebufferTexture2D(target, attachment, textarget, texture, level);
+                     break;
+ 
+-                case 3:
++                case EXT:
+                     EXTFramebufferObject.glFramebufferTexture2DEXT(target, attachment, textarget, texture, level);
+             }
+         }

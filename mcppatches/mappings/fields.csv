@@ -292,7 +292,7 @@ field_111179_c,targetX,2,
 field_111180_a,horseHost,2,
 field_111188_I,attributeModifierMap,2,Contains a Map of the AttributeModifiers registered by potions
 field_111192_g,previousTotalWorldTime,2,time what is using to check if InhabitedTime should be calculated
-field_111193_e,playerInstanceList,2,This field is using when chunk should be processed (every 8000 ticks)
+field_111193_e,entries,2,This field is using when chunk should be processed (every 8000 ticks)
 field_111202_k,divideByTen,2,
 field_111203_a,MOON_PHASE_FACTORS,2,
 field_111204_q,inhabitedTime,2,the cumulative number of ticks players have been in this chunk
@@ -1298,7 +1298,7 @@ field_148827_a,openGL21,0,
 field_148828_i,openGL14,0,
 field_148849_e,progress,2,
 field_148852_a,breakerId,2,
-field_148859_d,metadata,2,Used only for vanilla tile entities
+field_148859_d,tileEntityType,2,Used only for vanilla tile entities
 field_148860_e,nbt,2,
 field_148871_f,block,2,
 field_148872_d,instrument,2,
@@ -1535,7 +1535,7 @@ field_149549_f,mode,2,Inventory operation mode
 field_149550_d,actionNumber,2,"A unique number for the action, used for transaction handling"
 field_149551_e,clickedItem,2,The item stack present in the slot
 field_149552_b,slotId,2,Id of the clicked slot
-field_149553_c,usedButton,2,Button used
+field_149553_c,packedClickData,2,Button used
 field_149554_a,windowId,2,The id of the window which was clicked. 0 for player inventory.
 field_149556_a,windowId,2,
 field_149561_c,data,2,
@@ -4342,7 +4342,7 @@ field_181549_az,VERTEX_FORMAT,0,
 field_181555_c,thrower,2,
 field_181620_aE,JUNGLE_LOG,2,
 field_181621_aF,JUNGLE_LEAF,2,
-field_181622_aG,OAK_LEAF,2,
+field_181622_aG,OAK_LEAF,2,The block state for the Oak leaf
 field_181626_b,forceLoad,2,
 field_181628_c,forceLoad,2,
 field_181629_a,LOG,2,
@@ -4654,8 +4654,8 @@ field_184701_b,ATTACHED_BLOCK_POS,2,
 field_184702_c,PEEK_TICK,2,
 field_184703_bv,COVERED_ARMOR_BONUS_ID,2,
 field_184704_bw,COVERED_ARMOR_BONUS_MODIFIER,2,
-field_184705_bx,currentPeekAmount0,2,
-field_184706_by,currentPeekAmount,2,
+field_184705_bx,prevPeekAmount,2,
+field_184706_by,peekAmount,2,
 field_184707_bz,currentAttachmentPosition,2,
 field_184708_bA,clientSideTeleportInterpolation,2,
 field_184711_bt,SLIME_SIZE,2,
@@ -5013,8 +5013,8 @@ field_185585_f,WEST_AABB,2,
 field_185586_g,EAST_AABB,2,
 field_185587_a,MODE,2,
 field_185590_a,FLAT_AABB,2,
-field_185593_b,CACTUS_AABB,2,
-field_185594_c,CACTUS_COLLISION_AABB,2,
+field_185593_b,CACTUS_COLLISION_AABB,2,
+field_185594_c,CACTUS_AABB,2,
 field_185595_b,CAKE_AABB,2,
 field_185596_b,AABB_LEGS,2,
 field_185597_c,AABB_WALL_NORTH,2,
@@ -5734,7 +5734,7 @@ field_187290_j,sentToPlayers,2,
 field_187308_a,NOT_SPECTATOR,2,
 field_187309_b,CAN_GENERATE_CHUNKS,2,
 field_187310_g,pendingSendToPlayers,2,
-field_187311_h,playersNeedingChunks,2,"List of player instances whose chunk field is unassigned, and need the chunk at their pos to be loaded."
+field_187311_h,entriesWithoutChunks,2,"List of player instances whose chunk field is unassigned, and need the chunk at their pos to be loaded."
 field_187312_l,sortMissingChunks,2,
 field_187313_m,sortSendToPlayers,2,
 field_187316_a,LOGGER,0,
@@ -6562,24 +6562,53 @@ field_189730_q,integrity,2,
 field_189731_r,seed,2,
 field_189736_e,PARTICLE_PARAM_1,2,
 field_189737_f,PARTICLE_PARAM_2,2,
+field_189740_d,pos,2,
+field_189750_bF,lastDamageSource,2,
+field_189751_bG,lastDamageStamp,2,
+field_189797_bB,warningSoundTicks,2,
 field_189798_bx,IS_STANDING,2,
+field_189799_by,clientSideStandAnimation0,2,
+field_189800_bz,clientSideStandAnimation,2,
+field_189811_cr,autoJumpEnabled,0,
+field_189812_cs,autoJumpTime,0,
+field_189813_ct,wasFallFlying,0,
+field_189825_A,sizeZEdit,0,
+field_189826_B,integrityEdit,0,
+field_189827_C,seedEdit,0,
+field_189828_D,dataEdit,0,
 field_189829_E,doneButton,0,
 field_189830_F,cancelButton,0,
 field_189831_G,saveButton,0,
 field_189832_H,loadButton,0,
+field_189833_I,rotateZeroDegreesButton,0,
+field_189834_J,rotateNinetyDegreesButton,0,
+field_189835_K,rotate180DegreesButton,0,
+field_189836_L,rotate270DegressButton,0,
 field_189837_M,modeButton,0,
 field_189838_N,detectSizeButton,0,
 field_189839_O,showEntitiesButton,0,
 field_189840_P,mirrorButton,0,
 field_189841_Q,showAirButton,0,
 field_189842_R,showBoundingBoxButton,0,
+field_189843_S,tabOrder,0,
+field_189844_T,decimalFormat,0,
 field_189845_a,LOGGER,0,
+field_189846_f,tileStructure,0,
 field_189847_g,mirror,0,
 field_189848_h,rotation,0,
 field_189849_i,mode,0,
 field_189850_r,ignoreEntities,0,
 field_189851_s,showAir,0,
 field_189852_t,showBoundingBox,0,
+field_189853_u,nameEdit,0,
+field_189854_v,posXEdit,0,
+field_189855_w,posYEdit,0,
+field_189856_x,posZEdit,0,
+field_189857_y,sizeXEdit,0,
+field_189858_z,sizeYEdit,0,
+field_189861_b,ILLEGAL_STRUCTURE_CHARACTERS,2,
+field_189866_h,dustColor,2,
+field_189870_A,extraTreeChance,2,
 field_189875_a,STRUCTURE_VOID_AABB,2,
 field_189877_df,MAGMA,2,
 field_189878_dg,NETHER_WART_BLOCK,2,
@@ -6587,9 +6616,41 @@ field_189879_dh,RED_NETHER_BRICK,2,
 field_189880_di,BONE_BLOCK,2,
 field_189881_dj,STRUCTURE_VOID,2,
 field_189887_a,material,2,
+field_189888_D,magmaGen,2,
+field_189890_a,STRUCTURE_SPINE_01,2,
+field_189891_b,STRUCTURE_SPINE_02,2,
+field_189892_c,STRUCTURE_SPINE_03,2,
+field_189893_d,STRUCTURE_SPINE_04,2,
+field_189894_e,STRUCTURE_SPINE_01_COAL,2,
+field_189895_f,STRUCTURE_SPINE_02_COAL,2,
+field_189896_g,STRUCTURE_SPINE_03_COAL,2,
+field_189897_h,STRUCTURE_SPINE_04_COAL,2,
+field_189898_i,STRUCTURE_SKULL_01,2,
+field_189899_j,STRUCTURE_SKULL_02,2,
+field_189900_k,STRUCTURE_SKULL_03,2,
+field_189901_l,STRUCTURE_SKULL_04,2,
+field_189902_m,STRUCTURE_SKULL_01_COAL,2,
+field_189903_n,STRUCTURE_SKULL_02_COAL,2,
+field_189904_o,STRUCTURE_SKULL_03_COAL,2,
+field_189905_p,STRUCTURE_SKULL_04_COAL,2,
+field_189906_q,FOSSILS,2,
+field_189907_r,FOSSILS_COAL,2,
+field_189908_c,mineShaftType,2,
+field_189920_a,mineShaftType,2,
+field_189928_h,structureType,2,
+field_189929_i,isZombieInfested,2,
+field_189944_a,chance,2,
+field_189945_b,random,2,
+field_189951_h,integrity,2,
+field_189952_i,random,2,
+field_189953_j,setSeed,2,
+field_189957_a,DEFAULT_BLOCK_STATE,2,
+field_189958_b,ids,2,
+field_189959_c,lastId,2,
 field_189963_J,STRUCTURE_VOID,2,
 field_189968_an,ENTITIES_STRAY,2,
 field_189969_E,ENTITIES_POLAR_BEAR,2,
+field_189971_b,limit,2,
 field_189974_a,ZERO,0,
 field_189975_b,ONE,0,
 field_189976_c,UNIT_X,0,
@@ -6601,6 +6662,13 @@ field_189981_h,MIN,0,
 field_189982_i,x,0,
 field_189983_j,y,0,
 field_189989_R,autoJump,0,
+field_189990_a,COLON_SPLITTER,0,
+field_190014_F,particleAngle,0,The amount the particle will be rotated in rendering.
+field_190015_G,prevParticleAngle,0,The particle angle from the last tick. Appears to be used for calculating the rendered angle with partial ticks.
+field_190016_K,cameraViewDir,0,
+field_190017_n,canCollide,0,Determines if particle to block collision is to be used
+field_190018_a,oSize,0,
+field_190019_b,rotSpeed,0,
 field_190021_aL,BLOCK_ENCHANTMENT_TABLE_USE,2,
 field_190022_cI,ENTITY_HUSK_AMBIENT,2,
 field_190023_cJ,ENTITY_HUSK_DEATH,2,
@@ -6621,15 +6689,39 @@ field_190037_hb,ENTITY_WITHER_SKELETON_DEATH,2,
 field_190038_hc,ENTITY_WITHER_SKELETON_HURT,2,
 field_190039_hd,ENTITY_WITHER_SKELETON_STEP,2,
 field_190049_a,RANDOM,2,
+field_190050_a,WRONG,2,
+field_190057_j,cameraHitResult,0,
 field_190061_a,minecraft,0,
+field_190062_b,player,0,
+field_190063_c,xo,0,
+field_190064_d,yo,0,
+field_190065_e,zo,0,
+field_190068_e,player,0,
+field_190069_f,xo,0,
+field_190070_g,yo,0,
+field_190071_h,zo,0,
 field_190072_a,minecraft,0,
 field_190077_c,debugRendererChunkBorder,0,
 field_190078_d,debugRendererHeightMap,0,
+field_190079_e,chunkBordersEnabled,0,
+field_190080_f,pathfindingEnabled,0,
+field_190081_g,waterEnabled,0,
+field_190082_h,heightmapEnabled,0,
+field_190084_m,STRAY_SKELETON_TEXTURES,0,
+field_190086_r,HUSK_ZOMBIE_TEXTURES,0,
 field_190090_a,POLAR_BEAR_TEXTURE,0,
+field_190092_a,STRAY_CLOTHES_TEXTURES,0,
+field_190093_b,renderer,0,
+field_190094_c,layerModel,0,
 field_190095_e,hotFloor,2,
+field_190101_a,madeParent,2,
+field_190117_e,SHA1,0,
+field_190140_d,name,2,
 field_190141_e,lootTable,2,
 field_190163_h,villager,2,
 field_190164_i,name,2,
+field_190302_a,LEGAL_KEY_CODES,0,
+field_190303_a,LOGGER,2,
 field_70009_b,buffer,2,RCon string buffer for log.
 field_70116_cv,serverPosZ,0,
 field_70117_cu,serverPosY,0,
@@ -6940,7 +7032,7 @@ field_71077_c,spawnChunk,2,holds the spawn chunk of the player
 field_71078_a,theInventoryEnderChest,2,
 field_71079_bU,renderOffsetX,2,
 field_71080_cy,prevTimeInPortal,0,The amount of time an entity has been in a Portal the previous tick
-field_71081_bT,playerLocation,2,the current location of the player
+field_71081_bT,bedLocation,2,"The location of the bed the player is sleeping in, or {@code null} if they are not sleeping"
 field_71082_cx,renderOffsetY,0,
 field_71083_bS,sleeping,2,Boolean value indicating weather a player is sleeping or not
 field_71085_bR,chasingPosZ,2,
@@ -7012,7 +7104,7 @@ field_71299_R,timeOfLastWarning,2,"Set when warned for ""Can't keep up"", which 
 field_71302_d,currentTask,2,The task the server is currently working on(and will output on outputPercentRemaining).
 field_71303_e,percentDone,2,The percentage of the current task finished so far.
 field_71304_b,theProfiler,2,
-field_71305_c,worldServers,2,The server world instances.
+field_71305_c,worlds,2,The server world instances.
 field_71307_n,usageSnooper,2,The PlayerUsageSnooper instance.
 field_71308_o,anvilFile,2,
 field_71310_m,anvilConverterForAnvilFile,2,
@@ -7040,7 +7132,7 @@ field_71345_q,lanServerPing,0,
 field_71346_p,isPublic,0,
 field_71348_o,isGamePaused,0,
 field_71349_l,mc,0,The Minecraft instance.
-field_71350_m,worldSettings,0,
+field_71350_m,theWorldSettings,0,
 field_71412_D,mcDataDir,0,
 field_71415_G,inGameHasFocus,0,Does the actual gameplay have focus. If so then mouse and keys will effect the player instead of menus.
 field_71417_B,mouseHelper,0,Mouse helper instance.
@@ -7104,7 +7196,7 @@ field_71567_b,ILLEGAL_FILE_CHARACTERS,2,Array of the special characters that are
 field_71576_a,crashReport,2,The crash report associated with this exception
 field_72307_f,hitVec,2,The vector position of the hit
 field_72308_g,entityHit,2,The hit entity
-field_72313_a,typeOfHit,2,"What type of ray trace hit was this? 0 = block, 1 = entity"
+field_72313_a,typeOfHit,2,"The type of hit that occured, see {@link RayTraceResult#Type} for possibilities."
 field_72334_f,maxZ,2,
 field_72336_d,maxX,2,
 field_72337_e,maxY,2,
@@ -7169,11 +7261,11 @@ field_72660_i,buffer,1,A buffer for incoming Socket data
 field_72666_a,HEX_DIGITS,1,Translation array of decimal to hex digits
 field_72673_b,output,1,ByteArrayOutputStream wrapper
 field_72674_a,byteArrayOutput,1,Output stream
-field_72697_d,playerInstancesToUpdate,2,the playerInstances(chunks) that need to be updated
+field_72697_d,dirtyEntries,2,the playerInstances(chunks) that need to be updated
 field_72698_e,playerViewRadius,2,Number of chunks the server sends to the client. Valid 3<=x<=15. In server.properties.
 field_72699_b,players,2,players in the current instance
-field_72700_c,playerInstances,2,the hash of all playerInstances created
-field_72701_a,worldServer,2,
+field_72700_c,entryMap,2,the hash of all playerInstances created
+field_72701_a,world,2,
 field_72738_E,damagedBlocks,0,Stores blocks currently being broken. Key is entity ID of the thing doing the breaking. Value is a DestroyBlockProgress
 field_72739_F,renderDistanceChunks,0,
 field_72740_G,renderEntitiesStartupCounter,0,Render entities startup counter (init value=2)
@@ -7188,10 +7280,10 @@ field_72772_v,starGLCallList,0,The star GL Call list
 field_72773_u,cloudTickCounter,0,counts the cloud render updates. Used with mod to stagger some updates
 field_72777_q,mc,0,A reference to the Minecraft object.
 field_72781_x,glSkyList2,0,OpenGL sky list 2
-field_72782_b,worldServer,2,The WorldServer object.
+field_72782_b,world,2,The WorldServer object.
 field_72783_a,mcServer,2,Reference to the MinecraftServer object.
 field_72792_d,maxTrackingDistanceThreshold,2,
-field_72793_b,trackedEntities,2,"List of tracked entities, used for iteration operations on tracked entities."
+field_72793_b,entries,2,"List of tracked entities, used for iteration operations on tracked entities."
 field_72794_c,trackedEntityHashTable,2,Used for identity lookup of tracked entities.
 field_72795_a,world,2,
 field_72814_d,hasExtendedLevels,2,set by !chunk.getAreLevelsEmpty
@@ -7236,7 +7328,7 @@ field_73038_N,previousActiveChunkSet,0,
 field_73058_d,disableLevelSaving,2,Whether level saving is disabled or not
 field_73061_a,mcServer,2,
 field_73062_L,theEntityTracker,2,The entity tracker for this server world.
-field_73063_M,playerManager,2,The player chunk map for this server world.
+field_73063_M,playerChunkMap,2,The player chunk map for this server world.
 field_73064_N,pendingTickListEntriesHashSet,2,
 field_73065_O,pendingTickListEntriesTreeSet,2,All work to do in future ticks.
 field_73068_P,allPlayersSleeping,2,is false if there are no players
@@ -7244,7 +7336,7 @@ field_73071_a,DEMO_WORLD_SETTINGS,2,
 field_73072_L,DEMO_WORLD_SEED,2,
 field_73088_d,isDestroyingBlock,2,True if the player is destroying a block
 field_73089_e,initialDamage,2,
-field_73090_b,thisPlayerMP,2,The EntityPlayerMP object that this object is connected to.
+field_73090_b,player,2,The EntityPlayerMP object that this object is connected to.
 field_73091_c,gameType,2,
 field_73092_a,world,2,The world object that this object is connected to.
 field_73093_n,initialBlockDamage,2,
@@ -7316,14 +7408,14 @@ field_73726_c,currentlyDisplayedText,0,The text currently displayed (i.e. the ar
 field_73727_a,message,0,
 field_73735_i,zLevel,0,
 field_73837_f,updateCounter,0,
-field_73838_g,recordPlaying,0,The string specifying which record music is playing
+field_73838_g,overlayMessage,0,The string specifying which record music is playing
 field_73839_d,mc,0,
 field_73840_e,persistantChatGUI,0,ChatGUI instance that retains all previous chat data
 field_73841_b,itemRenderer,0,
 field_73842_c,rand,0,
 field_73843_a,prevVignetteBrightness,0,Previous frame vignette brightness (slowly changes by 1% each frame)
-field_73844_j,recordIsPlaying,0,
-field_73845_h,recordPlayingUpFor,0,How many ticks the record playing message will be displayed
+field_73844_j,animateOverlayMessageColor,0,
+field_73845_h,overlayMessageTime,0,How many ticks the record playing message will be displayed
 field_73973_d,buttonResetDemo,0,
 field_73974_b,updateCounter,0,Counts the number of screen updates.
 field_73975_c,splashText,0,The splash message.
@@ -7542,9 +7634,9 @@ field_75204_e,STRONGHOLD_STONES,2,
 field_75205_b,PIECE_WEIGHTS,2,
 field_75206_c,structurePieceList,2,
 field_75207_a,totalWeight,2,
-field_75221_f,yDisplayPosition,2,display position of the inventory slot on the screen y axis
+field_75221_f,yPos,2,display position of the inventory slot on the screen y axis
 field_75222_d,slotNumber,2,the id of the slot(also the index in the inventory arraylist)
-field_75223_e,xDisplayPosition,2,display position of the inventory slot on the screen x axis
+field_75223_e,xPos,2,display position of the inventory slot on the screen x axis
 field_75224_c,inventory,2,The inventory we want to extract a slot from.
 field_75225_a,slotIndex,2,The index of the slot in the inventory.
 field_75228_b,removeCount,2,
@@ -7665,7 +7757,7 @@ field_75380_a,theEntity,2,The entity we are attached to
 field_75383_d,minPlayerDistance,2,
 field_75384_e,timeoutCounter,2,
 field_75385_b,player,2,
-field_75386_c,worldect,2,
+field_75386_c,world,2,
 field_75387_a,theWolf,2,
 field_75390_d,theAnimal,2,
 field_75391_e,targetMate,2,
@@ -7914,7 +8006,7 @@ field_76111_s,hardcore,2,Hardcore mode flag
 field_76112_r,mapFeaturesEnabled,2,Whether the map features (e.g. strongholds) generation is enabled or disabled.
 field_76113_q,theGameType,2,The Game Type.
 field_76114_p,thunderTime,2,Number of ticks untils next thunderbolt.
-field_76115_a,worldInfo,2,Instance of WorldInfo.
+field_76115_a,delegate,2,Instance of WorldInfo.
 field_76117_a,internalMap,2,
 field_76144_a,SIN_TABLE,2,"A table of sin values computed from 0 (inclusive) to 2*pi (exclusive), with steps of 2*PI / 65536."
 field_76189_a,dirty,2,Whether this MapDataBase needs saving to disk.
@@ -8042,7 +8134,7 @@ field_76539_b,radius,2,The maximum radius used when generating a patch of blocks
 field_76541_b,numberOfBlocks,2,The number of blocks to generate.
 field_76553_a,REGIONS_BY_FILE,2,A map containing Files as keys and RegionFiles as values
 field_76573_f,lightBrightnessTable,2,Light to brightness conversion table
-field_76575_d,isHellWorld,2,States whether the Hell world provider is used(true) or if the normal world provider is used(false)
+field_76575_d,doesWaterVaporize,2,States whether the Hell world provider is used(true) or if the normal world provider is used(false)
 field_76576_e,hasNoSky,2,A boolean that tells if a world does not have a sky. Used in calculating weather and skylight
 field_76577_b,terrainType,2,
 field_76578_c,biomeProvider,2,World chunk manager being used to generate chunks
@@ -8775,7 +8867,7 @@ field_82908_p,offsetY,0,
 field_82912_p,heightMapMinimum,2,Lowest value in the heightmap.
 field_82913_c,generatorSettings,2,
 field_82914_M,spawnableCaveCreatureList,2,
-field_82915_S,worldGenerator,2,
+field_82915_S,theWorldGenerator,2,
 field_83001_bt,invulnerable,2,
 field_83002_am,debugCrashKeyPressTime,0,"Keeps track of how long the debug crash keycombo (F3+C) has been pressed for, in order to crash after 10 seconds."
 field_83016_L,theCalendar,2,
@@ -8950,7 +9042,7 @@ field_98224_g,minecraftStartTimeMilis,2,
 field_98282_f,randomEntity,2,
 field_98283_g,minSpawnDelay,2,
 field_98284_d,prevMobRotation,2,the previous rotation of the mob inside the mob spawner
-field_98285_e,minecartToSpawn,2,List of minecart to spawn.
+field_98285_e,potentialSpawns,2,List of potential entities to spawn
 field_98286_b,spawnDelay,2,The delay to spawn.
 field_98287_c,mobRotation,2,The rotation of the mob inside the mob spawner
 field_98289_l,activatingRangeFromPlayer,2,The distance from which a player activates the spawner.

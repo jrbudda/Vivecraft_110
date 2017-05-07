@@ -223,7 +223,7 @@
 @@ -323,6 +409,10 @@
  
              this.prevOnGround = this.onGround;
-             this.field_189811_cr = this.mc.gameSettings.autoJump;
+             this.autoJumpEnabled = this.mc.gameSettings.autoJump;
 +            //VIVECRAFT
 +            mc.vrPlayer.IAmLookingAtMyHand[0] = mc.vrPlayer.shouldIlookatMyHand[0];
 +            mc.vrPlayer.IAmLookingAtMyHand[1] = mc.vrPlayer.shouldIlookatMyHand[1];
@@ -505,12 +505,12 @@
  
 @@ -1115,10 +1284,40 @@
       */
-     public void moveEntity(double x, double y, double z)
+     public void move(double x, double y, double z)
      {
 -        double d0 = this.posX;
 -        double d1 = this.posZ;
--        super.moveEntity(x, y, z);
--        this.func_189810_i((float)(this.posX - d0), (float)(this.posZ - d1));
+-        super.move(x, y, z);
+-        this.updateAutoJump((float)(this.posX - d0), (float)(this.posZ - d1));
 +    	if(x==0 && y==0 && z==0) return;
 +    	if(this.isRiding())return;
 +    	boolean freemove = OpenVRPlayer.get().getFreeMove();
@@ -525,20 +525,20 @@
 +    		double oz = roomOrigin.zCoord - posZ;
 +    		double d0 = this.posX;
 +    		double d1 = this.posZ;
-+    		super.moveEntity(x,y,z);
-+    		this.func_189810_i((float)(this.posX - d0), (float)(this.posZ - d1));
-+    			double oy = this.posY;
-+    			OpenVRPlayer.get().setRoomOrigin(
-+    					posX + ox, 
-+    					oy, 
-+    					posZ  + oz, false, false);
++    		super.move(x,y,z);
++    		this.updateAutoJump((float)(this.posX - d0), (float)(this.posZ - d1));
++    		double oy = this.posY;
++    		OpenVRPlayer.get().setRoomOrigin(
++    				posX + ox, 
++    				oy, 
++    				posZ + oz, false, false);
 +    	} else {
 +    		if(doY) {      	 
-+    			super.moveEntity(0,y,0);
-+    				OpenVRPlayer.get().setRoomOrigin(
-+    						OpenVRPlayer.get().getRoomOriginPos_World().xCoord, 
-+    						this.posY,
-+    						OpenVRPlayer.get().getRoomOriginPos_World().zCoord, false, false);
++    			super.move(0,y,0);
++    			OpenVRPlayer.get().setRoomOrigin(
++    					OpenVRPlayer.get().getRoomOriginPos_World().xCoord, 
++    					this.posY,
++    					OpenVRPlayer.get().getRoomOriginPos_World().zCoord, false, false);
 +
 +    		} else {
 +    			this.onGround = true; //
@@ -547,7 +547,7 @@
 +    	}
      }
  
-     public boolean func_189809_N()
+     public boolean isAutoJumpEnabled()
 @@ -1144,12 +1343,16 @@
                      float f = this.getAIMoveSpeed();
                      float f1 = (float)vec3d2.lengthSquared();

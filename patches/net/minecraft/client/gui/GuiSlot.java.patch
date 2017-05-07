@@ -49,35 +49,7 @@
              this.mouseX = mouseXIn;
              this.mouseY = mouseYIn;
              this.drawBackground();
-@@ -233,15 +237,18 @@
-             GlStateManager.disableFog();
-             Tessellator tessellator = Tessellator.getInstance();
-             VertexBuffer vertexbuffer = tessellator.getBuffer();
--            this.mc.getTextureManager().bindTexture(Gui.OPTIONS_BACKGROUND);
--            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
--            float f = 32.0F;
--            vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
--            vertexbuffer.pos((double)this.left, (double)this.bottom, 0.0D).tex((double)((float)this.left / 32.0F), (double)((float)(this.bottom + (int)this.amountScrolled) / 32.0F)).color(32, 32, 32, 255).endVertex();
--            vertexbuffer.pos((double)this.right, (double)this.bottom, 0.0D).tex((double)((float)this.right / 32.0F), (double)((float)(this.bottom + (int)this.amountScrolled) / 32.0F)).color(32, 32, 32, 255).endVertex();
--            vertexbuffer.pos((double)this.right, (double)this.top, 0.0D).tex((double)((float)this.right / 32.0F), (double)((float)(this.top + (int)this.amountScrolled) / 32.0F)).color(32, 32, 32, 255).endVertex();
--            vertexbuffer.pos((double)this.left, (double)this.top, 0.0D).tex((double)((float)this.left / 32.0F), (double)((float)(this.top + (int)this.amountScrolled) / 32.0F)).color(32, 32, 32, 255).endVertex();
--            tessellator.draw();
-+            //FORGE
-+//            this.mc.getTextureManager().bindTexture(Gui.OPTIONS_BACKGROUND);
-+//            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-+//            float f = 32.0F;
-+//            vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-+//            vertexbuffer.pos((double)this.left, (double)this.bottom, 0.0D).tex((double)((float)this.left / 32.0F), (double)((float)(this.bottom + (int)this.amountScrolled) / 32.0F)).color(32, 32, 32, 255).endVertex();
-+//            vertexbuffer.pos((double)this.right, (double)this.bottom, 0.0D).tex((double)((float)this.right / 32.0F), (double)((float)(this.bottom + (int)this.amountScrolled) / 32.0F)).color(32, 32, 32, 255).endVertex();
-+//            vertexbuffer.pos((double)this.right, (double)this.top, 0.0D).tex((double)((float)this.right / 32.0F), (double)((float)(this.top + (int)this.amountScrolled) / 32.0F)).color(32, 32, 32, 255).endVertex();
-+//            vertexbuffer.pos((double)this.left, (double)this.top, 0.0D).tex((double)((float)this.left / 32.0F), (double)((float)(this.top + (int)this.amountScrolled) / 32.0F)).color(32, 32, 32, 255).endVertex();
-+//            tessellator.draw();
-+            this.drawContainerBackground(tessellator);
-+            ///
-             int k = this.left + this.width / 2 - this.getListWidth() / 2 + 2;
-             int l = this.top + 4 - (int)this.amountScrolled;
- 
-@@ -313,11 +320,25 @@
+@@ -305,11 +309,25 @@
          }
      }
  
@@ -104,16 +76,16 @@
              {
                  int i = (this.width - this.getListWidth()) / 2;
                  int j = (this.width + this.getListWidth()) / 2;
-@@ -335,7 +356,7 @@
+@@ -327,7 +345,7 @@
                  }
              }
  
 -            if (Mouse.isButtonDown(0) && this.getEnabled())
 +            if ((Mouse.isButtonDown(0)  || GuiScreen.mouseDown) && this.getEnabled())
              {
-                 if (this.initialClickY == -1)
+                 if (this.initialClickY != -1)
                  {
-@@ -408,7 +429,7 @@
+@@ -403,7 +421,7 @@
                  this.initialClickY = -1;
              }
  
@@ -122,7 +94,7 @@
  
              if (i2 != 0)
              {
-@@ -421,7 +442,7 @@
+@@ -416,7 +434,7 @@
                      i2 = 1;
                  }
  
@@ -131,3 +103,22 @@
              }
          }
      }
+@@ -521,17 +539,5 @@
+         return this.slotHeight;
+     }
+ 
+-    protected void drawContainerBackground(Tessellator p_drawContainerBackground_1_)
+-    {
+-        VertexBuffer vertexbuffer = p_drawContainerBackground_1_.getBuffer();
+-        this.mc.getTextureManager().bindTexture(Gui.OPTIONS_BACKGROUND);
+-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+-        float f = 32.0F;
+-        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+-        vertexbuffer.pos((double)this.left, (double)this.bottom, 0.0D).tex((double)((float)this.left / 32.0F), (double)((float)(this.bottom + (int)this.amountScrolled) / 32.0F)).color(32, 32, 32, 255).endVertex();
+-        vertexbuffer.pos((double)this.right, (double)this.bottom, 0.0D).tex((double)((float)this.right / 32.0F), (double)((float)(this.bottom + (int)this.amountScrolled) / 32.0F)).color(32, 32, 32, 255).endVertex();
+-        vertexbuffer.pos((double)this.right, (double)this.top, 0.0D).tex((double)((float)this.right / 32.0F), (double)((float)(this.top + (int)this.amountScrolled) / 32.0F)).color(32, 32, 32, 255).endVertex();
+-        vertexbuffer.pos((double)this.left, (double)this.top, 0.0D).tex((double)((float)this.left / 32.0F), (double)((float)(this.top + (int)this.amountScrolled) / 32.0F)).color(32, 32, 32, 255).endVertex();
+-        p_drawContainerBackground_1_.draw();
+-    }
++
+ }

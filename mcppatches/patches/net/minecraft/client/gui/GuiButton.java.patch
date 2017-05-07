@@ -1,0 +1,11 @@
+--- a/net/minecraft/client/gui/GuiButton.java
++++ b/net/minecraft/client/gui/GuiButton.java
+@@ -155,4 +155,8 @@
+     {
+         this.width = width;
+     }
++
++	public int getButtonHeight() {
++		return this.height;
++	}
+ }

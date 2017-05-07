@@ -1,6 +1,6 @@
 --- a/net/minecraft/src/ConnectedTextures.java
 +++ b/net/minecraft/src/ConnectedTextures.java
-@@ -1457,7 +1457,7 @@
+@@ -1968,7 +1968,7 @@
  
              if (aconnectedproperties != null)
              {
@@ -9,7 +9,7 @@
              }
          }
  
-@@ -1467,7 +1467,7 @@
+@@ -1978,7 +1978,7 @@
  
              if (aconnectedproperties2 != null)
              {
@@ -18,7 +18,7 @@
              }
          }
  
-@@ -1481,12 +1481,12 @@
+@@ -1992,12 +1992,12 @@
  
              if (connectedproperties.matchTileIcons != null)
              {

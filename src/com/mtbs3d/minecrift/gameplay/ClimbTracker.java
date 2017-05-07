@@ -301,7 +301,7 @@ public class ClimbTracker {
 
 			player.fallDistance = 0;
 			if(mc.isIntegratedServerRunning()) //handle server falling.
-				for (EntityPlayerMP p : mc.getIntegratedServer().getPlayerList().getPlayerList()) {
+				for (EntityPlayerMP p : mc.getIntegratedServer().getPlayerList().getPlayers()) {
 					if(p.getEntityId() == mc.player.getEntityId())
 						p.fallDistance = 0;
 				} else {

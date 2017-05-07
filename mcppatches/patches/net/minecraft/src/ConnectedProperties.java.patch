@@ -1,6 +1,6 @@
 --- a/net/minecraft/src/ConnectedProperties.java
 +++ b/net/minecraft/src/ConnectedProperties.java
-@@ -345,7 +345,7 @@
+@@ -436,7 +436,7 @@
          }
      }
  

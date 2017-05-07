@@ -36,13 +36,3 @@
          String s3 = (String)optionset.valueOf(optionspec12);
          Gson gson = (new GsonBuilder()).registerTypeAdapter(PropertyMap.class, new Serializer()).create();
          PropertyMap propertymap = (PropertyMap)JsonUtils.gsonDeserialize(gson, (String)optionset.valueOf(optionspec15), PropertyMap.class);
-@@ -115,6 +121,9 @@
-         (new Minecraft(gameconfiguration)).run();
-     }
- 
-+    /**
-+     * Returns whether a string is either null or empty.
-+     */
-     private static boolean isNullOrEmpty(String str)
-     {
-         return str != null && !str.isEmpty();

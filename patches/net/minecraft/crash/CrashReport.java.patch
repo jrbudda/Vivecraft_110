@@ -1,0 +1,11 @@
+--- a/net/minecraft/crash/CrashReport.java
++++ b/net/minecraft/crash/CrashReport.java
+@@ -245,7 +245,7 @@
+ 
+         StringBuilder stringbuilder = new StringBuilder();
+         stringbuilder.append("---- Minecraft Crash Report ----\n");
+-        Reflector.call(Reflector.BlamingTransformer_onCrash, new Object[] {stringbuilder});
++       // Reflector.call(Reflector.BlamingTransformer_onCrash, new Object[] {stringbuilder});
+         Reflector.call(Reflector.CoreModManager_onCrash, new Object[] {stringbuilder});
+         stringbuilder.append("// ");
+         stringbuilder.append(getWittyComment());

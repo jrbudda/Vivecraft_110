@@ -1,0 +1,13 @@
+--- a/shadersmod/client/BlockAliases.java
++++ b/shadersmod/client/BlockAliases.java
+@@ -71,8 +71,9 @@
+             List<List<BlockAlias>> list = new ArrayList();
+             ConnectedParser connectedparser = new ConnectedParser("Shaders");
+ 
+-            for (String s1 : properties.keySet())
++            for (Object o : properties.keySet())
+             {
++            	String s1 = o.toString();
+                 String s2 = properties.getProperty(s1);
+                 String s3 = "block.";
+ 

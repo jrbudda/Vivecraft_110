@@ -38,25 +38,24 @@
       * Reads the raw packet data from the data stream.
       */
 @@ -34,6 +42,8 @@
-         this.ip = buf.readStringFromBuffer(255);
+         this.ip = buf.readString(255);
          this.port = buf.readUnsignedShort();
-         this.requestedState = EnumConnectionState.getById(buf.readVarIntFromBuffer());
+         this.requestedState = EnumConnectionState.getById(buf.readVarInt());
 +        this.hasFMLMarker = this.ip.contains("\0FML\0");
 +        this.ip = this.ip.split("\0")[0];
      }
  
      /**
-@@ -42,7 +52,8 @@
+@@ -42,6 +52,8 @@
      public void writePacketData(PacketBuffer buf) throws IOException
      {
-         buf.writeVarIntToBuffer(this.protocolVersion);
--        buf.writeString(this.ip);
+         buf.writeVarInt(this.protocolVersion);
 +        if(!Reflector.forgeExists()) buf.writeString(this.ip);
 +        else buf.writeString(this.ip + "\0FML\0");
+         buf.writeString(this.ip);
          buf.writeShort(this.port);
-         buf.writeVarIntToBuffer(this.requestedState.getId());
-     }
-@@ -64,4 +75,8 @@
+         buf.writeVarInt(this.requestedState.getId());
+@@ -64,4 +76,8 @@
      {
          return this.protocolVersion;
      }

@@ -1,0 +1,20 @@
+--- a/net/minecraft/block/state/BlockStateContainer.java
++++ b/net/minecraft/block/state/BlockStateContainer.java
+@@ -55,7 +55,7 @@
+     };
+     private final Block block;
+     private final ImmutableSortedMap < String, IProperty<? >> properties;
+-    private final ImmutableList<IBlockState> validStates;
++    private final ImmutableList<StateImplementation> validStates;
+ 
+     public BlockStateContainer(Block blockIn, IProperty<?>... properties)
+     {
+@@ -122,7 +122,7 @@
+         }
+     }
+ 
+-    public ImmutableList<IBlockState> getValidStates()
++    public ImmutableList<StateImplementation> getValidStates()
+     {
+         return this.validStates;
+     }

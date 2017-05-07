@@ -6,6 +6,7 @@ import com.mtbs3d.minecrift.control.ViveButtons;
 import com.mtbs3d.minecrift.render.QuaternionHelper;
 import com.mtbs3d.minecrift.settings.VRHotkeys;
 import com.mtbs3d.minecrift.settings.VRSettings;
+import com.mtbs3d.minecrift.utils.InputInjector;
 import com.mtbs3d.minecrift.utils.KeyboardSimulator;
 import com.mtbs3d.minecrift.utils.MCReflection;
 import com.sun.jna.Memory;
@@ -282,7 +283,8 @@ public class MCOpenVR
 
 		mc = Minecraft.getMinecraft();
 		// look in .minecraft first for openvr_api.dll
-		File minecraftDir = Utils.getWorkingDirectory();
+		File minecraftDir = Utils.getWorkingDirectory(); // misleading name, actually the .minecraft directory
+		File workingDir = new File(System.getProperty("user.dir"));
 		
 		String osname = System.getProperty("os.name").toLowerCase();
 		String osarch= System.getProperty("os.arch").toLowerCase();
@@ -307,11 +309,13 @@ public class MCOpenVR
 		}
 		
 		
-		File openVRDir = new File( minecraftDir, osFolder );
-		String openVRPath = openVRDir.getPath();
-		System.out.println( "Adding OpenVR search path: "+openVRPath);
+		String openVRPath = new File(minecraftDir, osFolder).getPath();
+		System.out.println("Adding OpenVR search path: " + openVRPath);
+		NativeLibrary.addSearchPath("openvr_api", openVRPath);
 
-		NativeLibrary.addSearchPath("openvr_api", openVRPath);		
+		String openVRPath2 = new File(workingDir, osFolder).getPath();
+		System.out.println("Adding OpenVR search path: " + openVRPath2);
+		NativeLibrary.addSearchPath("openvr_api", openVRPath2);	
 
 		if(jopenvr.JOpenVRLibrary.VR_IsHmdPresent() == 0){
 			initStatus =  "VR Headset not detected.";
@@ -1878,11 +1882,13 @@ public class MCOpenVR
 					if(b>0)len++;
 				}
 				String str = new String(inbytes,0,len, StandardCharsets.UTF_8);
-				if (mc.currentScreen != null) { // experimental, needs testing
+				if (mc.currentScreen != null && !mc.vrSettings.alwaysSimulateKeyboard) { // experimental, needs testing
 					try {
 						for (char ch : str.toCharArray()) {
 							int[] codes = KeyboardSimulator.getLWJGLCodes(ch);
-							mc.currentScreen.keyTypedPublic(ch, codes.length > 0 ? codes[codes.length - 1] : 0);
+							int code = codes.length > 0 ? codes[codes.length - 1] : 0;
+							if (InputInjector.isSupported()) InputInjector.typeKey(code, ch);
+							else mc.currentScreen.keyTypedPublic(ch, code);
 							break;
 						}
 					} catch (Exception e) {
@@ -2189,7 +2195,7 @@ public class MCOpenVR
 			guiPos_World = new Vector3f(
 					(float) (0 + mc.vrPlayer.getRoomOriginPos_World().xCoord),
 					(float) (1.3f + mc.vrPlayer.getRoomOriginPos_World().yCoord),
-					(float) ((playArea != null ? -playArea[1] / 2 : 0) - 0.3f + mc.vrPlayer.getRoomOriginPos_World().zCoord));			
+					(float) ((playArea != null ? -playArea[1] / 2 : 1.5f) - 0.3f + mc.vrPlayer.getRoomOriginPos_World().zCoord));			
 			
 			guiRotationPose = new Matrix4f();
 			guiRotationPose.M[0][0] = guiRotationPose.M[1][1] = guiRotationPose.M[2][2] = guiRotationPose.M[3][3] = 1.0F;
@@ -2478,7 +2484,7 @@ public class MCOpenVR
 
 					double ySpeed=0.5 * mc.vrSettings.ySensitivity;
 					nPitch=aimPitch+(v)*ySpeed;
-					nPitch=MathHelper.clamp_double(nPitch,-89.9,89.9);
+					nPitch=MathHelper.clamp(nPitch,-89.9,89.9);
 					Mouse.setCursorPosition(Mouse.getX(),mc.displayHeight/2);
 
 				}

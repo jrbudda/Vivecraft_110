@@ -1,6 +1,6 @@
 --- a/shadersmod/client/ShaderPackParser.java
 +++ b/shadersmod/client/ShaderPackParser.java
-@@ -234,8 +234,9 @@
+@@ -237,8 +237,9 @@
          String s = "profile.";
          List<ShaderProfile> list = new ArrayList();
  

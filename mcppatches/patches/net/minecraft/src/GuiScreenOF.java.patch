@@ -1,0 +1,13 @@
+--- a/net/minecraft/src/GuiScreenOF.java
++++ b/net/minecraft/src/GuiScreenOF.java
+@@ -39,8 +39,8 @@
+ 
+             if (guibutton.visible)
+             {
+-                int j = GuiVideoSettings.getButtonWidth(guibutton);
+-                int k = GuiVideoSettings.getButtonHeight(guibutton);
++                int j = guibutton.getButtonWidth();
++                int k = guibutton.getButtonHeight();
+ 
+                 if (p_getSelectedButton_1_ >= guibutton.xPosition && p_getSelectedButton_2_ >= guibutton.yPosition && p_getSelectedButton_1_ < guibutton.xPosition + j && p_getSelectedButton_2_ < guibutton.yPosition + k)
+                 {

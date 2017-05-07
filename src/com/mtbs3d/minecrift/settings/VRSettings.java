@@ -106,6 +106,7 @@ public class VRSettings
     public float autoCalibration=-1;
     public float manualCalibration=-1;
     public float playerEyeHeight = 1.62f;
+    public boolean alwaysSimulateKeyboard = false;
     //
     
     //Locomotion
@@ -615,6 +616,10 @@ public class VRSettings
                     
                     if(optionTokens[0].equals("fovReduction")){
                         this.useFOVReduction=optionTokens[1].equals("true");
+                    }
+                    
+                    if(optionTokens[0].equals("alwaysSimulateKeyboard")){
+                        this.alwaysSimulateKeyboard=optionTokens[1].equals("true");
                     }
 
                     if (optionTokens[0].startsWith("BUTTON_") || optionTokens[0].startsWith("OCULUS_"))
@@ -1386,6 +1391,7 @@ public class VRSettings
             var5.println("manualCalibration:" + this.manualCalibration);
             var5.println("vehicleRotation:" + this.vehicleRotation);
             var5.println("fovReduction:" + this.useFOVReduction);
+            var5.println("alwaysSimulateKeyboard:" + this.alwaysSimulateKeyboard);
 
             if (vrQuickCommands == null) vrQuickCommands = getQuickCommandsDefaults(); //defaults
             

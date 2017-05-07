@@ -9,7 +9,7 @@
  import java.util.Collections;
  import java.util.Map;
  import javax.annotation.Nullable;
-@@ -221,10 +223,12 @@
+@@ -224,10 +226,12 @@
          this.skinMap.put("slim", new RenderPlayer(this, true));
          PlayerItemsLayer.register(this.skinMap);
  
@@ -22,7 +22,7 @@
      }
  
      public void setRenderPosition(double renderPosXIn, double renderPosYIn, double renderPosZIn)
-@@ -247,19 +251,26 @@
+@@ -250,19 +254,26 @@
          return (Render<T>) render;
      }
  
@@ -59,18 +59,19 @@
      }
  
      public void cacheActiveRenderInfo(World worldIn, FontRenderer textRendererIn, Entity livingPlayerIn, Entity pointedEntityIn, GameSettings optionsIn, float partialTicks)
-@@ -344,6 +355,10 @@
+@@ -346,7 +357,10 @@
  
-     public void renderEntityStatic(Entity p_188388_1_, float p_188388_2_, boolean p_188388_3_)
+     public void renderEntityStatic(Entity entityIn, float partialTicks, boolean p_188388_3_)
      {
-+    	
+-        if (entityIn.ticksExisted == 0)
 +    	//pixelmon no 1st person model
-+    	if(p_188388_1_ == Minecraft.getMinecraft().player) return;
-+    	
-         if (p_188388_1_.ticksExisted == 0)
++    	if(entityIn == Minecraft.getMinecraft().player) return;
++
++    	if (entityIn.ticksExisted == 0)
          {
-             p_188388_1_.lastTickPosX = p_188388_1_.posX;
-@@ -533,8 +548,10 @@
+             entityIn.lastTickPosX = entityIn.posX;
+             entityIn.lastTickPosY = entityIn.posY;
+@@ -542,8 +556,10 @@
          return this.entityRenderMap;
      }
  

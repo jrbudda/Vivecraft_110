@@ -1,6 +1,6 @@
 --- a/shadersmod/client/ShadersTex.java
 +++ b/shadersmod/client/ShadersTex.java
-@@ -865,7 +865,7 @@
+@@ -864,7 +864,7 @@
          return ((color1 >>> 24 & 255) * factor1 + (color2 >>> 24 & 255) * i) / 255 << 24 | ((color1 >>> 16 & 255) * factor1 + (color2 >>> 16 & 255) * i) / 255 << 16 | ((color1 >>> 8 & 255) * factor1 + (color2 >>> 8 & 255) * i) / 255 << 8 | ((color1 >>> 0 & 255) * factor1 + (color2 >>> 0 & 255) * i) / 255 << 0;
      }
  

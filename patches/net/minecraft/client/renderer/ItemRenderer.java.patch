@@ -65,7 +65,7 @@
  public class ItemRenderer
  {
      private static final ResourceLocation RES_MAP_BACKGROUND = new ResourceLocation("textures/map/map_background.png");
-@@ -41,61 +69,61 @@
+@@ -41,47 +69,55 @@
  
      /** A reference to the Minecraft object. */
      private final Minecraft mc;
@@ -103,7 +103,7 @@
 +        this.renderItemSide(0,entityIn, heldStack, transform, false);
      }
  
--    public void renderItemSide(EntityLivingBase entitylivingbaseIn, ItemStack heldStack, ItemCameraTransforms.TransformType transform, boolean p_187462_4_)
+-    public void renderItemSide(EntityLivingBase entitylivingbaseIn, ItemStack heldStack, ItemCameraTransforms.TransformType transform, boolean leftHanded)
 -    {
 +    public void renderItemSide(float par1, EntityLivingBase entitylivingbaseIn, ItemStack heldStack, ItemCameraTransforms.TransformType transform, boolean rightSide)    {
          if (heldStack != null)
@@ -113,14 +113,14 @@
              GlStateManager.pushMatrix();
 -            boolean flag = this.itemRenderer.shouldRenderItemIn3D(heldStack) && this.isBlockTranslucent(block);
 -
--            if (flag)
+-            if (flag && (!Config.isShaders() || !Shaders.renderItemKeepDepthMask))
 -            {
 -                GlStateManager.depthMask(false);
 -            }
+-
+-            this.itemRenderer.renderItem(heldStack, entitylivingbaseIn, transform, leftHanded);
 +            boolean flag = this.itemRenderer.shouldRenderItemIn3D(heldStack) && block != null && block.getBlockLayer() == BlockRenderLayer.TRANSLUCENT;
  
--            this.itemRenderer.renderItem(heldStack, entitylivingbaseIn, transform, p_187462_4_);
--
 -            if (flag)
 -            {
 -                GlStateManager.depthMask(true);
@@ -139,21 +139,7 @@
  
              GlStateManager.popMatrix();
          }
-     }
- 
-     /**
--     * Returns true if given block is translucent
--     */
--    private boolean isBlockTranslucent(@Nullable Block blockIn)
--    {
--        return blockIn != null && blockIn.getBlockLayer() == BlockRenderLayer.TRANSLUCENT;
--    }
--
--    /**
-      * Rotate the render around X and Y
-      */
-     private void rotateArroundXAndY(float angle, float angleY)
-@@ -107,7 +135,7 @@
+@@ -107,7 +143,7 @@
          GlStateManager.popMatrix();
      }
  
@@ -162,7 +148,7 @@
      {
          AbstractClientPlayer abstractclientplayer = this.mc.player;
          int i = this.mc.world.getCombinedLight(new BlockPos(abstractclientplayer.posX, abstractclientplayer.posY + (double)abstractclientplayer.getEyeHeight(), abstractclientplayer.posZ), 0);
-@@ -122,6 +150,7 @@
+@@ -122,6 +158,7 @@
          OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, f, f1);
      }
  
@@ -170,13 +156,7 @@
      private void rotateArm(float p_187458_1_)
      {
          EntityPlayerSP entityplayersp = this.mc.player;
-@@ -137,11 +166,12 @@
-     private float getMapAngleFromPitch(float pitch)
-     {
-         float f = 1.0F - pitch / 45.0F + 0.1F;
--        f = MathHelper.clamp_float(f, 0.0F, 1.0F);
-+        f = MathHelper.clamp(f, 0.0F, 1.0F);
-         f = -MathHelper.cos(f * (float)Math.PI) * 0.5F + 0.5F;
+@@ -142,6 +179,7 @@
          return f;
      }
  
@@ -184,7 +164,7 @@
      private void renderArms()
      {
          if (!this.mc.player.isInvisible())
-@@ -156,6 +186,7 @@
+@@ -156,6 +194,7 @@
          }
      }
  
@@ -192,7 +172,7 @@
      private void renderArm(EnumHandSide p_187455_1_)
      {
          this.mc.getTextureManager().bindTexture(this.mc.player.getLocationSkin());
-@@ -183,43 +214,48 @@
+@@ -183,27 +222,29 @@
      private void renderMapFirstPersonSide(float p_187465_1_, EnumHandSide p_187465_2_, float p_187465_3_, ItemStack p_187465_4_)
      {
          float f = p_187465_2_ == EnumHandSide.RIGHT ? 1.0F : -1.0F;
@@ -212,7 +192,7 @@
  
          GlStateManager.pushMatrix();
 -        GlStateManager.translate(f * 0.51F, -0.08F + p_187465_1_ * -1.2F, -0.75F);
--        float f1 = MathHelper.sqrt_float(p_187465_3_);
+-        float f1 = MathHelper.sqrt(p_187465_3_);
 -        float f2 = MathHelper.sin(f1 * (float)Math.PI);
 -        float f3 = -0.5F * f2;
 -        float f4 = 0.4F * MathHelper.sin(f1 * ((float)Math.PI * 2F));
@@ -237,10 +217,8 @@
          GlStateManager.popMatrix();
      }
  
-     private void renderMapFirstPerson(float p_187463_1_, float p_187463_2_, float p_187463_3_)
-     {
--        float f = MathHelper.sqrt_float(p_187463_3_);
-+        float f = MathHelper.sqrt(p_187463_3_);
+@@ -212,14 +253,17 @@
+         float f = MathHelper.sqrt(p_187463_3_);
          float f1 = -0.2F * MathHelper.sin(p_187463_3_ * (float)Math.PI);
          float f2 = -0.4F * MathHelper.sin(f * (float)Math.PI);
 -        GlStateManager.translate(0.0F, -f1 / 2.0F, f2);
@@ -263,7 +241,7 @@
          this.renderMapFirstPerson(this.itemStackMainHand);
      }
  
-@@ -250,100 +286,132 @@
+@@ -250,100 +294,132 @@
          GlStateManager.enableLighting();
      }
  
@@ -275,7 +253,7 @@
 +    	
 +        boolean flag = side != EnumHandSide.LEFT;       
          float f = flag ? 1.0F : -1.0F;
--        float f1 = MathHelper.sqrt_float(p_187456_2_);
+-        float f1 = MathHelper.sqrt(p_187456_2_);
 -        float f2 = -0.3F * MathHelper.sin(f1 * (float)Math.PI);
 -        float f3 = 0.4F * MathHelper.sin(f1 * ((float)Math.PI * 2F));
 -        float f4 = -0.4F * MathHelper.sin(p_187456_2_ * (float)Math.PI);
@@ -368,17 +346,6 @@
 -        GlStateManager.rotate((float)i * f3 * 90.0F, 0.0F, 1.0F, 0.0F);
 -        GlStateManager.rotate(f3 * 10.0F, 1.0F, 0.0F, 0.0F);
 -        GlStateManager.rotate((float)i * f3 * 30.0F, 0.0F, 0.0F, 1.0F);
--    }
--
--    private void transformFirstPerson(EnumHandSide p_187453_1_, float p_187453_2_)
--    {
--        int i = p_187453_1_ == EnumHandSide.RIGHT ? 1 : -1;
--        float f = MathHelper.sin(p_187453_2_ * p_187453_2_ * (float)Math.PI);
--        GlStateManager.rotate((float)i * (45.0F + f * -20.0F), 0.0F, 1.0F, 0.0F);
--        float f1 = MathHelper.sin(MathHelper.sqrt_float(p_187453_2_) * (float)Math.PI);
--        GlStateManager.rotate((float)i * f1 * -20.0F, 0.0F, 0.0F, 1.0F);
--        GlStateManager.rotate(f1 * -80.0F, 1.0F, 0.0F, 0.0F);
--        GlStateManager.rotate((float)i * -45.0F, 0.0F, 1.0F, 0.0F);
 +	    if(!Minecraft.getMinecraft().autoFood.isEating()) {
 +		    float f3 = 1.0F - (float) Math.pow((double) f1, 27.0D);
 +		    int i = side == EnumHandSide.RIGHT ? 1 : -1;
@@ -419,6 +386,17 @@
 +//        GlStateManager.translate((float)i * 0.56F, -0.52F + equippingprogress * -0.6F, -0.72F);
      }
  
+-    private void transformFirstPerson(EnumHandSide p_187453_1_, float p_187453_2_)
+-    {
+-        int i = p_187453_1_ == EnumHandSide.RIGHT ? 1 : -1;
+-        float f = MathHelper.sin(p_187453_2_ * p_187453_2_ * (float)Math.PI);
+-        GlStateManager.rotate((float)i * (45.0F + f * -20.0F), 0.0F, 1.0F, 0.0F);
+-        float f1 = MathHelper.sin(MathHelper.sqrt(p_187453_2_) * (float)Math.PI);
+-        GlStateManager.rotate((float)i * f1 * -20.0F, 0.0F, 0.0F, 1.0F);
+-        GlStateManager.rotate(f1 * -80.0F, 1.0F, 0.0F, 0.0F);
+-        GlStateManager.rotate((float)i * -45.0F, 0.0F, 1.0F, 0.0F);
+-    }
+-
 -    private void transformSideFirstPerson(EnumHandSide p_187459_1_, float p_187459_2_)
 -    {
 -        int i = p_187459_1_ == EnumHandSide.RIGHT ? 1 : -1;
@@ -465,7 +443,7 @@
              }
          }
  
-@@ -352,192 +420,532 @@
+@@ -352,203 +428,532 @@
          this.rotateArm(partialTicks);
          GlStateManager.enableRescaleNormal();
  
@@ -475,7 +453,11 @@
 -            float f3 = enumhand == EnumHand.MAIN_HAND ? f : 0.0F;
 +            float f3 = hand == EnumHand.MAIN_HAND ? swingprogress : 0.0F;
              float f5 = 1.0F - (this.prevEquippedProgressMainHand + (this.equippedProgressMainHand - this.prevEquippedProgressMainHand) * partialTicks);
--            this.renderItemInFirstPerson(abstractclientplayer, partialTicks, f1, EnumHand.MAIN_HAND, f3, this.itemStackMainHand, f5);
+-
+-            if (!Reflector.ForgeHooksClient_renderSpecificFirstPersonHand.exists() || !Reflector.callBoolean(Reflector.ForgeHooksClient_renderSpecificFirstPersonHand, new Object[] {EnumHand.MAIN_HAND, Float.valueOf(partialTicks), Float.valueOf(f1), Float.valueOf(f3), Float.valueOf(f5), this.itemStackMainHand}))
+-            {
+-                this.renderItemInFirstPerson(abstractclientplayer, partialTicks, f1, EnumHand.MAIN_HAND, f3, this.itemStackMainHand, f5);
+-            }
 +            this.renderItemInFirstPerson(player, partialTicks, f1, EnumHand.MAIN_HAND, f3, this.itemStackMainHand, f5);
          }
  
@@ -485,7 +467,11 @@
 -            float f4 = enumhand == EnumHand.OFF_HAND ? f : 0.0F;
 +            float f4 = hand == EnumHand.OFF_HAND ? swingprogress : 0.0F;
              float f6 = 1.0F - (this.prevEquippedProgressOffHand + (this.equippedProgressOffHand - this.prevEquippedProgressOffHand) * partialTicks);
--            this.renderItemInFirstPerson(abstractclientplayer, partialTicks, f1, EnumHand.OFF_HAND, f4, this.itemStackOffHand, f6);
+-
+-            if (!Reflector.ForgeHooksClient_renderSpecificFirstPersonHand.exists() || !Reflector.callBoolean(Reflector.ForgeHooksClient_renderSpecificFirstPersonHand, new Object[] {EnumHand.OFF_HAND, Float.valueOf(partialTicks), Float.valueOf(f1), Float.valueOf(f4), Float.valueOf(f6), this.itemStackOffHand}))
+-            {
+-                this.renderItemInFirstPerson(abstractclientplayer, partialTicks, f1, EnumHand.OFF_HAND, f4, this.itemStackOffHand, f6);
+-            }
 +            this.renderItemInFirstPerson(player, partialTicks, f1, EnumHand.OFF_HAND, f4, this.itemStackOffHand, f6);
          }
  
@@ -496,95 +482,98 @@
 -    public void renderItemInFirstPerson(AbstractClientPlayer p_187457_1_, float p_187457_2_, float p_187457_3_, EnumHand p_187457_4_, float p_187457_5_, @Nullable ItemStack p_187457_6_, float p_187457_7_)
 +    public void renderItemInFirstPerson(AbstractClientPlayer player, float partialTicks, float bodyPitch, EnumHand hand, float swingProgress, @Nullable ItemStack itemstack, float equippingprogress)
      {
--        boolean flag = p_187457_4_ == EnumHand.MAIN_HAND;
--        EnumHandSide enumhandside = flag ? p_187457_1_.getPrimaryHand() : p_187457_1_.getPrimaryHand().opposite();
--        GlStateManager.pushMatrix();
--
--        if (p_187457_6_ == null)
+-        if (!Config.isShaders() || !Shaders.isSkipRenderHand(p_187457_4_))
 -        {
--            if (flag && !p_187457_1_.isInvisible())
--            {
--                this.renderArmFirstPerson(p_187457_7_, p_187457_5_, enumhandside);
--            }
--        }
--        else if (p_187457_6_.getItem() instanceof ItemMap)
--        {
--            if (flag && this.itemStackOffHand == null)
--            {
--                this.renderMapFirstPerson(p_187457_3_, p_187457_7_, p_187457_5_);
--            }
--            else
--            {
--                this.renderMapFirstPersonSide(p_187457_7_, enumhandside, p_187457_5_, p_187457_6_);
--            }
--        }
--        else
--        {
--            boolean flag1 = enumhandside == EnumHandSide.RIGHT;
+-            boolean flag = p_187457_4_ == EnumHand.MAIN_HAND;
+-            EnumHandSide enumhandside = flag ? p_187457_1_.getPrimaryHand() : p_187457_1_.getPrimaryHand().opposite();
+-            GlStateManager.pushMatrix();
 -
--            if (p_187457_1_.isHandActive() && p_187457_1_.getItemInUseCount() > 0 && p_187457_1_.getActiveHand() == p_187457_4_)
+-            if (p_187457_6_ == null)
 -            {
--                int j = flag1 ? 1 : -1;
--
--                switch (p_187457_6_.getItemUseAction())
+-                if (flag && !p_187457_1_.isInvisible())
 -                {
--                    case NONE:
--                        this.transformSideFirstPerson(enumhandside, p_187457_7_);
--                        break;
--
--                    case EAT:
--                    case DRINK:
--                        this.transformEatFirstPerson(p_187457_2_, enumhandside, p_187457_6_);
--                        this.transformSideFirstPerson(enumhandside, p_187457_7_);
--                        break;
--
--                    case BLOCK:
--                        this.transformSideFirstPerson(enumhandside, p_187457_7_);
--                        break;
--
--                    case BOW:
--                        this.transformSideFirstPerson(enumhandside, p_187457_7_);
--                        GlStateManager.translate((float)j * -0.2785682F, 0.18344387F, 0.15731531F);
--                        GlStateManager.rotate(-13.935F, 1.0F, 0.0F, 0.0F);
--                        GlStateManager.rotate((float)j * 35.3F, 0.0F, 1.0F, 0.0F);
--                        GlStateManager.rotate((float)j * -9.785F, 0.0F, 0.0F, 1.0F);
--                        float f5 = (float)p_187457_6_.getMaxItemUseDuration() - ((float)this.mc.player.getItemInUseCount() - p_187457_2_ + 1.0F);
--                        float f6 = f5 / 20.0F;
--                        f6 = (f6 * f6 + f6 * 2.0F) / 3.0F;
--
--                        if (f6 > 1.0F)
--                        {
--                            f6 = 1.0F;
--                        }
--
--                        if (f6 > 0.1F)
--                        {
--                            float f7 = MathHelper.sin((f5 - 0.1F) * 1.3F);
--                            float f3 = f6 - 0.1F;
--                            float f4 = f7 * f3;
--                            GlStateManager.translate(f4 * 0.0F, f4 * 0.004F, f4 * 0.0F);
--                        }
--
--                        GlStateManager.translate(f6 * 0.0F, f6 * 0.0F, f6 * 0.04F);
--                        GlStateManager.scale(1.0F, 1.0F, 1.0F + f6 * 0.2F);
--                        GlStateManager.rotate((float)j * 45.0F, 0.0F, -1.0F, 0.0F);
+-                    this.renderArmFirstPerson(p_187457_7_, p_187457_5_, enumhandside);
+-                }
+-            }
+-            else if (p_187457_6_.getItem() instanceof ItemMap)
+-            {
+-                if (flag && this.itemStackOffHand == null)
+-                {
+-                    this.renderMapFirstPerson(p_187457_3_, p_187457_7_, p_187457_5_);
+-                }
+-                else
+-                {
+-                    this.renderMapFirstPersonSide(p_187457_7_, enumhandside, p_187457_5_, p_187457_6_);
 -                }
 -            }
 -            else
 -            {
--                float f = -0.4F * MathHelper.sin(MathHelper.sqrt_float(p_187457_5_) * (float)Math.PI);
--                float f1 = 0.2F * MathHelper.sin(MathHelper.sqrt_float(p_187457_5_) * ((float)Math.PI * 2F));
--                float f2 = -0.2F * MathHelper.sin(p_187457_5_ * (float)Math.PI);
--                int i = flag1 ? 1 : -1;
--                GlStateManager.translate((float)i * f, f1, f2);
--                this.transformSideFirstPerson(enumhandside, p_187457_7_);
--                this.transformFirstPerson(enumhandside, p_187457_5_);
+-                boolean flag1 = enumhandside == EnumHandSide.RIGHT;
+-
+-                if (p_187457_1_.isHandActive() && p_187457_1_.getItemInUseCount() > 0 && p_187457_1_.getActiveHand() == p_187457_4_)
+-                {
+-                    int j = flag1 ? 1 : -1;
+-
+-                    switch (p_187457_6_.getItemUseAction())
+-                    {
+-                        case NONE:
+-                            this.transformSideFirstPerson(enumhandside, p_187457_7_);
+-                            break;
+-
+-                        case EAT:
+-                        case DRINK:
+-                            this.transformEatFirstPerson(p_187457_2_, enumhandside, p_187457_6_);
+-                            this.transformSideFirstPerson(enumhandside, p_187457_7_);
+-                            break;
+-
+-                        case BLOCK:
+-                            this.transformSideFirstPerson(enumhandside, p_187457_7_);
+-                            break;
+-
+-                        case BOW:
+-                            this.transformSideFirstPerson(enumhandside, p_187457_7_);
+-                            GlStateManager.translate((float)j * -0.2785682F, 0.18344387F, 0.15731531F);
+-                            GlStateManager.rotate(-13.935F, 1.0F, 0.0F, 0.0F);
+-                            GlStateManager.rotate((float)j * 35.3F, 0.0F, 1.0F, 0.0F);
+-                            GlStateManager.rotate((float)j * -9.785F, 0.0F, 0.0F, 1.0F);
+-                            float f5 = (float)p_187457_6_.getMaxItemUseDuration() - ((float)this.mc.player.getItemInUseCount() - p_187457_2_ + 1.0F);
+-                            float f6 = f5 / 20.0F;
+-                            f6 = (f6 * f6 + f6 * 2.0F) / 3.0F;
+-
+-                            if (f6 > 1.0F)
+-                            {
+-                                f6 = 1.0F;
+-                            }
+-
+-                            if (f6 > 0.1F)
+-                            {
+-                                float f7 = MathHelper.sin((f5 - 0.1F) * 1.3F);
+-                                float f3 = f6 - 0.1F;
+-                                float f4 = f7 * f3;
+-                                GlStateManager.translate(f4 * 0.0F, f4 * 0.004F, f4 * 0.0F);
+-                            }
+-
+-                            GlStateManager.translate(f6 * 0.0F, f6 * 0.0F, f6 * 0.04F);
+-                            GlStateManager.scale(1.0F, 1.0F, 1.0F + f6 * 0.2F);
+-                            GlStateManager.rotate((float)j * 45.0F, 0.0F, -1.0F, 0.0F);
+-                    }
+-                }
+-                else
+-                {
+-                    float f = -0.4F * MathHelper.sin(MathHelper.sqrt(p_187457_5_) * (float)Math.PI);
+-                    float f1 = 0.2F * MathHelper.sin(MathHelper.sqrt(p_187457_5_) * ((float)Math.PI * 2F));
+-                    float f2 = -0.2F * MathHelper.sin(p_187457_5_ * (float)Math.PI);
+-                    int i = flag1 ? 1 : -1;
+-                    GlStateManager.translate((float)i * f, f1, f2);
+-                    this.transformSideFirstPerson(enumhandside, p_187457_7_);
+-                    this.transformFirstPerson(enumhandside, p_187457_5_);
+-                }
+-
+-                this.renderItemSide(p_187457_1_, p_187457_6_, flag1 ? ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND : ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND, !flag1);
 -            }
 -
--            this.renderItemSide(p_187457_1_, p_187457_6_, flag1 ? ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND : ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND, !flag1);
+-            GlStateManager.popMatrix();
 -        }
--
--        GlStateManager.popMatrix();
 +    	boolean mainHand = hand == EnumHand.MAIN_HAND;
 +    	EnumHandSide enumhandside = mainHand ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
 +    	equippingprogress = getEquipProgress(hand, partialTicks);
@@ -932,7 +921,7 @@
 -                BlockPos blockpos1 = new BlockPos(d0, d1 + (double)entityplayer.getEyeHeight(), d2);
 -                IBlockState iblockstate1 = this.mc.world.getBlockState(blockpos1);
 -
--                if (iblockstate1.getBlock().isVisuallyOpaque())
+-                if (iblockstate1.getBlock().causesSuffocation())
 -                {
 -                    iblockstate = iblockstate1;
 -                    blockpos = blockpos1;
@@ -1135,7 +1124,7 @@
          vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
          vertexbuffer.pos(-1.0D, -1.0D, -0.5D).tex((double)f7, (double)f9).endVertex();
          vertexbuffer.pos(1.0D, -1.0D, -0.5D).tex((double)f6, (double)f9).endVertex();
-@@ -561,17 +969,14 @@
+@@ -572,17 +977,14 @@
              VertexBuffer vertexbuffer = tessellator.getBuffer();
              float f = this.mc.player.getBrightness(partialTicks);
              GlStateManager.color(f, f, f, 0.5F);
@@ -1158,33 +1147,3 @@
              vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
              vertexbuffer.pos(-1.0D, -1.0D, -0.5D).tex((double)(4.0F + f7), (double)(4.0F + f8)).endVertex();
              vertexbuffer.pos(1.0D, -1.0D, -0.5D).tex((double)(0.0F + f7), (double)(4.0F + f8)).endVertex();
-@@ -639,8 +1044,8 @@
- 
-         if (entityplayersp.isRowingBoat())
-         {
--            this.equippedProgressMainHand = MathHelper.clamp_float(this.equippedProgressMainHand - 0.4F, 0.0F, 1.0F);
--            this.equippedProgressOffHand = MathHelper.clamp_float(this.equippedProgressOffHand - 0.4F, 0.0F, 1.0F);
-+            this.equippedProgressMainHand = MathHelper.clamp(this.equippedProgressMainHand - 0.4F, 0.0F, 1.0F);
-+            this.equippedProgressOffHand = MathHelper.clamp(this.equippedProgressOffHand - 0.4F, 0.0F, 1.0F);
-         }
-         else
-         {
-@@ -649,14 +1054,14 @@
-             if (Reflector.ForgeHooksClient_shouldCauseReequipAnimation.exists())
-             {
-                 boolean flag = Reflector.callBoolean(Reflector.ForgeHooksClient_shouldCauseReequipAnimation, new Object[] {this.itemStackMainHand, itemstack, Integer.valueOf(entityplayersp.inventory.currentItem)});
--                this.equippedProgressMainHand += MathHelper.clamp_float((!flag ? f * f * f : 0.0F) - this.equippedProgressMainHand, -0.4F, 0.4F);
-+                this.equippedProgressMainHand += MathHelper.clamp((!flag ? f * f * f : 0.0F) - this.equippedProgressMainHand, -0.4F, 0.4F);
-                 boolean flag1 = Reflector.callBoolean(Reflector.ForgeHooksClient_shouldCauseReequipAnimation, new Object[] {this.itemStackOffHand, itemstack1, Integer.valueOf(-1)});
--                this.equippedProgressOffHand += MathHelper.clamp_float((float)(!flag1 ? 1 : 0) - this.equippedProgressOffHand, -0.4F, 0.4F);
-+                this.equippedProgressOffHand += MathHelper.clamp((float)(!flag1 ? 1 : 0) - this.equippedProgressOffHand, -0.4F, 0.4F);
-             }
-             else
-             {
--                this.equippedProgressMainHand += MathHelper.clamp_float((Objects.equal(this.itemStackMainHand, itemstack) ? f * f * f : 0.0F) - this.equippedProgressMainHand, -0.4F, 0.4F);
--                this.equippedProgressOffHand += MathHelper.clamp_float((float)(Objects.equal(this.itemStackOffHand, itemstack1) ? 1 : 0) - this.equippedProgressOffHand, -0.4F, 0.4F);
-+                this.equippedProgressMainHand += MathHelper.clamp((Objects.equal(this.itemStackMainHand, itemstack) ? f * f * f : 0.0F) - this.equippedProgressMainHand, -0.4F, 0.4F);
-+                this.equippedProgressOffHand += MathHelper.clamp((float)(Objects.equal(this.itemStackOffHand, itemstack1) ? 1 : 0) - this.equippedProgressOffHand, -0.4F, 0.4F);
-             }
-         }
- 

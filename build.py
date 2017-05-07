@@ -69,7 +69,7 @@ def create_install(mcp_dir):
         for abs_path, _, filelist in os.walk(reobf, followlinks=True):
             arc_path = os.path.relpath( abs_path, reobf ).replace('\\','/').replace('.','')+'/'
             for cur_file in fnmatch.filter(filelist, '*.class'):
-                #if cur_file in {'MinecriftClassTransformer.class','MinecriftForgeTweaker.class','MinecriftClassTransformer$Stage.class','MinecriftClassTransformer$1.class','MinecriftClassTransformer$2.class','MinecriftClassTransformer$3.class','MinecriftClassTransformer$4.class'}:
+                #if cur_file in {'MinecriftVanillaTweaker.class', 'MinecriftClassTransformer.class','MinecriftForgeTweaker.class','MinecriftClassTransformer$Stage.class','MinecriftClassTransformer$1.class','MinecriftClassTransformer$2.class','MinecriftClassTransformer$3.class','MinecriftClassTransformer$4.class'}:
                 if cur_file in {'bpg.class', 'bpg$1.class', 'bpg$2.class', 'bpg$3.class', 'bpg$4.class', 'bpg$5.class', 'bpg$a.class'}: #skip facebakery
                     continue
                 if cur_file in {'bgl.class', 'bgu.class', 'bgu$a.class', 'bgu$b.class'}: #skip guicontainer and guicontainercreative - asm
@@ -78,19 +78,8 @@ def create_install(mcp_dir):
                     continue
                 if cur_file in {'acz.class','acz$1.class','acz$2.class', 'acz$3.class', 'acz$4.class', 'acz$5.class', 'acz$6.class', 'acz$7.class', 'acz$8.class', 'acz$9.class', 'acz$10.class', 'acz$11.class', 'acz$12.class'}: #skip CreativeTabs
                     continue
-				# Just don't ask about this nonsense because I don't have any idea
-                #if cur_file in {'brd.class'}: #skip bakedquad
-                #    continue
-                #if cur_file in {'bsz.class', 'bsz$1.class', 'bsz$2.class', 'bsz$3.class', 'bsz$a.class'}: #skip chunkrenderdispatcher
-                #    continue
-                #if cur_file in {'atm.class', 'atm$1.class', 'atm$a.class', 'atm$Builder.class'}: #skip blockstatecontainer
-                #    continue
                 if cur_file in {'bwe.class', 'bwe$1.class'}: #skip textureatlassprite
                     continue
-                #if cur_file in {'byy.class', 'byy$1.class', 'byy$2.class', 'byy$3.class'}: #skip texturemap
-                #    continue
-                #if cur_file in {'bpy.class', 'bpy$1.class', 'bpy$2.class', 'bpy$a.class'}: #skip vertexbuffer
-                #    continue
                 in_file= os.path.join(abs_path,cur_file)
                 arcname =  arc_path + cur_file
                 zipout.write(in_file, arcname)

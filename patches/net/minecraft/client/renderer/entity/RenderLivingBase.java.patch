@@ -25,17 +25,17 @@
  import net.minecraft.util.math.MathHelper;
 +import net.minecraft.util.math.Vec3d;
  import net.minecraft.util.text.TextFormatting;
+ import net.optifine.entity.model.CustomEntityModels;
  import org.apache.logging.log4j.LogManager;
- import org.apache.logging.log4j.Logger;
-@@ -34,6 +42,7 @@
-     public static float NAME_TAG_RANGE = 64.0F;
-     public static float NAME_TAG_RANGE_SNEAK = 32.0F;
+@@ -42,6 +50,7 @@
+     public float renderScaleFactor;
+     public static final boolean animateModelLiving = Boolean.getBoolean("animate.model.living");
  
 +    
      public RenderLivingBase(RenderManager renderManagerIn, ModelBase modelBaseIn, float shadowSizeIn)
      {
          super(renderManagerIn);
-@@ -41,6 +50,7 @@
+@@ -49,6 +58,7 @@
          this.shadowSize = shadowSizeIn;
      }
  
@@ -43,7 +43,7 @@
      public <V extends EntityLivingBase, U extends LayerRenderer<V>> boolean addLayer(U layer)
      {
          return this.layerRenderers.add((LayerRenderer<T>) layer);
-@@ -96,7 +106,7 @@
+@@ -109,7 +119,7 @@
  
              if (Reflector.ForgeEntity_shouldRiderSit.exists())
              {
@@ -52,21 +52,21 @@
              }
  
              this.mainModel.isChild = entity.isChild();
-@@ -135,7 +145,29 @@
+@@ -148,7 +158,29 @@
                  float f7 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks;
                  this.renderLivingAt(entity, x, y, z);
                  float f8 = this.handleRotationFloat(entity, partialTicks);
-+                
++
 +                //VIVECRAFT
 +                if(this.mainModel instanceof ModelPlayerVR && entity instanceof EntityPlayer){
-+                    UUID uuid=((EntityPlayer) entity).getGameProfile().getId();
-+                    ModelPlayerVR mp = (ModelPlayerVR) mainModel;
-+                    double d3 = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * (double)partialTicks;
-+                    double d4 = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * (double)partialTicks;
-+                    double d5 = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * (double)partialTicks;
-+                    mp.renderPos = new Vec3d(d3, d4, d5);
++                	UUID uuid=((EntityPlayer) entity).getGameProfile().getId();
++                	ModelPlayerVR mp = (ModelPlayerVR) mainModel;
++                	double d3 = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * (double)partialTicks;
++                	double d4 = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * (double)partialTicks;
++                	double d5 = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * (double)partialTicks;
++                	mp.renderPos = new Vec3d(d3, d4, d5);
 +                	if(PlayerModelController.getInstance().isTracked(uuid)){
-+                     	PlayerModelController.RotInfo rotInfo=PlayerModelController.getInstance().getRotationsForPlayer(uuid);	
++                		PlayerModelController.RotInfo rotInfo=PlayerModelController.getInstance().getRotationsForPlayer(uuid);	
 +                		Vec3d diff = rotInfo.leftArmPos.subtract(rotInfo.rightArmPos).rotateYaw((float)-Math.PI/2);
 +                		if(rotInfo.reverse) diff = diff.scale(-1);
 +                		if(rotInfo.seated) diff = rotInfo.rightArmRot;
@@ -77,7 +77,7 @@
 +
 +                float wasyaw = entity.rotationYaw;
 +
-                 this.rotateCorpse(entity, f8, f, partialTicks);
+                 this.applyRotations(entity, f8, f, partialTicks);
 +
                  float f4 = this.prepareScale(entity, partialTicks);
                  float f5 = 0.0F;

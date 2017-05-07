@@ -1,32 +1,32 @@
 --- a/net/minecraft/client/renderer/ItemRenderer.java
 +++ b/net/minecraft/client/renderer/ItemRenderer.java
-@@ -402,23 +402,23 @@
-             {
-                 int j = flag1 ? 1 : -1;
- 
--                switch (null.$SwitchMap$net$minecraft$item$EnumAction[p_187457_6_.getItemUseAction().ordinal()])
-+                switch (p_187457_6_.getItemUseAction())
+@@ -412,23 +412,23 @@
                  {
--                    case 1:
-+                    case NONE:
-                         this.transformSideFirstPerson(enumhandside, p_187457_7_);
-                         break;
+                     int j = flag1 ? 1 : -1;
  
--                    case 2:
--                    case 3:
-+                    case EAT:
-+                    case DRINK:
-                         this.transformEatFirstPerson(p_187457_2_, enumhandside, p_187457_6_);
-                         this.transformSideFirstPerson(enumhandside, p_187457_7_);
-                         break;
+-                    switch (null.$SwitchMap$net$minecraft$item$EnumAction[p_187457_6_.getItemUseAction().ordinal()])
++                    switch (p_187457_6_.getItemUseAction())
+                     {
+-                        case 1:
++                        case NONE:
+                             this.transformSideFirstPerson(enumhandside, p_187457_7_);
+                             break;
  
--                    case 4:
-+                    case BLOCK:
-                         this.transformSideFirstPerson(enumhandside, p_187457_7_);
-                         break;
+-                        case 2:
+-                        case 3:
++                        case EAT:
++                        case DRINK:
+                             this.transformEatFirstPerson(p_187457_2_, enumhandside, p_187457_6_);
+                             this.transformSideFirstPerson(enumhandside, p_187457_7_);
+                             break;
  
--                    case 5:
-+                    case BOW:
-                         this.transformSideFirstPerson(enumhandside, p_187457_7_);
-                         GlStateManager.translate((float)j * -0.2785682F, 0.18344387F, 0.15731531F);
-                         GlStateManager.rotate(-13.935F, 1.0F, 0.0F, 0.0F);
+-                        case 4:
++                        case BLOCK:
+                             this.transformSideFirstPerson(enumhandside, p_187457_7_);
+                             break;
+ 
+-                        case 5:
++                        case BOW:
+                             this.transformSideFirstPerson(enumhandside, p_187457_7_);
+                             GlStateManager.translate((float)j * -0.2785682F, 0.18344387F, 0.15731531F);
+                             GlStateManager.rotate(-13.935F, 1.0F, 0.0F, 0.0F);

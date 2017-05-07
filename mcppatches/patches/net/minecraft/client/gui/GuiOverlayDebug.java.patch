@@ -21,7 +21,7 @@
 +                case WEST:
                      s = "Towards negative X";
                      break;
-
+ 
 -                case 4:
 +                case EAST:
                      s = "Towards positive X";

@@ -1,6 +1,6 @@
 --- a/net/minecraft/src/Config.java
 +++ b/net/minecraft/src/Config.java
-@@ -757,7 +757,7 @@
+@@ -866,7 +866,7 @@
      public static IResourcePack[] getResourcePacks()
      {
          ResourcePackRepository resourcepackrepository = minecraft.getResourcePackRepository();

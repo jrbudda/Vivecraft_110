@@ -1,6 +1,6 @@
 --- a/net/minecraft/client/renderer/entity/RenderLivingBase.java
 +++ b/net/minecraft/client/renderer/entity/RenderLivingBase.java
-@@ -43,7 +43,7 @@
+@@ -51,7 +51,7 @@
  
      public <V extends EntityLivingBase, U extends LayerRenderer<V>> boolean addLayer(U layer)
      {
@@ -9,7 +9,7 @@
      }
  
      protected <V extends EntityLivingBase, U extends LayerRenderer<V>> boolean removeLayer(U layer)
-@@ -545,7 +545,7 @@
+@@ -568,7 +568,7 @@
              {
                  Team.EnumVisible team$enumvisible = team.getNameTagVisibility();
  

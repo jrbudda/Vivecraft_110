@@ -8,7 +8,7 @@
  import net.minecraft.util.ReportedException;
  import net.minecraft.util.ResourceLocation;
  import net.minecraft.util.math.MathHelper;
-@@ -166,16 +167,47 @@
+@@ -171,16 +172,47 @@
          }
      }
  
@@ -58,7 +58,7 @@
                  GlStateManager.enableRescaleNormal();
                  TileEntityItemStackRenderer.instance.renderByItem(stack);
              }
-@@ -187,7 +219,21 @@
+@@ -192,7 +224,21 @@
                      this.modelLocation = null;
                  }
  
@@ -81,7 +81,7 @@
  
                  if (stack.hasEffect() && (!Config.isCustomItems() || !CustomItems.renderCustomEffect(this, stack, model)))
                  {
-@@ -289,7 +335,8 @@
+@@ -308,7 +354,8 @@
                  k = k | -16777216;
              }
  
@@ -91,7 +91,7 @@
          }
      }
  
-@@ -304,7 +351,7 @@
+@@ -323,7 +370,7 @@
          if (stack != null)
          {
              IBakedModel ibakedmodel = this.getItemModelWithOverrides(stack, (World)null, (EntityLivingBase)null);
@@ -100,7 +100,7 @@
          }
      }
  
-@@ -333,16 +380,16 @@
+@@ -352,16 +399,16 @@
          }
      }
  
@@ -120,16 +120,16 @@
      {
          if (stack.getItem() != null)
          {
-@@ -370,7 +417,7 @@
-                 }
+@@ -390,7 +437,7 @@
              }
  
+             CustomItems.setRenderOffHand(leftHanded);
 -            this.renderItem(stack, bakedmodel);
 +            this.renderItem(par1, stack, bakedmodel);
+             CustomItems.setRenderOffHand(false);
              GlStateManager.cullFace(GlStateManager.CullFace.BACK);
              GlStateManager.popMatrix();
-             GlStateManager.disableRescaleNormal();
-@@ -415,7 +462,7 @@
+@@ -437,7 +484,7 @@
              bakedmodel.getItemCameraTransforms().applyTransform(ItemCameraTransforms.TransformType.GUI);
          }
  
@@ -138,7 +138,7 @@
          GlStateManager.disableAlpha();
          GlStateManager.disableRescaleNormal();
          GlStateManager.disableLighting();
-@@ -544,6 +591,10 @@
+@@ -567,6 +614,10 @@
                  GlStateManager.disableBlend();
                  Tessellator tessellator = Tessellator.getInstance();
                  VertexBuffer vertexbuffer = tessellator.getBuffer();
@@ -148,8 +148,8 @@
 +
                  this.draw(vertexbuffer, xPosition + 2, yPosition + 13, 13, 2, 0, 0, 0, 255);
                  this.draw(vertexbuffer, xPosition + 2, yPosition + 13, 12, 1, (255 - i) / 4, 64, 0, 255);
-                 this.draw(vertexbuffer, xPosition + 2, yPosition + 13, j, 1, 255 - i, i, 0, 255);
-@@ -1108,6 +1159,10 @@
+                 int j = 255 - i;
+@@ -1147,6 +1198,10 @@
          this.registerItem(Items.DIAMOND_HORSE_ARMOR, "diamond_horse_armor");
          this.registerItem(Items.LEAD, "lead");
          this.registerItem(Items.NAME_TAG, "name_tag");

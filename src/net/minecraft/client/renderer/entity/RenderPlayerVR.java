@@ -265,7 +265,7 @@ public class RenderPlayerVR extends RenderLivingBase<AbstractClientPlayer>
         }
         else if (entityLiving.isElytraFlying())
         {
-            super.rotateCorpse(entityLiving, p_77043_2_, p_77043_3_, partialTicks);
+            super.applyRotations(entityLiving, p_77043_2_, p_77043_3_, partialTicks);
             float f = (float)entityLiving.getTicksElytraFlying() + partialTicks;
             float f1 = MathHelper.clamp(f * f / 100.0F, 0.0F, 1.0F);
             GlStateManager.rotate(f1 * (-90.0F - entityLiving.rotationPitch), 1.0F, 0.0F, 0.0F);
@@ -282,7 +282,7 @@ public class RenderPlayerVR extends RenderLivingBase<AbstractClientPlayer>
         }
         else
         {
-            super.rotateCorpse(entityLiving, p_77043_2_, p_77043_3_, partialTicks);
+            super.applyRotations(entityLiving, p_77043_2_, p_77043_3_, partialTicks);
         }
     }
 }

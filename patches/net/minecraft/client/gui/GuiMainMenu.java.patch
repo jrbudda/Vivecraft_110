@@ -1,60 +1,16 @@
 --- a/net/minecraft/client/gui/GuiMainMenu.java
 +++ b/net/minecraft/client/gui/GuiMainMenu.java
-@@ -1,5 +1,6 @@
- package net.minecraft.client.gui;
- 
-+import com.google.common.base.Strings;
- import com.google.common.collect.Lists;
- import java.io.BufferedReader;
- import java.io.Closeable;
-@@ -22,6 +23,7 @@
- import net.minecraft.client.resources.IResource;
- import net.minecraft.client.settings.GameSettings;
- import net.minecraft.realms.RealmsBridge;
-+import net.minecraft.src.Reflector;
- import net.minecraft.util.ResourceLocation;
- import net.minecraft.util.math.MathHelper;
- import net.minecraft.util.text.TextFormatting;
-@@ -266,6 +268,7 @@
-             this.realmsNotification.setGuiSize(this.width, this.height);
-             this.realmsNotification.initGui();
+@@ -277,6 +277,7 @@
+         {
+             this.modUpdateNotification = (GuiScreen)Reflector.call(Reflector.NotificationModUpdateScreen_init, new Object[] {this, this.modButton});
          }
 +
      }
  
      /**
-@@ -587,8 +590,27 @@
-             s = s + ("release".equalsIgnoreCase(this.mc.getVersionType()) ? "" : "/" + this.mc.getVersionType());
-         }
- 
-+        if (Reflector.FMLCommonHandler_getBrandings.exists())
-+        {
-+            Object object = Reflector.call(Reflector.FMLCommonHandler_instance);
-+            List<String> list = Lists.<String>reverse((List)Reflector.call(object, Reflector.FMLCommonHandler_getBrandings, new Object[] {Boolean.valueOf(true)}));
-+
-+            for (int l1 = 0; l1 < list.size(); ++l1)
-+            {
-+                String s1 = (String)list.get(l1);
-+
-+                if (!Strings.isNullOrEmpty(s1))
-+                {
-+                    this.drawString(this.fontRendererObj, s1, 2, this.height - (10 + l1 * (this.fontRendererObj.FONT_HEIGHT + 1)), 16777215);
-+                }
-+            }
-+        }
-+        else
-+        {
-         this.drawString(this.fontRendererObj, s, 2, this.height - 10, -1);
--        String s1 = "Copyright Mojang AB. Do not distribute!";
-+        }
-+
-+        String s2 = "Copyright Mojang AB. Do not distribute!";
-         this.drawString(this.fontRendererObj, "Copyright Mojang AB. Do not distribute!", this.width - this.fontRendererObj.getStringWidth("Copyright Mojang AB. Do not distribute!") - 2, this.height - 10, -1);
- 
-         if (this.openGLWarning1 != null && !this.openGLWarning1.isEmpty())
-@@ -627,6 +649,7 @@
+@@ -709,6 +710,7 @@
          {
-             this.realmsNotification.mouseClicked(mouseX, mouseY, mouseButton);
+             this.modUpdateNotification.drawScreen(mouseX, mouseY, partialTicks);
          }
 +
      }

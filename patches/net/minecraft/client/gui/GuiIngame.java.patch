@@ -23,7 +23,7 @@
  import net.minecraft.client.renderer.texture.TextureAtlasSprite;
  import net.minecraft.client.renderer.texture.TextureMap;
  import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-@@ -60,6 +66,8 @@
+@@ -61,6 +67,8 @@
      private static final ResourceLocation VIGNETTE_TEX_PATH = new ResourceLocation("textures/misc/vignette.png");
      private static final ResourceLocation WIDGETS_TEX_PATH = new ResourceLocation("textures/gui/widgets.png");
      private static final ResourceLocation PUMPKIN_BLUR_TEX_PATH = new ResourceLocation("textures/misc/pumpkinblur.png");
@@ -32,7 +32,7 @@
      private final Random rand = new Random();
      private final Minecraft mc;
      private final RenderItem itemRenderer;
-@@ -149,6 +157,7 @@
+@@ -150,6 +158,7 @@
          this.mc.entityRenderer.setupOverlayRendering();
          GlStateManager.enableBlend();
  
@@ -40,7 +40,7 @@
          if (Config.isVignetteEnabled())
          {
              this.renderVignette(this.mc.player.getBrightness(partialTicks), scaledresolution);
-@@ -160,21 +169,13 @@
+@@ -161,21 +170,13 @@
          }
  
          ItemStack itemstack = this.mc.player.inventory.armorItemInSlot(3);
@@ -66,7 +66,7 @@
  
          if (this.mc.playerController.isSpectator())
          {
-@@ -184,20 +185,55 @@
+@@ -185,20 +186,55 @@
          {
              this.renderHotbar(scaledresolution, partialTicks);
          }
@@ -127,7 +127,7 @@
              this.renderPlayerStats(scaledresolution);
          }
  
-@@ -379,7 +415,7 @@
+@@ -380,7 +416,7 @@
          GlStateManager.enableAlpha();
      }
  
@@ -136,7 +136,7 @@
      {
          GameSettings gamesettings = this.mc.gameSettings;
  
-@@ -552,6 +588,7 @@
+@@ -553,6 +589,7 @@
              int j = 182;
              int k = 91;
              this.zLevel = -90.0F;
@@ -144,16 +144,16 @@
              this.drawTexturedModalRect(i - 91, sr.getScaledHeight() - 22, 0, 0, 182, 22);
              this.drawTexturedModalRect(i - 91 - 1 + entityplayer.inventory.currentItem * 20, sr.getScaledHeight() - 22 - 1, 0, 22, 24, 22);
  
-@@ -570,7 +607,7 @@
+@@ -571,7 +608,7 @@
              this.zLevel = f;
              GlStateManager.enableRescaleNormal();
              GlStateManager.enableBlend();
 -            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 +            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);          
              RenderHelper.enableGUIStandardItemLighting();
+             CustomItems.setRenderOffHand(false);
  
-             for (int l = 0; l < 9; ++l)
-@@ -744,7 +781,7 @@
+@@ -749,7 +786,7 @@
          this.mc.mcProfiler.endSection();
      }
  
@@ -162,7 +162,7 @@
      {
          Scoreboard scoreboard = objective.getScoreboard();
          Collection<Score> collection = scoreboard.getSortedScores(objective);
-@@ -961,7 +998,7 @@
+@@ -966,7 +1003,7 @@
                      }
                  }
              }
@@ -171,7 +171,7 @@
              Entity entity = entityplayer.getRidingEntity();
  
              if (entity == null)
-@@ -1025,7 +1062,7 @@
+@@ -1030,7 +1067,7 @@
          }
      }
  
@@ -180,7 +180,7 @@
      {
          if (this.mc.getRenderViewEntity() instanceof EntityPlayer)
          {
-@@ -1079,7 +1116,7 @@
+@@ -1084,7 +1121,7 @@
          }
      }
  
@@ -189,22 +189,20 @@
      {
          GlStateManager.disableDepth();
          GlStateManager.depthMask(false);
-@@ -1104,8 +1141,13 @@
-     /**
-      * Renders a Vignette arount the entire screen that changes with light level.
+@@ -1111,6 +1148,12 @@
       */
--    private void renderVignette(float lightLevel, ScaledResolution scaledRes)
-+    protected void renderVignette(float lightLevel, ScaledResolution scaledRes)
+     private void renderVignette(float lightLevel, ScaledResolution scaledRes)
      {
-+        /** MINECRIFT **/
-+        if (this.mc.stereoProvider.isStereo())
-+            return;
-+        /** END MINECRIFT **/
 +    	
-         if (Config.isVignetteEnabled())
++    	/** MINECRIFT **/
++    	if (this.mc.stereoProvider.isStereo())
++    		return;
++    	/** END MINECRIFT **/
++    	
+         if (!Config.isVignetteEnabled())
          {
-             lightLevel = 1.0F - lightLevel;
-@@ -1156,36 +1198,7 @@
+             GlStateManager.enableDepth();
+@@ -1166,36 +1209,7 @@
  
      private void renderPortal(float timeInPortal, ScaledResolution scaledRes)
      {
@@ -242,7 +240,7 @@
      }
  
      private void renderHotbarItem(int p_184044_1_, int p_184044_2_, float p_184044_3_, EntityPlayer player, @Nullable ItemStack stack)
-@@ -1363,4 +1376,42 @@
+@@ -1373,4 +1387,42 @@
      {
          return this.overlayBoss;
      }

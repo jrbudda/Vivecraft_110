@@ -88,7 +88,7 @@
 +    	keyTyped(typedChar, keyCode);
 +    }
  
-     protected <T extends GuiButton> T func_189646_b(T p_189646_1_)
+     protected <T extends GuiButton> T addButton(T p_189646_1_)
      {
 @@ -175,7 +192,14 @@
              }

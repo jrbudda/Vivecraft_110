@@ -1,6 +1,6 @@
 --- a/shadersmod/client/GuiShaders.java
 +++ b/shadersmod/client/GuiShaders.java
-@@ -54,7 +54,7 @@
+@@ -55,7 +55,7 @@
          int j1 = this.width - i - 20;
          this.shaderList = new GuiSlotShaders(this, j1, this.height, l, this.height - 50, 16);
          this.shaderList.registerScrollButtons(7, 8);

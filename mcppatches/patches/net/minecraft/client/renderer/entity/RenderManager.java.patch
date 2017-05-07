@@ -1,6 +1,15 @@
 --- a/net/minecraft/client/renderer/entity/RenderManager.java
 +++ b/net/minecraft/client/renderer/entity/RenderManager.java
-@@ -240,11 +240,11 @@
+@@ -118,7 +118,7 @@
+ 
+ public class RenderManager
+ {
+-    private final Map < Class <? extends Entity > , Render <? extends Entity >> entityRenderMap = Maps. < Class <? extends Entity > , Render <? extends Entity >> newHashMap();
++    private final Map <Class, Render> entityRenderMap = Maps. <Class, Render> newHashMap();
+     private final Map<String, RenderPlayer> skinMap = Maps.<String, RenderPlayer>newHashMap();
+     private final RenderPlayer playerRenderer;
+ 
+@@ -243,11 +243,11 @@
  
          if (render == null && entityClass != Entity.class)
          {
@@ -14,7 +23,7 @@
      }
  
      @Nullable
-@@ -254,7 +254,7 @@
+@@ -257,7 +257,7 @@
          {
              String s = ((AbstractClientPlayer)entityIn).getSkinType();
              RenderPlayer renderplayer = (RenderPlayer)this.skinMap.get(s);
@@ -23,7 +32,7 @@
          }
          else
          {
-@@ -292,8 +292,8 @@
+@@ -294,8 +294,8 @@
          }
          else
          {

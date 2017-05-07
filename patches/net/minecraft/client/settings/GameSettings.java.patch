@@ -1,6 +1,6 @@
 --- a/net/minecraft/client/settings/GameSettings.java
 +++ b/net/minecraft/client/settings/GameSettings.java
-@@ -102,7 +102,7 @@
+@@ -105,7 +105,7 @@
      public float chatOpacity = 1.0F;
      public boolean snooperEnabled = true;
      public boolean fullScreen;
@@ -9,17 +9,15 @@
      public boolean useVbo = true;
      public boolean reducedDebugInfo;
      public boolean hideServerAddress;
-@@ -162,7 +162,9 @@
-     public EnumDifficulty difficulty;
+@@ -166,6 +166,7 @@
      public boolean hideGUI;
      public int thirdPersonView;
-+    private boolean needsResourceRefresh = false;
  
 +    
      /** true if debug info should be displayed instead of version */
      public boolean showDebugInfo;
      public boolean showDebugProfilerChart;
-@@ -212,7 +214,7 @@
+@@ -215,7 +216,7 @@
      public boolean ofStars = true;
      public boolean ofSunMoon = true;
      public int ofVignette = 0;
@@ -28,7 +26,7 @@
      public boolean ofChunkUpdatesDynamic = false;
      public int ofTime = 0;
      public boolean ofClearWater = false;
-@@ -409,7 +411,7 @@
+@@ -415,7 +416,7 @@
                  this.mc.getTextureMapBlocks().setMipmapLevels(this.mipmapLevels);
                  this.mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
                  this.mc.getTextureMapBlocks().setBlurMipmapDirect(false, this.mipmapLevels > 0);
@@ -37,7 +35,7 @@
              }
          }
  
-@@ -1098,19 +1100,25 @@
+@@ -1129,19 +1130,25 @@
  
                      for (KeyBinding keybinding : this.keyBindings)
                      {
@@ -76,7 +74,7 @@
                      }
  
                      for (SoundCategory soundcategory : SoundCategory.values())
-@@ -1177,9 +1185,9 @@
+@@ -1208,9 +1215,9 @@
      {
          if (Reflector.FMLClientHandler.exists())
          {
@@ -88,7 +86,7 @@
              {
                  return;
              }
-@@ -1263,7 +1271,7 @@
+@@ -1294,7 +1301,7 @@
                  if (Reflector.ForgeKeyBinding_getKeyModifier.exists())
                  {
                      String s = "key_" + keybinding.getKeyDescription() + ":" + keybinding.getKeyCode();
@@ -97,7 +95,7 @@
                      Object object2 = Reflector.getFieldValue(Reflector.KeyModifier_NONE);
                      printwriter.println(object1 != object2 ? s + ":" + object1 : s);
                  }
-@@ -1773,7 +1781,7 @@
+@@ -1808,7 +1815,7 @@
          {
              ++this.ofChunkUpdates;
  
@@ -106,7 +104,7 @@
              {
                  this.ofChunkUpdates = 1;
              }
-@@ -1877,18 +1885,18 @@
+@@ -1912,18 +1919,18 @@
  
          if (p_setOptionValueOF_1_ == GameSettings.Options.FAST_RENDER)
          {
@@ -134,7 +132,7 @@
  
              Config.updateFramebufferSize();
          }
-@@ -2650,7 +2658,7 @@
+@@ -2723,7 +2730,7 @@
                      if (astring[0].equals("ofChunkUpdates") && astring.length >= 2)
                      {
                          this.ofChunkUpdates = Integer.valueOf(astring[1]).intValue();
@@ -143,7 +141,7 @@
                      }
  
                      if (astring[0].equals("ofChunkUpdatesDynamic") && astring.length >= 2)
-@@ -2927,7 +2935,7 @@
+@@ -3013,7 +3020,7 @@
          this.guiScale = 0;
          this.particleSetting = 0;
          this.heldItemTooltips = true;
@@ -152,7 +150,7 @@
          this.forceUnicodeFont = false;
          this.ofFogType = 1;
          this.ofFogStart = 0.8F;
-@@ -2938,7 +2946,7 @@
+@@ -3024,7 +3031,7 @@
          this.ofSmoothWorld = Config.isSingleProcessor();
          this.ofLazyChunkLoading = Config.isSingleProcessor();
          this.ofFastMath = false;
@@ -161,7 +159,7 @@
          this.ofTranslucentBlocks = 0;
          this.ofDynamicFov = true;
          this.ofAlternateBlocks = true;
-@@ -2960,7 +2968,7 @@
+@@ -3048,7 +3055,7 @@
          this.ofStars = true;
          this.ofSunMoon = true;
          this.ofVignette = 0;
@@ -170,21 +168,20 @@
          this.ofChunkUpdatesDynamic = false;
          this.ofTime = 0;
          this.ofClearWater = false;
-@@ -3105,6 +3113,17 @@
+@@ -3193,6 +3200,8 @@
          }
      }
  
-+    //FORGE
-+    public void onGuiClosed()
-+    {
-+        if (this.needsResourceRefresh)
-+        {
-+            this.mc.scheduleResourcesRefresh();
-+            this.needsResourceRefresh = false;
-+        }
-+    }
-+    ////
 +
++    //FORGE
+     public void onGuiClosed()
+     {
+         if (this.needsResourceRefresh)
+@@ -3201,6 +3210,7 @@
+             this.needsResourceRefresh = false;
+         }
+     }
++    ////
+ 
      public static enum Options
      {
-         INVERT_MOUSE("options.invertMouse", false, true),

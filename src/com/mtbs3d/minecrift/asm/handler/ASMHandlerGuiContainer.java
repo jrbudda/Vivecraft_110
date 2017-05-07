@@ -77,8 +77,7 @@ public class ASMHandlerGuiContainer extends ASMClassHandler {
 			insnList.add(new InsnNode(Opcodes.ICONST_1));
 			insnList.add(new InsnNode(Opcodes.ICONST_1));
 			insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, obfuscated ? ObfNames.GLSTATEMANAGER : "net/minecraft/client/renderer/GlStateManager", obfuscated ? "a" : "colorMask", "(ZZZZ)V", false));
-			findInsn = ASMUtil.findFirstInstruction(methodNode, Opcodes.INVOKEVIRTUAL, obfuscated ? ObfNames.SLOT : "net/minecraft/inventory/Slot", obfuscated ? "e" : "getHasStack", "()Z", false);
-			insn = methodNode.instructions.get(methodNode.instructions.indexOf(findInsn) + 1);
+			insn = ASMUtil.findFirstInstruction(methodNode, Opcodes.INVOKESTATIC, obfuscated ? ObfNames.GLSTATEMANAGER : "net/minecraft/inventory/GlStateManager", obfuscated ? "H" : "popMatrix", "()V", false);
 			methodNode.instructions.insert(insn, insnList); // same call
 			System.out.println("Inserted colorMask calls");
 		}
