@@ -304,7 +304,7 @@
 +	 * The minecriftVerString will be automatically updated by the build scripts, do not modify here.
 +	 * Modify minecriftversion.py in root minecrift dir.
 +	 */
-+    public final String minecriftVerString = "Vivecraft 1.10.2 Vivecraft-jrbudda-9pre";
++    public final String minecriftVerString = "Vivecraft 1.10.2 Vivecraft-jrbudda-9";
 +	/* end version */
 +	/** END MINECRIFT */
 +    

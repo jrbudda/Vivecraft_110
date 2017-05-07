@@ -124,13 +124,14 @@
          {
              GlStateManager.disableRescaleNormal();
              RenderHelper.disableStandardItemLighting();
-@@ -470,10 +503,17 @@
+@@ -470,10 +503,18 @@
  
      public void sendChatMessage(String msg, boolean addToChat)
      {
-+    	if (Reflector.forgeExists())
-+	    	msg = Reflector.callString(Reflector.ForgeEventFactory_onClientSendMessage, msg);
-+    	if (msg.isEmpty()) return;
++    	if (Reflector.ForgeEventFactory_onClientSendMessage.exists()){ //I don't think this is a thing in 1.10
++    		msg = Reflector.callString(Reflector.ForgeEventFactory_onClientSendMessage, msg);
++	    	if (msg == null || msg.isEmpty()) return;
++    	}
          if (addToChat)
          {
              this.mc.ingameGUI.getChatGUI().addToSentMessages(msg);
@@ -142,7 +143,7 @@
  
          this.mc.player.sendChatMessage(msg);
      }
-@@ -491,9 +531,19 @@
+@@ -491,9 +532,19 @@
  
                  if (guibutton.mousePressed(this.mc, mouseX, mouseY))
                  {
@@ -162,7 +163,7 @@
                  }
              }
          }
-@@ -537,8 +587,11 @@
+@@ -537,8 +588,11 @@
          this.fontRendererObj = mc.fontRendererObj;
          this.width = width;
          this.height = height;
@@ -176,7 +177,7 @@
      }
  
      /**
-@@ -567,7 +620,22 @@
+@@ -567,7 +621,22 @@
          {
              while (Mouse.next())
              {
@@ -199,7 +200,7 @@
              }
          }
  
-@@ -575,7 +643,10 @@
+@@ -575,7 +644,10 @@
          {
              while (Keyboard.next())
              {
@@ -210,7 +211,7 @@
              }
          }
      }
-@@ -589,6 +660,15 @@
+@@ -589,6 +661,15 @@
          int j = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
          int k = Mouse.getEventButton();
  
@@ -226,7 +227,7 @@
          if (Mouse.getEventButtonState())
          {
              if (this.mc.gameSettings.touchscreen && this.touchValue++ > 0)
-@@ -622,13 +702,20 @@
+@@ -622,13 +703,20 @@
       */
      public void handleKeyboardInput() throws IOException
      {
@@ -248,7 +249,7 @@
          this.mc.dispatchKeypresses();
      }
  
-@@ -652,13 +739,23 @@
+@@ -652,13 +740,23 @@
      public void drawDefaultBackground()
      {
          this.drawWorldBackground(0);
@@ -273,7 +274,7 @@
          }
          else
          {
-@@ -736,7 +833,7 @@
+@@ -736,7 +834,7 @@
       */
      public static boolean isShiftKeyDown()
      {
@@ -282,7 +283,7 @@
      }
  
      /**
-@@ -774,4 +871,75 @@
+@@ -774,4 +872,75 @@
      {
          this.setWorldAndResolution(mcIn, w, h);
      }
@@ -344,13 +345,13 @@
 +        this.mouseClickMove(guiX, guiY, this.eventButton, var3);
 +    }
 +
-+    public int getMouseX()
++    public int getMouseXPos()
 +    {
 +        int mX = Mouse.getX() * this.mc.currentScreen.width / this.mc.displayWidth;
 +        return mX;
 +    }
 +
-+    public int getMouseY()
++    public int getMouseYPos()
 +    {
 +        int mY = this.mc.currentScreen.height - Mouse.getY() * this.mc.currentScreen.height / this.mc.displayHeight - 1;
 +        return mY;

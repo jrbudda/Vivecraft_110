@@ -3686,8 +3686,8 @@
 +
 +				if (this.mc.currentScreen != null /*&& !this.blankGUIUntilWorldValid*/)
 +				{
-+					final int mouseX1 = mouseX = this.mc.currentScreen.getMouseX();
-+					final int mouseY1 = mouseY = this.mc.currentScreen.getMouseY();
++					final int mouseX1 = mouseX = this.mc.currentScreen.getMouseXPos();
++					final int mouseY1 = mouseY = this.mc.currentScreen.getMouseYPos();
 +
 +					try
 +					{
@@ -3704,9 +3704,9 @@
 +							//	Draw GUI crosshair
 +							if (mc.stereoProvider.isStereo()){					
 +								if(MCOpenVR.controllerMouseValid)
-+									mc.ingameGUI.drawMouseMenuQuad(mc.currentScreen.getMouseX(),mc.currentScreen.getMouseY());				
++									mc.ingameGUI.drawMouseMenuQuad(mc.currentScreen.getMouseXPos(),mc.currentScreen.getMouseYPos());				
 +							} else 
-+								mc.ingameGUI.drawMouseMenuQuad(mc.currentScreen.getMouseX(),mc.currentScreen.getMouseY());
++								mc.ingameGUI.drawMouseMenuQuad(mc.currentScreen.getMouseXPos(),mc.currentScreen.getMouseYPos());
 +						}
 +					}
 +					catch (Throwable throwable)
