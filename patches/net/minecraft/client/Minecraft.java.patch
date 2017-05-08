@@ -1286,7 +1286,7 @@
 +                    this.leftClickCounter = 10; // this.playerController.isNotCreative() ? 10 : 0;
 +                    this.player.resetCooldown();
 +                	if(Reflector.forgeExists())
-+                  	   Reflector.callVoid(Reflector.ForgeHooks_onEmptyLeftClick, this.player);
++                  	   Reflector.callVoid(Reflector.ForgeHooks_onEmptyLeftClick, this.player, this.player.getHeldItemMainhand());
 +                	this.player.swingArm(EnumHand.MAIN_HAND);
                  }
              }
@@ -1316,7 +1316,7 @@
 +                       this.player.resetCooldown();
 +                       //Forge - TEST THAT THIS ACTUALLY GOES OFF
 +                       if(Reflector.forgeExists())
-+                    	   Reflector.callVoid(Reflector.ForgeHooks_onEmptyLeftClick, this.player);
++                    	   Reflector.callVoid(Reflector.ForgeHooks_onEmptyLeftClick, this.player, this.player.getHeldItemMainhand());
 +                       break;
                  }
  
@@ -1394,7 +1394,7 @@
 +                                        
 +                                        if(Reflector.forgeExists())
 +                                        	if (itemstack!=null && (this.objectMouseOver == null || this.objectMouseOver.typeOfHit == RayTraceResult.Type.MISS)) 
-+                                        		Reflector.callVoid(Reflector.ForgeHooks_onEmptyClick,this.player, enumhand);
++                                        		Reflector.callVoid(Reflector.ForgeHooks_onEmptyClick, this.player, enumhand);
  
 -                                        if (itemstack != null)
 +                                        if (itemstack!=null && (itemstack.stackSize) != i || this.playerController.isInCreativeMode())

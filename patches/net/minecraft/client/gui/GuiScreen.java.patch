@@ -124,15 +124,7 @@
          {
              GlStateManager.disableRescaleNormal();
              RenderHelper.disableStandardItemLighting();
-@@ -470,10 +503,18 @@
- 
-     public void sendChatMessage(String msg, boolean addToChat)
-     {
-+    	if (Reflector.ForgeEventFactory_onClientSendMessage.exists()){ //I don't think this is a thing in 1.10
-+    		msg = Reflector.callString(Reflector.ForgeEventFactory_onClientSendMessage, msg);
-+	    	if (msg == null || msg.isEmpty()) return;
-+    	}
-         if (addToChat)
+@@ -474,6 +507,10 @@
          {
              this.mc.ingameGUI.getChatGUI().addToSentMessages(msg);
          }
@@ -143,7 +135,7 @@
  
          this.mc.player.sendChatMessage(msg);
      }
-@@ -491,9 +532,19 @@
+@@ -491,9 +528,19 @@
  
                  if (guibutton.mousePressed(this.mc, mouseX, mouseY))
                  {
@@ -163,7 +155,7 @@
                  }
              }
          }
-@@ -537,8 +588,11 @@
+@@ -537,8 +584,11 @@
          this.fontRendererObj = mc.fontRendererObj;
          this.width = width;
          this.height = height;
@@ -177,7 +169,7 @@
      }
  
      /**
-@@ -567,7 +621,22 @@
+@@ -567,7 +617,22 @@
          {
              while (Mouse.next())
              {
@@ -200,7 +192,7 @@
              }
          }
  
-@@ -575,7 +644,10 @@
+@@ -575,7 +640,10 @@
          {
              while (Keyboard.next())
              {
@@ -211,7 +203,7 @@
              }
          }
      }
-@@ -589,6 +661,15 @@
+@@ -589,6 +657,15 @@
          int j = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
          int k = Mouse.getEventButton();
  
@@ -227,7 +219,7 @@
          if (Mouse.getEventButtonState())
          {
              if (this.mc.gameSettings.touchscreen && this.touchValue++ > 0)
-@@ -622,13 +703,20 @@
+@@ -622,13 +699,20 @@
       */
      public void handleKeyboardInput() throws IOException
      {
@@ -249,7 +241,7 @@
          this.mc.dispatchKeypresses();
      }
  
-@@ -652,13 +740,23 @@
+@@ -652,13 +736,23 @@
      public void drawDefaultBackground()
      {
          this.drawWorldBackground(0);
@@ -274,7 +266,7 @@
          }
          else
          {
-@@ -736,7 +834,7 @@
+@@ -736,7 +830,7 @@
       */
      public static boolean isShiftKeyDown()
      {
@@ -283,7 +275,7 @@
      }
  
      /**
-@@ -774,4 +872,75 @@
+@@ -774,4 +868,75 @@
      {
          this.setWorldAndResolution(mcIn, w, h);
      }

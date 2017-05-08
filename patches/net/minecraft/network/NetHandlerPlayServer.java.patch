@@ -45,6 +45,41 @@
                  }
  
                  entity.setPositionAndRotation(d3, d4, d5, f, f1);
+@@ -485,9 +495,9 @@
+ 
+                             if (d11 - d10 > (double)(f2 * (float)i) && (!this.serverController.isSinglePlayer() || !this.serverController.getServerOwner().equals(this.playerEntity.getName())))
+                             {
+-                                LOGGER.warn("{} moved too quickly! {},{},{}", new Object[] {this.playerEntity.getName(), Double.valueOf(d7), Double.valueOf(d8), Double.valueOf(d9)});
+-                                this.setPlayerLocation(this.playerEntity.posX, this.playerEntity.posY, this.playerEntity.posZ, this.playerEntity.rotationYaw, this.playerEntity.rotationPitch);
+-                                return;
++                                //LOGGER.warn("{} moved too quickly! {},{},{}", new Object[] {this.playerEntity.getName(), Double.valueOf(d7), Double.valueOf(d8), Double.valueOf(d9)});
++                                //this.setPlayerLocation(this.playerEntity.posX, this.playerEntity.posY, this.playerEntity.posZ, this.playerEntity.rotationYaw, this.playerEntity.rotationPitch);
++                                //return;
+                             }
+                         }
+ 
+@@ -518,8 +528,8 @@
+ 
+                         if (!this.playerEntity.isInvulnerableDimensionChange() && d11 > 0.0625D && !this.playerEntity.isPlayerSleeping() && !this.playerEntity.interactionManager.isCreative() && this.playerEntity.interactionManager.getGameType() != GameType.SPECTATOR)
+                         {
+-                            flag = true;
+-                            LOGGER.warn("{} moved wrongly!", new Object[] {this.playerEntity.getName()});
++                            //flag = true;
++                            //LOGGER.warn("{} moved wrongly!", new Object[] {this.playerEntity.getName()});
+                         }
+ 
+                         this.playerEntity.setPositionAndRotation(d4, d5, d6, f, f1);
+@@ -531,8 +541,8 @@
+ 
+                             if (flag2 && (flag || !flag1))
+                             {
+-                                this.setPlayerLocation(d0, d1, d2, f, f1);
+-                                return;
++                                //this.setPlayerLocation(d0, d1, d2, f, f1);
++                                //return;
+                             }
+                         }
+ 
 @@ -643,8 +653,14 @@
                  double d1 = this.playerEntity.posY - ((double)blockpos.getY() + 0.5D) + 1.5D;
                  double d2 = this.playerEntity.posZ - ((double)blockpos.getZ() + 0.5D);
@@ -99,7 +134,7 @@
 +                	//FORGE
                      ItemStack itemstack1 = this.playerEntity.getHeldItem(enumhand1);
 +                	if(Reflector.forgeExists()){
-+                		if(Reflector.call(Reflector.ForgeHooks_onInteractEntityAtAction, this.playerEntity, entity, packetIn.getHitVec(), itemstack1, enumhand1) != null)
++                		if(Reflector.callBoolean(Reflector.ForgeHooks_onInteractEntityAt, this.playerEntity, entity, packetIn.getHitVec(), itemstack1, enumhand1))
 +                			return;
 +                	}
                      entity.applyPlayerInteraction(this.playerEntity, packetIn.getHitVec(), itemstack1, enumhand1);
