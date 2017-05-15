@@ -42,6 +42,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketClientStatus;
 import net.minecraft.network.play.client.CPacketClientStatus.State;
+import net.minecraft.src.Reflector;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -1846,7 +1847,10 @@ public class MCOpenVR
 
 	
 	private static void changeHotbar(int dir){
-		mc.player.inventory.changeCurrentItem(dir);
+		if (Reflector.forgeExists() && mc.currentScreen == null)
+			KeyboardSimulator.robot.mouseWheel(dir * 120);
+		else
+			mc.player.inventory.changeCurrentItem(dir);
 	}
 		
 	//jrbuda:: oh hello there you are.
@@ -2195,7 +2199,7 @@ public class MCOpenVR
 			guiPos_World = new Vector3f(
 					(float) (0 + mc.vrPlayer.getRoomOriginPos_World().xCoord),
 					(float) (1.3f + mc.vrPlayer.getRoomOriginPos_World().yCoord),
-					(float) ((playArea != null ? -playArea[1] / 2 : 1.5f) - 0.3f + mc.vrPlayer.getRoomOriginPos_World().zCoord));			
+					(float) ((playArea != null ? -playArea[1] / 2 : -1.5f) - 0.3f + mc.vrPlayer.getRoomOriginPos_World().zCoord));			
 			
 			guiRotationPose = new Matrix4f();
 			guiRotationPose.M[0][0] = guiRotationPose.M[1][1] = guiRotationPose.M[2][2] = guiRotationPose.M[3][3] = 1.0F;

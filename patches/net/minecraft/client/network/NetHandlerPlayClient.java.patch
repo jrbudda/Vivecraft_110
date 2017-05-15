@@ -1,6 +1,6 @@
 --- a/net/minecraft/client/network/NetHandlerPlayClient.java
 +++ b/net/minecraft/client/network/NetHandlerPlayClient.java
-@@ -1,14 +1,25 @@
+@@ -1,21 +1,34 @@
  package net.minecraft.client.network;
  
 +import com.google.common.base.Charsets;
@@ -26,7 +26,24 @@
  import java.util.Collection;
  import java.util.List;
  import java.util.Map;
-@@ -202,6 +213,8 @@
+ import java.util.Random;
+ import java.util.UUID;
+ import java.util.Map.Entry;
++
+ import javax.annotation.Nullable;
++
+ import net.minecraft.block.Block;
+ import net.minecraft.client.ClientBrandRetriever;
+ import net.minecraft.client.Minecraft;
+@@ -96,6 +109,7 @@
+ import net.minecraft.entity.projectile.EntitySpectralArrow;
+ import net.minecraft.entity.projectile.EntityTippedArrow;
+ import net.minecraft.entity.projectile.EntityWitherSkull;
++import net.minecraft.init.Blocks;
+ import net.minecraft.init.Items;
+ import net.minecraft.init.SoundEvents;
+ import net.minecraft.inventory.AnimalChest;
+@@ -202,6 +216,8 @@
  import net.minecraft.scoreboard.ScorePlayerTeam;
  import net.minecraft.scoreboard.Scoreboard;
  import net.minecraft.scoreboard.Team;
@@ -35,7 +52,7 @@
  import net.minecraft.stats.Achievement;
  import net.minecraft.stats.AchievementList;
  import net.minecraft.stats.StatBase;
-@@ -234,6 +247,8 @@
+@@ -234,6 +250,8 @@
  import net.minecraft.world.WorldSettings;
  import net.minecraft.world.chunk.Chunk;
  import net.minecraft.world.storage.MapData;
@@ -44,7 +61,7 @@
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  
-@@ -285,6 +300,12 @@
+@@ -285,6 +303,12 @@
          this.guiScreenServer = p_i46300_2_;
          this.netManager = networkManagerIn;
          this.profile = profileIn;
@@ -57,7 +74,7 @@
      }
  
      /**
-@@ -303,7 +324,19 @@
+@@ -303,7 +327,19 @@
      {
          PacketThreadUtil.checkThreadAndEnqueue(packetIn, this, this.gameController);
          this.gameController.playerController = new PlayerControllerMP(this.gameController, this);
@@ -78,7 +95,7 @@
          this.gameController.gameSettings.difficulty = packetIn.getDifficulty();
          this.gameController.loadWorld(this.clientWorldController);
          this.gameController.player.dimension = packetIn.getDimension();
-@@ -314,6 +347,17 @@
+@@ -314,6 +350,17 @@
          this.gameController.playerController.setGameType(packetIn.getGameType());
          this.gameController.gameSettings.sendSettingsToServer();
          this.netManager.sendPacket(new CPacketCustomPayload("MC|Brand", (new PacketBuffer(Unpooled.buffer())).writeString(ClientBrandRetriever.getClientModName())));
@@ -96,7 +113,7 @@
      }
  
      /**
-@@ -805,10 +849,15 @@
+@@ -805,10 +852,15 @@
              BlockPos blockpos = new BlockPos(nbttagcompound.getInteger("x"), nbttagcompound.getInteger("y"), nbttagcompound.getInteger("z"));
              TileEntity tileentity = this.clientWorldController.getTileEntity(blockpos);
  
@@ -113,7 +130,7 @@
          }
      }
  
-@@ -833,6 +882,10 @@
+@@ -833,6 +885,10 @@
      public void handleDisconnect(SPacketDisconnect packetIn)
      {
          this.netManager.closeChannel(packetIn.getReason());
@@ -124,7 +141,7 @@
      }
  
      /**
-@@ -898,6 +951,15 @@
+@@ -898,6 +954,15 @@
      {
          PacketThreadUtil.checkThreadAndEnqueue(packetIn, this, this.gameController);
  
@@ -140,7 +157,7 @@
          if (packetIn.getType() == 2)
          {
              this.gameController.ingameGUI.setOverlayMessage(packetIn.getChatComponent(), false);
-@@ -1044,8 +1106,14 @@
+@@ -1044,8 +1109,14 @@
  
                      if (entity1 == this.gameController.player && !flag)
                      {
@@ -157,7 +174,7 @@
                  }
              }
          }
-@@ -1116,7 +1184,10 @@
+@@ -1116,7 +1187,10 @@
          {
              this.doneLoadingTerrain = false;
              Scoreboard scoreboard = this.clientWorldController.getScoreboard();
@@ -169,7 +186,7 @@
              this.clientWorldController.setWorldScoreboard(scoreboard);
              this.gameController.loadWorld(this.clientWorldController);
              this.gameController.player.dimension = packetIn.getDimensionID();
-@@ -1305,7 +1376,19 @@
+@@ -1305,7 +1379,19 @@
              {
                  tileentity.readFromNBT(packetIn.getNbtCompound());
              }
@@ -190,7 +207,7 @@
              if (flag && this.gameController.currentScreen instanceof GuiCommandBlock)
              {
                  ((GuiCommandBlock)this.gameController.currentScreen).updateGui();
-@@ -1416,15 +1499,41 @@
+@@ -1416,15 +1502,41 @@
              }
              else if (f == 101.0F)
              {
@@ -235,7 +252,7 @@
              }
          }
          else if (i == 6)
-@@ -1525,7 +1634,7 @@
+@@ -1525,7 +1637,7 @@
  
          if (entity instanceof EntityLivingBase)
          {
@@ -244,7 +261,7 @@
  
              if (potion != null)
              {
-@@ -1928,6 +2037,109 @@
+@@ -1928,6 +2040,115 @@
              String s1 = packetbuffer2.readString(256);
              this.gameController.getSoundHandler().stop(s1, SoundCategory.getByName(s));
          }
@@ -285,16 +302,22 @@
 +        				objectInputStream.close();	
 +        				Minecraft.getMinecraft().climbTracker.blocklist.clear();
 +        				for (String string : temp) {
-+        					String[] parts = string.split(":");
 +        					String id, data = null;
-+        					if(parts.length == 1){
++        					int colon = string.lastIndexOf(':'); //last colon is either data or part of block name
++        					if (colon != -1) { //does that colon exist?
++        						String str = string.substring(colon + 1); //get the data after the colon
++    							id = string.substring(0, colon); //get the block name before the colon
++        						if (tryParseInt(str)) { //is the data good?
++        							data = str; //yup
++        						} else { //nope
++        							if (id.indexOf(':') != -1) { //does the block name still have a colon?
++        								continue; //data was garbage
++        							} else {
++        								id = string; //data actually was just part of block name
++        							}
++        						}
++        					} else { //just a block name
 +        						id = string;
-+        					} else if(parts.length ==2){
-+        						id = parts[0];
-+        						data = parts[1];
-+        					} else {
-+        						//wut
-+        						continue;
 +        					}
 +
 +        					if(data != null && !tryParseInt(data)){
@@ -308,7 +331,7 @@
 +        						test = Block.getBlockFromName(id);
 +        					}
 +
-+        					if(test == null){
++        					if(test == null || test == Blocks.AIR){
 +        						continue;
 +        					}
 +        					BlockWithData bd = null;
@@ -354,7 +377,7 @@
      }
  
      /**
-@@ -2198,4 +2410,12 @@
+@@ -2198,4 +2419,12 @@
      {
          return this.profile;
      }

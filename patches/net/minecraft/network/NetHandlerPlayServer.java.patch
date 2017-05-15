@@ -80,15 +80,16 @@
                              }
                          }
  
-@@ -643,8 +653,14 @@
+@@ -643,8 +653,15 @@
                  double d1 = this.playerEntity.posY - ((double)blockpos.getY() + 0.5D) + 1.5D;
                  double d2 = this.playerEntity.posZ - ((double)blockpos.getZ() + 0.5D);
                  double d3 = d0 * d0 + d1 * d1 + d2 * d2;
 +                
-+                double dist = 262144.0D;
++                double dist = 512.0D * 512.0D;
 +                if (Reflector.forgeExists()) {
-+	                dist = Reflector.callDouble(this.playerEntity.interactionManager, Reflector.PlayerInteractionManager_getBlockReachDistance) + 1;
-+	                dist *= dist;
++	                double newdist = Reflector.callDouble(this.playerEntity.interactionManager, Reflector.PlayerInteractionManager_getBlockReachDistance) + 1;
++	                newdist *= newdist;
++	                if (newdist > dist) dist = newdist;
 +                }
  
 -                if (d3 > 36.0D)
@@ -96,22 +97,23 @@
                  {
                      return;
                  }
-@@ -702,7 +718,13 @@
+@@ -702,7 +719,14 @@
  
          if (blockpos.getY() < this.serverController.getBuildLimit() - 1 || enumfacing != EnumFacing.UP && blockpos.getY() < this.serverController.getBuildLimit())
          {
 -            if (this.targetPos == null && this.playerEntity.getDistanceSq((double)blockpos.getX() + 0.5D, (double)blockpos.getY() + 0.5D, (double)blockpos.getZ() + 0.5D) < 64.0D && !this.serverController.isBlockProtected(worldserver, blockpos, this.playerEntity) && worldserver.getWorldBorder().contains(blockpos))
-+        	double dist = 64;
++        	double dist = 512.0D * 512.0D;
 +        	if(Reflector.forgeExists()) {
-+        		dist = Reflector.callDouble(this.playerEntity.interactionManager, Reflector.PlayerInteractionManager_getBlockReachDistance) + 3;
-+        		dist *= dist;
++        		double newdist = Reflector.callDouble(this.playerEntity.interactionManager, Reflector.PlayerInteractionManager_getBlockReachDistance) + 3;
++        		newdist *= newdist;
++        		if (newdist > dist) dist = newdist;
 +        	}
 +        	 
 +            if (this.targetPos == null && this.playerEntity.getDistanceSq((double)blockpos.getX() + 0.5D, (double)blockpos.getY() + 0.5D, (double)blockpos.getZ() + 0.5D) < dist && !this.serverController.isBlockProtected(worldserver, blockpos, this.playerEntity) && worldserver.getWorldBorder().contains(blockpos))
              {
                  this.playerEntity.interactionManager.processRightClickBlock(this.playerEntity, worldserver, itemstack, enumhand, blockpos, enumfacing, packetIn.getFacingX(), packetIn.getFacingY(), packetIn.getFacingZ());
              }
-@@ -932,7 +954,14 @@
+@@ -932,7 +956,14 @@
              else
              {
                  ITextComponent itextcomponent = new TextComponentTranslation("chat.type.text", new Object[] {this.playerEntity.getDisplayName(), s});
@@ -127,7 +129,23 @@
              }
  
              this.chatSpamThresholdCount += 20;
-@@ -1076,7 +1105,12 @@
+@@ -1058,12 +1089,12 @@
+         if (entity != null)
+         {
+             boolean flag = this.playerEntity.canEntityBeSeen(entity);
+-            double d0 = 36.0D;
++            double d0 = 512.0D * 512.0D;
+ 
+-            if (!flag)
++            /*if (!flag)
+             {
+                 d0 = 9.0D;
+-            }
++            }*/
+ 
+             if (this.playerEntity.getDistanceSqToEntity(entity) < d0)
+             {
+@@ -1076,7 +1107,12 @@
                  else if (packetIn.getAction() == CPacketUseEntity.Action.INTERACT_AT)
                  {
                      EnumHand enumhand1 = packetIn.getHand();
@@ -140,7 +158,7 @@
                      entity.applyPlayerInteraction(this.playerEntity, packetIn.getHitVec(), itemstack1, enumhand1);
                  }
                  else if (packetIn.getAction() == CPacketUseEntity.Action.ATTACK)
-@@ -1110,7 +1144,9 @@
+@@ -1110,7 +1146,9 @@
                  if (this.playerEntity.playerConqueredTheEnd)
                  {
                      this.playerEntity.playerConqueredTheEnd = false;
@@ -151,7 +169,7 @@
                  }
                  else
                  {
-@@ -1790,5 +1826,26 @@
+@@ -1790,5 +1828,26 @@
                  LOGGER.error((String)"Couldn\'t pick item", (Throwable)exception);
              }
          }

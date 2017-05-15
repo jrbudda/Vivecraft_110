@@ -1,6 +1,6 @@
 --- a/net/minecraft/src/Reflector.java
 +++ b/net/minecraft/src/Reflector.java
-@@ -1,68 +1,36 @@
+@@ -1,68 +1,34 @@
  package net.minecraft.src;
  
  import com.google.common.base.Optional;
@@ -14,9 +14,7 @@
 +import java.util.ArrayList;
 +import java.util.List;
  import java.util.Map;
-+
  import javax.vecmath.Matrix4f;
-+
  import net.minecraft.block.Block;
  import net.minecraft.block.properties.IProperty;
  import net.minecraft.block.state.IBlockState;
@@ -80,7 +78,7 @@
  import net.minecraft.client.renderer.vertex.VertexFormatElement;
  import net.minecraft.client.resources.DefaultResourcePack;
  import net.minecraft.client.settings.KeyBinding;
-@@ -70,946 +38,1200 @@
+@@ -70,946 +36,1201 @@
  import net.minecraft.entity.EntityLivingBase;
  import net.minecraft.entity.EnumCreatureType;
  import net.minecraft.entity.item.EntityItemFrame;
@@ -90,7 +88,6 @@
  import net.minecraft.item.Item;
  import net.minecraft.item.ItemArmor;
  import net.minecraft.item.ItemRecord;
-+import net.minecraft.item.ItemStack;
  import net.minecraft.potion.Potion;
  import net.minecraft.potion.PotionEffect;
 +import net.minecraft.stats.Achievement;
@@ -128,10 +125,10 @@
 -    public static ReflectorClass DrawScreenEvent_Post = new ReflectorClass("net.minecraftforge.client.event.GuiScreenEvent$DrawScreenEvent$Post");
 -    public static ReflectorConstructor DrawScreenEvent_Post_Constructor = new ReflectorConstructor(DrawScreenEvent_Post, new Class[] {GuiScreen.class, Integer.TYPE, Integer.TYPE, Float.TYPE});
 -    public static ReflectorClass EntityViewRenderEvent_CameraSetup = new ReflectorClass("net.minecraftforge.client.event.EntityViewRenderEvent$CameraSetup");
--    public static ReflectorMethodReflectorConstructor EntityViewRenderEvent_CameraSetup_Constructor = new ReflectorConstructor(EntityViewRenderEvent_CameraSetup, new Class[] {EntityRenderer.class, Entity.class, IBlockState.class, Double.TYPE, Float.TYPE, Float.TYPE, Float.TYPE});
+-    public static ReflectorConstructor EntityViewRenderEvent_CameraSetup_Constructor = new ReflectorConstructor(EntityViewRenderEvent_CameraSetup, new Class[] {EntityRenderer.class, Entity.class, IBlockState.class, Double.TYPE, Float.TYPE, Float.TYPE, Float.TYPE});
 -    public static ReflectorMethod EntityViewRenderEvent_CameraSetup_getRoll = new ReflectorMethod(EntityViewRenderEvent_CameraSetup, "getRoll");
 -    public static ReflectorMethod EntityViewRenderEvent_CameraSetup_getPitch = new ReflectorMethod(EntityViewRenderEvent_CameraSetup, "getPitch");
--    public static  EntityViewRenderEvent_CameraSetup_getYaw = new ReflectorMethod(EntityViewRenderEvent_CameraSetup, "getYaw");
+-    public static ReflectorMethod EntityViewRenderEvent_CameraSetup_getYaw = new ReflectorMethod(EntityViewRenderEvent_CameraSetup, "getYaw");
 -    public static ReflectorClass EntityViewRenderEvent_FogColors = new ReflectorClass("net.minecraftforge.client.event.EntityViewRenderEvent$FogColors");
 -    public static ReflectorConstructor EntityViewRenderEvent_FogColors_Constructor = new ReflectorConstructor(EntityViewRenderEvent_FogColors, new Class[] {EntityRenderer.class, Entity.class, IBlockState.class, Double.TYPE, Float.TYPE, Float.TYPE, Float.TYPE});
 -    public static ReflectorMethod EntityViewRenderEvent_FogColors_getRed = new ReflectorMethod(EntityViewRenderEvent_FogColors, "getRed");
@@ -1359,12 +1356,14 @@
 +	public static ReflectorField ForgeGuiOpenEvent_gui = new ReflectorField(ForgeGuiOpenEvent, "gui");
 +	public static ReflectorMethod ForgeEventFactory_onPlaySoundAtEntity = new ReflectorMethod(ForgeEventFactory, "onPlaySoundAtEntity");
 +	public static ReflectorMethod ForgeEventFactory_onClientChat = new ReflectorMethod(ForgeEventFactory, "onClientChat");
++	public static ReflectorMethod ForgeEventFactory_onClientSendMessage = new ReflectorMethod(ForgeEventFactory, "onClientSendMessage");
 +	public static ReflectorMethod ForgeHooks_onThrowableImpact = new ReflectorMethod(ForgeHooks, "onThrowableImpact");
 +	public static ReflectorMethod ForgeHooks_onServerChatEvent = new ReflectorMethod(ForgeHooks, "onServerChatEvent");
 +	public static ReflectorMethod ForgeHooks_newChatWithLinks = new ReflectorMethod(ForgeHooks, "newChatWithLinks", new Class[]{String.class});
-+	public static ReflectorMethod ForgeHooks_onInteractEntityAt = new ReflectorMethod(ForgeHooks, "onInteractEntityAt", new Class[]{EntityPlayer.class, Entity.class, Vec3d.class, ItemStack.class, EnumHand.class});
++	public static ReflectorMethod ForgeHooks_onInteractEntityAt = new ReflectorMethod(ForgeHooks, "onInteractEntityAt", new Class[]{EntityPlayer.class, Entity.class, Vec3d.class, EnumHand.class});
++	public static ReflectorMethod ForgeHooks_onInteractEntityAtAction = new ReflectorMethod(ForgeHooks, "onInteractEntityAtAction", new Class[]{EntityPlayer.class, Entity.class, Vec3d.class, EnumHand.class});
 +	public static ReflectorMethod ForgeHooks_onTravelToDimension = new ReflectorMethod(ForgeHooks, "onTravelToDimension");
-+	public static ReflectorMethod ForgeHooks_onEmptyLeftClick = new ReflectorMethod(ForgeHooks, "onEmptyLeftClick", new Class[]{EntityPlayer.class, ItemStack.class});
++	public static ReflectorMethod ForgeHooks_onEmptyLeftClick = new ReflectorMethod(ForgeHooks, "onEmptyLeftClick", new Class[]{EntityPlayer.class});
 +	public static ReflectorMethod ForgeHooks_onEmptyClick = new ReflectorMethod(ForgeHooks, "onEmptyClick");
 +	public static ReflectorMethod ForgeHooks_onPickBlock = new ReflectorMethod(ForgeHooks, "onPickBlock");
 +
