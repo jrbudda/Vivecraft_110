@@ -515,7 +515,7 @@
 +    	if(this.isRiding())return;
 +    	boolean freemove = OpenVRPlayer.get().getFreeMove();
 +    	boolean doY = freemove || (Minecraft.getMinecraft().vrSettings.simulateFalling && !this.isOnLadder()) && !this.isSneaking();
-+    	if(mc.climbTracker.isActive(this)) doY = true;
++    	if(mc.climbTracker.isActive(this) && (freemove || mc.climbTracker.isGrabbingLadder())) doY = true;
 +    	Vec3d roomOrigin = OpenVRPlayer.get().getRoomOriginPos_World();
 +    	//   	Vec3 camloc = Minecraft.getMinecraft().roomScale.getHMDPos_World();
 +

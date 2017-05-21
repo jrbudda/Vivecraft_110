@@ -130,7 +130,7 @@ public class RenderPlayerVR extends RenderLivingBase<AbstractClientPlayer>
                 }
             }
 
-            if (itemstack != null)
+            if (itemstack1 != null)
             {
                 modelbiped$armpose1 = ModelBiped.ArmPose.ITEM;
 

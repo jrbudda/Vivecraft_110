@@ -155,18 +155,15 @@ public class ClimbTracker {
 					} else if (meta == 5){
 						inblock[c] = cpos.xCoord < .1 && (cpos.zCoord > .1 && cpos.zCoord < .9);
 					}	
-				//nah, hotboxes too big.	inblock[c] = box[c] != null && box[c].offset(bp).isVecInside(controllerPos);		
-					button[c]=inblock[c];
-
 				} else {
 					if(latchStart[c].subtract(controllerPos).lengthSquared() > 0.25) 
 						inblock[c] = false;
-					if(latchStart[c].subtract(controllerPos).lengthSquared() > 0.50) 
-						button[c] = false;
 					else
-						button[c] = wasbutton[c];
+						inblock[c] = wasinblock[c];
 				}
 				
+				button[c] = inblock[c];
+				allowed[c] = inblock[c];
 			} else { //Climbey
 				//TODO whitelist by block type
 				
