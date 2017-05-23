@@ -22,11 +22,11 @@
      }
  
      public void setRenderPosition(double renderPosXIn, double renderPosYIn, double renderPosZIn)
-@@ -250,19 +254,26 @@
+@@ -250,19 +254,27 @@
          return (Render<T>) render;
      }
  
-+    RenderPlayerVR n = new RenderPlayerVR(this);
++    RenderPlayerVR n;
 +    
      @Nullable
      public <T extends Entity> Render<T> getEntityRenderObject(T entityIn)
@@ -48,6 +48,7 @@
 +
 +    		if(PlayerModelController.getInstance().isTracked(((AbstractClientPlayer) entityIn).getGameProfile().getId()))
 +    		{
++    			if(n==null) n = new RenderPlayerVR(this);
 +    			return (Render<T>) n;            	
 +    		}  else 
 +    			return (Render<T>) (renderplayer != null ? renderplayer : this.playerRenderer);
@@ -59,7 +60,7 @@
      }
  
      public void cacheActiveRenderInfo(World worldIn, FontRenderer textRendererIn, Entity livingPlayerIn, Entity pointedEntityIn, GameSettings optionsIn, float partialTicks)
-@@ -346,7 +357,10 @@
+@@ -346,7 +358,10 @@
  
      public void renderEntityStatic(Entity entityIn, float partialTicks, boolean p_188388_3_)
      {
@@ -71,7 +72,7 @@
          {
              entityIn.lastTickPosX = entityIn.posX;
              entityIn.lastTickPosY = entityIn.posY;
-@@ -542,8 +556,10 @@
+@@ -542,8 +557,10 @@
          return this.entityRenderMap;
      }
  

@@ -240,7 +240,7 @@
      }
  
      private void renderHotbarItem(int p_184044_1_, int p_184044_2_, float p_184044_3_, EntityPlayer player, @Nullable ItemStack stack)
-@@ -1373,4 +1387,42 @@
+@@ -1373,4 +1387,43 @@
      {
          return this.overlayBoss;
      }
@@ -255,6 +255,7 @@
 +		GlStateManager.disableDepth();
 +		GlStateManager.disableLighting();
 +		GlStateManager.colorMask(true, true, true, false);
++		GlStateManager.color(1, 1, 1, 1);
 +
 +		this.mc.getTextureManager().bindTexture(Gui.ICONS);
 +		float menuMousePointerSize = 16f * this.mc.vrSettings.menuCrosshairScale;

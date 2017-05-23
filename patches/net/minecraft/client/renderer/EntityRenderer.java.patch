@@ -4807,7 +4807,7 @@
 +					eye = new Vec3d(mc.vrSettings.vrFixedCamposX, mc.vrSettings.vrFixedCamposY, mc.vrSettings.vrFixedCamposZ);
 +				}
 +			}
-+			Vector3f guipos = MCOpenVR.guiPos_World;
++			Vector3f guipos = MCOpenVR.guiPos_Room;
 +			
 +			Matrix4f guirot = MCOpenVR.guiRotationPose; 
 +			Vec3d guiLocal = new Vec3d(0, 0, 0);		
@@ -4961,7 +4961,7 @@
 +				guipos = new Vector3f((float)pos.xCoord, (float)pos.yCoord, (float)pos.zCoord);
 +				guirot = Matrix4f.rotationY(-(yawAvg + (float)Math.PI / 2)); // don't ask
 +				MCOpenVR.guiRotationPose = guirot;
-+				MCOpenVR.guiPos_World = guipos;
++				MCOpenVR.guiPos_Room = guipos;
 +			}
 +			
 +			// counter head rotation

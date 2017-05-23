@@ -172,7 +172,7 @@ public class MCOpenVR
 
 	private static float triggerThreshold = .25f;
 
-	public static Vector3f guiPos_World = new Vector3f();
+	public static Vector3f guiPos_Room = new Vector3f();
 	public static Matrix4f guiRotationPose = new Matrix4f();
 	public static  float guiScale = 1.0f;
 	public static double startedOpeningInventory = 0;
@@ -806,9 +806,9 @@ public class MCOpenVR
 
 		Vector3f gp = new Vector3f();
 
-		gp.x = (float) (guiPos_World.x + mc.entityRenderer.interPolatedRoomOrigin.xCoord ) ;
-		gp.y = (float) (guiPos_World.y + mc.entityRenderer.interPolatedRoomOrigin.yCoord ) ;
-		gp.z = (float) (guiPos_World.z + mc.entityRenderer.interPolatedRoomOrigin.zCoord ) ;
+		gp.x = (float) (guiPos_Room.x + mc.entityRenderer.interPolatedRoomOrigin.xCoord ) ;
+		gp.y = (float) (guiPos_Room.y + mc.entityRenderer.interPolatedRoomOrigin.yCoord ) ;
+		gp.z = (float) (guiPos_Room.z + mc.entityRenderer.interPolatedRoomOrigin.zCoord ) ;
 
 
 		Vector3f guiTopLeft = gp.subtract(guiUp.divide(1.0f / guiHalfHeight)).subtract(guiRight.divide(1.0f/guiHalfWidth));
@@ -2182,7 +2182,7 @@ public class MCOpenVR
 		KeyboardSimulator.robot.keyRelease(KeyEvent.VK_SHIFT);
 		
 		if(newScreen == null 	|| (mc.player!=null && !mc.player.isEntityAlive())){
-			guiPos_World = null;
+			guiPos_Room = null;
 			guiRotationPose = null;
 		}
 		
@@ -2196,7 +2196,7 @@ public class MCOpenVR
 			mc.vrSettings.vrWorldRotation = 0;
 			mc.vrPlayer.worldRotationRadians = (float) Math.toRadians( mc.vrSettings.vrWorldRotation);
 			float[] playArea = getPlayAreaSize();
-			guiPos_World = new Vector3f(
+			Vector3f guiPos_World = new Vector3f(
 					(float) (0 + mc.vrPlayer.getRoomOriginPos_World().xCoord),
 					(float) (1.3f + mc.vrPlayer.getRoomOriginPos_World().yCoord),
 					(float) ((playArea != null ? -playArea[1] / 2 : -1.5f) - 0.3f + mc.vrPlayer.getRoomOriginPos_World().zCoord));			
@@ -2223,7 +2223,7 @@ public class MCOpenVR
 			MCOpenVR.guiScale = 1.0f*mc.vrPlayer.worldScale;
 			Vec3d v = mc.entityRenderer.getEyeRenderPos(renderPass.Center);
 			Vec3d d = mc.roomScale.getHMDDir_World();
-			guiPos_World = new Vector3f(
+			Vector3f guiPos_World = new Vector3f(
 					(float) (v.xCoord + d.xCoord*mc.vrPlayer.worldScale),
 					(float) (v.yCoord + d.yCoord*mc.vrPlayer.worldScale),
 					(float) (v.zCoord + d.zCoord*mc.vrPlayer.worldScale));
@@ -2234,7 +2234,7 @@ public class MCOpenVR
 
 			guiRotationPose.M[3][3] = 1.0f;
 			
-			guiPos_World = guiPos_World.subtract(new Vector3f((float)mc.entityRenderer.interPolatedRoomOrigin.xCoord,
+			guiPos_Room = guiPos_World.subtract(new Vector3f((float)mc.entityRenderer.interPolatedRoomOrigin.xCoord,
 					(float) mc.entityRenderer.interPolatedRoomOrigin.yCoord, (float) mc.entityRenderer.interPolatedRoomOrigin.zCoord));
 		
 		}  else if ( previousScreen==null && newScreen != null	|| 
@@ -2256,7 +2256,7 @@ public class MCOpenVR
 			if(appearOverBlock && mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == RayTraceResult.Type.BLOCK){	
 
 				guiScale =(float) (Math.sqrt(mc.vrPlayer.worldScale) * 2);
-				guiPos_World =new Vector3f((float) mc.objectMouseOver.getBlockPos().getX() + 0.5f,
+				Vector3f guiPos_World =new Vector3f((float) mc.objectMouseOver.getBlockPos().getX() + 0.5f,
 						(float) mc.objectMouseOver.getBlockPos().getY() + 1.7f,
 						(float) mc.objectMouseOver.getBlockPos().getZ() + 0.5f);
 
@@ -2272,7 +2272,7 @@ public class MCOpenVR
 				Matrix4f tilt = OpenVRUtil.rotationXMatrix(pitch);	
 				guiRotationPose = Matrix4f.multiply(guiRotationPose,tilt);		
 				
-				guiPos_World = guiPos_World.subtract(new Vector3f((float)mc.entityRenderer.interPolatedRoomOrigin.xCoord,
+				guiPos_Room = guiPos_World.subtract(new Vector3f((float)mc.entityRenderer.interPolatedRoomOrigin.xCoord,
 						(float) mc.entityRenderer.interPolatedRoomOrigin.yCoord, (float) mc.entityRenderer.interPolatedRoomOrigin.zCoord));
 			
 			}				
@@ -2286,7 +2286,7 @@ public class MCOpenVR
 				
 				Vec3d v = mc.vrPlayer.getHMDPos_World();
 				Vec3d e = mc.roomScale.getCustomHMDVector(adj);
-				guiPos_World = new Vector3f(
+				Vector3f guiPos_World = new Vector3f(
 						(float) (e.xCoord * mc.vrPlayer.worldScale / 2 + v.xCoord),
 						(float) (e.yCoord* mc.vrPlayer.worldScale / 2 + v.yCoord),
 						(float) (e.zCoord* mc.vrPlayer.worldScale / 2 + v.zCoord));
@@ -2301,7 +2301,7 @@ public class MCOpenVR
 				Matrix4f tilt = OpenVRUtil.rotationXMatrix((float)Math.toRadians(mc.roomScale.getHMDPitch_World()));	
 				guiRotationPose = Matrix4f.multiply(guiRotationPose,tilt);
 				
-				guiPos_World = guiPos_World.subtract(new Vector3f((float)mc.entityRenderer.interPolatedRoomOrigin.xCoord,
+				guiPos_Room= guiPos_World.subtract(new Vector3f((float)mc.entityRenderer.interPolatedRoomOrigin.xCoord,
 						(float) mc.entityRenderer.interPolatedRoomOrigin.yCoord, (float) mc.entityRenderer.interPolatedRoomOrigin.zCoord));
 			
 			}

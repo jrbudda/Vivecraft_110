@@ -286,11 +286,15 @@ public class ClimbTracker {
 			double yheight = latchStart[latchStartController].subtract(b.getX(), b.getY(), b.getZ()).yCoord;
 			if(!wantjump && latchbox[latchStartController] != null && yheight > latchbox[latchStartController].maxY*.8 && canstand(b, player)){		
 				double hmd = mc.roomScale.getHMDPos_Room().yCoord;
+				Vec3d dir = mc.roomScale.getHMDDir_World().scale(0.5f);
 				double con = mc.roomScale.getControllerPos_Room(latchStartController).yCoord;
 				if(con <= hmd/2){
 					boolean ok=	mc.world.getCollisionBoxes(player, player.getEntityBoundingBox().offset(0,(latchbox[latchStartController].maxY + b.getY()) - player.posY ,0)).isEmpty();
 					if(ok){
-						player.setPosition(player.posX, latchbox[latchStartController].maxY + b.getY(), player.posZ);
+						if(ladder)
+							player.setPosition(player.posX+dir.xCoord, latchbox[latchStartController].maxY + b.getY(), player.posZ + dir.zCoord);
+						else
+							player.setPosition(player.posX, latchbox[latchStartController].maxY + b.getY(), player.posZ);
 						mc.vrPlayer.snapRoomOriginToPlayerEntity(player, false, false, 0);
 					}
 				}

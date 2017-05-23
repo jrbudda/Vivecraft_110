@@ -1067,7 +1067,7 @@ public class VRSettings
                    	this.vrHudLockMode = HUD_LOCK_WRIST;
                 	break;
                 case HUD_LOCK_WRIST:
-                   	this.vrHudLockMode = HUD_LOCK_BODY;
+                   	this.vrHudLockMode = HUD_LOCK_HAND;
                 	break;
                 case HUD_LOCK_BODY:
                     this.vrHudLockMode = HUD_LOCK_HAND;

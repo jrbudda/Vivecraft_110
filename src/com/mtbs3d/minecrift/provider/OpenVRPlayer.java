@@ -228,6 +228,8 @@ public class OpenVRPlayer implements IRoomscaleAdapter
    
 	    mc.sneakTracker.doProcess(mc, player);
 	    
+	    mc.backpackTracker.doProcess(mc, player);
+	    
 		mc.autoFood.doProcess(mc,player);
            		
 		this.checkandUpdateRotateScale(false,1);
