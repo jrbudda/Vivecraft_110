@@ -97,9 +97,9 @@
 +        myRenderVRPlayer = new RenderVRPlayer(this.renderManager);
      }
  
-+    public void renderItemSide(EntityLivingBase entityIn, ItemStack heldStack, ItemCameraTransforms.TransformType transform)
++    public void renderItemSide(EntityLivingBase entityIn, ItemStack heldStack, ItemCameraTransforms.TransformType transform, boolean rightSide)
 +    {
-+        this.renderItemSide(0,entityIn, heldStack, transform, false);
++        this.renderItemSide(0,entityIn, heldStack, transform, rightSide);
 +    }
 +    
      public void renderItem(EntityLivingBase entityIn, ItemStack heldStack, ItemCameraTransforms.TransformType transform)

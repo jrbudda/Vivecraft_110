@@ -1,6 +1,6 @@
 --- a/net/minecraft/client/renderer/entity/layers/LayerHeldItem.java
 +++ b/net/minecraft/client/renderer/entity/layers/LayerHeldItem.java
-@@ -1,13 +1,24 @@
+@@ -1,13 +1,25 @@
  package net.minecraft.client.renderer.entity.layers;
  
 +import java.util.UUID;
@@ -19,13 +19,14 @@
  import net.minecraft.entity.EntityLivingBase;
 +import net.minecraft.entity.player.EntityPlayer;
 +import net.minecraft.init.Items;
++import net.minecraft.item.ItemBow;
  import net.minecraft.item.ItemStack;
  import net.minecraft.util.EnumHandSide;
 +import net.minecraft.util.math.Vec3d;
  
  public class LayerHeldItem implements LayerRenderer<EntityLivingBase>
  {
-@@ -46,6 +57,24 @@
+@@ -46,6 +58,24 @@
      {
          if (p_188358_2_ != null)
          {
@@ -43,14 +44,14 @@
 +            	}
 +            }
 +            
-+            if(handSide == EnumHandSide.LEFT && vr && p_188358_1_.getHeldItemMainhand().getItem() == Items.BOW ){
++            if(handSide == EnumHandSide.LEFT && vr && p_188358_1_.getHeldItemMainhand() != null &&  p_188358_1_.getHeldItemMainhand().getItem() instanceof ItemBow ){
 +            	return;
 +            }
 +            
              GlStateManager.pushMatrix();
              ((ModelBiped)this.livingEntityRenderer.getMainModel()).postRenderArm(0.0625F, handSide);
  
-@@ -54,13 +83,75 @@
+@@ -54,13 +84,75 @@
                  GlStateManager.translate(0.0F, 0.2F, 0.0F);
              }
  
