@@ -20,10 +20,9 @@ import com.mtbs3d.minecrift.tweaker.MinecriftClassTransformer.Stage;
 public class VivecraftMain
 {
 	private static final String[] encapsulatedTransformers = new String[]{
-		// woo
 	};
 	private static final String[] removedTransformers = new String[]{
-		// yeah
+		"guichaguri.betterfps.transformers.PatcherTransformer"
 	};
 	
 	public static void main(String[] p_main_0_)
@@ -50,7 +49,7 @@ public class VivecraftMain
 					passedDeobf = true;
 				}
 				for (String dt : encapsulatedTransformers) {
-				    if (t.getClass().getName().equals(dt)) {
+				    if (t.getClass().getName().equals(dt) || t.getClass().getName().equals("$wrapper." + dt)) {
 				    	if (passedDeobf) {
 				    		encapsulateDeobf.add(t);
 				    	} else {
@@ -61,7 +60,7 @@ public class VivecraftMain
 				    }
 				}
 				for (String dt : removedTransformers) {
-				    if (t.getClass().getName().equals(dt)) {
+				    if (t.getClass().getName().equals(dt) || t.getClass().getName().equals("$wrapper." + dt)) {
 				    	it.remove();
 				    	break;
 				    }
@@ -73,8 +72,8 @@ public class VivecraftMain
 			int forgeObfIndex = 0;
 			for (int i = 0; i < transformers.size(); i++) {
 				IClassTransformer t = transformers.get(i);
-				if (t.getClass().getName().equals("$wrapper.net.minecraftforge.fml.common.asm.transformers.BlamingTransformer")) {
-					forgeObfIndex = i;
+				if (t.getClass().getName().equals("$wrapper.net.minecraftforge.fml.common.asm.transformers.EventSubscriberTransformer")) {
+					forgeObfIndex = i + 1;
 					break;
 				}
 			}

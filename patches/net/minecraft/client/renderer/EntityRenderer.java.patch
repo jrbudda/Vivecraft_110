@@ -94,7 +94,7 @@
  import net.minecraft.util.EnumParticleTypes;
  import net.minecraft.util.MouseFilter;
  import net.minecraft.util.ReportedException;
-@@ -80,24 +102,62 @@
+@@ -80,24 +102,63 @@
  import net.minecraft.util.math.BlockPos;
  import net.minecraft.util.math.MathHelper;
  import net.minecraft.util.math.RayTraceResult;
@@ -138,6 +138,7 @@
 +import com.google.common.base.Predicate;
 +import com.google.common.base.Predicates;
 +import com.google.gson.JsonSyntaxException;
++import com.mtbs3d.minecrift.gameplay.BowTracker;
 +import com.mtbs3d.minecrift.provider.MCOpenVR;
 +import com.mtbs3d.minecrift.provider.OpenVRPlayer;
 +import com.mtbs3d.minecrift.render.MenuWorldRenderer;
@@ -158,7 +159,7 @@
  public class EntityRenderer implements IResourceManagerReloadListener
  {
      private static final Logger LOGGER = LogManager.getLogger();
-@@ -108,6 +168,45 @@
+@@ -108,6 +169,45 @@
      /** Anaglyph field (0=R, 1=GB) */
      public static int anaglyphField;
  
@@ -204,7 +205,7 @@
      /** A reference to the Minecraft object. */
      private final Minecraft mc;
      private final IResourceManager resourceManager;
-@@ -204,7 +303,11 @@
+@@ -204,7 +304,11 @@
      private double cameraZoom = 1.0D;
      private double cameraYaw;
      private double cameraPitch;
@@ -217,7 +218,7 @@
      private static final ResourceLocation[] SHADERS_TEXTURES = new ResourceLocation[] {new ResourceLocation("shaders/post/notch.json"), new ResourceLocation("shaders/post/fxaa.json"), new ResourceLocation("shaders/post/art.json"), new ResourceLocation("shaders/post/bumpy.json"), new ResourceLocation("shaders/post/blobs2.json"), new ResourceLocation("shaders/post/pencil.json"), new ResourceLocation("shaders/post/color_convolve.json"), new ResourceLocation("shaders/post/deconverge.json"), new ResourceLocation("shaders/post/flip.json"), new ResourceLocation("shaders/post/invert.json"), new ResourceLocation("shaders/post/ntsc.json"), new ResourceLocation("shaders/post/outline.json"), new ResourceLocation("shaders/post/phosphor.json"), new ResourceLocation("shaders/post/scan_pincushion.json"), new ResourceLocation("shaders/post/sobel.json"), new ResourceLocation("shaders/post/bits.json"), new ResourceLocation("shaders/post/desaturate.json"), new ResourceLocation("shaders/post/green.json"), new ResourceLocation("shaders/post/blur.json"), new ResourceLocation("shaders/post/wobble.json"), new ResourceLocation("shaders/post/blobs.json"), new ResourceLocation("shaders/post/antialias.json"), new ResourceLocation("shaders/post/creeper.json"), new ResourceLocation("shaders/post/spider.json")};
      public static final int SHADER_COUNT = SHADERS_TEXTURES.length;
      private int shaderIndex;
-@@ -212,9 +315,7 @@
+@@ -212,9 +316,7 @@
      public int frameCount;
      private boolean initialized = false;
      private World updatedWorld = null;
@@ -227,7 +228,7 @@
      private long lastServerTime = 0L;
      private int lastServerTicks = 0;
      private int serverWaitTime = 0;
-@@ -223,8 +324,14 @@
+@@ -223,8 +325,14 @@
      private float avgServerTickDiff = 0.0F;
      private long lastErrorCheckTimeMs = 0L;
      private ShaderGroup[] fxaaShaders = new ShaderGroup[10];
@@ -243,7 +244,7 @@
      public EntityRenderer(Minecraft mcIn, IResourceManager resourceManagerIn)
      {
          this.shaderIndex = SHADER_COUNT;
-@@ -236,6 +343,7 @@
+@@ -236,6 +344,7 @@
          this.locationLightMap = mcIn.getTextureManager().getDynamicTextureLocation("lightMap", this.lightmapTexture);
          this.lightmapColors = this.lightmapTexture.getTextureData();
          this.theShaderGroup = null;
@@ -251,7 +252,7 @@
  
          for (int i = 0; i < 32; ++i)
          {
-@@ -274,7 +382,7 @@
+@@ -274,7 +383,7 @@
      /**
       * What shader to use when spectating this entity
       */
@@ -260,7 +261,7 @@
      {
          if (OpenGlHelper.shadersSupported)
          {
-@@ -304,7 +412,7 @@
+@@ -304,7 +413,7 @@
          }
      }
  
@@ -269,7 +270,7 @@
      {
          if (OpenGlHelper.isFramebufferEnabled())
          {
-@@ -388,7 +496,7 @@
+@@ -388,7 +497,7 @@
  
          Entity entity = this.mc.getRenderViewEntity();
          double d2 = entity.posX;
@@ -278,7 +279,7 @@
          double d1 = entity.posZ;
          float f2 = this.mc.world.getLightBrightness(new BlockPos(d2, d0, d1));
          float f3 = (float)this.mc.gameSettings.renderDistanceChunks / 16.0F;
-@@ -413,6 +521,16 @@
+@@ -413,6 +522,16 @@
          {
              this.bossColorModifier -= 0.0125F;
          }
@@ -295,7 +296,7 @@
      }
  
      public ShaderGroup getShaderGroup()
-@@ -438,112 +556,112 @@
+@@ -438,112 +557,112 @@
       */
      public void getMouseOver(float partialTicks)
      {
@@ -514,7 +515,7 @@
      }
  
      /**
-@@ -611,7 +729,6 @@
+@@ -611,7 +730,6 @@
                  {
                      Config.zoomMode = true;
                      this.mc.gameSettings.smoothCamera = true;
@@ -522,7 +523,7 @@
                  }
  
                  if (Config.zoomMode)
-@@ -634,14 +751,14 @@
+@@ -634,14 +752,14 @@
                  f /= (1.0F - 500.0F / (f1 + 500.0F)) * 2.0F + 1.0F;
              }
  
@@ -540,7 +541,7 @@
          }
      }
  
-@@ -696,244 +813,239 @@
+@@ -696,244 +814,239 @@
       */
      private void orientCamera(float partialTicks)
      {
@@ -1010,7 +1011,7 @@
  
      /**
       * Render player hand
-@@ -942,88 +1054,67 @@
+@@ -942,88 +1055,67 @@
      {
          this.renderHand(partialTicks, pass, true, true, false);
      }
@@ -1128,7 +1129,7 @@
 +					itemRenderer.renderItemInFirstPerson(mc.player, partialTicks, 0, EnumHand.MAIN_HAND, mc.player.getSwingProgress(partialTicks), mc.player.getHeldItemOffhand(), 0);				
 +				}
 +				
-+				if(item != null && item.getItem()instanceof ItemBow){
++				if(BowTracker.isHoldingBow(mc.player)){
 +					int c = 0;
 +					if (mc.vrSettings.vrReverseShootingEye) c = 1;
 +					
@@ -1159,7 +1160,7 @@
      public void disableLightmap()
      {
          GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-@@ -1039,12 +1130,12 @@
+@@ -1039,12 +1131,12 @@
      public void enableLightmap()
      {
          GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
@@ -1174,7 +1175,7 @@
          this.mc.getTextureManager().bindTexture(this.locationLightMap);
          GlStateManager.glTexParameteri(3553, 10241, 9729);
          GlStateManager.glTexParameteri(3553, 10240, 9729);
-@@ -1220,708 +1311,806 @@
+@@ -1220,708 +1312,815 @@
          }
      }
  
@@ -2562,10 +2563,19 @@
 +            	Shaders.endRender(); 
 +
 +		
-+    	this.mc.mcProfiler.endStartSection("renderGui");
-+			if(!mc.bowTracker.isDrawing)				
-+				renderGuiLayer(partialTicks);  
-+            
++        this.mc.mcProfiler.endStartSection("renderGui");
++            if(!mc.bowTracker.isDrawing){				
++            	renderGuiLayer(partialTicks);  
++            	if(mc.currentScreen !=null && !mc.vrSettings.hudOcclusion){
++            		this.enableLightmap();    
++            		RenderHelper.enableStandardItemLighting();
++            		itemRenderer.setLightmap();
++            		GlStateManager.enableRescaleNormal();   
++            		this.renderHand(partialTicks, 0);
++            		this.renderLeftHand(partialTicks);
++            		this.disableLightmap();
++            	}
++            }
 +						
 +		this.mc.mcProfiler.endSection();
 +
@@ -2624,7 +2634,7 @@
      private void addRainParticles()
      {
          float f = this.mc.world.getRainStrength(1.0F);
-@@ -2013,7 +2202,7 @@
+@@ -2013,7 +2212,7 @@
          if (Reflector.ForgeWorldProvider_getWeatherRenderer.exists())
          {
              WorldProvider worldprovider = this.mc.world.provider;
@@ -2633,7 +2643,7 @@
  
              if (object != null)
              {
-@@ -2216,7 +2405,7 @@
+@@ -2216,7 +2415,7 @@
              double d0 = MathHelper.sin(world.getCelestialAngleRadians(partialTicks)) > 0.0F ? -1.0D : 1.0D;
              Vec3d vec3d2 = new Vec3d(d0, 0.0D, 0.0D);
              float f5 = (float)entity.getLook(partialTicks).dotProduct(vec3d2);
@@ -2642,7 +2652,7 @@
              if (f5 < 0.0F)
              {
                  f5 = 0.0F;
-@@ -2260,8 +2449,9 @@
+@@ -2260,8 +2459,9 @@
              this.fogColorBlue *= f11;
          }
  
@@ -2654,7 +2664,7 @@
          if (this.cloudFog)
          {
              Vec3d vec3d3 = world.getCloudColour(partialTicks);
-@@ -2269,7 +2459,7 @@
+@@ -2269,7 +2469,7 @@
              this.fogColorGreen = (float)vec3d3.yCoord;
              this.fogColorBlue = (float)vec3d3.zCoord;
          }
@@ -2663,7 +2673,7 @@
          {
              float f12 = 0.0F;
  
-@@ -2295,7 +2485,7 @@
+@@ -2295,7 +2495,7 @@
                  this.fogColorBlue = (float)vec3d4.zCoord;
              }
          }
@@ -2672,7 +2682,7 @@
          {
              this.fogColorRed = 0.6F;
              this.fogColorGreen = 0.1F;
-@@ -2373,16 +2563,15 @@
+@@ -2373,16 +2573,15 @@
              this.fogColorBlue = f7;
          }
  
@@ -2697,7 +2707,7 @@
      }
  
      /**
-@@ -2396,7 +2585,13 @@
+@@ -2396,7 +2595,13 @@
          GlStateManager.glFog(2918, this.setFogColorBuffer(this.fogColorRed, this.fogColorGreen, this.fogColorBlue, 1.0F));
          GlStateManager.glNormal3f(0.0F, -1.0F, 0.0F);
          GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -2712,7 +2722,7 @@
          float f = -1.0F;
  
          if (Reflector.ForgeHooksClient_getFogDensity.exists())
-@@ -2456,7 +2651,7 @@
+@@ -2456,7 +2661,7 @@
  
              GlStateManager.setFogDensity(0.1F);
          }
@@ -2721,7 +2731,7 @@
          {
              if (Config.isShaders())
              {
-@@ -2488,7 +2683,7 @@
+@@ -2488,7 +2693,7 @@
                  GlStateManager.setFogDensity(0.02F);
              }
          }
@@ -2730,7 +2740,7 @@
          {
              if (Config.isShaders())
              {
-@@ -2550,12 +2745,24 @@
+@@ -2550,12 +2755,24 @@
                  Reflector.callVoid(Reflector.ForgeHooksClient_onFogRender, new Object[] {this, entity, iblockstate, Float.valueOf(partialTicks), Integer.valueOf(startCoords), Float.valueOf(f1)});
              }
          }
@@ -2756,7 +2766,7 @@
      /**
       * Update and return fogColorBuffer with the RGBA values passed as arguments
       */
-@@ -2572,6 +2779,12 @@
+@@ -2572,6 +2789,12 @@
          return this.fogColorBuffer;
      }
  
@@ -2769,7 +2779,7 @@
      public MapItemRenderer getMapItemRenderer()
      {
          return this.theMapItemRenderer;
-@@ -2716,10 +2929,12 @@
+@@ -2716,10 +2939,12 @@
              this.updatedWorld = world;
          }
  
@@ -2786,7 +2796,7 @@
      }
  
      private void frameFinish()
-@@ -2743,39 +2958,6 @@
+@@ -2743,39 +2968,6 @@
          }
      }
  
@@ -2826,7 +2836,7 @@
      public boolean setFxaaShader(int p_setFxaaShader_1_)
      {
          if (!OpenGlHelper.isFramebufferEnabled())
-@@ -2815,75 +2997,6 @@
+@@ -2815,75 +3007,6 @@
          }
      }
  
@@ -2902,7 +2912,7 @@
      public static void drawNameplate(FontRenderer fontRendererIn, String str, float x, float y, float z, int verticalShift, float viewerYaw, float viewerPitch, boolean isThirdPersonFrontal, boolean isSneaking)
      {
          GlStateManager.pushMatrix();
-@@ -2927,4 +3040,2304 @@
+@@ -2927,4 +3050,2304 @@
          GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
          GlStateManager.popMatrix();
      }
@@ -3050,7 +3060,7 @@
 +			} else {
 +				ItemStack i = ((EntityPlayerSP) entity).inventory.getCurrentItem();
 +				if(i !=null){
-+					if(i.getItem() instanceof ItemBow && mc.bowTracker.isNotched()){
++					if(mc.bowTracker.isBow(i) && mc.bowTracker.isNotched()){
 +						//use bow aim
 +						Vec3d aim = mc.bowTracker.getAimVector();
 +						if (aim != null && aim.lengthSquared() > 0) {
@@ -3910,7 +3920,7 @@
 +					itemRenderer.renderItemInFirstPerson(mc.player, nano, 0, EnumHand.OFF_HAND, mc.player.getSwingProgress(nano), mc.player.getHeldItemMainhand(), 0);
 +				}
 +						        
-+					if(mc.bowTracker.isActive(mc.player)){ //render bow
++					if(BowTracker.isHoldingBow(mc.player)){ //render bow
 +						int c = 1;
 +						if (mc.vrSettings.vrReverseShootingEye) c = 0;
 +						itemRenderer.renderItemInFirstPerson(mc.player, nano, 0, EnumHand.OFF_HAND, mc.player.getSwingProgress(nano), mc.player.getHeldItemMainhand(), 0);

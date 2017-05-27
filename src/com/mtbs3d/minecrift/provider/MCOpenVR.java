@@ -62,6 +62,7 @@ import jopenvr.JOpenVRLibrary.EVREventType;
 
 import java.awt.AWTException;
 import java.awt.Window;
+import java.awt.PageAttributes.OriginType;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -696,12 +697,32 @@ public class MCOpenVR
 			Pointer empty = new Memory(1);
 			empty.setString(0, "");
 
-			ret = vrOverlay.ShowKeyboard.apply(0, 0, pointer, 256, empty, (byte)1, 0)	;	
+//			HmdMatrix34_t keyboardpos = new HmdMatrix34_t();
+//			//keyboardpos.m[0] = guiRotationPose.M[0][0];
+//			//keyboardpos.m[1] = guiRotationPose.M[0][1];
+//			//keyboardpos.m[2] = guiRotationPose.M[0][2];
+//			keyboardpos.m[3] = guiPos_Room.x;
+//			
+//			//keyboardpos.m[4] = guiRotationPose.M[1][0];
+//			//keyboardpos.m[5] = guiRotationPose.M[1][1];
+//			//keyboardpos.m[6] = guiRotationPose.M[1][2];
+//			keyboardpos.m[7] = guiPos_Room.y;
+//			
+//			//keyboardpos.m[8] = guiRotationPose.M[2][0];
+//			//keyboardpos.m[9] = guiRotationPose.M[2][1];
+//			//keyboardpos.m[10] = guiRotationPose.M[2][2];
+//			keyboardpos.m[11] = guiPos_Room.z;
+						
+			ret = vrOverlay.ShowKeyboard.apply(0, 0, pointer, 256, empty, (byte)1, 0);	
 			
+			//vrOverlay.SetKeyboardTransformAbsolute.apply(JOpenVRLibrary.ETrackingUniverseOrigin.ETrackingUniverseOrigin_TrackingUniverseStanding,keyboardpos);
+
 			keyboardShowing = 0 == ret; //0 = no error, > 0 see EVROverlayError	
 	
 			if (ret != 0) {
-				System.out.println("VR Overlay Error: " + vrOverlay.GetOverlayErrorNameFromEnum.apply(ret).getString(0));
+				String err =  vrOverlay.GetOverlayErrorNameFromEnum.apply(ret).getString(0);
+				System.out.println("VR Overlay Error: " + err);
+				if(err.equalsIgnoreCase("VROverlayError_KeyboardAlreadyInUse")) keyboardShowing = true;
 			}
 
 		} else {
@@ -786,7 +807,7 @@ public class MCOpenVR
 
 		Vector3f controllerPos = new Vector3f();
 		//OpenVRUtil.convertMatrix4ftoTranslationVector(controllerPose[0]);
-		Vec3d con = mc.vrPlayer.getControllerPos_World(0);
+		Vec3d con = mc.entityRenderer.getControllerRenderPos(0);
 		controllerPos.x	= (float) con.xCoord;
 		controllerPos.y	= (float) con.yCoord;
 		controllerPos.z	= (float) con.zCoord;
@@ -798,7 +819,7 @@ public class MCOpenVR
 		Vector3f guiNormal = guiRotationPose.transform(forward);
 		Vector3f guiRight = guiRotationPose.transform(new Vector3f(1,0,0));
 		Vector3f guiUp = guiRotationPose.transform(new Vector3f(0,1,0));
-
+		
 		float guiWidth = 1.0f;		
 		float guiHalfWidth = guiWidth * 0.5f;		
 		float guiHeight = 1.0f;	
@@ -930,17 +951,20 @@ public class MCOpenVR
 			// mouse on screen
 			int mouseX = Math.min(Math.max((int) controllerMouseX, 0), mc.displayWidth);
 			int mouseY = Math.min(Math.max((int) controllerMouseY, 0), mc.displayHeight);
-
+		
 			if (controllerDeviceIndex[RIGHT_CONTROLLER] != -1)
 			{
-				Mouse.setCursorPosition(mouseX, mouseY);
+					Mouse.setCursorPosition(mouseX, mouseY);
+					//KeyboardSimulator.robot.mouseMove(Display.getX() + mouseX, Display.getY() + mouseY);
 				controllerMouseValid = true;
 
 				//LMB
 				if (mc.currentScreen != null && pressedleftclick && !lastpressedleftclick)
 				{ //press left mouse button
-					if (Display.isActive()) 
+					if (Display.isActive()) {
+						//System.out.println("LMB DOWN");
 						KeyboardSimulator.robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+					}
 					else mc.currentScreen.mouseDown(mouseX, mouseY, 0);
 				}	
 
@@ -950,7 +974,10 @@ public class MCOpenVR
 
 				if (mc.currentScreen != null && !pressedleftclick && lastpressedleftclick) {
 					//release left mouse button
-					if (Display.isActive()) KeyboardSimulator.robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+					if (Display.isActive()){
+						//System.out.println("LMB UP");
+						KeyboardSimulator.robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+					}
 					else mc.currentScreen.mouseUp(mouseX, mouseY, 0);
 				}
 				//end LMB
@@ -1326,12 +1353,27 @@ public class MCOpenVR
 						mc.getConnection().sendPacket(new CPacketClientStatus(State.PERFORM_RESPAWN));
 						mc.displayGuiScreen((GuiScreen)null);		
 					}else {
-						mc.player.closeScreen();
+						
+						if(Display.isActive()){
+							KeyboardSimulator.robot.keyPress(KeyEvent.VK_ESCAPE); //window focus... yadda yadda
+							KeyboardSimulator.robot.keyRelease(KeyEvent.VK_ESCAPE); //window focus... yadda yadda
+						}
+						else 
+							mc.player.closeScreen();
+						
 						setKeyboardOverlayShowing(false, null);
 					}
-				}else
-					
-				if(!Main.kiosk)mc.displayInGameMenu();				
+				}else{
+					if(!Main.kiosk){
+						if(Display.isActive()){
+							KeyboardSimulator.robot.keyPress(KeyEvent.VK_ESCAPE); //window focus... yadda yadda
+							KeyboardSimulator.robot.keyRelease(KeyEvent.VK_ESCAPE); //window focus... yadda yadda
+						}
+						else 
+							mc.displayInGameMenu();				
+					}
+					setKeyboardOverlayShowing(false, null);
+				}
 			}
 		}
 		
@@ -1683,12 +1725,23 @@ public class MCOpenVR
 						mc.getConnection().sendPacket(new CPacketClientStatus(State.PERFORM_RESPAWN));
 						mc.displayGuiScreen((GuiScreen)null);		
 					}else {
-						mc.player.closeScreen();
+						
+						if(Display.isActive())
+							KeyboardSimulator.robot.keyPress(KeyEvent.VK_ESCAPE); //window focus... yadda yadda
+						else 
+							mc.player.closeScreen();
+						
 						setKeyboardOverlayShowing(false, null);
 					}
-				}else
-
-					if(!Main.kiosk)mc.displayInGameMenu();				
+				}else{
+					if(!Main.kiosk){
+						if(Display.isActive())
+							KeyboardSimulator.robot.keyPress(KeyEvent.VK_ESCAPE); //window focus... yadda yadda
+						else 
+							mc.displayInGameMenu();				
+					}
+					setKeyboardOverlayShowing(false, null);
+				}
 			}
 		}
 
@@ -1848,7 +1901,7 @@ public class MCOpenVR
 	
 	private static void changeHotbar(int dir){
 		if (Reflector.forgeExists() && mc.currentScreen == null)
-			KeyboardSimulator.robot.mouseWheel(dir * 120);
+			KeyboardSimulator.robot.mouseWheel(-dir * 120);
 		else
 			mc.player.inventory.changeCurrentItem(dir);
 	}

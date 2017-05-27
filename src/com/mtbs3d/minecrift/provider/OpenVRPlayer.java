@@ -13,6 +13,8 @@ import de.fruitfly.ovr.util.BufferUtil;
 import io.netty.util.concurrent.GenericFutureListener;
 import jopenvr.OpenVRUtil;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockLadder;
+import net.minecraft.block.BlockVine;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
@@ -39,6 +41,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
 import net.minecraft.network.play.client.CPacketCustomPayload;
+import net.minecraft.src.Reflector;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -114,10 +117,10 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 	    roomOrigin = new Vec3d(x, y, z);
         lastRoomUpdateTime = Minecraft.getMinecraft().stereoProvider.getCurrentTimeSecs();
         Minecraft.getMinecraft().entityRenderer.irpUpdatedThisFrame = onframe;
-      //  System.out.println(x + " " + y + " " + z);
+        //System.out.println("room origin " + x + " " + y + " " + z);
     } 
     
-    private int roomScaleMovementDelay = 0;
+    private int roomScaleMovementDelay = 10;
     
     //set room 
     public void snapRoomOriginToPlayerEntity(EntityPlayerSP player, boolean reset, boolean onFrame, float nano)
@@ -125,6 +128,8 @@ public class OpenVRPlayer implements IRoomscaleAdapter
         if (Thread.currentThread().getName().equals("Server thread"))
             return;
 
+        if(!Minecraft.getMinecraft().player.initFromServer) return;
+        
         if(player.posX == 0 && player.posY == 0 &&player.posZ == 0) return;
         
         Minecraft mc = Minecraft.getMinecraft();
@@ -166,6 +171,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
     
 	public void checkandUpdateRotateScale(boolean onFrame, float nano){
 		Minecraft mc = Minecraft.getMinecraft();
+		if(mc.player.initFromServer == false) return;
 		if(!onFrame && mc.currentScreen!=null) return;
 		
 		if(!onFrame) {
@@ -1025,7 +1031,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
     		float ex = 0;
     		if(mc.vrSettings.seated)ex = 0.5f;
     		if(emptySpotReq){
-    			movementTeleportDestination = new Vec3d(bb.minX + 0.5f,bb.minY+ex, bb.minZ+ 0.5f);
+    			movementTeleportDestination = new Vec3d((bb.maxX + bb.minX) /2,bb.minY+ex, (bb.maxZ + bb.minZ) /2);
 
     			movementTeleportDestinationSideHit = collision.sideHit;
     			return true;
@@ -1035,7 +1041,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
     	{ //sides  		    		
     		//jrbudda require arc hitting top of block.	unless ladder or vine or creative or limits off.
 
-    		if (testClimb.getBlock() == Blocks.LADDER || testClimb.getBlock() == Blocks.VINE) {
+			if(testClimb instanceof BlockLadder|| testClimb instanceof BlockVine){
     			Vec3d dest = new Vec3d(bp.getX()+0.5, bp.getY() + 0.5, bp.getZ()+0.5);
 
     			Block playerblock = mc.world.getBlockState(bp.down()).getBlock();
@@ -1074,7 +1080,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
     		}
 
     		if(emptySpotReq){
-    			Vec3d dest = new Vec3d(bb.minX + 0.5f, hitBlock.getY() + testClimb.getBoundingBox(mc.world, hitBlock).maxY, bb.minZ + 0.5f);
+    			Vec3d dest = new Vec3d((bb.maxX + bb.minX) /2, hitBlock.getY() + testClimb.getBoundingBox(mc.world, hitBlock).maxY, (bb.maxZ + bb.minZ) /2);
     			float maxTeleportDist = 16.0f;		
 
     			if (start.distanceTo(dest)  > maxTeleportDist) return false;
@@ -1183,25 +1189,44 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 
         	if(is!=null )item = is.getItem();
 
-        	boolean tool = false;
+            boolean tool = false;
+            boolean sword = false;
 
-        	if (item instanceof ItemSword){
-        		entityReachAdd = 2.5f;
-        		weaponLength = 0.4f;
+            if(item instanceof ItemSword){
+            	sword = true;
+            	tool = true;    	
+            }
+            else if (item instanceof ItemTool ||
+            		item instanceof ItemHoe
+            		){
+            	tool = true;
+            }
+            else if(item !=null && Reflector.forgeExists()){ //tinkers hack
+            	String t = item.getClass().getSuperclass().getName().toLowerCase();
+            	//System.out.println(c);
+            	if (t.contains("weapon") || t.contains("sword")) {
+            		sword = true;
+            		tool = true;
+            	} else 	if 	(t.contains("tool")){
+            		tool = true;
+            	}
+            }    
+
+            if (sword){
+                 	entityReachAdd = 2.5f;
+            		weaponLength = 0.3f;
+            		tool = true;
+            } else if (tool){
+            	entityReachAdd = 1.8f;
+            	weaponLength = 0.3f;
         		tool = true;
-        	} else if (item instanceof ItemTool ||
-        			item instanceof ItemHoe
-        			){
-        		entityReachAdd = 1.8f;
-        		weaponLength = 0.4f;
-        		tool = true;
-        	} else if (item !=null){
-        		weaponLength = 0.1f;
-        		entityReachAdd = 0.3f;
-        	} else {
-        		weaponLength = 0.0f;
-        		entityReachAdd = 0.3f;
-        	}
+            } else if (item !=null){
+            	weaponLength = 0.1f;
+            	entityReachAdd = 0.3f;
+            } else {
+            	weaponLength = 0.0f;
+            	entityReachAdd = 0.3f;
+            }
 
         	weaponLength *= this.worldScale;
 
@@ -1305,7 +1330,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
         						}
         					}
         				} else {
-        					if(canact && (!mc.vrSettings.realisticClimbEnabled || block.getBlock() != Blocks.LADDER)) { 
+        					if(canact && (!mc.vrSettings.realisticClimbEnabled || !(block.getBlock() instanceof BlockLadder))) { 
         						int p = 3;
         						if(item instanceof ItemHoe){
         							Minecraft.getMinecraft().playerController.
@@ -1614,6 +1639,12 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 	public Vec3d getCustomHandVector(int controller, Vec3d axis) {
 		Vector3f v3 = MCOpenVR.getHandRotation(controller).transform(new Vector3f((float)axis.xCoord, (float)axis.yCoord,(float) axis.zCoord));
 		Vec3d out =  new Vec3d(v3.x, v3.y, v3.z).rotateYaw(worldRotationRadians);
+		return out;
+	}
+
+	public Vec3d getHMDDir_Room() {
+		Vector3f v3 = MCOpenVR.headDirection;
+		Vec3d out = new Vec3d(v3.x, v3.y, v3.z);
 		return out;
 	}
 	

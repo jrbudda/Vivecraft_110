@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import javax.swing.LayoutStyle;
+import javax.swing.text.html.BlockView;
 
 import com.mtbs3d.minecrift.api.IRoomscaleAdapter;
 import com.mtbs3d.minecrift.api.NetworkHelper;
@@ -15,6 +16,8 @@ import com.mtbs3d.minecrift.render.PlayerModelController;
 import com.mtbs3d.minecrift.utils.BlockWithData;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockLadder;
+import net.minecraft.block.BlockVine;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -142,7 +145,7 @@ public class ClimbTracker {
 			
 			if(!mc.climbTracker.isClimbeyClimb()){	
 				ladder = true;
-				if(b == Blocks.LADDER || b ==Blocks.VINE){
+				if(b instanceof BlockLadder|| b instanceof BlockVine){
 					int meta = b.getMetaFromState(bs);
 					Vec3d cpos = controllerPos.subtract(bp.getX(), bp.getY(), bp.getZ());
 	

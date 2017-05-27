@@ -22,7 +22,7 @@
  import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
  import net.minecraft.client.renderer.entity.Render;
  import net.minecraft.client.renderer.entity.RenderManager;
-@@ -16,11 +23,25 @@
+@@ -16,11 +23,26 @@
  import net.minecraft.client.renderer.texture.TextureMap;
  import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
  import net.minecraft.entity.EntityLivingBase;
@@ -31,6 +31,7 @@
 +import net.minecraft.init.Blocks;
  import net.minecraft.init.Items;
 +import net.minecraft.init.MobEffects;
++import net.minecraft.item.EnumAction;
  import net.minecraft.item.Item;
 +import net.minecraft.item.ItemArrow;
 +import net.minecraft.item.ItemBlock;
@@ -48,7 +49,7 @@
  import net.minecraft.src.Config;
  import net.minecraft.src.DynamicLights;
  import net.minecraft.src.Reflector;
-@@ -31,9 +52,16 @@
+@@ -31,9 +53,16 @@
  import net.minecraft.util.ResourceLocation;
  import net.minecraft.util.math.BlockPos;
  import net.minecraft.util.math.MathHelper;
@@ -65,7 +66,7 @@
  public class ItemRenderer
  {
      private static final ResourceLocation RES_MAP_BACKGROUND = new ResourceLocation("textures/map/map_background.png");
-@@ -41,47 +69,60 @@
+@@ -41,47 +70,60 @@
  
      /** A reference to the Minecraft object. */
      private final Minecraft mc;
@@ -144,7 +145,7 @@
  
              GlStateManager.popMatrix();
          }
-@@ -107,7 +148,7 @@
+@@ -107,7 +149,7 @@
          GlStateManager.popMatrix();
      }
  
@@ -153,7 +154,7 @@
      {
          AbstractClientPlayer abstractclientplayer = this.mc.player;
          int i = this.mc.world.getCombinedLight(new BlockPos(abstractclientplayer.posX, abstractclientplayer.posY + (double)abstractclientplayer.getEyeHeight(), abstractclientplayer.posZ), 0);
-@@ -122,6 +163,7 @@
+@@ -122,6 +164,7 @@
          OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, f, f1);
      }
  
@@ -161,7 +162,7 @@
      private void rotateArm(float p_187458_1_)
      {
          EntityPlayerSP entityplayersp = this.mc.player;
-@@ -142,6 +184,7 @@
+@@ -142,6 +185,7 @@
          return f;
      }
  
@@ -169,7 +170,7 @@
      private void renderArms()
      {
          if (!this.mc.player.isInvisible())
-@@ -156,6 +199,7 @@
+@@ -156,6 +200,7 @@
          }
      }
  
@@ -177,7 +178,7 @@
      private void renderArm(EnumHandSide p_187455_1_)
      {
          this.mc.getTextureManager().bindTexture(this.mc.player.getLocationSkin());
-@@ -183,27 +227,29 @@
+@@ -183,27 +228,29 @@
      private void renderMapFirstPersonSide(float p_187465_1_, EnumHandSide p_187465_2_, float p_187465_3_, ItemStack p_187465_4_)
      {
          float f = p_187465_2_ == EnumHandSide.RIGHT ? 1.0F : -1.0F;
@@ -222,7 +223,7 @@
          GlStateManager.popMatrix();
      }
  
-@@ -212,14 +258,17 @@
+@@ -212,14 +259,17 @@
          float f = MathHelper.sqrt(p_187463_3_);
          float f1 = -0.2F * MathHelper.sin(p_187463_3_ * (float)Math.PI);
          float f2 = -0.4F * MathHelper.sin(f * (float)Math.PI);
@@ -246,7 +247,7 @@
          this.renderMapFirstPerson(this.itemStackMainHand);
      }
  
-@@ -250,100 +299,132 @@
+@@ -250,100 +300,132 @@
          GlStateManager.enableLighting();
      }
  
@@ -448,7 +449,7 @@
              }
          }
  
-@@ -352,203 +433,532 @@
+@@ -352,203 +434,555 @@
          this.rotateArm(partialTicks);
          GlStateManager.enableRescaleNormal();
  
@@ -689,6 +690,29 @@
 +
 +    					boolean vive = MCOpenVR.isVive;
 +
++    					boolean sword = false, tool = false;
++    					boolean bow = item.getItemUseAction(itemstack) == EnumAction.BOW;
++
++    					if(bow && item.getClass().getName().equals("FryPan")){
++    						bow = false;
++    						tool = true;
++    					}
++    					
++    					if(!bow && Reflector.forgeExists()){ //tinkers
++    		            	String t = item.getClass().getSuperclass().getName().toLowerCase();
++    		            	if (t.contains("weapon") || t.contains("sword")) {
++    		            		sword = true;
++    		            		tool = true;
++    		            	} else 	if 	(t.contains("tool")){
++    		            		tool = true;
++    		            	}
++    					}
++    					
++    					if(Reflector.forgeExists() && bow && item.getClass().getName().contains("FryPan")){ //y, srsly.
++    						bow = false;
++    						tool = true;
++    					}
++    					
 +    					if(item instanceof ItemBlock){
 +
 +    						if (this.itemRenderer.shouldRenderItemIn3D(itemstack)){
@@ -705,7 +729,7 @@
 +    							GlStateManager.rotate(-i*45.0F, 0.0F, 1.0F, 0.0F);   
 +    						}
 +    					} 
-+    					else if(item instanceof ItemSword )
++    					else if(item instanceof ItemSword || sword)
 +    					{
 +    						if(vive){
 +    							GlStateManager.translate(0f, 0f, -0.2f);		
@@ -726,7 +750,8 @@
 +    							item instanceof ItemFishingRod || 
 +    							item instanceof ItemCarrotOnAStick ||
 +    							item instanceof ItemShears||
-+    							item instanceof ItemFlintAndSteel)
++    							item instanceof ItemFlintAndSteel||
++    							tool)
 +
 +    					{
 +
@@ -770,8 +795,7 @@
 +    						GlStateManager.rotate(i*90.0F, 0.0F, 1.0F, 0.0F);  
 +    						GlStateManager.translate(.5,0.5,.6);
 +    					}
-+    					else if(item instanceof ItemBow){
-+    						//shouldrenderhand = false;
++    					else if(bow){
 +    						GlStateManager.scale(1.0f, 1.0f, 1.0f);
 +    						shouldrenderhand = false;
 +    						if(mc.bowTracker.isDrawing){ //here there be dragons
@@ -1129,7 +1153,7 @@
          vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
          vertexbuffer.pos(-1.0D, -1.0D, -0.5D).tex((double)f7, (double)f9).endVertex();
          vertexbuffer.pos(1.0D, -1.0D, -0.5D).tex((double)f6, (double)f9).endVertex();
-@@ -572,17 +982,14 @@
+@@ -572,17 +1006,14 @@
              VertexBuffer vertexbuffer = tessellator.getBuffer();
              float f = this.mc.player.getBrightness(partialTicks);
              GlStateManager.color(f, f, f, 0.5F);

@@ -14,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
@@ -65,12 +66,20 @@ public class BowTracker {
 		return canDraw || isDrawing;	
 	}
 	
+	public static boolean isBow(ItemStack itemStack) {
+		return itemStack != null && itemStack.getItem().getItemUseAction(itemStack) == EnumAction.BOW;
+	}
+	
+	public static boolean isHoldingBow(EntityLivingBase e) {
+		return isBow(e.getHeldItemMainhand());
+	}
+	
 	public boolean isActive(EntityPlayerSP p){
 		if(p == null) return false;
 		if(p.isDead) return false;
 		if(p.isPlayerSleeping()) return false;
 		if(p.getHeldItemMainhand() == null) return false;
-		return	p.getHeldItemMainhand().getItemUseAction() == EnumAction.BOW;
+		return isHoldingBow(p);
 	}
 	
 	float tsNotch = 0;

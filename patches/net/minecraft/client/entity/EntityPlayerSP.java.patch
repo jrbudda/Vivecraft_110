@@ -87,7 +87,7 @@
      /** Ticks left before sprinting is disabled. */
      public int sprintingTicksLeft;
      public float renderArmYaw;
-@@ -162,13 +196,32 @@
+@@ -162,13 +196,42 @@
          this.statWriter = statFile;
          this.mc = mcIn;
          this.dimension = 0;
@@ -113,6 +113,16 @@
       */
      public boolean attackEntityFrom(DamageSource source, float amount)
      {
++    	//VIVECRAFT
++    	if(amount > 0){
++	    	int dur = 1000;
++	    	if(source.isExplosion())dur = 2000;
++	    	if(source == DamageSource.cactus) dur = 200;
++	        	//Vivecraft trigger haptics
++	    	MCOpenVR.triggerHapticPulse(0, dur);
++	        MCOpenVR.triggerHapticPulse(1, dur);    	
++    	}
++        //END VIVECRAFT
 +    	//Forge
 +    	if(Reflector.forgeExists())
 +    		Reflector.call(Reflector.ForgeHooks_onLivingAttack, new Object[]{this, source, amount});
@@ -120,7 +130,7 @@
          return false;
      }
  
-@@ -203,11 +256,30 @@
+@@ -203,11 +266,30 @@
          }
      }
  
@@ -152,7 +162,7 @@
  
      /**
       * Called to update the entity's position/logic.
-@@ -273,6 +345,7 @@
+@@ -273,6 +355,7 @@
              this.serverSneakState = flag1;
          }
  
@@ -160,7 +170,7 @@
          if (this.isCurrentViewEntity())
          {
              AxisAlignedBB axisalignedbb = this.getEntityBoundingBox();
-@@ -285,26 +358,39 @@
+@@ -285,26 +368,39 @@
              boolean flag2 = d0 * d0 + d1 * d1 + d2 * d2 > 9.0E-4D || this.positionUpdateTicks >= 20;
              boolean flag3 = d3 != 0.0D || d4 != 0.0D;
  
@@ -220,7 +230,7 @@
              }
  
              if (flag2)
-@@ -323,6 +409,10 @@
+@@ -323,6 +419,10 @@
  
              this.prevOnGround = this.onGround;
              this.autoJumpEnabled = this.mc.gameSettings.autoJump;
@@ -231,7 +241,7 @@
          }
      }
  
-@@ -340,7 +430,7 @@
+@@ -340,7 +440,7 @@
      }
  
      @Nullable
@@ -240,7 +250,7 @@
      {
          return null;
      }
-@@ -506,72 +596,129 @@
+@@ -506,72 +606,129 @@
          this.mc.ingameGUI.getChatGUI().printChatMessage(chatComponent);
      }
  
@@ -434,21 +444,20 @@
      }
  
      /**
-@@ -579,8 +726,11 @@
+@@ -579,7 +736,11 @@
       */
      private boolean isOpenBlockSpace(BlockPos pos)
      {
 -        return !this.world.getBlockState(pos).isNormalCube() && !this.world.getBlockState(pos.up()).isNormalCube();
--    }
 +    	if(Reflector.forgeExists()){
 +    		return  !world.getBlockState(pos).isNormalCube();
 +    	} else {
 +    		return !this.world.getBlockState(pos).isNormalCube() && !this.world.getBlockState(pos.up()).isNormalCube();
-+    	}    }
++    	}    
+     }
  
      /**
-      * Set sprinting switch for Entity.
-@@ -640,7 +790,19 @@
+@@ -640,7 +801,19 @@
  
      public void playSound(SoundEvent soundIn, float volume, float pitch)
      {
@@ -469,7 +478,7 @@
      }
  
      /**
-@@ -977,7 +1139,7 @@
+@@ -977,7 +1150,7 @@
                      this.sendPlayerAbilities();
                  }
              }
@@ -478,7 +487,7 @@
              {
                  if (this.flyToggleTimer == 0)
                  {
-@@ -1065,6 +1227,10 @@
+@@ -1065,6 +1238,10 @@
  
          super.onLivingUpdate();
  
@@ -489,7 +498,7 @@
          if (this.onGround && this.capabilities.isFlying && !this.mc.playerController.isSpectatorMode())
          {
              this.capabilities.isFlying = false;
-@@ -1083,8 +1249,11 @@
+@@ -1083,8 +1260,11 @@
          if (this.getRidingEntity() instanceof EntityBoat)
          {
              EntityBoat entityboat = (EntityBoat)this.getRidingEntity();
@@ -503,7 +512,7 @@
          }
      }
  
-@@ -1115,10 +1284,40 @@
+@@ -1115,10 +1295,40 @@
       */
      public void move(double x, double y, double z)
      {
@@ -548,7 +557,7 @@
      }
  
      public boolean isAutoJumpEnabled()
-@@ -1144,12 +1343,16 @@
+@@ -1144,12 +1354,16 @@
                      float f = this.getAIMoveSpeed();
                      float f1 = (float)vec3d2.lengthSquared();
  
@@ -567,7 +576,7 @@
                          vec3d2 = new Vec3d((double)(f2 * f5 - f3 * f4), vec3d2.yCoord, (double)(f3 * f5 + f2 * f4));
                          f1 = (float)vec3d2.lengthSquared();
  
-@@ -1269,4 +1472,334 @@
+@@ -1269,4 +1483,336 @@
              }
          }
      }
@@ -592,7 +601,7 @@
 +    	if(!initFromServer) return;
 +    	else { //still init.
 +            mc.vrPlayer.snapRoomOriginToPlayerEntity(this, true, false, 1);
-+            
++                       
 +//    		OpenVRPlayer.get().setRoomOrigin(
 +//    				posX + ox, 
 +//    				this.boundingBox.minY, 
@@ -606,8 +615,10 @@
 +        super.setPositionAndRotation(x, y, z, yaw, pitch);
 +		
 +        OpenVRPlayer.get().snapRoomOriginToPlayerEntity(this, true, false, 1);
-+      
++
 +		if(initFromServer == false){
++			this.setLocationAndAngles(x, y, z, yaw, pitch);
++			mc.entityRenderer.interpolatedPlayerPos = new Vec3d(x,y,z);
 +            initFromServer = true;    
 +        }
 +    }
@@ -617,7 +628,6 @@
 +    public void setPosition(double x, double y, double z)
 +    { //this is also called when riding to move this around.
 +		super.setPosition(x, y, z);
-+
 +    	if(this.isRiding()){   			
 +    		Vec3d roomOrigin = OpenVRPlayer.get().getRoomOriginPos_World();
 +    		Vec3d me = OpenVRPlayer.get().getHMDPos_World();
@@ -887,7 +897,8 @@
 +        	super.onDeath(p_70645_1_);
 +            MCOpenVR.triggerHapticPulse(0, 2000);
 +            MCOpenVR.triggerHapticPulse(1, 2000);    	
-+        	
++            System.out.println("Player DIED At " + this.posX + " " + this.posY + " " + this.posZ); //debug spawning in the damn ground.
++
 +        }
 +    	
 +        
