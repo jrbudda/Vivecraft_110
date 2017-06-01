@@ -186,6 +186,7 @@ public class VRSettings
     public float   menuCrosshairScale = 1f;
     public boolean useCrosshairOcclusion = false;
 	public boolean seatedHudAltMode = true;
+	public boolean autoOpenKeyboard = false;
     //
      	
     private Minecraft mc;
@@ -621,6 +622,10 @@ public class VRSettings
                     if(optionTokens[0].equals("alwaysSimulateKeyboard")){
                         this.alwaysSimulateKeyboard=optionTokens[1].equals("true");
                     }
+                    
+                    if(optionTokens[0].equals("autoOpenKeyboard")){
+                        this.autoOpenKeyboard=optionTokens[1].equals("true");
+                    }
 
                     if (optionTokens[0].startsWith("BUTTON_") || optionTokens[0].startsWith("OCULUS_"))
                     {
@@ -924,6 +929,8 @@ public class VRSettings
                 }
             case FOV_REDUCTION:
                 return this.useFOVReduction ? var4 + "ON" : var4 + "OFF";
+            case AUTO_OPEN_KEYBOARD:
+                return this.autoOpenKeyboard ? var4 + "YES" : var4 + "NO";
  	        default:
 	        	return "";
         }
@@ -1191,6 +1198,9 @@ public class VRSettings
             case CROSSHAIR_SCALES_WITH_DISTANCE:
             	crosshairScalesWithDistance = !crosshairScalesWithDistance;
             	break;
+            case AUTO_OPEN_KEYBOARD:
+            	autoOpenKeyboard = !autoOpenKeyboard;
+            	break;
             default:
             	break;
     	}
@@ -1392,6 +1402,7 @@ public class VRSettings
             var5.println("vehicleRotation:" + this.vehicleRotation);
             var5.println("fovReduction:" + this.useFOVReduction);
             var5.println("alwaysSimulateKeyboard:" + this.alwaysSimulateKeyboard);
+            var5.println("autoOpenKeyboard:" + this.autoOpenKeyboard);
 
             if (vrQuickCommands == null) vrQuickCommands = getQuickCommandsDefaults(); //defaults
             
@@ -1499,6 +1510,7 @@ public class VRSettings
         RENDER_OWN_HEADWEAR("Render Own Headwear", false, true),
         RENDER_FULL_FIRST_PERSON_MODEL_MODE("First Person Model", false, true),
         RENDER_PLAYER_OFFSET("View Body Offset", true, false),
+        AUTO_OPEN_KEYBOARD("Auto Open Keyboard", false, true),
 
 
         //HMD/render

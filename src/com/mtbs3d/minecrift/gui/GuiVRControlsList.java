@@ -2,6 +2,7 @@ package com.mtbs3d.minecrift.gui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiListExtended;
@@ -14,6 +15,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.TextFormatting;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.lwjgl.input.Keyboard;
 
 import com.mtbs3d.minecrift.control.VRControllerButtonMapping;
 import com.mtbs3d.minecrift.control.ViveButtons;
@@ -223,8 +225,10 @@ public class GuiVRControlsList extends GuiListExtended
             if (this.btnChangeKeyBinding.mousePressed(GuiVRControlsList.this.mc, p_148278_2_, p_148278_3_))
             {
             	//cycle? select from list?
-            	myi++;
+            	if (GuiScreen.isShiftKeyDown()) myi--;
+            	else myi++;
             	if(myi >= possibilites.size()) myi = 0;
+            	if(myi < 0) myi = possibilites.size() - 1;
             	this.myKey.FunctionDesc = possibilites.get(myi);
             	bindKey(myKey);
             	

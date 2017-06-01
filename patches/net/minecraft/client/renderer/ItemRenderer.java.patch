@@ -49,7 +49,7 @@
  import net.minecraft.src.Config;
  import net.minecraft.src.DynamicLights;
  import net.minecraft.src.Reflector;
-@@ -31,9 +53,16 @@
+@@ -31,9 +53,17 @@
  import net.minecraft.util.ResourceLocation;
  import net.minecraft.util.math.BlockPos;
  import net.minecraft.util.math.MathHelper;
@@ -57,6 +57,7 @@
  import net.minecraft.world.storage.MapData;
  import shadersmod.client.Shaders;
  
++import com.mtbs3d.minecrift.gameplay.BowTracker;
 +import com.mtbs3d.minecrift.provider.MCOpenVR;
 +import com.mtbs3d.minecrift.render.OpenGLdebugging;
 +import com.mtbs3d.minecrift.render.RenderVRPlayer;
@@ -66,7 +67,7 @@
  public class ItemRenderer
  {
      private static final ResourceLocation RES_MAP_BACKGROUND = new ResourceLocation("textures/map/map_background.png");
-@@ -41,47 +70,60 @@
+@@ -41,47 +71,60 @@
  
      /** A reference to the Minecraft object. */
      private final Minecraft mc;
@@ -118,15 +119,15 @@
              Block block = Block.getBlockFromItem(item);
              GlStateManager.pushMatrix();
 -            boolean flag = this.itemRenderer.shouldRenderItemIn3D(heldStack) && this.isBlockTranslucent(block);
-+            boolean flag = this.itemRenderer.shouldRenderItemIn3D(heldStack) && block != null && block.getBlockLayer() == BlockRenderLayer.TRANSLUCENT;
- 
+-
 -            if (flag && (!Config.isShaders() || !Shaders.renderItemKeepDepthMask))
 -            {
 -                GlStateManager.depthMask(false);
 -            }
 -
 -            this.itemRenderer.renderItem(heldStack, entitylivingbaseIn, transform, leftHanded);
--
++            boolean flag = this.itemRenderer.shouldRenderItemIn3D(heldStack) && block != null && block.getBlockLayer() == BlockRenderLayer.TRANSLUCENT;
+ 
 -            if (flag)
 -            {
 -                GlStateManager.depthMask(true);
@@ -145,7 +146,7 @@
  
              GlStateManager.popMatrix();
          }
-@@ -107,7 +149,7 @@
+@@ -107,7 +150,7 @@
          GlStateManager.popMatrix();
      }
  
@@ -154,7 +155,7 @@
      {
          AbstractClientPlayer abstractclientplayer = this.mc.player;
          int i = this.mc.world.getCombinedLight(new BlockPos(abstractclientplayer.posX, abstractclientplayer.posY + (double)abstractclientplayer.getEyeHeight(), abstractclientplayer.posZ), 0);
-@@ -122,6 +164,7 @@
+@@ -122,6 +165,7 @@
          OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, f, f1);
      }
  
@@ -162,7 +163,7 @@
      private void rotateArm(float p_187458_1_)
      {
          EntityPlayerSP entityplayersp = this.mc.player;
-@@ -142,6 +185,7 @@
+@@ -142,6 +186,7 @@
          return f;
      }
  
@@ -170,7 +171,7 @@
      private void renderArms()
      {
          if (!this.mc.player.isInvisible())
-@@ -156,6 +200,7 @@
+@@ -156,6 +201,7 @@
          }
      }
  
@@ -178,7 +179,7 @@
      private void renderArm(EnumHandSide p_187455_1_)
      {
          this.mc.getTextureManager().bindTexture(this.mc.player.getLocationSkin());
-@@ -183,27 +228,29 @@
+@@ -183,27 +229,29 @@
      private void renderMapFirstPersonSide(float p_187465_1_, EnumHandSide p_187465_2_, float p_187465_3_, ItemStack p_187465_4_)
      {
          float f = p_187465_2_ == EnumHandSide.RIGHT ? 1.0F : -1.0F;
@@ -223,7 +224,7 @@
          GlStateManager.popMatrix();
      }
  
-@@ -212,14 +259,17 @@
+@@ -212,14 +260,17 @@
          float f = MathHelper.sqrt(p_187463_3_);
          float f1 = -0.2F * MathHelper.sin(p_187463_3_ * (float)Math.PI);
          float f2 = -0.4F * MathHelper.sin(f * (float)Math.PI);
@@ -247,7 +248,7 @@
          this.renderMapFirstPerson(this.itemStackMainHand);
      }
  
-@@ -250,100 +300,132 @@
+@@ -250,100 +301,132 @@
          GlStateManager.enableLighting();
      }
  
@@ -352,6 +353,17 @@
 -        GlStateManager.rotate((float)i * f3 * 90.0F, 0.0F, 1.0F, 0.0F);
 -        GlStateManager.rotate(f3 * 10.0F, 1.0F, 0.0F, 0.0F);
 -        GlStateManager.rotate((float)i * f3 * 30.0F, 0.0F, 0.0F, 1.0F);
+-    }
+-
+-    private void transformFirstPerson(EnumHandSide p_187453_1_, float p_187453_2_)
+-    {
+-        int i = p_187453_1_ == EnumHandSide.RIGHT ? 1 : -1;
+-        float f = MathHelper.sin(p_187453_2_ * p_187453_2_ * (float)Math.PI);
+-        GlStateManager.rotate((float)i * (45.0F + f * -20.0F), 0.0F, 1.0F, 0.0F);
+-        float f1 = MathHelper.sin(MathHelper.sqrt(p_187453_2_) * (float)Math.PI);
+-        GlStateManager.rotate((float)i * f1 * -20.0F, 0.0F, 0.0F, 1.0F);
+-        GlStateManager.rotate(f1 * -80.0F, 1.0F, 0.0F, 0.0F);
+-        GlStateManager.rotate((float)i * -45.0F, 0.0F, 1.0F, 0.0F);
 +	    if(!Minecraft.getMinecraft().autoFood.isEating()) {
 +		    float f3 = 1.0F - (float) Math.pow((double) f1, 27.0D);
 +		    int i = side == EnumHandSide.RIGHT ? 1 : -1;
@@ -392,17 +404,6 @@
 +//        GlStateManager.translate((float)i * 0.56F, -0.52F + equippingprogress * -0.6F, -0.72F);
      }
  
--    private void transformFirstPerson(EnumHandSide p_187453_1_, float p_187453_2_)
--    {
--        int i = p_187453_1_ == EnumHandSide.RIGHT ? 1 : -1;
--        float f = MathHelper.sin(p_187453_2_ * p_187453_2_ * (float)Math.PI);
--        GlStateManager.rotate((float)i * (45.0F + f * -20.0F), 0.0F, 1.0F, 0.0F);
--        float f1 = MathHelper.sin(MathHelper.sqrt(p_187453_2_) * (float)Math.PI);
--        GlStateManager.rotate((float)i * f1 * -20.0F, 0.0F, 0.0F, 1.0F);
--        GlStateManager.rotate(f1 * -80.0F, 1.0F, 0.0F, 0.0F);
--        GlStateManager.rotate((float)i * -45.0F, 0.0F, 1.0F, 0.0F);
--    }
--
 -    private void transformSideFirstPerson(EnumHandSide p_187459_1_, float p_187459_2_)
 -    {
 -        int i = p_187459_1_ == EnumHandSide.RIGHT ? 1 : -1;
@@ -423,6 +424,16 @@
 -        float f2 = abstractclientplayer.prevRotationYaw + (abstractclientplayer.rotationYaw - abstractclientplayer.prevRotationYaw) * partialTicks;
 -        boolean flag = true;
 -        boolean flag1 = true;
+-
+-        if (abstractclientplayer.isHandActive())
+-        {
+-            ItemStack itemstack = abstractclientplayer.getActiveItemStack();
+-
+-            if (itemstack != null && itemstack.getItem() == Items.BOW)
+-            {
+-                EnumHand enumhand1 = abstractclientplayer.getActiveHand();
+-                flag = enumhand1 == EnumHand.MAIN_HAND;
+-                flag1 = !flag;
 +        AbstractClientPlayer player = this.mc.player;
 +        float swingprogress = player.getSwingProgress(partialTicks);
 +        EnumHand hand = (EnumHand)Objects.firstNonNull(player.swingingHand, EnumHand.MAIN_HAND);
@@ -430,18 +441,12 @@
 +        float f2 = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * partialTicks;
 +        boolean doRighthand = true;
 +        boolean doLeftHand = true;
- 
--        if (abstractclientplayer.isHandActive())
++
 +        if (player.isHandActive())
-         {
--            ItemStack itemstack = abstractclientplayer.getActiveItemStack();
++        {
 +            ItemStack itemstack = player.getActiveItemStack();
- 
-             if (itemstack != null && itemstack.getItem() == Items.BOW)
--            {
--                EnumHand enumhand1 = abstractclientplayer.getActiveHand();
--                flag = enumhand1 == EnumHand.MAIN_HAND;
--                flag1 = !flag;
++
++            if (BowTracker.isBow(itemstack))
 +            {//bow mode
 +                EnumHand enumhand1 = player.getActiveHand();
 +                doRighthand = enumhand1 == EnumHand.MAIN_HAND;
@@ -449,7 +454,7 @@
              }
          }
  
-@@ -352,203 +434,555 @@
+@@ -352,203 +435,555 @@
          this.rotateArm(partialTicks);
          GlStateManager.enableRescaleNormal();
  
@@ -691,7 +696,7 @@
 +    					boolean vive = MCOpenVR.isVive;
 +
 +    					boolean sword = false, tool = false;
-+    					boolean bow = item.getItemUseAction(itemstack) == EnumAction.BOW;
++    					boolean bow = BowTracker.isBow(itemstack);
 +
 +    					if(bow && item.getClass().getName().equals("FryPan")){
 +    						bow = false;
@@ -1001,8 +1006,8 @@
 +        }
 +		
 +                
-+        GlStateManager.enableAlpha();
-+    }
+         GlStateManager.enableAlpha();
+     }
 +    
 +    public boolean inwater, inportal, inblock, onfire;
 +    public float inBlock = 0;
@@ -1039,9 +1044,9 @@
 +        tessellator.draw();
 +        GlStateManager.depthMask(true);
 +        GlStateManager.enableDepth();
-         GlStateManager.enableAlpha();
++        GlStateManager.enableAlpha();
 +        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-     }
++    }
 +    
 +    public boolean isInsideOfMaterial(Vec3d pos, Material materialIn)
 +    {
@@ -1153,7 +1158,7 @@
          vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
          vertexbuffer.pos(-1.0D, -1.0D, -0.5D).tex((double)f7, (double)f9).endVertex();
          vertexbuffer.pos(1.0D, -1.0D, -0.5D).tex((double)f6, (double)f9).endVertex();
-@@ -572,17 +1006,14 @@
+@@ -572,17 +1007,14 @@
              VertexBuffer vertexbuffer = tessellator.getBuffer();
              float f = this.mc.player.getBrightness(partialTicks);
              GlStateManager.color(f, f, f, 0.5F);

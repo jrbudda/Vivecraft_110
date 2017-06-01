@@ -289,7 +289,7 @@
          switch (type)
          {
              case 1000:
-@@ -3147,14 +3164,21 @@
+@@ -3147,18 +3164,28 @@
                  break;
  
              case 1011:
@@ -311,7 +311,14 @@
                  this.world.playSound(blockPosIn, SoundEvents.BLOCK_WOODEN_TRAPDOOR_CLOSE, SoundCategory.BLOCKS, 1.0F, this.world.rand.nextFloat() * 0.1F + 0.9F, false);
                  break;
  
-@@ -3179,14 +3203,26 @@
+             case 1014:
++                if(playernear)
++                	MCOpenVR.triggerHapticPulse(0,250); //VIVECRAFT go thump.
++
+                 this.world.playSound(blockPosIn, SoundEvents.BLOCK_FENCE_GATE_CLOSE, SoundCategory.BLOCKS, 1.0F, this.world.rand.nextFloat() * 0.1F + 0.9F, false);
+                 break;
+ 
+@@ -3179,14 +3206,26 @@
                  break;
  
              case 1019:
@@ -338,7 +345,7 @@
                  this.world.playSound(blockPosIn, SoundEvents.ENTITY_ZOMBIE_BREAK_DOOR_WOOD, SoundCategory.HOSTILE, 2.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F, false);
                  break;
  
-@@ -3215,10 +3251,17 @@
+@@ -3215,10 +3254,17 @@
                  break;
  
              case 1030:
@@ -356,7 +363,7 @@
                  this.world.playSound(blockPosIn, SoundEvents.BLOCK_ANVIL_LAND, SoundCategory.BLOCKS, 0.3F, this.world.rand.nextFloat() * 0.1F + 0.9F, false);
                  break;
  
-@@ -3239,6 +3282,9 @@
+@@ -3239,6 +3285,9 @@
                  break;
  
              case 1036:
@@ -366,7 +373,7 @@
                  this.world.playSound(blockPosIn, SoundEvents.BLOCK_IRON_TRAPDOOR_CLOSE, SoundCategory.BLOCKS, 1.0F, this.world.rand.nextFloat() * 0.1F + 0.9F, false);
                  break;
  
-@@ -3278,7 +3324,10 @@
+@@ -3278,7 +3327,10 @@
                      {
                          soundtype = (SoundType)Reflector.call(block, Reflector.ForgeBlock_getSoundType, new Object[] {Block.getStateById(data), this.world, blockPosIn, null});
                      }

@@ -1129,7 +1129,7 @@
 +					itemRenderer.renderItemInFirstPerson(mc.player, partialTicks, 0, EnumHand.MAIN_HAND, mc.player.getSwingProgress(partialTicks), mc.player.getHeldItemOffhand(), 0);				
 +				}
 +				
-+				if(BowTracker.isHoldingBow(mc.player)){
++				if(BowTracker.isBow(item)){
 +					int c = 0;
 +					if (mc.vrSettings.vrReverseShootingEye) c = 1;
 +					
@@ -1175,11 +1175,10 @@
          this.mc.getTextureManager().bindTexture(this.locationLightMap);
          GlStateManager.glTexParameteri(3553, 10241, 9729);
          GlStateManager.glTexParameteri(3553, 10240, 9729);
-@@ -1220,708 +1312,815 @@
-         }
+@@ -1221,707 +1313,814 @@
      }
  
--    public float getNightVisionBrightness(EntityLivingBase entitylivingbaseIn, float partialTicks)
+     public float getNightVisionBrightness(EntityLivingBase entitylivingbaseIn, float partialTicks)
 -    {
 -        int i = entitylivingbaseIn.getActivePotionEffect(MobEffects.NIGHT_VISION).getDuration();
 -        return i > 200 ? 1.0F : 0.7F + MathHelper.sin(((float)i - partialTicks) * (float)Math.PI * 0.2F) * 0.3F;
@@ -1653,7 +1652,6 @@
 -
 -        renderglobal.renderBlockLayer(BlockRenderLayer.CUTOUT, (double)partialTicks, pass, entity);
 -        this.mc.getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
-+    public float getNightVisionBrightness(EntityLivingBase entitylivingbaseIn, float partialTicks)
 +    {
 +        int i = entitylivingbaseIn.getActivePotionEffect(MobEffects.NIGHT_VISION).getDuration();
 +        return i > 200 ? 1.0F : 0.7F + MathHelper.sin(((float)i - partialTicks) * (float)Math.PI * 0.2F) * 0.3F;
@@ -2912,7 +2910,7 @@
      public static void drawNameplate(FontRenderer fontRendererIn, String str, float x, float y, float z, int verticalShift, float viewerYaw, float viewerPitch, boolean isThirdPersonFrontal, boolean isSneaking)
      {
          GlStateManager.pushMatrix();
-@@ -2927,4 +3050,2304 @@
+@@ -2927,4 +3050,2340 @@
          GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
          GlStateManager.popMatrix();
      }
@@ -3060,7 +3058,7 @@
 +			} else {
 +				ItemStack i = ((EntityPlayerSP) entity).inventory.getCurrentItem();
 +				if(i !=null){
-+					if(mc.bowTracker.isBow(i) && mc.bowTracker.isNotched()){
++					if(BowTracker.isBow(i) && mc.bowTracker.isNotched()){
 +						//use bow aim
 +						Vec3d aim = mc.bowTracker.getAimVector();
 +						if (aim != null && aim.lengthSquared() > 0) {
@@ -3672,6 +3670,7 @@
 +
 +					
 +					//Render HUD elements
++					renderViveHudIcons(); //put this here cause Forge has its own guiingame.
 +					this.mc.ingameGUI.renderGameOverlay(renderPartialTicks);
 +					
 +					if (this.mc.gameSettings.ofShowFps && !this.mc.gameSettings.showDebugInfo)
@@ -5214,6 +5213,41 @@
 +		}
 +
 +	}
++	
++	private void renderViveHudIcons(){
++        //VIVE SPRINTDICATOR
++        if (this.mc.getRenderViewEntity() instanceof EntityPlayer)
++        {
++            ScaledResolution scaledresolution = new ScaledResolution(this.mc);
++            int i = scaledresolution.getScaledWidth();
++            int j = scaledresolution.getScaledHeight();
++            FontRenderer fontrenderer = mc.ingameGUI.getFontRenderer();
++            this.mc.entityRenderer.setupOverlayRendering();
++        	EntityPlayer entityplayer = (EntityPlayer)this.mc.getRenderViewEntity();
++        	int iconp = 0;
++        	if(entityplayer.isSprinting()) iconp = 10;
++        	if(entityplayer.isSneaking()) iconp = 13;
++        	if(entityplayer.isElytraFlying()) iconp = -1;
++        	if(iconp!=0){
++        		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
++
++        		if(iconp ==-1){
++            		int w = scaledresolution.getScaledWidth() / 2 - 109;
++            		int h = scaledresolution.getScaledHeight() -39;
++                    TextureAtlasSprite textureatlassprite = this.mc.getTextureMapBlocks().getAtlasSprite("minecraft:items/elytra");
++                    this.mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
++                    mc.ingameGUI.drawTexturedModalRect(w, h, textureatlassprite, 16, 16);
++        		}else{
++        			this.mc.getTextureManager().bindTexture(mc.ingameGUI.INVENTORY_BACKGROUND);
++            		int w = scaledresolution.getScaledWidth() / 2 - 109;
++            		int h = scaledresolution.getScaledHeight() -39;
++            		mc.ingameGUI.drawTexturedModalRect(w, h, 0 + iconp % 8 * 18, 198 + iconp / 8 * 18, 18, 18);        			
++        		}
++        	}
++        }
++        //
++	}
++	
 +	// VIVE END - render functions
 +
  }

@@ -66,7 +66,7 @@
  
          if (this.mc.playerController.isSpectator())
          {
-@@ -185,20 +186,55 @@
+@@ -185,20 +186,28 @@
          {
              this.renderHotbar(scaledresolution, partialTicks);
          }
@@ -89,34 +89,7 @@
 -        this.overlayBoss.renderBossHealth();
 +        	this.overlayBoss.renderBossHealth();
          this.mc.mcProfiler.endSection();
-+        
-+        //VIVE SPRINTDICATOR
-+        if (this.mc.getRenderViewEntity() instanceof EntityPlayer)
-+        {
-+        	EntityPlayer entityplayer = (EntityPlayer)this.mc.getRenderViewEntity();
-+        	int iconp = 0;
-+        	if(entityplayer.isSprinting()) iconp = 10;
-+        	if(entityplayer.isSneaking()) iconp = 13;
-+        	if(entityplayer.isElytraFlying()) iconp = -1;
-+        	if(iconp!=0){
-+        		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-+
-+        		if(iconp ==-1){
-+            		int w = scaledresolution.getScaledWidth() / 2 - 109;
-+            		int h = scaledresolution.getScaledHeight() -39;
-+                    TextureAtlasSprite textureatlassprite = this.mc.getTextureMapBlocks().getAtlasSprite("minecraft:items/elytra");
-+                    this.mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-+                    this.drawTexturedModalRect(w, h, textureatlassprite, 16, 16);
-+        		}else{
-+        			this.mc.getTextureManager().bindTexture(INVENTORY_BACKGROUND);
-+            		int w = scaledresolution.getScaledWidth() / 2 - 109;
-+            		int h = scaledresolution.getScaledHeight() -39;
-+            		this.drawTexturedModalRect(w, h, 0 + iconp % 8 * 18, 198 + iconp / 8 * 18, 18, 18);        			
-+        		}
-+        	}
-+        }
-+        //
-+        
++                
          GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
          this.mc.getTextureManager().bindTexture(ICONS);
  
@@ -127,7 +100,7 @@
              this.renderPlayerStats(scaledresolution);
          }
  
-@@ -380,7 +416,7 @@
+@@ -380,7 +389,7 @@
          GlStateManager.enableAlpha();
      }
  
@@ -136,7 +109,7 @@
      {
          GameSettings gamesettings = this.mc.gameSettings;
  
-@@ -553,6 +589,7 @@
+@@ -553,6 +562,7 @@
              int j = 182;
              int k = 91;
              this.zLevel = -90.0F;
@@ -144,7 +117,7 @@
              this.drawTexturedModalRect(i - 91, sr.getScaledHeight() - 22, 0, 0, 182, 22);
              this.drawTexturedModalRect(i - 91 - 1 + entityplayer.inventory.currentItem * 20, sr.getScaledHeight() - 22 - 1, 0, 22, 24, 22);
  
-@@ -571,7 +608,7 @@
+@@ -571,7 +581,7 @@
              this.zLevel = f;
              GlStateManager.enableRescaleNormal();
              GlStateManager.enableBlend();
@@ -153,7 +126,7 @@
              RenderHelper.enableGUIStandardItemLighting();
              CustomItems.setRenderOffHand(false);
  
-@@ -749,7 +786,7 @@
+@@ -749,7 +759,7 @@
          this.mc.mcProfiler.endSection();
      }
  
@@ -162,7 +135,7 @@
      {
          Scoreboard scoreboard = objective.getScoreboard();
          Collection<Score> collection = scoreboard.getSortedScores(objective);
-@@ -966,7 +1003,7 @@
+@@ -966,7 +976,7 @@
                      }
                  }
              }
@@ -171,7 +144,7 @@
              Entity entity = entityplayer.getRidingEntity();
  
              if (entity == null)
-@@ -1030,7 +1067,7 @@
+@@ -1030,7 +1040,7 @@
          }
      }
  
@@ -180,7 +153,7 @@
      {
          if (this.mc.getRenderViewEntity() instanceof EntityPlayer)
          {
-@@ -1084,7 +1121,7 @@
+@@ -1084,7 +1094,7 @@
          }
      }
  
@@ -189,7 +162,7 @@
      {
          GlStateManager.disableDepth();
          GlStateManager.depthMask(false);
-@@ -1111,6 +1148,12 @@
+@@ -1111,6 +1121,12 @@
       */
      private void renderVignette(float lightLevel, ScaledResolution scaledRes)
      {
@@ -202,7 +175,7 @@
          if (!Config.isVignetteEnabled())
          {
              GlStateManager.enableDepth();
-@@ -1166,36 +1209,7 @@
+@@ -1166,36 +1182,7 @@
  
      private void renderPortal(float timeInPortal, ScaledResolution scaledRes)
      {
@@ -240,7 +213,7 @@
      }
  
      private void renderHotbarItem(int p_184044_1_, int p_184044_2_, float p_184044_3_, EntityPlayer player, @Nullable ItemStack stack)
-@@ -1373,4 +1387,43 @@
+@@ -1373,4 +1360,43 @@
      {
          return this.overlayBoss;
      }

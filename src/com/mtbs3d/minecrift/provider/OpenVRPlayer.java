@@ -106,6 +106,8 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 
     }
    
+    public boolean debugSpawn;
+    
     public void setRoomOrigin(double x, double y, double z, boolean reset, boolean onframe ) { 
   	    if(!onframe){
 	    	if (reset){
@@ -117,7 +119,10 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 	    roomOrigin = new Vec3d(x, y, z);
         lastRoomUpdateTime = Minecraft.getMinecraft().stereoProvider.getCurrentTimeSecs();
         Minecraft.getMinecraft().entityRenderer.irpUpdatedThisFrame = onframe;
-        //System.out.println("room origin " + x + " " + y + " " + z);
+        if(debugSpawn){
+        	System.out.println("room origin " + x + " " + y + " " + z + " " + onframe + " " + reset);
+        	Thread.dumpStack();
+        }
     } 
     
     private int roomScaleMovementDelay = 10;
@@ -127,9 +132,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
     {
         if (Thread.currentThread().getName().equals("Server thread"))
             return;
-
-        if(!Minecraft.getMinecraft().player.initFromServer) return;
-        
+       
         if(player.posX == 0 && player.posY == 0 &&player.posZ == 0) return;
         
         Minecraft mc = Minecraft.getMinecraft();
@@ -171,7 +174,7 @@ public class OpenVRPlayer implements IRoomscaleAdapter
     
 	public void checkandUpdateRotateScale(boolean onFrame, float nano){
 		Minecraft mc = Minecraft.getMinecraft();
-		if(mc.player.initFromServer == false) return;
+		if(mc.player == null || mc.player.initFromServer == false) return;
 		if(!onFrame && mc.currentScreen!=null) return;
 		
 		if(!onFrame) {
@@ -215,14 +218,6 @@ public class OpenVRPlayer implements IRoomscaleAdapter
     	if(!player.initFromServer) return;
     	
 	    if(!initdone){
-
-		    System.out.println("<Debug info start>");
-		    System.out.println("Room object: "+mc.roomScale);
-		    System.out.println("Room origin: "+mc.roomScale.getRoomOriginPos_World());
-		    System.out.println("Hmd position room: "+mc.roomScale.getHMDPos_Room());
-		    System.out.println("Hmd position world: "+mc.roomScale.getHMDPos_World());
-		    System.out.println("<Debug info end>");
-
 		    initdone =true;
 	    }
 
@@ -636,6 +631,8 @@ public class OpenVRPlayer implements IRoomscaleAdapter
     			}
     		}
     	}
+    	if(debugSpawn) System.out.println("dpminR " + player.posX + " " + player.posY + " " + player.posZ);
+
     }
 	   
     public void playFootstepSound( Minecraft mc, double x, double y, double z )
@@ -1485,9 +1482,21 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 	}
 
 	@Override
+	public float getHMDYaw_Room() {
+		Vec3d dir = getHMDDir_Room();
+		 return (float)Math.toDegrees(Math.atan2(-dir.xCoord, dir.zCoord));      
+	}
+
+	@Override
 	public float getHMDYaw_World() {
 		Vec3d dir = getHMDDir_World();
 		 return (float)Math.toDegrees(Math.atan2(-dir.xCoord, dir.zCoord));      
+	}
+
+	@Override
+	public float getHMDPitch_Room() {
+		Vec3d dir = getHMDDir_Room();
+		return (float)Math.toDegrees(Math.asin(dir.yCoord/dir.lengthVector())); 
 	}
 
 	@Override
@@ -1636,12 +1645,14 @@ public class OpenVRPlayer implements IRoomscaleAdapter
 		return MCOpenVR.controllerTracking[c];
 	}
 	
+	@Override
 	public Vec3d getCustomHandVector(int controller, Vec3d axis) {
 		Vector3f v3 = MCOpenVR.getHandRotation(controller).transform(new Vector3f((float)axis.xCoord, (float)axis.yCoord,(float) axis.zCoord));
 		Vec3d out =  new Vec3d(v3.x, v3.y, v3.z).rotateYaw(worldRotationRadians);
 		return out;
 	}
 
+	@Override
 	public Vec3d getHMDDir_Room() {
 		Vector3f v3 = MCOpenVR.headDirection;
 		Vec3d out = new Vec3d(v3.x, v3.y, v3.z);

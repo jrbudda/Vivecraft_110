@@ -48,18 +48,19 @@
              }
  
              boolean flag2 = this.cursorPosition < this.text.length() || this.text.length() >= this.getMaxStringLength();
-@@ -717,6 +729,15 @@
+@@ -717,6 +729,16 @@
          }
  
          this.isFocused = isFocusedIn;
 +        
 +       //  VIVE START - show keyboard
-+        for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
++        //for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
 +        //    if(ste.getClassName().contains("GuiChattableCamera")) return;
 +        //   if(ste.toString().contains("journeymap.client.ui.fullscreen.Fullscreen")) return;
-+        }
++        //}
 +        
-+       if(isFocusedIn && this.visible && this.canLoseFocus == false) MCOpenVR.setKeyboardOverlayShowing(isFocusedIn, this);
++       if(isFocusedIn && this.visible && (this.canLoseFocus == false || Minecraft.getMinecraft().vrSettings.autoOpenKeyboard))
++    	   MCOpenVR.setKeyboardOverlayShowing(isFocusedIn, this);
 +        //VIVE END - show keyboard            
      }
  

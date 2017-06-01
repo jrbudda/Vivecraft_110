@@ -2,11 +2,16 @@ package com.mtbs3d.minecrift.control;
 
 import java.awt.event.KeyEvent;
 
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.Display;
+
+import com.mtbs3d.minecrift.provider.MCOpenVR;
 import com.mtbs3d.minecrift.utils.KeyboardSimulator;
 import com.mtbs3d.minecrift.utils.MCReflection;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.src.Reflector;
 
 public class VRControllerButtonMapping {
 
@@ -103,10 +108,20 @@ public class VRControllerButtonMapping {
     }
     
     public static void pressKey(KeyBinding kb) {
-    	setKeyBindState(kb, true);
+    	int awtCode = KeyboardSimulator.translateToAWT(kb.getKeyCode());
+    	if (Display.isActive() && awtCode != Keyboard.KEY_NONE && !MCOpenVR.isVivecraftBinding(kb) && (!Reflector.forgeExists() || Reflector.call(kb, Reflector.ForgeKeyBinding_getKeyModifier) == Reflector.getFieldValue(Reflector.KeyModifier_NONE))) {
+    		KeyboardSimulator.robot.keyPress(awtCode);
+    	} else {
+    		setKeyBindState(kb, true);
+    	}
     }
     
     public static void unpressKey(KeyBinding kb) {
-    	MCReflection.invokeMethod(MCReflection.KeyBinding_unpressKey, kb);
+    	int awtCode = KeyboardSimulator.translateToAWT(kb.getKeyCode());
+    	if (Display.isActive() && awtCode != Keyboard.KEY_NONE && !MCOpenVR.isVivecraftBinding(kb) && (!Reflector.forgeExists() || Reflector.call(kb, Reflector.ForgeKeyBinding_getKeyModifier) == Reflector.getFieldValue(Reflector.KeyModifier_NONE))) {
+    		KeyboardSimulator.robot.keyRelease(awtCode);
+    	} else {
+    		MCReflection.invokeMethod(MCReflection.KeyBinding_unpressKey, kb);
+    	}
     }
 }

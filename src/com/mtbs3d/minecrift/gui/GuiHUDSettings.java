@@ -24,6 +24,7 @@ public class GuiHUDSettings extends BaseGuiSettings
             VRSettings.VrOptions.RENDER_MENU_BACKGROUND,
             VRSettings.VrOptions.TOUCH_HOTBAR,
             VRSettings.VrOptions.MENU_ALWAYS_FOLLOW_FACE,
+            VRSettings.VrOptions.AUTO_OPEN_KEYBOARD,
     };
 
     public GuiHUDSettings(GuiScreen guiScreen, VRSettings guivrSettings) {
@@ -212,6 +213,15 @@ public class GuiHUDSettings extends BaseGuiSettings
                     return new String[] {
                             "If enabled allow you to touch the hotbar with",
                             "your main hand to select an item."
+                    };
+                case AUTO_OPEN_KEYBOARD:
+                    return new String[] {
+                    		"If disabled, SteamVR keyboard will only open when you",
+                    		"click a text field, or if a text field can't lose focus.",
+                    		"",
+                            "If enabled, SteamVR keyboard will open automatically",
+                            "any time a text field comes into focus. Enabling this will",
+                            "cause it to open in unwanted situations with mods."
                     };
                 default:
                     return null;

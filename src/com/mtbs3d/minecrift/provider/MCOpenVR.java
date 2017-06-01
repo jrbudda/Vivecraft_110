@@ -9,6 +9,7 @@ import com.mtbs3d.minecrift.settings.VRSettings;
 import com.mtbs3d.minecrift.utils.InputInjector;
 import com.mtbs3d.minecrift.utils.KeyboardSimulator;
 import com.mtbs3d.minecrift.utils.MCReflection;
+import com.mtbs3d.minecrift.utils.Utils;
 import com.sun.jna.Memory;
 import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
@@ -46,7 +47,6 @@ import net.minecraft.src.Reflector;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import optifine.Utils;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.http.util.ByteArrayBuffer;
@@ -285,7 +285,7 @@ public class MCOpenVR
 
 		mc = Minecraft.getMinecraft();
 		// look in .minecraft first for openvr_api.dll
-		File minecraftDir = Utils.getWorkingDirectory(); // misleading name, actually the .minecraft directory
+		File minecraftDir = optifine.Utils.getWorkingDirectory(); // misleading name, actually the .minecraft directory
 		File workingDir = new File(System.getProperty("user.dir"));
 		
 		String osname = System.getProperty("os.name").toLowerCase();
@@ -466,7 +466,7 @@ public class MCOpenVR
 			vrOverlay.read();					
 			System.out.println("OpenVR Overlay initialized OK");
 		} else {
-			if (getError() == 7) {
+			if (getError() != 0) {
 				System.out.println("VROverlay init failed: " + jopenvr.JOpenVRLibrary.VR_GetVRInitErrorAsEnglishDescription(getError()).getString(0));
 				vrOverlay = null;
 			} else {
@@ -484,7 +484,7 @@ public class MCOpenVR
 			vrSettings.read();					
 			System.out.println("OpenVR Settings initialized OK");
 		} else {
-			if (getError() == 7) {
+			if (getError() != 0) {
 				System.out.println("VRSettings init failed: " + jopenvr.JOpenVRLibrary.VR_GetVRInitErrorAsEnglishDescription(getError()).getString(0));
 				vrSettings = null;
 			} else {
@@ -502,7 +502,7 @@ public class MCOpenVR
 				vrRenderModels.read();			
 				System.out.println("OpenVR RenderModels initialized OK");
 			} else {
-				if (getError() == 7) {
+				if (getError() != 0) {
 					System.out.println("VRRenderModels init failed: " + jopenvr.JOpenVRLibrary.VR_GetVRInitErrorAsEnglishDescription(getError()).getString(0));
 					vrRenderModels = null;
 				} else {
@@ -518,7 +518,7 @@ public class MCOpenVR
 				vrChaperone.read();
 				System.out.println("OpenVR chaperone initialized.");
 			} else {
-				if (getError() == 7) {
+				if (getError() != 0) {
 					System.out.println("VRChaperone init failed: " + jopenvr.JOpenVRLibrary.VR_GetVRInitErrorAsEnglishDescription(getError()).getString(0));
 					vrChaperone = null;
 				} else {
@@ -697,34 +697,16 @@ public class MCOpenVR
 			Pointer empty = new Memory(1);
 			empty.setString(0, "");
 
-//			HmdMatrix34_t keyboardpos = new HmdMatrix34_t();
-//			//keyboardpos.m[0] = guiRotationPose.M[0][0];
-//			//keyboardpos.m[1] = guiRotationPose.M[0][1];
-//			//keyboardpos.m[2] = guiRotationPose.M[0][2];
-//			keyboardpos.m[3] = guiPos_Room.x;
-//			
-//			//keyboardpos.m[4] = guiRotationPose.M[1][0];
-//			//keyboardpos.m[5] = guiRotationPose.M[1][1];
-//			//keyboardpos.m[6] = guiRotationPose.M[1][2];
-//			keyboardpos.m[7] = guiPos_Room.y;
-//			
-//			//keyboardpos.m[8] = guiRotationPose.M[2][0];
-//			//keyboardpos.m[9] = guiRotationPose.M[2][1];
-//			//keyboardpos.m[10] = guiRotationPose.M[2][2];
-//			keyboardpos.m[11] = guiPos_Room.z;
-						
-			ret = vrOverlay.ShowKeyboard.apply(0, 0, pointer, 256, empty, (byte)1, 0);	
-			
-			//vrOverlay.SetKeyboardTransformAbsolute.apply(JOpenVRLibrary.ETrackingUniverseOrigin.ETrackingUniverseOrigin_TrackingUniverseStanding,keyboardpos);
-
-			keyboardShowing = 0 == ret; //0 = no error, > 0 see EVROverlayError	
+			ret = vrOverlay.ShowKeyboard.apply(0, 0, pointer, 256, empty, (byte)1, 0);
+			keyboardShowing = 0 == ret; //0 = no error, > 0 see EVROverlayError
 	
 			if (ret != 0) {
-				String err =  vrOverlay.GetOverlayErrorNameFromEnum.apply(ret).getString(0);
+				String err = vrOverlay.GetOverlayErrorNameFromEnum.apply(ret).getString(0);
 				System.out.println("VR Overlay Error: " + err);
 				if(err.equalsIgnoreCase("VROverlayError_KeyboardAlreadyInUse")) keyboardShowing = true;
 			}
 
+			if (mc.currentScreen != null) orientKeyboardOverlay(true);
 		} else {
 			try {
 					vrOverlay.HideKeyboard.apply();				
@@ -735,6 +717,29 @@ public class MCOpenVR
 		}
 
 		return keyboardShowing;
+	}
+	
+	public static void orientKeyboardOverlay(boolean guiRelative) {
+		if (vrOverlay == null) return;
+		if (!keyboardShowing) return;
+		org.lwjgl.util.vector.Matrix4f matrix = new org.lwjgl.util.vector.Matrix4f();
+		if (guiRelative) {
+			org.lwjgl.util.vector.Matrix4f guiRot = Utils.convertOVRMatrix(guiRotationPose);
+			Vec3d guiUp = new Vec3d(guiRot.m10, guiRot.m11, guiRot.m12);
+			guiUp = guiUp.scale(guiScale);
+			matrix.rotate((float)Math.toRadians(mc.vrSettings.vrWorldRotation), new org.lwjgl.util.vector.Vector3f(0, -1, 0)); // negate world rotation
+			matrix.translate(new org.lwjgl.util.vector.Vector3f(guiPos_Room.x - (float)guiUp.xCoord, guiPos_Room.y - (float)guiUp.yCoord, guiPos_Room.z - (float)guiUp.zCoord));
+			org.lwjgl.util.vector.Matrix4f.mul(matrix, guiRot, matrix);
+			matrix.rotate((float)Math.toRadians(30), new org.lwjgl.util.vector.Vector3f(-1, 0, 0)); // tilt it a bit
+		} else {
+			Vec3d hmdPos = mc.roomScale.getHMDPos_Room();
+			Vec3d hmdDir = mc.roomScale.getHMDDir_Room();
+			hmdDir = hmdDir.scale(mc.vrSettings.hudDistance);
+			matrix.translate(new org.lwjgl.util.vector.Vector3f((float)hmdPos.xCoord + (float)hmdDir.xCoord, (float)hmdPos.yCoord - 1.0F, (float)hmdPos.zCoord + (float)hmdDir.zCoord));
+			matrix.rotate((float)Math.toRadians(mc.roomScale.getHMDYaw_Room() + 180), new org.lwjgl.util.vector.Vector3f(0, -1, 0)); // +180 because it needs to face towards the HMD
+			matrix.rotate((float)Math.toRadians(30), new org.lwjgl.util.vector.Vector3f(-1, 0, 0)); // tilt it a bit
+		}
+		vrOverlay.SetKeyboardTransformAbsolute.apply(JOpenVRLibrary.ETrackingUniverseOrigin.ETrackingUniverseOrigin_TrackingUniverseStanding, Utils.convertToMatrix34(matrix));
 	}
 
 	private static Vec3d vecFromVector(Vector3f in){
@@ -954,8 +959,8 @@ public class MCOpenVR
 		
 			if (controllerDeviceIndex[RIGHT_CONTROLLER] != -1)
 			{
-					Mouse.setCursorPosition(mouseX, mouseY);
-					//KeyboardSimulator.robot.mouseMove(Display.getX() + mouseX, Display.getY() + mouseY);
+				InputInjector.mouseMoveEvent(mouseX, mouseY); // Needs to be called first, since it only puts an event if delta != 0
+				Mouse.setCursorPosition(mouseX, mouseY);
 				controllerMouseValid = true;
 
 				//LMB
@@ -2685,6 +2690,10 @@ public class MCOpenVR
 	public static void clearOffset() {
 		offset=new Vector3f(0,0,0);
 	}
+    
+    public static boolean isVivecraftBinding(KeyBinding kb) {
+    	return kb == hotbarNext || kb == hotbarPrev || kb == rotateLeft || kb == rotateRight || kb == walkabout || kb == rotateFree || kb == quickTorch;
+    }
 
 	
 }

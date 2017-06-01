@@ -21,8 +21,11 @@ public interface IRoomscaleAdapter  {
     public boolean isHMDTracking();
 	public Vec3d getHMDPos_World();
 	public Vec3d getHMDPos_Room(); 
-	public Vec3d getHMDDir_World(); 
+	public Vec3d getHMDDir_World();
+	public Vec3d getHMDDir_Room();
+	public float getHMDYaw_Room();  //degrees
 	public float getHMDYaw_World();  //degrees
+	public float getHMDPitch_Room(); //degrees
 	public float getHMDPitch_World(); //degrees
 	
 	public FloatBuffer getHMDMatrix_World();
@@ -47,6 +50,7 @@ public interface IRoomscaleAdapter  {
 	
 	public Vec3d getCustomControllerVector(int controller, Vec3d axis);
 	public Vec3d getCustomHMDVector(Vec3d axis);
+	public Vec3d getCustomHandVector(int controller, Vec3d axis);
 
 	public Vec3d getRoomOriginPos_World(); //degrees
 	public Vec3d getRoomOriginUpDir_World(); //what do you do

@@ -174,20 +174,7 @@
                  }
              }
          }
-@@ -1116,7 +1187,11 @@
-         {
-             this.doneLoadingTerrain = false;
-             Scoreboard scoreboard = this.clientWorldController.getScoreboard();
--            this.clientWorldController = new WorldClient(this, new WorldSettings(0L, packetIn.getGameType(), false, this.gameController.world.getWorldInfo().isHardcoreModeEnabled(), packetIn.getWorldType()), packetIn.getDimensionID(), packetIn.getDifficulty(), this.gameController.mcProfiler);
-+            int dimId = packetIn.getDimensionID();
-+            if (Reflector.forgeExists()){
-+            	dimId =	Reflector.callInt(Reflector.call(Reflector.NetworkDispatcher_get, getNetworkManager()), Reflector.NetworkDispatcher_getOverrideDimension, packetIn);
-+            }
-+            this.clientWorldController = new WorldClient(this, new WorldSettings(0L, packetIn.getGameType(), false, this.gameController.world.getWorldInfo().isHardcoreModeEnabled(), packetIn.getWorldType()), dimId, packetIn.getDifficulty(), this.gameController.mcProfiler);
-             this.clientWorldController.setWorldScoreboard(scoreboard);
-             this.gameController.loadWorld(this.clientWorldController);
-             this.gameController.player.dimension = packetIn.getDimensionID();
-@@ -1305,7 +1380,19 @@
+@@ -1305,7 +1376,19 @@
              {
                  tileentity.readFromNBT(packetIn.getNbtCompound());
              }
@@ -208,7 +195,7 @@
              if (flag && this.gameController.currentScreen instanceof GuiCommandBlock)
              {
                  ((GuiCommandBlock)this.gameController.currentScreen).updateGui();
-@@ -1416,15 +1503,41 @@
+@@ -1416,15 +1499,41 @@
              }
              else if (f == 101.0F)
              {
@@ -253,7 +240,7 @@
              }
          }
          else if (i == 6)
-@@ -1525,7 +1638,7 @@
+@@ -1525,7 +1634,7 @@
  
          if (entity instanceof EntityLivingBase)
          {
@@ -262,7 +249,7 @@
  
              if (potion != null)
              {
-@@ -1928,6 +2041,115 @@
+@@ -1928,6 +2037,115 @@
              String s1 = packetbuffer2.readString(256);
              this.gameController.getSoundHandler().stop(s1, SoundCategory.getByName(s));
          }
@@ -378,7 +365,7 @@
      }
  
      /**
-@@ -2198,4 +2420,12 @@
+@@ -2198,4 +2416,12 @@
      {
          return this.profile;
      }

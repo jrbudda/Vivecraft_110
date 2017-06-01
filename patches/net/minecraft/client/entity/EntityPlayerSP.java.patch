@@ -576,7 +576,7 @@
                          vec3d2 = new Vec3d((double)(f2 * f5 - f3 * f4), vec3d2.yCoord, (double)(f3 * f5 + f2 * f4));
                          f1 = (float)vec3d2.lengthSquared();
  
-@@ -1269,4 +1483,336 @@
+@@ -1269,4 +1483,338 @@
              }
          }
      }
@@ -584,6 +584,7 @@
 +    
 +    // VIVECREAFT ADDITIONS
 +    
++    boolean debugSpawn;
 +    
 +    /**
 +     * Sets the location and Yaw/Pitch of an entity in the world
@@ -595,7 +596,8 @@
 +//    	Vec3 roomOrigin = OpenVRPlayer.get().getRoomOriginPos_World();
 +//    	double ox = roomOrigin.xCoord - posX;
 +//    	double oz = roomOrigin.zCoord - posZ;
-+//    	
++    	if(debugSpawn)System.out.println("setlocangles " + x + " " + y + " " + z);
++
 +    	super.setLocationAndAngles(x, y, z, yaw, pitch);
 +    	
 +    	if(!initFromServer) return;
@@ -608,10 +610,11 @@
 +//    				posZ  + oz, false);
 +    	}
 +    }
-+    
++      
 +    @Override
 +    public void setPositionAndRotation(double x, double y, double z, float yaw, float pitch)
 +    {
++    	if(debugSpawn)System.out.println("setposrot " + x + " " + y + " " + z);
 +        super.setPositionAndRotation(x, y, z, yaw, pitch);
 +		
 +        OpenVRPlayer.get().snapRoomOriginToPlayerEntity(this, true, false, 1);
@@ -627,6 +630,8 @@
 +    @Override
 +    public void setPosition(double x, double y, double z)
 +    { //this is also called when riding to move this around.
++    	if(debugSpawn)System.out.println("setpos " + x + " " + y + " " + z);
++
 +		super.setPosition(x, y, z);
 +    	if(this.isRiding()){   			
 +    		Vec3d roomOrigin = OpenVRPlayer.get().getRoomOriginPos_World();
@@ -893,12 +898,9 @@
 +         */
 +        @Override
 +        public void onDeath(DamageSource p_70645_1_){
-+        	
 +        	super.onDeath(p_70645_1_);
 +            MCOpenVR.triggerHapticPulse(0, 2000);
 +            MCOpenVR.triggerHapticPulse(1, 2000);    	
-+            System.out.println("Player DIED At " + this.posX + " " + this.posY + " " + this.posZ); //debug spawning in the damn ground.
-+
 +        }
 +    	
 +        
