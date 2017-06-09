@@ -9,3 +9,14 @@
          this.buttonList.add(new GuiButtonEnumShaderOption(EnumShaderOption.NORMAL_MAP, k, 1 * i1 + l, i, j));
          this.buttonList.add(new GuiButtonEnumShaderOption(EnumShaderOption.SPECULAR_MAP, k, 2 * i1 + l, i, j));
          this.buttonList.add(new GuiButtonEnumShaderOption(EnumShaderOption.RENDER_RES_MUL, k, 3 * i1 + l, i, j));
+@@ -80,6 +80,10 @@
+             {
+                 guibutton.enabled = flag;
+             }
++            if (guibutton.id == EnumShaderOption.RENDER_RES_MUL.ordinal())
++            {
++            	guibutton.enabled = false;
++            }
+         }
+     }
+ 

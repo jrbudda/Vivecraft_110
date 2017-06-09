@@ -1102,7 +1102,7 @@
 -        }
 -    }
 -
-+		boolean shadersMod = Config.isShaders();
++		boolean shadersMod = Config.isShaders() && this.okshader;
 +		
 +		if(shadersMod){
 +			//Shaders.readCenterDepth();
@@ -1175,10 +1175,11 @@
          this.mc.getTextureManager().bindTexture(this.locationLightMap);
          GlStateManager.glTexParameteri(3553, 10241, 9729);
          GlStateManager.glTexParameteri(3553, 10240, 9729);
-@@ -1221,707 +1313,814 @@
+@@ -1220,708 +1312,819 @@
+         }
      }
  
-     public float getNightVisionBrightness(EntityLivingBase entitylivingbaseIn, float partialTicks)
+-    public float getNightVisionBrightness(EntityLivingBase entitylivingbaseIn, float partialTicks)
 -    {
 -        int i = entitylivingbaseIn.getActivePotionEffect(MobEffects.NIGHT_VISION).getDuration();
 -        return i > 200 ? 1.0F : 0.7F + MathHelper.sin(((float)i - partialTicks) * (float)Math.PI * 0.2F) * 0.3F;
@@ -1652,6 +1653,7 @@
 -
 -        renderglobal.renderBlockLayer(BlockRenderLayer.CUTOUT, (double)partialTicks, pass, entity);
 -        this.mc.getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
++    public float getNightVisionBrightness(EntityLivingBase entitylivingbaseIn, float partialTicks)
 +    {
 +        int i = entitylivingbaseIn.getActivePotionEffect(MobEffects.NIGHT_VISION).getDuration();
 +        return i > 200 ? 1.0F : 0.7F + MathHelper.sin(((float)i - partialTicks) * (float)Math.PI * 0.2F) * 0.3F;
@@ -2565,6 +2567,7 @@
 +            if(!mc.bowTracker.isDrawing){				
 +            	renderGuiLayer(partialTicks);  
 +            	if(mc.currentScreen !=null && !mc.vrSettings.hudOcclusion){
++            		okshader = false;
 +            		this.enableLightmap();    
 +            		RenderHelper.enableStandardItemLighting();
 +            		itemRenderer.setLightmap();
@@ -2572,6 +2575,7 @@
 +            		this.renderHand(partialTicks, 0);
 +            		this.renderLeftHand(partialTicks);
 +            		this.disableLightmap();
++            		okshader = true;
 +            	}
 +            }
 +						
@@ -2583,6 +2587,8 @@
 +			((EntityPlayerSP)player).overrideEyeHeight = false;
 +			
 +    }
++    
++    private boolean okshader = true;
 +    
 +    private void renderCloudsCheck(RenderGlobal renderGlobalIn, float partialTicks, int pass, double p_180437_4_, double p_180437_6_, double p_180437_8_)
      {
@@ -2632,7 +2638,7 @@
      private void addRainParticles()
      {
          float f = this.mc.world.getRainStrength(1.0F);
-@@ -2013,7 +2212,7 @@
+@@ -2013,7 +2216,7 @@
          if (Reflector.ForgeWorldProvider_getWeatherRenderer.exists())
          {
              WorldProvider worldprovider = this.mc.world.provider;
@@ -2641,7 +2647,7 @@
  
              if (object != null)
              {
-@@ -2216,7 +2415,7 @@
+@@ -2216,7 +2419,7 @@
              double d0 = MathHelper.sin(world.getCelestialAngleRadians(partialTicks)) > 0.0F ? -1.0D : 1.0D;
              Vec3d vec3d2 = new Vec3d(d0, 0.0D, 0.0D);
              float f5 = (float)entity.getLook(partialTicks).dotProduct(vec3d2);
@@ -2650,7 +2656,7 @@
              if (f5 < 0.0F)
              {
                  f5 = 0.0F;
-@@ -2260,8 +2459,9 @@
+@@ -2260,8 +2463,9 @@
              this.fogColorBlue *= f11;
          }
  
@@ -2662,7 +2668,7 @@
          if (this.cloudFog)
          {
              Vec3d vec3d3 = world.getCloudColour(partialTicks);
-@@ -2269,7 +2469,7 @@
+@@ -2269,7 +2473,7 @@
              this.fogColorGreen = (float)vec3d3.yCoord;
              this.fogColorBlue = (float)vec3d3.zCoord;
          }
@@ -2671,7 +2677,7 @@
          {
              float f12 = 0.0F;
  
-@@ -2295,7 +2495,7 @@
+@@ -2295,7 +2499,7 @@
                  this.fogColorBlue = (float)vec3d4.zCoord;
              }
          }
@@ -2680,7 +2686,7 @@
          {
              this.fogColorRed = 0.6F;
              this.fogColorGreen = 0.1F;
-@@ -2373,16 +2573,15 @@
+@@ -2373,16 +2577,15 @@
              this.fogColorBlue = f7;
          }
  
@@ -2705,7 +2711,7 @@
      }
  
      /**
-@@ -2396,7 +2595,13 @@
+@@ -2396,7 +2599,13 @@
          GlStateManager.glFog(2918, this.setFogColorBuffer(this.fogColorRed, this.fogColorGreen, this.fogColorBlue, 1.0F));
          GlStateManager.glNormal3f(0.0F, -1.0F, 0.0F);
          GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -2720,7 +2726,7 @@
          float f = -1.0F;
  
          if (Reflector.ForgeHooksClient_getFogDensity.exists())
-@@ -2456,7 +2661,7 @@
+@@ -2456,7 +2665,7 @@
  
              GlStateManager.setFogDensity(0.1F);
          }
@@ -2729,7 +2735,7 @@
          {
              if (Config.isShaders())
              {
-@@ -2488,7 +2693,7 @@
+@@ -2488,7 +2697,7 @@
                  GlStateManager.setFogDensity(0.02F);
              }
          }
@@ -2738,7 +2744,7 @@
          {
              if (Config.isShaders())
              {
-@@ -2550,12 +2755,24 @@
+@@ -2550,12 +2759,24 @@
                  Reflector.callVoid(Reflector.ForgeHooksClient_onFogRender, new Object[] {this, entity, iblockstate, Float.valueOf(partialTicks), Integer.valueOf(startCoords), Float.valueOf(f1)});
              }
          }
@@ -2764,7 +2770,7 @@
      /**
       * Update and return fogColorBuffer with the RGBA values passed as arguments
       */
-@@ -2572,6 +2789,12 @@
+@@ -2572,6 +2793,12 @@
          return this.fogColorBuffer;
      }
  
@@ -2777,7 +2783,7 @@
      public MapItemRenderer getMapItemRenderer()
      {
          return this.theMapItemRenderer;
-@@ -2716,10 +2939,12 @@
+@@ -2716,10 +2943,12 @@
              this.updatedWorld = world;
          }
  
@@ -2794,7 +2800,7 @@
      }
  
      private void frameFinish()
-@@ -2743,39 +2968,6 @@
+@@ -2743,39 +2972,6 @@
          }
      }
  
@@ -2834,7 +2840,7 @@
      public boolean setFxaaShader(int p_setFxaaShader_1_)
      {
          if (!OpenGlHelper.isFramebufferEnabled())
-@@ -2815,75 +3007,6 @@
+@@ -2815,75 +3011,6 @@
          }
      }
  
@@ -2910,7 +2916,7 @@
      public static void drawNameplate(FontRenderer fontRendererIn, String str, float x, float y, float z, int verticalShift, float viewerYaw, float viewerPitch, boolean isThirdPersonFrontal, boolean isSneaking)
      {
          GlStateManager.pushMatrix();
-@@ -2927,4 +3050,2340 @@
+@@ -2927,4 +3054,2340 @@
          GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
          GlStateManager.popMatrix();
      }
@@ -3883,7 +3889,7 @@
 +	// VIVE START - render functions
 +	public void renderLeftHand(float nano)
 +	{
-+		boolean shadersMod = Config.isShaders();
++		boolean shadersMod = Config.isShaders() && this.okshader;
 +		boolean shadersModShadowPass = false;
 +		
 +		//from player face to HMD
