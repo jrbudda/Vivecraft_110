@@ -1,6 +1,6 @@
 --- a/net/minecraft/client/renderer/EntityRenderer.java
 +++ b/net/minecraft/client/renderer/EntityRenderer.java
-@@ -2,39 +2,54 @@
+@@ -2,39 +2,55 @@
  
  import com.google.common.base.Predicate;
  import com.google.common.base.Predicates;
@@ -38,6 +38,7 @@
  import net.minecraft.client.gui.FontRenderer;
 +import net.minecraft.client.gui.Gui;
  import net.minecraft.client.gui.GuiDownloadTerrain;
++import net.minecraft.client.gui.GuiGameOver;
  import net.minecraft.client.gui.GuiMainMenu;
 +import net.minecraft.client.gui.GuiWinGame;
  import net.minecraft.client.gui.MapItemRenderer;
@@ -57,7 +58,7 @@
  import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
  import net.minecraft.client.resources.I18n;
  import net.minecraft.client.resources.IResourceManager;
-@@ -45,6 +60,7 @@
+@@ -45,6 +61,7 @@
  import net.minecraft.crash.CrashReport;
  import net.minecraft.crash.CrashReportCategory;
  import net.minecraft.crash.ICrashReportDetail;
@@ -65,7 +66,7 @@
  import net.minecraft.enchantment.EnchantmentHelper;
  import net.minecraft.entity.Entity;
  import net.minecraft.entity.EntityLivingBase;
-@@ -54,10 +70,14 @@
+@@ -54,10 +71,14 @@
  import net.minecraft.entity.monster.EntitySpider;
  import net.minecraft.entity.passive.EntityAnimal;
  import net.minecraft.entity.player.EntityPlayer;
@@ -80,7 +81,7 @@
  import net.minecraft.item.ItemStack;
  import net.minecraft.server.integrated.IntegratedServer;
  import net.minecraft.src.Config;
-@@ -65,11 +85,13 @@
+@@ -65,11 +86,13 @@
  import net.minecraft.src.Lagometer;
  import net.minecraft.src.RandomMobs;
  import net.minecraft.src.Reflector;
@@ -94,7 +95,7 @@
  import net.minecraft.util.EnumParticleTypes;
  import net.minecraft.util.MouseFilter;
  import net.minecraft.util.ReportedException;
-@@ -80,24 +102,63 @@
+@@ -80,24 +103,63 @@
  import net.minecraft.util.math.BlockPos;
  import net.minecraft.util.math.MathHelper;
  import net.minecraft.util.math.RayTraceResult;
@@ -159,7 +160,7 @@
  public class EntityRenderer implements IResourceManagerReloadListener
  {
      private static final Logger LOGGER = LogManager.getLogger();
-@@ -108,6 +169,45 @@
+@@ -108,6 +170,45 @@
      /** Anaglyph field (0=R, 1=GB) */
      public static int anaglyphField;
  
@@ -205,7 +206,7 @@
      /** A reference to the Minecraft object. */
      private final Minecraft mc;
      private final IResourceManager resourceManager;
-@@ -204,7 +304,11 @@
+@@ -204,7 +305,11 @@
      private double cameraZoom = 1.0D;
      private double cameraYaw;
      private double cameraPitch;
@@ -218,7 +219,7 @@
      private static final ResourceLocation[] SHADERS_TEXTURES = new ResourceLocation[] {new ResourceLocation("shaders/post/notch.json"), new ResourceLocation("shaders/post/fxaa.json"), new ResourceLocation("shaders/post/art.json"), new ResourceLocation("shaders/post/bumpy.json"), new ResourceLocation("shaders/post/blobs2.json"), new ResourceLocation("shaders/post/pencil.json"), new ResourceLocation("shaders/post/color_convolve.json"), new ResourceLocation("shaders/post/deconverge.json"), new ResourceLocation("shaders/post/flip.json"), new ResourceLocation("shaders/post/invert.json"), new ResourceLocation("shaders/post/ntsc.json"), new ResourceLocation("shaders/post/outline.json"), new ResourceLocation("shaders/post/phosphor.json"), new ResourceLocation("shaders/post/scan_pincushion.json"), new ResourceLocation("shaders/post/sobel.json"), new ResourceLocation("shaders/post/bits.json"), new ResourceLocation("shaders/post/desaturate.json"), new ResourceLocation("shaders/post/green.json"), new ResourceLocation("shaders/post/blur.json"), new ResourceLocation("shaders/post/wobble.json"), new ResourceLocation("shaders/post/blobs.json"), new ResourceLocation("shaders/post/antialias.json"), new ResourceLocation("shaders/post/creeper.json"), new ResourceLocation("shaders/post/spider.json")};
      public static final int SHADER_COUNT = SHADERS_TEXTURES.length;
      private int shaderIndex;
-@@ -212,9 +316,7 @@
+@@ -212,9 +317,7 @@
      public int frameCount;
      private boolean initialized = false;
      private World updatedWorld = null;
@@ -228,7 +229,7 @@
      private long lastServerTime = 0L;
      private int lastServerTicks = 0;
      private int serverWaitTime = 0;
-@@ -223,8 +325,14 @@
+@@ -223,8 +326,14 @@
      private float avgServerTickDiff = 0.0F;
      private long lastErrorCheckTimeMs = 0L;
      private ShaderGroup[] fxaaShaders = new ShaderGroup[10];
@@ -244,7 +245,7 @@
      public EntityRenderer(Minecraft mcIn, IResourceManager resourceManagerIn)
      {
          this.shaderIndex = SHADER_COUNT;
-@@ -236,6 +344,7 @@
+@@ -236,6 +345,7 @@
          this.locationLightMap = mcIn.getTextureManager().getDynamicTextureLocation("lightMap", this.lightmapTexture);
          this.lightmapColors = this.lightmapTexture.getTextureData();
          this.theShaderGroup = null;
@@ -252,7 +253,7 @@
  
          for (int i = 0; i < 32; ++i)
          {
-@@ -274,7 +383,7 @@
+@@ -274,7 +384,7 @@
      /**
       * What shader to use when spectating this entity
       */
@@ -261,7 +262,7 @@
      {
          if (OpenGlHelper.shadersSupported)
          {
-@@ -304,7 +413,7 @@
+@@ -304,7 +414,7 @@
          }
      }
  
@@ -270,7 +271,7 @@
      {
          if (OpenGlHelper.isFramebufferEnabled())
          {
-@@ -388,7 +497,7 @@
+@@ -388,7 +498,7 @@
  
          Entity entity = this.mc.getRenderViewEntity();
          double d2 = entity.posX;
@@ -279,7 +280,7 @@
          double d1 = entity.posZ;
          float f2 = this.mc.world.getLightBrightness(new BlockPos(d2, d0, d1));
          float f3 = (float)this.mc.gameSettings.renderDistanceChunks / 16.0F;
-@@ -413,6 +522,16 @@
+@@ -413,6 +523,16 @@
          {
              this.bossColorModifier -= 0.0125F;
          }
@@ -296,7 +297,7 @@
      }
  
      public ShaderGroup getShaderGroup()
-@@ -438,112 +557,112 @@
+@@ -438,112 +558,112 @@
       */
      public void getMouseOver(float partialTicks)
      {
@@ -515,7 +516,7 @@
      }
  
      /**
-@@ -611,7 +730,6 @@
+@@ -611,7 +731,6 @@
                  {
                      Config.zoomMode = true;
                      this.mc.gameSettings.smoothCamera = true;
@@ -523,7 +524,7 @@
                  }
  
                  if (Config.zoomMode)
-@@ -634,14 +752,14 @@
+@@ -634,14 +753,14 @@
                  f /= (1.0F - 500.0F / (f1 + 500.0F)) * 2.0F + 1.0F;
              }
  
@@ -541,7 +542,7 @@
          }
      }
  
-@@ -696,244 +814,239 @@
+@@ -696,244 +815,239 @@
       */
      private void orientCamera(float partialTicks)
      {
@@ -1011,7 +1012,7 @@
  
      /**
       * Render player hand
-@@ -942,88 +1055,67 @@
+@@ -942,88 +1056,67 @@
      {
          this.renderHand(partialTicks, pass, true, true, false);
      }
@@ -1160,7 +1161,7 @@
      public void disableLightmap()
      {
          GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-@@ -1039,12 +1131,12 @@
+@@ -1039,12 +1132,12 @@
      public void enableLightmap()
      {
          GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
@@ -1175,7 +1176,7 @@
          this.mc.getTextureManager().bindTexture(this.locationLightMap);
          GlStateManager.glTexParameteri(3553, 10241, 9729);
          GlStateManager.glTexParameteri(3553, 10240, 9729);
-@@ -1220,708 +1312,819 @@
+@@ -1220,708 +1313,819 @@
          }
      }
  
@@ -2638,7 +2639,7 @@
      private void addRainParticles()
      {
          float f = this.mc.world.getRainStrength(1.0F);
-@@ -2013,7 +2216,7 @@
+@@ -2013,7 +2217,7 @@
          if (Reflector.ForgeWorldProvider_getWeatherRenderer.exists())
          {
              WorldProvider worldprovider = this.mc.world.provider;
@@ -2647,7 +2648,7 @@
  
              if (object != null)
              {
-@@ -2216,7 +2419,7 @@
+@@ -2216,7 +2420,7 @@
              double d0 = MathHelper.sin(world.getCelestialAngleRadians(partialTicks)) > 0.0F ? -1.0D : 1.0D;
              Vec3d vec3d2 = new Vec3d(d0, 0.0D, 0.0D);
              float f5 = (float)entity.getLook(partialTicks).dotProduct(vec3d2);
@@ -2656,7 +2657,7 @@
              if (f5 < 0.0F)
              {
                  f5 = 0.0F;
-@@ -2260,8 +2463,9 @@
+@@ -2260,8 +2464,9 @@
              this.fogColorBlue *= f11;
          }
  
@@ -2668,7 +2669,7 @@
          if (this.cloudFog)
          {
              Vec3d vec3d3 = world.getCloudColour(partialTicks);
-@@ -2269,7 +2473,7 @@
+@@ -2269,7 +2474,7 @@
              this.fogColorGreen = (float)vec3d3.yCoord;
              this.fogColorBlue = (float)vec3d3.zCoord;
          }
@@ -2677,7 +2678,7 @@
          {
              float f12 = 0.0F;
  
-@@ -2295,7 +2499,7 @@
+@@ -2295,7 +2500,7 @@
                  this.fogColorBlue = (float)vec3d4.zCoord;
              }
          }
@@ -2686,7 +2687,7 @@
          {
              this.fogColorRed = 0.6F;
              this.fogColorGreen = 0.1F;
-@@ -2373,16 +2577,15 @@
+@@ -2373,16 +2578,15 @@
              this.fogColorBlue = f7;
          }
  
@@ -2711,7 +2712,7 @@
      }
  
      /**
-@@ -2396,7 +2599,13 @@
+@@ -2396,7 +2600,13 @@
          GlStateManager.glFog(2918, this.setFogColorBuffer(this.fogColorRed, this.fogColorGreen, this.fogColorBlue, 1.0F));
          GlStateManager.glNormal3f(0.0F, -1.0F, 0.0F);
          GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -2726,7 +2727,7 @@
          float f = -1.0F;
  
          if (Reflector.ForgeHooksClient_getFogDensity.exists())
-@@ -2456,7 +2665,7 @@
+@@ -2456,7 +2666,7 @@
  
              GlStateManager.setFogDensity(0.1F);
          }
@@ -2735,7 +2736,7 @@
          {
              if (Config.isShaders())
              {
-@@ -2488,7 +2697,7 @@
+@@ -2488,7 +2698,7 @@
                  GlStateManager.setFogDensity(0.02F);
              }
          }
@@ -2744,7 +2745,7 @@
          {
              if (Config.isShaders())
              {
-@@ -2550,12 +2759,24 @@
+@@ -2550,12 +2760,24 @@
                  Reflector.callVoid(Reflector.ForgeHooksClient_onFogRender, new Object[] {this, entity, iblockstate, Float.valueOf(partialTicks), Integer.valueOf(startCoords), Float.valueOf(f1)});
              }
          }
@@ -2770,7 +2771,7 @@
      /**
       * Update and return fogColorBuffer with the RGBA values passed as arguments
       */
-@@ -2572,6 +2793,12 @@
+@@ -2572,6 +2794,12 @@
          return this.fogColorBuffer;
      }
  
@@ -2783,7 +2784,7 @@
      public MapItemRenderer getMapItemRenderer()
      {
          return this.theMapItemRenderer;
-@@ -2716,10 +2943,12 @@
+@@ -2716,10 +2944,12 @@
              this.updatedWorld = world;
          }
  
@@ -2800,7 +2801,7 @@
      }
  
      private void frameFinish()
-@@ -2743,39 +2972,6 @@
+@@ -2743,39 +2973,6 @@
          }
      }
  
@@ -2840,7 +2841,7 @@
      public boolean setFxaaShader(int p_setFxaaShader_1_)
      {
          if (!OpenGlHelper.isFramebufferEnabled())
-@@ -2815,75 +3011,6 @@
+@@ -2815,75 +3012,6 @@
          }
      }
  
@@ -2916,7 +2917,7 @@
      public static void drawNameplate(FontRenderer fontRendererIn, String str, float x, float y, float z, int verticalShift, float viewerYaw, float viewerPitch, boolean isThirdPersonFrontal, boolean isSneaking)
      {
          GlStateManager.pushMatrix();
-@@ -2927,4 +3054,2340 @@
+@@ -2927,4 +3055,2340 @@
          GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
          GlStateManager.popMatrix();
      }
@@ -3559,7 +3560,7 @@
 +
 +			        Vec3d pos = mc.entityRenderer.getEyeRenderPos(mc.currentPass);
 +
-+					if (inMenuRoom || !this.mc.vrSettings.hudOcclusion || itemRenderer.isInsideOpaqueBlock(pos, false)){
++					if (inMenuRoom || mc.currentScreen instanceof GuiGameOver || !this.mc.vrSettings.hudOcclusion || itemRenderer.isInsideOpaqueBlock(pos, false)){
 +						// Never use depth test for in game menu - so you can always see it!
 +						GlStateManager.disableDepth();
 +						GlStateManager.depthFunc(GL11.GL_ALWAYS);

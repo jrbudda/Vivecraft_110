@@ -195,7 +195,7 @@ public class KeyboardSimulator {
 			case Keyboard.KEY_LBRACKET: return KeyEvent.VK_OPEN_BRACKET;
 			case Keyboard.KEY_RBRACKET: return KeyEvent.VK_CLOSE_BRACKET;
 			case Keyboard.KEY_RETURN: return KeyEvent.VK_ENTER;
-			case Keyboard.KEY_LCONTROL: return KeyEvent.VK_CONTROL;
+			//case Keyboard.KEY_LCONTROL: return KeyEvent.VK_CONTROL;
 			case Keyboard.KEY_A: return KeyEvent.VK_A;
 			case Keyboard.KEY_S: return KeyEvent.VK_S;
 			case Keyboard.KEY_D: return KeyEvent.VK_D;
@@ -208,7 +208,7 @@ public class KeyboardSimulator {
 			case Keyboard.KEY_SEMICOLON: return KeyEvent.VK_SEMICOLON;
 			case Keyboard.KEY_APOSTROPHE: return KeyEvent.VK_QUOTE;
 			case Keyboard.KEY_GRAVE: return KeyEvent.VK_DEAD_GRAVE;
-			case Keyboard.KEY_LSHIFT: return KeyEvent.VK_SHIFT;
+			//case Keyboard.KEY_LSHIFT: return KeyEvent.VK_SHIFT;
 			case Keyboard.KEY_BACKSLASH: return KeyEvent.VK_BACK_SLASH;
 			case Keyboard.KEY_Z: return KeyEvent.VK_Z;
 			case Keyboard.KEY_X: return KeyEvent.VK_X;
@@ -221,7 +221,7 @@ public class KeyboardSimulator {
 			case Keyboard.KEY_PERIOD: return KeyEvent.VK_PERIOD;
 			case Keyboard.KEY_SLASH: return KeyEvent.VK_SLASH;
 			case Keyboard.KEY_MULTIPLY: return KeyEvent.VK_MULTIPLY;
-			case Keyboard.KEY_LMENU: return KeyEvent.VK_ALT;
+			//case Keyboard.KEY_LMENU: return KeyEvent.VK_ALT;
 			case Keyboard.KEY_SPACE: return KeyEvent.VK_SPACE;
 			case Keyboard.KEY_CAPITAL: return KeyEvent.VK_CAPS_LOCK;
 			case Keyboard.KEY_F1: return KeyEvent.VK_F1;

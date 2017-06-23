@@ -8,7 +8,7 @@
  import net.minecraft.client.renderer.entity.RenderPlayer;
  import net.minecraft.entity.player.EnumPlayerModelParts;
  import net.minecraft.init.Items;
-@@ -18,14 +19,14 @@
+@@ -18,14 +19,19 @@
      private static final ResourceLocation TEXTURE_ELYTRA = new ResourceLocation("textures/entity/elytra.png");
  
      /** Instance of the player renderer. */
@@ -22,6 +22,11 @@
 +    public LayerElytra(RenderLivingBase<?> p_i47185_1_)
      {
 -        this.renderPlayer = renderPlayerIn;
++        this.renderPlayer = p_i47185_1_;
++    }
++
++    public LayerElytra(RenderPlayer p_i47185_1_)
++    {
 +        this.renderPlayer = p_i47185_1_;
      }
  

@@ -15,7 +15,7 @@ import java.util.Random;
 
 public class BackpackTracker {
 	public boolean[] wasIn = new boolean[2];
-	public int previousSlot = -1;
+	public int previousSlot = 0;
 	
 	public boolean isActive(EntityPlayerSP p){
 		if(Minecraft.getMinecraft().vrSettings.seated)
@@ -57,7 +57,7 @@ public class BackpackTracker {
 							player.inventory.currentItem = 0;	
 						} else {
 							player.inventory.currentItem = previousSlot;
-							previousSlot = -1;
+							previousSlot = 0;
 						}}
 					else { //offhand
 						ItemStack of = player.getHeldItemOffhand();

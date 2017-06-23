@@ -71,7 +71,7 @@ public class VRControllerButtonMapping {
 		this.unpress = true;
 	}
 	
-	private void actuallyUnpress() {
+	public void actuallyUnpress() {
 		if(this.FunctionDesc.equals("none")) return;
 		if(key!=null) {
 			 unpressKey(key);

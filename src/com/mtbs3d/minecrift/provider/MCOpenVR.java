@@ -2234,10 +2234,15 @@ public class MCOpenVR
 	static void onGuiScreenChanged(GuiScreen previousScreen, GuiScreen newScreen)
 	{
 		KeyBinding.unPressAllKeys();
-		KeyboardSimulator.robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-		KeyboardSimulator.robot.mouseRelease(InputEvent.BUTTON2_DOWN_MASK);
-		KeyboardSimulator.robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
-		KeyboardSimulator.robot.keyRelease(KeyEvent.VK_SHIFT);
+		if(Display.isActive()){
+			KeyboardSimulator.robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+			KeyboardSimulator.robot.mouseRelease(InputEvent.BUTTON2_DOWN_MASK);
+			KeyboardSimulator.robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
+			KeyboardSimulator.robot.keyRelease(KeyEvent.VK_SHIFT);		
+			for (VRControllerButtonMapping mapping : mc.vrSettings.buttonMappings) {
+				mapping.actuallyUnpress();
+			}
+		}
 		
 		if(newScreen == null 	|| (mc.player!=null && !mc.player.isEntityAlive())){
 			guiPos_Room = null;
