@@ -135,7 +135,7 @@
  
      public int renderBlockLayer(BlockRenderLayer blockLayerIn, double partialTicks, int pass, Entity entityIn)
      {
-@@ -1735,7 +1750,7 @@
+@@ -1736,7 +1751,7 @@
          if (Reflector.ForgeWorldProvider_getSkyRenderer.exists())
          {
              WorldProvider worldprovider = this.mc.world.provider;
@@ -144,7 +144,7 @@
  
              if (object != null)
              {
-@@ -1751,9 +1766,9 @@
+@@ -1752,9 +1767,9 @@
          else if (this.mc.world.provider.isSurfaceWorld())
          {
              GlStateManager.disableTexture2D();
@@ -156,7 +156,7 @@
              {
                  Shaders.disableTexture2D();
              }
-@@ -1761,7 +1776,7 @@
+@@ -1762,7 +1777,7 @@
              Vec3d vec3d = this.world.getSkyColor(this.mc.getRenderViewEntity(), partialTicks);
              vec3d = CustomColors.getSkyColor(vec3d, this.mc.world, this.mc.getRenderViewEntity().posX, this.mc.getRenderViewEntity().posY + 1.0D, this.mc.getRenderViewEntity().posZ);
  
@@ -165,7 +165,7 @@
              {
                  Shaders.setSkyColor(vec3d);
              }
-@@ -1786,14 +1801,14 @@
+@@ -1787,14 +1802,14 @@
              GlStateManager.depthMask(false);
              GlStateManager.enableFog();
  
@@ -182,7 +182,7 @@
              {
                  Shaders.preSkyList();
              }
-@@ -1817,7 +1832,7 @@
+@@ -1818,7 +1833,7 @@
  
              GlStateManager.disableFog();
  
@@ -191,7 +191,7 @@
              {
                  Shaders.disableFog();
              }
-@@ -1832,7 +1847,7 @@
+@@ -1833,7 +1848,7 @@
              {
                  GlStateManager.disableTexture2D();
  
@@ -200,7 +200,7 @@
                  {
                      Shaders.disableTexture2D();
                  }
-@@ -1875,7 +1890,7 @@
+@@ -1876,7 +1891,7 @@
  
              GlStateManager.enableTexture2D();
  
@@ -209,7 +209,7 @@
              {
                  Shaders.enableTexture2D();
              }
-@@ -1887,14 +1902,14 @@
+@@ -1888,14 +1903,14 @@
              GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
              CustomSky.renderSky(this.world, this.renderEngine, partialTicks);
  
@@ -226,7 +226,7 @@
              {
                  Shaders.postCelestialRotate();
              }
-@@ -1934,7 +1949,7 @@
+@@ -1935,7 +1950,7 @@
  
              GlStateManager.disableTexture2D();
  
@@ -235,7 +235,7 @@
              {
                  Shaders.disableTexture2D();
              }
-@@ -1965,7 +1980,7 @@
+@@ -1966,7 +1981,7 @@
              GlStateManager.enableAlpha();
              GlStateManager.enableFog();
  
@@ -244,7 +244,7 @@
              {
                  Shaders.enableFog();
              }
-@@ -1973,7 +1988,7 @@
+@@ -1974,7 +1989,7 @@
              GlStateManager.popMatrix();
              GlStateManager.disableTexture2D();
  
@@ -253,7 +253,7 @@
              {
                  Shaders.disableTexture2D();
              }
-@@ -2053,7 +2068,7 @@
+@@ -2054,7 +2069,7 @@
              GlStateManager.popMatrix();
              GlStateManager.enableTexture2D();
  
@@ -262,7 +262,7 @@
              {
                  Shaders.enableTexture2D();
              }
-@@ -2069,7 +2084,7 @@
+@@ -2070,7 +2085,7 @@
              if (Reflector.ForgeWorldProvider_getCloudRenderer.exists())
              {
                  WorldProvider worldprovider = this.mc.world.provider;
@@ -271,7 +271,7 @@
  
                  if (object != null)
                  {
-@@ -2614,7 +2629,7 @@
+@@ -2615,7 +2630,7 @@
  
                          if (tileentity != null)
                          {
@@ -280,7 +280,7 @@
                          }
                      }
  
-@@ -3092,6 +3107,8 @@
+@@ -3093,6 +3108,8 @@
      {
          Random random = this.world.rand;
  
@@ -289,7 +289,7 @@
          switch (type)
          {
              case 1000:
-@@ -3147,18 +3164,28 @@
+@@ -3148,18 +3165,28 @@
                  break;
  
              case 1011:
@@ -318,7 +318,7 @@
                  this.world.playSound(blockPosIn, SoundEvents.BLOCK_FENCE_GATE_CLOSE, SoundCategory.BLOCKS, 1.0F, this.world.rand.nextFloat() * 0.1F + 0.9F, false);
                  break;
  
-@@ -3179,14 +3206,26 @@
+@@ -3180,14 +3207,26 @@
                  break;
  
              case 1019:
@@ -345,7 +345,7 @@
                  this.world.playSound(blockPosIn, SoundEvents.ENTITY_ZOMBIE_BREAK_DOOR_WOOD, SoundCategory.HOSTILE, 2.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F, false);
                  break;
  
-@@ -3215,10 +3254,17 @@
+@@ -3216,10 +3255,17 @@
                  break;
  
              case 1030:
@@ -363,7 +363,7 @@
                  this.world.playSound(blockPosIn, SoundEvents.BLOCK_ANVIL_LAND, SoundCategory.BLOCKS, 0.3F, this.world.rand.nextFloat() * 0.1F + 0.9F, false);
                  break;
  
-@@ -3239,6 +3285,9 @@
+@@ -3240,6 +3286,9 @@
                  break;
  
              case 1036:
@@ -373,7 +373,7 @@
                  this.world.playSound(blockPosIn, SoundEvents.BLOCK_IRON_TRAPDOOR_CLOSE, SoundCategory.BLOCKS, 1.0F, this.world.rand.nextFloat() * 0.1F + 0.9F, false);
                  break;
  
-@@ -3278,7 +3327,10 @@
+@@ -3279,7 +3328,10 @@
                      {
                          soundtype = (SoundType)Reflector.call(block, Reflector.ForgeBlock_getSoundType, new Object[] {Block.getStateById(data), this.world, blockPosIn, null});
                      }

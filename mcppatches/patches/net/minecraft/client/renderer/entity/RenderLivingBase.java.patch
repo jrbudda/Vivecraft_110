@@ -9,7 +9,7 @@
      }
  
      protected <V extends EntityLivingBase, U extends LayerRenderer<V>> boolean removeLayer(U layer)
-@@ -568,7 +568,7 @@
+@@ -570,7 +570,7 @@
              {
                  Team.EnumVisible team$enumvisible = team.getNameTagVisibility();
  

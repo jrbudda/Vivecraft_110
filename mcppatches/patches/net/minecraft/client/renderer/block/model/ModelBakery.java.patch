@@ -1,0 +1,60 @@
+--- a/net/minecraft/client/renderer/block/model/ModelBakery.java
++++ b/net/minecraft/client/renderer/block/model/ModelBakery.java
+@@ -288,7 +288,7 @@
+     {
+         Reader reader = null;
+         IResource iresource = null;
+-        ModelBlock s2;
++        ModelBlock out;
+ 
+         try
+         {
+@@ -330,7 +330,7 @@
+             }
+ 
+             ModelBlock modelblock = MODEL_ENTITY;
+-            s2 = modelblock;
++            out = modelblock;
+         }
+         finally
+         {
+@@ -338,7 +338,7 @@
+             IOUtils.closeQuietly((Closeable)iresource);
+         }
+ 
+-        return s2;
++        return out;
+     }
+ 
+     private ResourceLocation getModelLocation(ResourceLocation location)
+@@ -457,7 +457,7 @@
+ 
+         for (Entry<RegistryDelegate<Item>, Set<String>> entry : customVariantNames.entrySet())
+         {
+-            this.variantNames.put(((RegistryDelegate)entry.getKey()).get(), Lists.newArrayList(((Set)entry.getValue()).iterator()));
++            this.variantNames.put((Item) ((RegistryDelegate)entry.getKey()).get(), Lists.newArrayList(((Set)entry.getValue()).iterator()));
+         }
+     }
+ 
+@@ -680,12 +680,6 @@
+         return set;
+     }
+ 
+-    @Nullable
+-    public IBakedModel bakeModel(ModelBlock modelBlockIn, ModelRotation modelRotationIn, boolean uvLocked)
+-    {
+-        return this.bakeModel(modelBlockIn, modelRotationIn, uvLocked);
+-    }
+-
+     protected IBakedModel bakeModel(ModelBlock p_bakeModel_1_, ITransformation p_bakeModel_2_, boolean p_bakeModel_3_)
+     {
+         TextureAtlasSprite textureatlassprite = (TextureAtlasSprite)this.sprites.get(new ResourceLocation(p_bakeModel_1_.resolveTextureName("particle")));
+@@ -732,7 +726,7 @@
+ 
+     protected BakedQuad makeBakedQuad(BlockPart p_makeBakedQuad_1_, BlockPartFace p_makeBakedQuad_2_, TextureAtlasSprite p_makeBakedQuad_3_, EnumFacing p_makeBakedQuad_4_, ITransformation p_makeBakedQuad_5_, boolean p_makeBakedQuad_6_)
+     {
+-        return this.faceBakery.makeBakedQuad(p_makeBakedQuad_1_.positionFrom, p_makeBakedQuad_1_.positionTo, p_makeBakedQuad_2_, p_makeBakedQuad_3_, p_makeBakedQuad_4_, p_makeBakedQuad_5_, p_makeBakedQuad_1_.partRotation, p_makeBakedQuad_6_, p_makeBakedQuad_1_.shade);
++        return this.faceBakery.makeBakedQuad(p_makeBakedQuad_1_.positionFrom, p_makeBakedQuad_1_.positionTo, p_makeBakedQuad_2_, p_makeBakedQuad_3_, p_makeBakedQuad_4_, (ModelRotation) p_makeBakedQuad_5_, p_makeBakedQuad_1_.partRotation, p_makeBakedQuad_6_, p_makeBakedQuad_1_.shade);
+     }
+ 
+     private void loadModelsCheck()

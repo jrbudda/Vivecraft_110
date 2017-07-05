@@ -52,7 +52,7 @@
              }
  
              this.mainModel.isChild = entity.isChild();
-@@ -148,7 +158,29 @@
+@@ -150,7 +160,29 @@
                  float f7 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks;
                  this.renderLivingAt(entity, x, y, z);
                  float f8 = this.handleRotationFloat(entity, partialTicks);

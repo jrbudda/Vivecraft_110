@@ -8,7 +8,7 @@
  import org.lwjgl.opengl.ARBShaderObjects;
  import org.lwjgl.opengl.ARBVertexShader;
  import org.lwjgl.opengl.ContextCapabilities;
-@@ -870,8 +871,9 @@
+@@ -874,8 +875,9 @@
          Set set = props.keySet();
          List<CustomTexture> list = new ArrayList();
  
@@ -19,7 +19,7 @@
              if (s1.startsWith(s))
              {
                  String s2 = s1.substring(s.length());
-@@ -1954,8 +1956,9 @@
+@@ -1963,8 +1965,9 @@
              needResetModels = false;
              SMCLog.info("Reset model renderers");
  
@@ -30,7 +30,7 @@
                  if (render instanceof RenderLiving)
                  {
                      RenderLiving renderliving = (RenderLiving)render;
-@@ -3655,17 +3658,16 @@
+@@ -3676,17 +3679,16 @@
          checkGLError("end beginRender");
      }
  
@@ -54,7 +54,7 @@
                  boolean flag = shaderPackDimensions.contains(Integer.valueOf(i));
                  boolean flag1 = shaderPackDimensions.contains(Integer.valueOf(j));
  
-@@ -4645,7 +4647,6 @@
+@@ -4675,7 +4677,6 @@
      public static void setFog(GlStateManager.FogMode fogMode)
      {
          GlStateManager.setFog(fogMode);
@@ -62,7 +62,7 @@
  
          if (fogEnabled)
          {
-@@ -4815,8 +4816,9 @@
+@@ -4845,8 +4846,9 @@
                          Lang.loadLocaleData(inputstream, properties);
                          inputstream.close();
  

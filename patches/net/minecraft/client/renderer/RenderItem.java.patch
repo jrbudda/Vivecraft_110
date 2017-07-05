@@ -100,7 +100,7 @@
          }
      }
  
-@@ -352,16 +399,16 @@
+@@ -362,16 +409,16 @@
          }
      }
  
@@ -120,7 +120,7 @@
      {
          if (stack.getItem() != null)
          {
-@@ -390,7 +437,7 @@
+@@ -400,7 +447,7 @@
              }
  
              CustomItems.setRenderOffHand(leftHanded);
@@ -129,7 +129,7 @@
              CustomItems.setRenderOffHand(false);
              GlStateManager.cullFace(GlStateManager.CullFace.BACK);
              GlStateManager.popMatrix();
-@@ -437,7 +484,7 @@
+@@ -447,7 +494,7 @@
              bakedmodel.getItemCameraTransforms().applyTransform(ItemCameraTransforms.TransformType.GUI);
          }
  
@@ -138,7 +138,7 @@
          GlStateManager.disableAlpha();
          GlStateManager.disableRescaleNormal();
          GlStateManager.disableLighting();
-@@ -567,6 +614,10 @@
+@@ -577,6 +624,10 @@
                  GlStateManager.disableBlend();
                  Tessellator tessellator = Tessellator.getInstance();
                  VertexBuffer vertexbuffer = tessellator.getBuffer();
@@ -149,7 +149,7 @@
                  this.draw(vertexbuffer, xPosition + 2, yPosition + 13, 13, 2, 0, 0, 0, 255);
                  this.draw(vertexbuffer, xPosition + 2, yPosition + 13, 12, 1, (255 - i) / 4, 64, 0, 255);
                  int j = 255 - i;
-@@ -1147,6 +1198,10 @@
+@@ -1157,6 +1208,10 @@
          this.registerItem(Items.DIAMOND_HORSE_ARMOR, "diamond_horse_armor");
          this.registerItem(Items.LEAD, "lead");
          this.registerItem(Items.NAME_TAG, "name_tag");

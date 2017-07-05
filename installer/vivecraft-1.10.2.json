@@ -7,7 +7,7 @@
 	"minecraftArguments": "--username ${auth_player_name} --version ${version_name} --gameDir ${game_directory} --assetsDir ${assets_root} --assetIndex ${assets_index_name} --uuid ${auth_uuid} --accessToken ${auth_access_token} --userType ${user_type} --versionType ${version_type} --tweakClass optifine.OptiFineTweaker --tweakClass com.mtbs3d.minecrift.tweaker.MinecriftVanillaTweaker",
 	"libraries": [
 	{
-		"name": "optifine:OptiFine:1.10.2_HD_U_D8"
+		"name": "optifine:OptiFine:1.10.2_HD_U_E3"
 	},
 	{
 		"name": "org.ow2.asm:asm-all:5.0.3"

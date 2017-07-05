@@ -1,6 +1,6 @@
 --- a/net/minecraft/src/CustomItemProperties.java
 +++ b/net/minecraft/src/CustomItemProperties.java
-@@ -321,8 +321,9 @@
+@@ -340,8 +340,9 @@
              Set set = map.keySet();
              Map map1 = new LinkedHashMap();
  
@@ -11,7 +11,18 @@
                  String s2 = (String)map.get(s1);
                  s2 = fixTextureName(s2, p_parseTextures_1_);
                  map1.put(s1, s2);
-@@ -526,8 +527,9 @@
+@@ -421,8 +422,9 @@
+             Set set = map.keySet();
+             Map map1 = new LinkedHashMap();
+ 
+-            for (String s1 : set)
++            for (Object s0 : set)
+             {
++            	String s1 = (String) s0;
+                 String s2 = (String)map.get(s1);
+                 s2 = fixModelName(s2, p_parseModels_1_);
+                 map1.put(s1, s2);
+@@ -629,8 +631,9 @@
          {
              List list = new ArrayList();
  
@@ -22,7 +33,7 @@
                  String s2 = (String)map.get(s1);
                  String s3 = s1.substring(s.length());
                  NbtTagValue nbttagvalue = new NbtTagValue(s3, s2);
-@@ -543,8 +545,9 @@
+@@ -646,8 +649,9 @@
      {
          Map map = new LinkedHashMap();
  
