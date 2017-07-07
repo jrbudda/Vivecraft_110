@@ -8,20 +8,23 @@
  import net.minecraft.enchantment.EnchantmentHelper;
  import net.minecraft.entity.Entity;
  import net.minecraft.entity.EntityLivingBase;
-@@ -91,6 +92,12 @@
+@@ -91,6 +92,15 @@
  
          if (shooter instanceof EntityPlayer)
          {
++        	
 +        	//VIVE SET SPAWNPOS
-+            Vec3d aimSource = Minecraft.getMinecraft().roomScale.getControllerPos_World(1);
-+            Vec3d controllerDirection = Minecraft.getMinecraft().bowTracker.getAimVector();
-+            this.setPosition(aimSource.xCoord + controllerDirection.xCoord * 0.1f,aimSource.yCoord + controllerDirection.yCoord * 0.1f,aimSource.zCoord + controllerDirection.zCoord * 0.1f);
-+            ///
-+            
++        	if(shooter.getEntityId() == Minecraft.getMinecraft().player.getEntityId()){
++        		Vec3d aimSource = Minecraft.getMinecraft().roomScale.getControllerPos_World(1);
++        		Vec3d controllerDirection = Minecraft.getMinecraft().bowTracker.getAimVector();
++        		this.setPosition(aimSource.xCoord + controllerDirection.xCoord * 0.1f,aimSource.yCoord + controllerDirection.yCoord * 0.1f,aimSource.zCoord + controllerDirection.zCoord * 0.1f);
++        		//
++        	}
++
              this.pickupStatus = EntityArrow.PickupStatus.ALLOWED;
          }
      }
-@@ -118,17 +125,25 @@
+@@ -118,17 +128,25 @@
  
      public void setAim(Entity shooter, float pitch, float yaw, float p_184547_4_, float velocity, float inaccuracy)
      {
@@ -41,7 +44,7 @@
 +    	float f2 = MathHelper.cos(yaw * 0.017453292F) * MathHelper.cos(pitch * 0.017453292F);
 +
 +    	//VIVE SET VELOCITY
-+    	if(this.shootingEntity instanceof EntityPlayer && !Minecraft.getMinecraft().vrSettings.seated ){
++    	if(shooter.getEntityId() == Minecraft.getMinecraft().player.getEntityId() && !Minecraft.getMinecraft().vrSettings.seated ){
 +    		velocity = (float) (Minecraft.getMinecraft().bowTracker.getDrawPercent() * 3f);
 +    		this.damage *= 2;
 +    	}

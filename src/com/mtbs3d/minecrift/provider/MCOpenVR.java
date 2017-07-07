@@ -1905,7 +1905,7 @@ public class MCOpenVR
 
 	
 	private static void changeHotbar(int dir){
-		if (Reflector.forgeExists() && mc.currentScreen == null)
+		if (Reflector.forgeExists() && mc.currentScreen == null && Display.isActive())
 			KeyboardSimulator.robot.mouseWheel(-dir * 120);
 		else
 			mc.player.inventory.changeCurrentItem(dir);
