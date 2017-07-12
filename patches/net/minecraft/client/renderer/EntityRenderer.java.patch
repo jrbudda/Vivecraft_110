@@ -1685,7 +1685,7 @@
 +    		{
 +
 +    			this.mc.mcProfiler.startSection("renderWorld");
-+    			this.renderWorld(partialTicks, 0L);
++    			this.renderWorld(partialTicks, Long.MAX_VALUE);
 +    			this.mc.mcProfiler.endSection();
 +
 +    			if (OpenGlHelper.shadersSupported)
@@ -2657,19 +2657,22 @@
              if (f5 < 0.0F)
              {
                  f5 = 0.0F;
-@@ -2260,8 +2464,9 @@
+@@ -2260,8 +2464,12 @@
              this.fogColorBlue *= f11;
          }
  
 -        IBlockState iblockstate = ActiveRenderInfo.getBlockStateAtEntityViewpoint(this.mc.world, entity, partialTicks);
 -
-+        //IBlockState iblockstate = ActiveRenderInfo.getBlockStateAtEntityViewpoint(this.mc.world, entity, partialTicks);
++        //VIVECRAFT - don't fiddle with this, I know it looks silly and pointless
++        IBlockState iblockstate;
 +        Vec3d pos = getEyeRenderPos(mc.currentPass);
-+        
++    	iblockstate = this.mc.world.getBlockState(new BlockPos(pos.xCoord, pos.yCoord, pos.zCoord));
++        ///
++    	
          if (this.cloudFog)
          {
              Vec3d vec3d3 = world.getCloudColour(partialTicks);
-@@ -2269,7 +2474,7 @@
+@@ -2269,7 +2477,7 @@
              this.fogColorGreen = (float)vec3d3.yCoord;
              this.fogColorBlue = (float)vec3d3.zCoord;
          }
@@ -2678,7 +2681,7 @@
          {
              float f12 = 0.0F;
  
-@@ -2295,7 +2500,7 @@
+@@ -2295,7 +2503,7 @@
                  this.fogColorBlue = (float)vec3d4.zCoord;
              }
          }
@@ -2687,7 +2690,7 @@
          {
              this.fogColorRed = 0.6F;
              this.fogColorGreen = 0.1F;
-@@ -2373,16 +2578,15 @@
+@@ -2373,16 +2581,14 @@
              this.fogColorBlue = f7;
          }
  
@@ -2700,7 +2703,6 @@
 -            this.fogColorBlue = Reflector.callFloat(object, Reflector.EntityViewRenderEvent_FogColors_getBlue, new Object[0]);
 -        }
 +        if(Reflector.forgeExists()){ 
-+        	IBlockState iblockstate = this.mc.world.getBlockState(new BlockPos(pos.xCoord, pos.yCoord, pos.zCoord));
 +        	Object event = Reflector.newInstance(Reflector.EntityViewRenderEvent_FogColors_Constructor, this, entity, iblockstate, partialTicks, this.fogColorRed, this.fogColorGreen, this.fogColorBlue);
 +        	Reflector.postForgeBusEvent(event);
 +        	this.fogColorRed = Reflector.callFloat(event, Reflector.EntityViewRenderEvent_FogColors_getRed);
@@ -2712,7 +2714,7 @@
      }
  
      /**
-@@ -2396,7 +2600,13 @@
+@@ -2396,7 +2602,13 @@
          GlStateManager.glFog(2918, this.setFogColorBuffer(this.fogColorRed, this.fogColorGreen, this.fogColorBlue, 1.0F));
          GlStateManager.glNormal3f(0.0F, -1.0F, 0.0F);
          GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -2727,7 +2729,7 @@
          float f = -1.0F;
  
          if (Reflector.ForgeHooksClient_getFogDensity.exists())
-@@ -2456,7 +2666,7 @@
+@@ -2456,7 +2668,7 @@
  
              GlStateManager.setFogDensity(0.1F);
          }
@@ -2736,7 +2738,7 @@
          {
              if (Config.isShaders())
              {
-@@ -2488,7 +2698,7 @@
+@@ -2488,7 +2700,7 @@
                  GlStateManager.setFogDensity(0.02F);
              }
          }
@@ -2745,7 +2747,7 @@
          {
              if (Config.isShaders())
              {
-@@ -2550,12 +2760,24 @@
+@@ -2550,12 +2762,24 @@
                  Reflector.callVoid(Reflector.ForgeHooksClient_onFogRender, new Object[] {this, entity, iblockstate, Float.valueOf(partialTicks), Integer.valueOf(startCoords), Float.valueOf(f1)});
              }
          }
@@ -2771,7 +2773,7 @@
      /**
       * Update and return fogColorBuffer with the RGBA values passed as arguments
       */
-@@ -2572,6 +2794,12 @@
+@@ -2572,6 +2796,12 @@
          return this.fogColorBuffer;
      }
  
@@ -2784,7 +2786,7 @@
      public MapItemRenderer getMapItemRenderer()
      {
          return this.theMapItemRenderer;
-@@ -2716,10 +2944,12 @@
+@@ -2716,10 +2946,12 @@
              this.updatedWorld = world;
          }
  
@@ -2801,7 +2803,7 @@
      }
  
      private void frameFinish()
-@@ -2743,39 +2973,6 @@
+@@ -2743,39 +2975,6 @@
          }
      }
  
@@ -2841,7 +2843,7 @@
      public boolean setFxaaShader(int p_setFxaaShader_1_)
      {
          if (!OpenGlHelper.isFramebufferEnabled())
-@@ -2815,75 +3012,6 @@
+@@ -2815,75 +3014,6 @@
          }
      }
  
@@ -2917,7 +2919,7 @@
      public static void drawNameplate(FontRenderer fontRendererIn, String str, float x, float y, float z, int verticalShift, float viewerYaw, float viewerPitch, boolean isThirdPersonFrontal, boolean isSneaking)
      {
          GlStateManager.pushMatrix();
-@@ -2927,4 +3055,2340 @@
+@@ -2927,4 +3057,2340 @@
          GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
          GlStateManager.popMatrix();
      }

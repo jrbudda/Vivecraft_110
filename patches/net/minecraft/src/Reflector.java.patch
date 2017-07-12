@@ -80,7 +80,7 @@
  import net.minecraft.client.renderer.vertex.VertexFormatElement;
  import net.minecraft.client.resources.DefaultResourcePack;
  import net.minecraft.client.settings.KeyBinding;
-@@ -70,214 +38,218 @@
+@@ -70,214 +38,219 @@
  import net.minecraft.entity.EntityLivingBase;
  import net.minecraft.entity.EnumCreatureType;
  import net.minecraft.entity.item.EntityItemFrame;
@@ -391,6 +391,7 @@
 +	public static ReflectorMethod ForgeKeyBinding_getKeyModifier = new ReflectorMethod(ForgeKeyBinding, "getKeyModifier");
 +	public static ReflectorClass ForgeModContainer = new ReflectorClass("net.minecraftforge.common.ForgeModContainer");
 +	public static ReflectorField ForgeModContainer_forgeLightPipelineEnabled = new ReflectorField(ForgeModContainer, "forgeLightPipelineEnabled");
++	public static ReflectorField ForgeModContainer_alwaysSetupTerrainOffThread = new ReflectorField(ForgeModContainer, "alwaysSetupTerrainOffThread");
 +	public static ReflectorClass ForgePotion = new ReflectorClass(Potion.class);
 +	public static ReflectorMethod ForgePotion_shouldRenderHUD = ForgePotion.makeMethod("shouldRenderHUD");
 +	public static ReflectorMethod ForgePotion_renderHUDEffect = ForgePotion.makeMethod("renderHUDEffect");
@@ -474,7 +475,7 @@
      public static ReflectorMethod ModelLoader_getInventoryVariant = new ReflectorMethod(ModelLoader, "getInventoryVariant");
      public static ReflectorClass ModelLoader_VanillaLoader = new ReflectorClass("net.minecraftforge.client.model.ModelLoader$VanillaLoader", true);
      public static ReflectorField ModelLoader_VanillaLoader_INSTANCE = new ReflectorField(ModelLoader_VanillaLoader, "INSTANCE", true);
-@@ -288,741 +260,990 @@
+@@ -288,741 +261,990 @@
      public static ReflectorMethod NotificationModUpdateScreen_init = new ReflectorMethod(NotificationModUpdateScreen, "init");
      public static ReflectorClass RenderBlockOverlayEvent_OverlayType = new ReflectorClass("net.minecraftforge.client.event.RenderBlockOverlayEvent$OverlayType");
      public static ReflectorField RenderBlockOverlayEvent_OverlayType_BLOCK = new ReflectorField(RenderBlockOverlayEvent_OverlayType, "BLOCK");
