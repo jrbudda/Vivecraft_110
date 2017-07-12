@@ -7,6 +7,7 @@
 -                for (BlockPosM blockposm : BlockPosM.getAllInBoxMutable(blockpos, blockpos1))
 +                for (Object b : BlockPosM.getAllInBoxMutable(blockpos, blockpos1))
                  {
-+                     BlockPosM blockposm = (BlockPosM)b;
++                    BlockPosM blockposm = (BlockPosM)b;
                      IBlockState iblockstate = chunkcacheof.getBlockState(blockposm);
                      Block block = iblockstate.getBlock();
+ 
