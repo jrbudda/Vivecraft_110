@@ -303,10 +303,10 @@ public class ModelPlayerVR extends ModelBiped
                 		armor.bipedLeftArm.rotateAngleX = this.leftshoulder.rotateAngleX;
                 		armor.bipedRightArm.rotateAngleY = this.rightShoulder.rotateAngleY;  				
                 		armor.bipedRightArm.rotateAngleX = this.rightShoulder.rotateAngleX;
-//            			this.bipedLeftArm.scaleY = 0.5f;
-//            			this.bipedLeftArmwear.scaleY = 0.5f;
-//            			this.bipedRightArm.scaleY = 0.5f;
-//            			this.bipedRightArmwear.scaleY = 0.5f;	
+            			this.bipedLeftArm.scaleY = 0.5f;
+            			this.bipedLeftArmwear.scaleY = 0.5f;
+            			this.bipedRightArm.scaleY = 0.5f;
+            			this.bipedRightArmwear.scaleY = 0.5f;	
             			
             			if(rotInfo.reverse){
             		        this.rightShoulder.setRotationPoint(5.0F, 2.0F , 0.0F);
@@ -318,10 +318,10 @@ public class ModelPlayerVR extends ModelBiped
             			
         			} 
         		}else {
-//        			this.bipedLeftArm.scaleY = 1;
-//        			this.bipedLeftArmwear.scaleY = 1;
-//        			this.bipedRightArm.scaleY =1;
-//        			this.bipedRightArmwear.scaleY =1;
+        			this.bipedLeftArm.scaleY = 1;
+        			this.bipedLeftArmwear.scaleY = 1;
+        			this.bipedRightArm.scaleY =1;
+        			this.bipedRightArmwear.scaleY =1;
         			this.bipedLeftArm.setRotationPoint(5.0F, 2.0F, 0.0F);
         			this.bipedRightArm.setRotationPoint(-5.0F, 2.0F, 0.0F);
 
@@ -334,13 +334,16 @@ public class ModelPlayerVR extends ModelBiped
         		this.vrHMD.isHidden = true;
         		break;
         	case 1:
-        //		this.vrHMD.setTextureLocation(this.BLACK_HMD);
+        		this.vrHMD.setTextureLocation(this.BLACK_HMD);
         		break;
         	case 2:
-        //		this.vrHMD.setTextureLocation(this.GOLD_HMD);
+        		this.vrHMD.setTextureLocation(this.GOLD_HMD);
         		break;
         	case 3:
-       //		this.vrHMD.setTextureLocation(this.DIAMOND_HMD);	
+        		this.vrHMD.setTextureLocation(this.DIAMOND_HMD);	
+        		break;
+        	case 4:
+        		this.vrHMD.setTextureLocation(this.DIAMOND_HMD);	
         		break;
         	}
 
