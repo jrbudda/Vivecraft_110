@@ -693,7 +693,7 @@
 +
 +    					Item item =  itemstack.getItem();
 +
-+    					boolean vive = MCOpenVR.isVive;
++    					boolean vive = MCOpenVR.isVive();
 +
 +    					boolean sword = false, tool = false;
 +    					boolean bow = BowTracker.isBow(itemstack);

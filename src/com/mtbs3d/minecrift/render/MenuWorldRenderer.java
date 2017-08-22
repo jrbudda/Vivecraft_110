@@ -187,6 +187,7 @@ public class MenuWorldRenderer {
 				vertexBuffer.deleteGlBuffers();
 			vertexBuffers = null;
 		}
+		ready = false;
 	}
 	
 	public FakeBlockAccess getWorld() {
@@ -195,10 +196,12 @@ public class MenuWorldRenderer {
 	
 	public void setWorld(FakeBlockAccess blockAccess) {
 		this.blockAccess = blockAccess;
-		this.worldProvider = blockAccess.getDimensionType().createDimension();
-		MCReflection.setField(MCReflection.WorldProvider_terrainType, this.worldProvider, WorldType.DEFAULT);
-		MCReflection.invokeMethod(MCReflection.WorldProvider_generateLightBrightnessTable, this.worldProvider);
-        this.lightmapUpdateNeeded = true;
+		if (blockAccess != null) {
+			this.worldProvider = blockAccess.getDimensionType().createDimension();
+			MCReflection.setField(MCReflection.WorldProvider_terrainType, this.worldProvider, WorldType.DEFAULT);
+			MCReflection.invokeMethod(MCReflection.WorldProvider_generateLightBrightnessTable, this.worldProvider);
+	        this.lightmapUpdateNeeded = true;
+		}
 	}
 	
 	public void init() throws Exception {

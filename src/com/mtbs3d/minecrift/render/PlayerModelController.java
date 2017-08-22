@@ -164,7 +164,7 @@ public class PlayerModelController {
 		out.rightArmQuat = c0q;
 		out.headQuat = hmdq;
 		
-		if(out.hmd == 3 && rand.nextInt(10) < 4){
+		if(out.hmd > 3 && rand.nextInt(10) < 4){
 			Vector3 derp = dir.multiply(0.1f);
 			Minecraft.getMinecraft().world.spawnParticle(EnumParticleTypes.FIREWORKS_SPARK,
 					hmdpos.xCoord+ ((double)this.rand.nextFloat() - 0.5D)*.02f,
