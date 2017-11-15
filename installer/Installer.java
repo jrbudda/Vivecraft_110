@@ -59,7 +59,7 @@ public class Installer extends JPanel  implements PropertyChangeListener
     private static final String OF_JSON_NAME      = "1.10.2_HD_U_E3";
     private static final String OF_MD5            = "7ea7d7c1e353da2a94961b443e59026f";
     private static final String OF_VERSION_EXT    = ".jar";
-    private static final String FORGE_VERSION     = "12.18.3.2316";
+    private static final String FORGE_VERSION     = "12.18.3.2511";
     /* END OF DO NOT RENAME */
 
 	private static final String DEFAULT_PROFILE_NAME = "ViveCraft " + MINECRAFT_VERSION;
