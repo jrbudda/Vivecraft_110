@@ -1,0 +1,30 @@
+diff -r -U 3 minecraft\net\minecraft\client\renderer\block\model\FaceBakery.java minecraft_patched\net\minecraft\client\renderer\block\model\FaceBakery.java
+--- minecraft\net\minecraft\client\renderer\block\model\FaceBakery.java
++++ minecraft_patched\net\minecraft\client\renderer\block\model\FaceBakery.java
+@@ -19,22 +19,22 @@
+    private static final float field_178418_a = 1.0F / (float)Math.cos(0.39269909262657166D) - 1.0F;
+    private static final float field_178417_b = 1.0F / (float)Math.cos(0.7853981852531433D) - 1.0F;
+    private static final FaceBakery.Rotation[] field_188016_c = new FaceBakery.Rotation[ModelRotation.values().length * EnumFacing.values().length];
+-   private static final FaceBakery.Rotation field_188017_d = new FaceBakery.Rotation(null) {
++   private static final FaceBakery.Rotation field_188017_d = new FaceBakery.Rotation() {
+       BlockFaceUV func_188007_a(float p_188007_1_, float p_188007_2_, float p_188007_3_, float p_188007_4_) {
+          return new BlockFaceUV(new float[]{p_188007_1_, p_188007_2_, p_188007_3_, p_188007_4_}, 0);
+       }
+    };
+-   private static final FaceBakery.Rotation field_188018_e = new FaceBakery.Rotation(null) {
++   private static final FaceBakery.Rotation field_188018_e = new FaceBakery.Rotation() {
+       BlockFaceUV func_188007_a(float p_188007_1_, float p_188007_2_, float p_188007_3_, float p_188007_4_) {
+          return new BlockFaceUV(new float[]{p_188007_4_, 16.0F - p_188007_1_, p_188007_2_, 16.0F - p_188007_3_}, 270);
+       }
+    };
+-   private static final FaceBakery.Rotation field_188019_f = new FaceBakery.Rotation(null) {
++   private static final FaceBakery.Rotation field_188019_f = new FaceBakery.Rotation() {
+       BlockFaceUV func_188007_a(float p_188007_1_, float p_188007_2_, float p_188007_3_, float p_188007_4_) {
+          return new BlockFaceUV(new float[]{16.0F - p_188007_1_, 16.0F - p_188007_2_, 16.0F - p_188007_3_, 16.0F - p_188007_4_}, 0);
+       }
+    };
+-   private static final FaceBakery.Rotation field_188020_g = new FaceBakery.Rotation(null) {
++   private static final FaceBakery.Rotation field_188020_g = new FaceBakery.Rotation() {
+       BlockFaceUV func_188007_a(float p_188007_1_, float p_188007_2_, float p_188007_3_, float p_188007_4_) {
+          return new BlockFaceUV(new float[]{16.0F - p_188007_2_, p_188007_3_, 16.0F - p_188007_4_, p_188007_1_}, 90);
+       }

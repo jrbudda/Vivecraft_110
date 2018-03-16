@@ -1,0 +1,12 @@
+diff -r -U 3 minecraft_server\net\minecraft\command\CommandGameMode.java minecraft_server_patched\net\minecraft\command\CommandGameMode.java
+--- minecraft_server\net\minecraft\command\CommandGameMode.java
++++ minecraft_server_patched\net\minecraft\command\CommandGameMode.java
+@@ -56,7 +56,7 @@
+    }
+ 
+    public List<String> func_184883_a(MinecraftServer p_184883_1_, ICommandSender p_184883_2_, String[] p_184883_3_, @Nullable BlockPos p_184883_4_) {
+-      return p_184883_3_.length == 1?func_71530_a(p_184883_3_, new String[]{"survival", "creative", "adventure", "spectator"}):(p_184883_3_.length == 2?func_71530_a(p_184883_3_, p_184883_1_.func_71213_z()):Collections.emptyList());
++      return p_184883_3_.length == 1?func_71530_a(p_184883_3_, new String[]{"survival", "creative", "adventure", "spectator"}):(p_184883_3_.length == 2?func_71530_a(p_184883_3_, p_184883_1_.func_71213_z()):Collections.<String>emptyList());
+    }
+ 
+    public boolean func_82358_a(String[] p_82358_1_, int p_82358_2_) {

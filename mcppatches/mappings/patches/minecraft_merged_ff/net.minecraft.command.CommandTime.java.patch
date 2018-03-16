@@ -1,0 +1,12 @@
+diff -r -U 3 minecraft\net\minecraft\command\CommandTime.java minecraft_patched\net\minecraft\command\CommandTime.java
+--- minecraft\net\minecraft\command\CommandTime.java
++++ minecraft_patched\net\minecraft\command\CommandTime.java
+@@ -77,7 +77,7 @@
+    }
+ 
+    public List<String> func_184883_a(MinecraftServer p_184883_1_, ICommandSender p_184883_2_, String[] p_184883_3_, @Nullable BlockPos p_184883_4_) {
+-      return p_184883_3_.length == 1?func_71530_a(p_184883_3_, new String[]{"set", "add", "query"}):(p_184883_3_.length == 2 && "set".equals(p_184883_3_[0])?func_71530_a(p_184883_3_, new String[]{"day", "night"}):(p_184883_3_.length == 2 && "query".equals(p_184883_3_[0])?func_71530_a(p_184883_3_, new String[]{"daytime", "gametime", "day"}):Collections.emptyList()));
++      return p_184883_3_.length == 1?func_71530_a(p_184883_3_, new String[]{"set", "add", "query"}):(p_184883_3_.length == 2 && "set".equals(p_184883_3_[0])?func_71530_a(p_184883_3_, new String[]{"day", "night"}):(p_184883_3_.length == 2 && "query".equals(p_184883_3_[0])?func_71530_a(p_184883_3_, new String[]{"daytime", "gametime", "day"}):Collections.<String>emptyList()));
+    }
+ 
+    protected void func_184929_a(MinecraftServer p_184929_1_, int p_184929_2_) {

@@ -1,0 +1,21 @@
+diff -r -U 3 minecraft_server\net\minecraft\entity\projectile\EntityPotion.java minecraft_server_patched\net\minecraft\entity\projectile\EntityPotion.java
+--- minecraft_server\net\minecraft\entity\projectile\EntityPotion.java
++++ minecraft_server_patched\net\minecraft\entity\projectile\EntityPotion.java
+@@ -51,7 +51,7 @@
+    }
+ 
+    protected void func_70088_a() {
+-      this.func_184212_Q().func_187214_a(field_184545_d, Optional.<T>absent());
++      this.func_184212_Q().func_187214_a(field_184545_d, Optional.<ItemStack>absent());
+    }
+ 
+    public ItemStack func_184543_l() {
+@@ -68,7 +68,7 @@
+    }
+ 
+    public void func_184541_a(@Nullable ItemStack p_184541_1_) {
+-      this.func_184212_Q().func_187227_b(field_184545_d, Optional.<T>fromNullable(p_184541_1_));
++      this.func_184212_Q().func_187227_b(field_184545_d, Optional.fromNullable(p_184541_1_));
+       this.func_184212_Q().func_187217_b(field_184545_d);
+    }
+ 

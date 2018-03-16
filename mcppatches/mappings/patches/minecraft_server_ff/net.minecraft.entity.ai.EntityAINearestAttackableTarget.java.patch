@@ -1,0 +1,26 @@
+diff -r -U 3 minecraft_server\net\minecraft\entity\ai\EntityAINearestAttackableTarget.java minecraft_server_patched\net\minecraft\entity\ai\EntityAINearestAttackableTarget.java
+--- minecraft_server\net\minecraft\entity\ai\EntityAINearestAttackableTarget.java
++++ minecraft_server_patched\net\minecraft\entity\ai\EntityAINearestAttackableTarget.java
+@@ -59,11 +59,11 @@
+             return false;
+          } else {
+             Collections.sort(list, this.field_75306_g);
+-            this.field_75309_a = (EntityLivingBase)list.get(0);
++            this.field_75309_a = list.get(0);
+             return true;
+          }
+       } else {
+-         this.field_75309_a = this.field_75299_d.field_70170_p.func_184150_a(this.field_75299_d.field_70165_t, this.field_75299_d.field_70163_u + (double)this.field_75299_d.func_70047_e(), this.field_75299_d.field_70161_v, this.func_111175_f(), this.func_111175_f(), new Function<EntityPlayer, Double>() {
++         this.field_75309_a = (T)this.field_75299_d.field_70170_p.func_184150_a(this.field_75299_d.field_70165_t, this.field_75299_d.field_70163_u + (double)this.field_75299_d.func_70047_e(), this.field_75299_d.field_70161_v, this.func_111175_f(), this.func_111175_f(), new Function<EntityPlayer, Double>() {
+             @Nullable
+             public Double apply(@Nullable EntityPlayer p_apply_1_) {
+                ItemStack itemstack = p_apply_1_.func_184582_a(EntityEquipmentSlot.HEAD);
+@@ -79,7 +79,7 @@
+ 
+                return Double.valueOf(1.0D);
+             }
+-         }, this.field_82643_g);
++         }, (Predicate<EntityPlayer>)this.field_82643_g);
+          return this.field_75309_a != null;
+       }
+    }

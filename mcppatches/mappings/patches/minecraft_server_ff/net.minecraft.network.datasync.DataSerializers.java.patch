@@ -1,0 +1,48 @@
+diff -r -U 3 minecraft_server\net\minecraft\network\datasync\DataSerializers.java minecraft_server_patched\net\minecraft\network\datasync\DataSerializers.java
+--- minecraft_server\net\minecraft\network\datasync\DataSerializers.java
++++ minecraft_server_patched\net\minecraft\network\datasync\DataSerializers.java
+@@ -74,7 +74,7 @@
+          p_187160_1_.func_179256_a(p_187160_2_);
+       }
+ 
+-      public ITextComponent func_187159_a(PacketBuffer p_187159_1_) {
++      public ITextComponent func_187159_a(PacketBuffer p_187159_1_) throws java.io.IOException {
+          return p_187159_1_.func_179258_d();
+       }
+ 
+@@ -87,7 +87,7 @@
+          p_187160_1_.func_150788_a((ItemStack)p_187160_2_.orNull());
+       }
+ 
+-      public Optional<ItemStack> func_187159_a(PacketBuffer p_187159_1_) {
++      public Optional<ItemStack> func_187159_a(PacketBuffer p_187159_1_) throws java.io.IOException {
+          return Optional.<ItemStack>fromNullable(p_187159_1_.func_150791_c());
+       }
+ 
+@@ -107,7 +107,7 @@
+ 
+       public Optional<IBlockState> func_187159_a(PacketBuffer p_187159_1_) {
+          int i = p_187159_1_.func_150792_a();
+-         return i == 0?Optional.absent():Optional.of(Block.func_176220_d(i));
++         return i == 0?Optional.<IBlockState>absent():Optional.of(Block.func_176220_d(i));
+       }
+ 
+       public DataParameter<Optional<IBlockState>> func_187161_a(int p_187161_1_) {
+@@ -165,7 +165,7 @@
+       }
+ 
+       public Optional<BlockPos> func_187159_a(PacketBuffer p_187159_1_) {
+-         return !p_187159_1_.readBoolean()?Optional.absent():Optional.of(p_187159_1_.func_179259_c());
++         return !p_187159_1_.readBoolean()?Optional.<BlockPos>absent():Optional.of(p_187159_1_.func_179259_c());
+       }
+ 
+       public DataParameter<Optional<BlockPos>> func_187161_a(int p_187161_1_) {
+@@ -195,7 +195,7 @@
+       }
+ 
+       public Optional<UUID> func_187159_a(PacketBuffer p_187159_1_) {
+-         return !p_187159_1_.readBoolean()?Optional.absent():Optional.of(p_187159_1_.func_179253_g());
++         return !p_187159_1_.readBoolean()?Optional.<UUID>absent():Optional.of(p_187159_1_.func_179253_g());
+       }
+ 
+       public DataParameter<Optional<UUID>> func_187161_a(int p_187161_1_) {

@@ -1,0 +1,12 @@
+diff -r -U 3 minecraft_server\net\minecraft\block\properties\PropertyBool.java minecraft_server_patched\net\minecraft\block\properties\PropertyBool.java
+--- minecraft_server\net\minecraft\block\properties\PropertyBool.java
++++ minecraft_server_patched\net\minecraft\block\properties\PropertyBool.java
+@@ -21,7 +21,7 @@
+    }
+ 
+    public Optional<Boolean> func_185929_b(String p_185929_1_) {
+-      return !"true".equals(p_185929_1_) && !"false".equals(p_185929_1_)?Optional.absent():Optional.of(Boolean.valueOf(p_185929_1_));
++      return !"true".equals(p_185929_1_) && !"false".equals(p_185929_1_)?Optional.<Boolean>absent():Optional.of(Boolean.valueOf(p_185929_1_));
+    }
+ 
+    public String func_177702_a(Boolean p_177702_1_) {

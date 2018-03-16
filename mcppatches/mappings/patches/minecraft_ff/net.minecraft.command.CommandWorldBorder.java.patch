@@ -1,0 +1,11 @@
+diff -r -U 3 minecraft\net\minecraft\command\CommandWorldBorder.java minecraft_patched\net\minecraft\command\CommandWorldBorder.java
+--- minecraft\net\minecraft\command\CommandWorldBorder.java
++++ minecraft_patched\net\minecraft\command\CommandWorldBorder.java
+@@ -146,6 +146,6 @@
+    }
+ 
+    public List<String> func_184883_a(MinecraftServer p_184883_1_, ICommandSender p_184883_2_, String[] p_184883_3_, @Nullable BlockPos p_184883_4_) {
+-      return p_184883_3_.length == 1?func_71530_a(p_184883_3_, new String[]{"set", "center", "damage", "warning", "add", "get"}):(p_184883_3_.length == 2 && "damage".equals(p_184883_3_[0])?func_71530_a(p_184883_3_, new String[]{"buffer", "amount"}):(p_184883_3_.length >= 2 && p_184883_3_.length <= 3 && "center".equals(p_184883_3_[0])?func_181043_b(p_184883_3_, 1, p_184883_4_):(p_184883_3_.length == 2 && "warning".equals(p_184883_3_[0])?func_71530_a(p_184883_3_, new String[]{"time", "distance"}):Collections.emptyList())));
++      return p_184883_3_.length == 1?func_71530_a(p_184883_3_, new String[]{"set", "center", "damage", "warning", "add", "get"}):(p_184883_3_.length == 2 && "damage".equals(p_184883_3_[0])?func_71530_a(p_184883_3_, new String[]{"buffer", "amount"}):(p_184883_3_.length >= 2 && p_184883_3_.length <= 3 && "center".equals(p_184883_3_[0])?func_181043_b(p_184883_3_, 1, p_184883_4_):(p_184883_3_.length == 2 && "warning".equals(p_184883_3_[0])?func_71530_a(p_184883_3_, new String[]{"time", "distance"}):Collections.<String>emptyList())));
+    }
+ }

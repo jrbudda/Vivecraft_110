@@ -1,0 +1,12 @@
+diff -r -U 3 minecraft\net\minecraft\util\math\Cartesian.java minecraft_patched\net\minecraft\util\math\Cartesian.java
+--- minecraft\net\minecraft\util\math\Cartesian.java
++++ minecraft_patched\net\minecraft\util\math\Cartesian.java
+@@ -44,7 +44,7 @@
+       }
+ 
+       public List<T> apply(@Nullable Object[] p_apply_1_) {
+-         return Arrays.<T>asList((Object[])p_apply_1_);
++         return Arrays.<T>asList((T[])p_apply_1_);
+       }
+    }
+ 

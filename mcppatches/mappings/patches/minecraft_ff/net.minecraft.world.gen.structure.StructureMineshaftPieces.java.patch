@@ -1,0 +1,11 @@
+diff -r -U 3 minecraft\net\minecraft\world\gen\structure\StructureMineshaftPieces.java minecraft_patched\net\minecraft\world\gen\structure\StructureMineshaftPieces.java
+--- minecraft\net\minecraft\world\gen\structure\StructureMineshaftPieces.java
++++ minecraft_patched\net\minecraft\world\gen\structure\StructureMineshaftPieces.java
+@@ -26,6 +26,7 @@
+ import net.minecraft.world.gen.structure.StructureComponent;
+ import net.minecraft.world.storage.loot.LootTableList;
+ 
++@SuppressWarnings("incomplete-switch")
+ public class StructureMineshaftPieces {
+    public static void func_143048_a() {
+       MapGenStructureIO.func_143031_a(StructureMineshaftPieces.Corridor.class, "MSCorridor");

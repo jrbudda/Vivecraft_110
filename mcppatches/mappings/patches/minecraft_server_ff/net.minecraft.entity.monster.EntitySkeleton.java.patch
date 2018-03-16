@@ -1,0 +1,12 @@
+diff -r -U 3 minecraft_server\net\minecraft\entity\monster\EntitySkeleton.java minecraft_server_patched\net\minecraft\entity\monster\EntitySkeleton.java
+--- minecraft_server\net\minecraft\entity\monster\EntitySkeleton.java
++++ minecraft_server_patched\net\minecraft\entity\monster\EntitySkeleton.java
+@@ -63,7 +63,7 @@
+    private static final DataParameter<Integer> field_184727_a = EntityDataManager.<Integer>func_187226_a(EntitySkeleton.class, DataSerializers.field_187192_b);
+    private static final DataParameter<Boolean> field_184728_b = EntityDataManager.<Boolean>func_187226_a(EntitySkeleton.class, DataSerializers.field_187198_h);
+    private final EntityAIAttackRangedBow field_85037_d = new EntityAIAttackRangedBow(this, 1.0D, 20, 15.0F);
+-   private final EntityAIAttackMelee field_85038_e = new EntityAIAttackMelee(this, 1.2D, p_i47000_5_) {
++   private final EntityAIAttackMelee field_85038_e = new EntityAIAttackMelee(this, 1.2D, false) {
+       public void func_75251_c() {
+          super.func_75251_c();
+          EntitySkeleton.this.func_184724_a(false);

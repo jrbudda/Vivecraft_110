@@ -1,0 +1,21 @@
+diff -r -U 3 minecraft\net\minecraft\world\gen\structure\StructureEndCityPieces.java minecraft_patched\net\minecraft\world\gen\structure\StructureEndCityPieces.java
+--- minecraft\net\minecraft\world\gen\structure\StructureEndCityPieces.java
++++ minecraft_patched\net\minecraft\world\gen\structure\StructureEndCityPieces.java
+@@ -59,7 +59,7 @@
+          }
+       }
+    };
+-   private static final List<Tuple<Rotation, BlockPos>> field_186205_e = Lists.newArrayList(new Tuple[]{new Tuple(Rotation.NONE, new BlockPos(1, -1, 0)), new Tuple(Rotation.CLOCKWISE_90, new BlockPos(6, -1, 1)), new Tuple(Rotation.COUNTERCLOCKWISE_90, new BlockPos(0, -1, 5)), new Tuple(Rotation.CLOCKWISE_180, new BlockPos(5, -1, 6))});
++   private static final List<Tuple<Rotation, BlockPos>> field_186205_e = Lists.<Tuple<Rotation, BlockPos>>newArrayList(new Tuple[]{new Tuple(Rotation.NONE, new BlockPos(1, -1, 0)), new Tuple(Rotation.CLOCKWISE_90, new BlockPos(6, -1, 1)), new Tuple(Rotation.COUNTERCLOCKWISE_90, new BlockPos(0, -1, 5)), new Tuple(Rotation.CLOCKWISE_180, new BlockPos(5, -1, 6))});
+    private static final StructureEndCityPieces.IGenerator field_186206_f = new StructureEndCityPieces.IGenerator() {
+       public void func_186184_a() {
+       }
+@@ -139,7 +139,7 @@
+          return true;
+       }
+    };
+-   private static final List<Tuple<Rotation, BlockPos>> field_186208_h = Lists.newArrayList(new Tuple[]{new Tuple(Rotation.NONE, new BlockPos(4, -1, 0)), new Tuple(Rotation.CLOCKWISE_90, new BlockPos(12, -1, 4)), new Tuple(Rotation.COUNTERCLOCKWISE_90, new BlockPos(0, -1, 8)), new Tuple(Rotation.CLOCKWISE_180, new BlockPos(8, -1, 12))});
++   private static final List<Tuple<Rotation, BlockPos>> field_186208_h = Lists.<Tuple<Rotation, BlockPos>>newArrayList(new Tuple[]{new Tuple(Rotation.NONE, new BlockPos(4, -1, 0)), new Tuple(Rotation.CLOCKWISE_90, new BlockPos(12, -1, 4)), new Tuple(Rotation.COUNTERCLOCKWISE_90, new BlockPos(0, -1, 8)), new Tuple(Rotation.CLOCKWISE_180, new BlockPos(8, -1, 12))});
+    private static final StructureEndCityPieces.IGenerator field_186209_i = new StructureEndCityPieces.IGenerator() {
+       public void func_186184_a() {
+       }

@@ -1,0 +1,11 @@
+diff -r -U 3 minecraft\net\minecraft\command\server\CommandSetBlock.java minecraft_patched\net\minecraft\command\server\CommandSetBlock.java
+--- minecraft\net\minecraft\command\server\CommandSetBlock.java
++++ minecraft_patched\net\minecraft\command\server\CommandSetBlock.java
+@@ -106,6 +106,6 @@
+    }
+ 
+    public List<String> func_184883_a(MinecraftServer p_184883_1_, ICommandSender p_184883_2_, String[] p_184883_3_, @Nullable BlockPos p_184883_4_) {
+-      return p_184883_3_.length > 0 && p_184883_3_.length <= 3?func_175771_a(p_184883_3_, 0, p_184883_4_):(p_184883_3_.length == 4?func_175762_a(p_184883_3_, Block.field_149771_c.func_148742_b()):(p_184883_3_.length == 6?func_71530_a(p_184883_3_, new String[]{"replace", "destroy", "keep"}):Collections.emptyList()));
++      return p_184883_3_.length > 0 && p_184883_3_.length <= 3?func_175771_a(p_184883_3_, 0, p_184883_4_):(p_184883_3_.length == 4?func_175762_a(p_184883_3_, Block.field_149771_c.func_148742_b()):(p_184883_3_.length == 6?func_71530_a(p_184883_3_, new String[]{"replace", "destroy", "keep"}):Collections.<String>emptyList()));
+    }
+ }

@@ -1,0 +1,21 @@
+diff -r -U 3 minecraft\net\minecraft\entity\monster\EntityEnderman.java minecraft_patched\net\minecraft\entity\monster\EntityEnderman.java
+--- minecraft\net\minecraft\entity\monster\EntityEnderman.java
++++ minecraft_patched\net\minecraft\entity\monster\EntityEnderman.java
+@@ -110,7 +110,7 @@
+ 
+    protected void func_70088_a() {
+       super.func_70088_a();
+-      this.field_70180_af.func_187214_a(field_184718_bv, Optional.<T>absent());
++      this.field_70180_af.func_187214_a(field_184718_bv, Optional.<IBlockState>absent());
+       this.field_70180_af.func_187214_a(field_184719_bw, Boolean.valueOf(false));
+    }
+ 
+@@ -265,7 +265,7 @@
+    }
+ 
+    public void func_175490_a(@Nullable IBlockState p_175490_1_) {
+-      this.field_70180_af.func_187227_b(field_184718_bv, Optional.<T>fromNullable(p_175490_1_));
++      this.field_70180_af.func_187227_b(field_184718_bv, Optional.fromNullable(p_175490_1_));
+    }
+ 
+    @Nullable

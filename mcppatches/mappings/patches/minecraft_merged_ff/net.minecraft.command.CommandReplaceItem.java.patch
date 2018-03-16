@@ -1,0 +1,12 @@
+diff -r -U 3 minecraft\net\minecraft\command\CommandReplaceItem.java minecraft_patched\net\minecraft\command\CommandReplaceItem.java
+--- minecraft\net\minecraft\command\CommandReplaceItem.java
++++ minecraft_patched\net\minecraft\command\CommandReplaceItem.java
+@@ -146,7 +146,7 @@
+    }
+ 
+    public List<String> func_184883_a(MinecraftServer p_184883_1_, ICommandSender p_184883_2_, String[] p_184883_3_, @Nullable BlockPos p_184883_4_) {
+-      return p_184883_3_.length == 1?func_71530_a(p_184883_3_, new String[]{"entity", "block"}):(p_184883_3_.length == 2 && "entity".equals(p_184883_3_[0])?func_71530_a(p_184883_3_, p_184883_1_.func_71213_z()):(p_184883_3_.length >= 2 && p_184883_3_.length <= 4 && "block".equals(p_184883_3_[0])?func_175771_a(p_184883_3_, 1, p_184883_4_):((p_184883_3_.length != 3 || !"entity".equals(p_184883_3_[0])) && (p_184883_3_.length != 5 || !"block".equals(p_184883_3_[0]))?((p_184883_3_.length != 4 || !"entity".equals(p_184883_3_[0])) && (p_184883_3_.length != 6 || !"block".equals(p_184883_3_[0]))?Collections.emptyList():func_175762_a(p_184883_3_, Item.field_150901_e.func_148742_b())):func_175762_a(p_184883_3_, field_175785_a.keySet()))));
++      return p_184883_3_.length == 1?func_71530_a(p_184883_3_, new String[]{"entity", "block"}):(p_184883_3_.length == 2 && "entity".equals(p_184883_3_[0])?func_71530_a(p_184883_3_, p_184883_1_.func_71213_z()):(p_184883_3_.length >= 2 && p_184883_3_.length <= 4 && "block".equals(p_184883_3_[0])?func_175771_a(p_184883_3_, 1, p_184883_4_):((p_184883_3_.length != 3 || !"entity".equals(p_184883_3_[0])) && (p_184883_3_.length != 5 || !"block".equals(p_184883_3_[0]))?((p_184883_3_.length != 4 || !"entity".equals(p_184883_3_[0])) && (p_184883_3_.length != 6 || !"block".equals(p_184883_3_[0]))?Collections.<String>emptyList():func_175762_a(p_184883_3_, Item.field_150901_e.func_148742_b())):func_175762_a(p_184883_3_, field_175785_a.keySet()))));
+    }
+ 
+    public boolean func_82358_a(String[] p_82358_1_, int p_82358_2_) {

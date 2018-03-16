@@ -1,0 +1,11 @@
+diff -r -U 3 minecraft\net\minecraft\command\server\CommandListBans.java minecraft_patched\net\minecraft\command\server\CommandListBans.java
+--- minecraft\net\minecraft\command\server\CommandListBans.java
++++ minecraft_patched\net\minecraft\command\server\CommandListBans.java
+@@ -40,6 +40,6 @@
+    }
+ 
+    public List<String> func_184883_a(MinecraftServer p_184883_1_, ICommandSender p_184883_2_, String[] p_184883_3_, @Nullable BlockPos p_184883_4_) {
+-      return p_184883_3_.length == 1?func_71530_a(p_184883_3_, new String[]{"players", "ips"}):Collections.emptyList();
++      return p_184883_3_.length == 1?func_71530_a(p_184883_3_, new String[]{"players", "ips"}):Collections.<String>emptyList();
+    }
+ }

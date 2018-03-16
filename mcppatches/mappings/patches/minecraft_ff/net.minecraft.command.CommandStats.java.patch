@@ -1,0 +1,12 @@
+diff -r -U 3 minecraft\net\minecraft\command\CommandStats.java minecraft_patched\net\minecraft\command\CommandStats.java
+--- minecraft\net\minecraft\command\CommandStats.java
++++ minecraft_patched\net\minecraft\command\CommandStats.java
+@@ -137,7 +137,7 @@
+    }
+ 
+    public List<String> func_184883_a(MinecraftServer p_184883_1_, ICommandSender p_184883_2_, String[] p_184883_3_, @Nullable BlockPos p_184883_4_) {
+-      return p_184883_3_.length == 1?func_71530_a(p_184883_3_, new String[]{"entity", "block"}):(p_184883_3_.length == 2 && "entity".equals(p_184883_3_[0])?func_71530_a(p_184883_3_, p_184883_1_.func_71213_z()):(p_184883_3_.length >= 2 && p_184883_3_.length <= 4 && "block".equals(p_184883_3_[0])?func_175771_a(p_184883_3_, 1, p_184883_4_):((p_184883_3_.length != 3 || !"entity".equals(p_184883_3_[0])) && (p_184883_3_.length != 5 || !"block".equals(p_184883_3_[0]))?((p_184883_3_.length != 4 || !"entity".equals(p_184883_3_[0])) && (p_184883_3_.length != 6 || !"block".equals(p_184883_3_[0]))?((p_184883_3_.length != 6 || !"entity".equals(p_184883_3_[0])) && (p_184883_3_.length != 8 || !"block".equals(p_184883_3_[0]))?Collections.emptyList():func_175762_a(p_184883_3_, this.func_184927_a(p_184883_1_))):func_71530_a(p_184883_3_, CommandResultStats.Type.func_179634_c())):func_71530_a(p_184883_3_, new String[]{"set", "clear"}))));
++      return p_184883_3_.length == 1?func_71530_a(p_184883_3_, new String[]{"entity", "block"}):(p_184883_3_.length == 2 && "entity".equals(p_184883_3_[0])?func_71530_a(p_184883_3_, p_184883_1_.func_71213_z()):(p_184883_3_.length >= 2 && p_184883_3_.length <= 4 && "block".equals(p_184883_3_[0])?func_175771_a(p_184883_3_, 1, p_184883_4_):((p_184883_3_.length != 3 || !"entity".equals(p_184883_3_[0])) && (p_184883_3_.length != 5 || !"block".equals(p_184883_3_[0]))?((p_184883_3_.length != 4 || !"entity".equals(p_184883_3_[0])) && (p_184883_3_.length != 6 || !"block".equals(p_184883_3_[0]))?((p_184883_3_.length != 6 || !"entity".equals(p_184883_3_[0])) && (p_184883_3_.length != 8 || !"block".equals(p_184883_3_[0]))?Collections.<String>emptyList():func_175762_a(p_184883_3_, this.func_184927_a(p_184883_1_))):func_71530_a(p_184883_3_, CommandResultStats.Type.func_179634_c())):func_71530_a(p_184883_3_, new String[]{"set", "clear"}))));
+    }
+ 
+    protected List<String> func_184927_a(MinecraftServer p_184927_1_) {

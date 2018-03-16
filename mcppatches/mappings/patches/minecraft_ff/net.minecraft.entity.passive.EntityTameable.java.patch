@@ -1,0 +1,21 @@
+diff -r -U 3 minecraft\net\minecraft\entity\passive\EntityTameable.java minecraft_patched\net\minecraft\entity\passive\EntityTameable.java
+--- minecraft\net\minecraft\entity\passive\EntityTameable.java
++++ minecraft_patched\net\minecraft\entity\passive\EntityTameable.java
+@@ -33,7 +33,7 @@
+    protected void func_70088_a() {
+       super.func_70088_a();
+       this.field_70180_af.func_187214_a(field_184755_bv, Byte.valueOf((byte)0));
+-      this.field_70180_af.func_187214_a(field_184756_bw, Optional.<T>absent());
++      this.field_70180_af.func_187214_a(field_184756_bw, Optional.<UUID>absent());
+    }
+ 
+    public void func_70014_b(NBTTagCompound p_70014_1_) {
+@@ -141,7 +141,7 @@
+    }
+ 
+    public void func_184754_b(@Nullable UUID p_184754_1_) {
+-      this.field_70180_af.func_187227_b(field_184756_bw, Optional.<T>fromNullable(p_184754_1_));
++      this.field_70180_af.func_187227_b(field_184756_bw, Optional.fromNullable(p_184754_1_));
+    }
+ 
+    @Nullable

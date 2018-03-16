@@ -1,0 +1,21 @@
+diff -r -U 3 minecraft\net\minecraft\entity\item\EntityEnderCrystal.java minecraft_patched\net\minecraft\entity\item\EntityEnderCrystal.java
+--- minecraft\net\minecraft\entity\item\EntityEnderCrystal.java
++++ minecraft_patched\net\minecraft\entity\item\EntityEnderCrystal.java
+@@ -38,7 +38,7 @@
+    }
+ 
+    protected void func_70088_a() {
+-      this.func_184212_Q().func_187214_a(field_184521_b, Optional.<T>absent());
++      this.func_184212_Q().func_187214_a(field_184521_b, Optional.<BlockPos>absent());
+       this.func_184212_Q().func_187214_a(field_184522_c, Boolean.valueOf(true));
+    }
+ 
+@@ -114,7 +114,7 @@
+    }
+ 
+    public void func_184516_a(@Nullable BlockPos p_184516_1_) {
+-      this.func_184212_Q().func_187227_b(field_184521_b, Optional.<T>fromNullable(p_184516_1_));
++      this.func_184212_Q().func_187227_b(field_184521_b, Optional.fromNullable(p_184516_1_));
+    }
+ 
+    @Nullable

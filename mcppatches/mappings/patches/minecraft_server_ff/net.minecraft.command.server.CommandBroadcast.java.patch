@@ -1,0 +1,11 @@
+diff -r -U 3 minecraft_server\net\minecraft\command\server\CommandBroadcast.java minecraft_server_patched\net\minecraft\command\server\CommandBroadcast.java
+--- minecraft_server\net\minecraft\command\server\CommandBroadcast.java
++++ minecraft_server_patched\net\minecraft\command\server\CommandBroadcast.java
+@@ -35,6 +35,6 @@
+    }
+ 
+    public List<String> func_184883_a(MinecraftServer p_184883_1_, ICommandSender p_184883_2_, String[] p_184883_3_, @Nullable BlockPos p_184883_4_) {
+-      return p_184883_3_.length >= 1?func_71530_a(p_184883_3_, p_184883_1_.func_71213_z()):Collections.emptyList();
++      return p_184883_3_.length >= 1?func_71530_a(p_184883_3_, p_184883_1_.func_71213_z()):Collections.<String>emptyList();
+    }
+ }

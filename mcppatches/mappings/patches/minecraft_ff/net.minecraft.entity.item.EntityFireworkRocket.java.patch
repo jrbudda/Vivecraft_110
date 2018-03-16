@@ -1,0 +1,30 @@
+diff -r -U 3 minecraft\net\minecraft\entity\item\EntityFireworkRocket.java minecraft_patched\net\minecraft\entity\item\EntityFireworkRocket.java
+--- minecraft\net\minecraft\entity\item\EntityFireworkRocket.java
++++ minecraft_patched\net\minecraft\entity\item\EntityFireworkRocket.java
+@@ -29,7 +29,7 @@
+    }
+ 
+    protected void func_70088_a() {
+-      this.field_70180_af.func_187214_a(field_184566_a, Optional.<T>absent());
++      this.field_70180_af.func_187214_a(field_184566_a, Optional.<ItemStack>absent());
+    }
+ 
+    public boolean func_70112_a(double p_70112_1_) {
+@@ -43,7 +43,7 @@
+       this.func_70107_b(p_i1763_2_, p_i1763_4_, p_i1763_6_);
+       int i = 1;
+       if(p_i1763_8_ != null && p_i1763_8_.func_77942_o()) {
+-         this.field_70180_af.func_187227_b(field_184566_a, Optional.<T>of(p_i1763_8_));
++         this.field_70180_af.func_187227_b(field_184566_a, Optional.of(p_i1763_8_));
+          NBTTagCompound nbttagcompound = p_i1763_8_.func_77978_p();
+          NBTTagCompound nbttagcompound1 = nbttagcompound.func_74775_l("Fireworks");
+          i += nbttagcompound1.func_74771_c("Flight");
+@@ -150,7 +150,7 @@
+       if(nbttagcompound != null) {
+          ItemStack itemstack = ItemStack.func_77949_a(nbttagcompound);
+          if(itemstack != null) {
+-            this.field_70180_af.func_187227_b(field_184566_a, Optional.<T>of(itemstack));
++            this.field_70180_af.func_187227_b(field_184566_a, Optional.of(itemstack));
+          }
+       }
+ 
