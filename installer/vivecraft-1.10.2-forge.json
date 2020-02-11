@@ -163,7 +163,7 @@
 		"url": "http://files.minecraftforge.net/maven/"
 	},
 	{
-		"url": "http://central.maven.org/maven2/", 
+		"url": "http://vivecraft.org/jar/", 
 		"name": "org.json:json:20140107"
 	}, 
 	{
