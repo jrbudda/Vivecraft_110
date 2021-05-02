@@ -1,0 +1,139 @@
+diff -r -U 3 minecraft_server\net\minecraft\command\EntitySelector.java minecraft_server_patched\net\minecraft\command\EntitySelector.java
+--- minecraft_server\net\minecraft\command\EntitySelector.java
++++ minecraft_server_patched\net\minecraft\command\EntitySelector.java
+@@ -132,7 +132,7 @@
+ 
+    private static List<Predicate<Entity>> func_179663_a(Map<String, String> p_179663_0_, String p_179663_1_) {
+       List<Predicate<Entity>> list = Lists.<Predicate<Entity>>newArrayList();
+-      final String s = func_179651_b(p_179663_0_, "type");
++      String s = func_179651_b(p_179663_0_, "type");
+       final boolean flag = s != null && s.startsWith("!");
+       if(flag) {
+          s = s.substring(1);
+@@ -149,9 +149,10 @@
+             });
+          }
+       } else {
+-         list.add(new Predicate<Entity>() {
+-            public boolean apply(@Nullable Entity p_apply_1_) {
+-               return EntityList.func_180123_a(p_apply_1_, s) != flag;
++        final String s_f = s;
++         list.add(new Predicate<Entity>() {
++            public boolean apply(@Nullable Entity p_apply_1_) {
++               return EntityList.func_180123_a(p_apply_1_, s_f) != flag;
+             }
+          });
+       }
+@@ -190,7 +191,7 @@
+             s = s.substring(1);
+          }
+ 
+-         final GameType gametype;
++         GameType gametype;
+          try {
+             int i = Integer.parseInt(s);
+             gametype = GameType.func_185329_a(i, GameType.NOT_SET);
+@@ -198,6 +199,7 @@
+             gametype = GameType.func_185328_a(s, GameType.NOT_SET);
+          }
+ 
++         final GameType type = gametype;
+          list.add(new Predicate<Entity>() {
+             public boolean apply(@Nullable Entity p_apply_1_) {
+                if(!(p_apply_1_ instanceof EntityPlayerMP)) {
+@@ -205,7 +207,7 @@
+                } else {
+                   EntityPlayerMP entityplayermp = (EntityPlayerMP)p_apply_1_;
+                   GameType gametype1 = entityplayermp.field_71134_c.func_73081_b();
+-                  return flag?gametype1 != gametype:gametype1 == gametype;
++                  return flag?gametype1 != type:gametype1 == type;
+                }
+             }
+          });
+@@ -215,13 +217,14 @@
+ 
+    private static List<Predicate<Entity>> func_179659_d(Map<String, String> p_179659_0_) {
+       List<Predicate<Entity>> list = Lists.<Predicate<Entity>>newArrayList();
+-      final String s = func_179651_b(p_179659_0_, "team");
++      String s = func_179651_b(p_179659_0_, "team");
+       final boolean flag = s != null && s.startsWith("!");
+       if(flag) {
+          s = s.substring(1);
+       }
+ 
+       if(s != null) {
++         final String s_f = s;
+          list.add(new Predicate<Entity>() {
+             public boolean apply(@Nullable Entity p_apply_1_) {
+                if(!(p_apply_1_ instanceof EntityLivingBase)) {
+@@ -230,7 +233,7 @@
+                   EntityLivingBase entitylivingbase = (EntityLivingBase)p_apply_1_;
+                   Team team = entitylivingbase.func_96124_cp();
+                   String s1 = team == null?"":team.func_96661_b();
+-                  return s1.equals(s) != flag;
++                  return s1.equals(s_f) != flag;
+                }
+             }
+          });
+@@ -285,16 +288,17 @@
+ 
+    private static List<Predicate<Entity>> func_179647_f(Map<String, String> p_179647_0_) {
+       List<Predicate<Entity>> list = Lists.<Predicate<Entity>>newArrayList();
+-      final String s = func_179651_b(p_179647_0_, "name");
++      String s = func_179651_b(p_179647_0_, "name");
+       final boolean flag = s != null && s.startsWith("!");
+       if(flag) {
+          s = s.substring(1);
+       }
+ 
+       if(s != null) {
+-         list.add(new Predicate<Entity>() {
+-            public boolean apply(@Nullable Entity p_apply_1_) {
+-               return p_apply_1_ != null && p_apply_1_.func_70005_c_().equals(s) != flag;
++        final String s_f = s;
++         list.add(new Predicate<Entity>() {
++            public boolean apply(@Nullable Entity p_apply_1_) {
++               return p_apply_1_ != null && p_apply_1_.func_70005_c_().equals(s_f) != flag;
+             }
+          });
+       }
+@@ -304,16 +308,17 @@
+ 
+    private static List<Predicate<Entity>> func_184951_f(Map<String, String> p_184951_0_) {
+       List<Predicate<Entity>> list = Lists.<Predicate<Entity>>newArrayList();
+-      final String s = func_179651_b(p_184951_0_, "tag");
++      String s = func_179651_b(p_184951_0_, "tag");
+       final boolean flag = s != null && s.startsWith("!");
+       if(flag) {
+          s = s.substring(1);
+       }
+ 
+       if(s != null) {
+-         list.add(new Predicate<Entity>() {
+-            public boolean apply(@Nullable Entity p_apply_1_) {
+-               return p_apply_1_ == null?false:("".equals(s)?p_apply_1_.func_184216_O().isEmpty() != flag:p_apply_1_.func_184216_O().contains(s) != flag);
++        final String s_f = s;
++         list.add(new Predicate<Entity>() {
++            public boolean apply(@Nullable Entity p_apply_1_) {
++               return p_apply_1_ == null?false:("".equals(s_f)?p_apply_1_.func_184216_O().isEmpty() != flag:p_apply_1_.func_184216_O().contains(s_f) != flag);
+             }
+          });
+       }
+@@ -333,7 +338,7 @@
+          final double d3 = d2 * d2;
+          double d4 = Math.max(d1, 1.0E-4D);
+          final double d5 = d4 * d4;
+-         return Lists.newArrayList(new Predicate[]{new Predicate<Entity>() {
++         return Lists.<Predicate<Entity>>newArrayList(new Predicate[]{new Predicate<Entity>() {
+             public boolean apply(@Nullable Entity p_apply_1_) {
+                if(p_apply_1_ == null) {
+                   return false;
+@@ -444,7 +449,7 @@
+ 
+       Entity entity = p_179658_2_.func_174793_f();
+       if(entity != null && p_179658_3_.isAssignableFrom(entity.getClass()) && i == 1 && ((List)p_179658_0_).contains(entity) && !"r".equals(p_179658_4_)) {
+-         p_179658_0_ = Lists.newArrayList(new Entity[]{entity});
++         p_179658_0_ = Lists.newArrayList((T)entity);
+       }
+ 
+       if(i != 0) {

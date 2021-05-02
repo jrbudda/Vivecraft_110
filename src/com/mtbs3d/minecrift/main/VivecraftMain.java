@@ -11,7 +11,6 @@ import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 
 import com.google.common.base.Throwables;
-import com.mtbs3d.minecrift.asm.VivecraftASMTransformer;
 import com.mtbs3d.minecrift.tweaker.MinecriftClassTransformer;
 import com.mtbs3d.minecrift.tweaker.MinecriftClassTransformer.Stage;
 //import com.mtbs3d.minecrift.tweaker.MinecriftForgeClassTransformer;
@@ -20,9 +19,10 @@ import com.mtbs3d.minecrift.tweaker.MinecriftClassTransformer.Stage;
 public class VivecraftMain
 {
 	private static final String[] encapsulatedTransformers = new String[]{
+		// woo
 	};
 	private static final String[] removedTransformers = new String[]{
-		"guichaguri.betterfps.transformers.PatcherTransformer"
+		// yeah
 	};
 	
 	public static void main(String[] p_main_0_)
@@ -49,7 +49,7 @@ public class VivecraftMain
 					passedDeobf = true;
 				}
 				for (String dt : encapsulatedTransformers) {
-				    if (t.getClass().getName().equals(dt) || t.getClass().getName().equals("$wrapper." + dt)) {
+				    if (t.getClass().getName().equals(dt)) {
 				    	if (passedDeobf) {
 				    		encapsulateDeobf.add(t);
 				    	} else {
@@ -60,20 +60,20 @@ public class VivecraftMain
 				    }
 				}
 				for (String dt : removedTransformers) {
-				    if (t.getClass().getName().equals(dt) || t.getClass().getName().equals("$wrapper." + dt)) {
+				    if (t.getClass().getName().equals(dt)) {
 				    	it.remove();
 				    	break;
 				    }
 				}
 			}
 
-			transformers.add(2, new VivecraftASMTransformer());
+			//transformers.add(2, new VivecraftASMTransformer());
 			transformers.add(2, new MinecriftClassTransformer(Stage.MAIN, null));
 			int forgeObfIndex = 0;
 			for (int i = 0; i < transformers.size(); i++) {
 				IClassTransformer t = transformers.get(i);
-				if (t.getClass().getName().equals("$wrapper.net.minecraftforge.fml.common.asm.transformers.EventSubscriberTransformer")) {
-					forgeObfIndex = i + 1;
+				if (t.getClass().getName().equals("$wrapper.net.minecraftforge.fml.common.asm.transformers.BlamingTransformer")) {
+					forgeObfIndex = i;
 					break;
 				}
 			}

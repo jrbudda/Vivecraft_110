@@ -1,8 +1,6 @@
 package com.mtbs3d.minecrift.utils;
 
-import de.fruitfly.ovr.structs.EulerOrient;
-import de.fruitfly.ovr.structs.Quatf;
-import jopenvr.OpenVRUtil;
+import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Matrix4f;
@@ -191,12 +189,27 @@ public class Quaternion {
 	}
 
 	public Angle toEuler(){
-		Quaternion norm=this.normalized();
-		Quatf quat = new Quatf(norm.x,norm.y,norm.z,norm.w);
-		EulerOrient euler = OpenVRUtil.getEulerAnglesDegYXZ(quat);
-		return new Angle(euler.pitch,euler.yaw,euler.roll);
-	}
+		Quaternion q = this;
+			double ysqr = q.y * q.y;
+			double t0 = -2.0f * (ysqr + q.z * q.z) + 1.0f;
+			double t1 = +2.0f * (q.x * q.y - q.w * q.z);
+			double t2 = -2.0f * (q.x * q.z + q.w * q.y);
+			double t3 = +2.0f * (q.y * q.z - q.w * q.x);
+			double t4 = -2.0f * (q.x * q.x + ysqr) + 1.0f;
 
+			t2 = t2 > 1.0f ? 1.0f : t2;
+			t2 = t2 < -1.0f ? -1.0f : t2;
+
+			Angle out = new Angle();	
+			
+		float	pitch = (float) Math.asin(t2);
+		float	roll = (float) Math.atan2(t3, t4);
+		float	yaw = (float) Math.atan2(t1, t0);
+			
+			out.set(pitch, yaw, roll);
+			return out;
+	}
+	
 	public Quaternion rotate(Axis axis, float degrees) {
 		//return this.multiply(new Quaternion(axis.getVector(), degrees));
 		Matrix4f matrix = getMatrix();

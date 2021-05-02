@@ -1,0 +1,21 @@
+diff -r -U 3 minecraft_server\net\minecraft\entity\item\EntityItem.java minecraft_server_patched\net\minecraft\entity\item\EntityItem.java
+--- minecraft_server\net\minecraft\entity\item\EntityItem.java
++++ minecraft_server_patched\net\minecraft\entity\item\EntityItem.java
+@@ -68,7 +68,7 @@
+    }
+ 
+    protected void func_70088_a() {
+-      this.func_184212_Q().func_187214_a(field_184533_c, Optional.<T>absent());
++      this.func_184212_Q().func_187214_a(field_184533_c, Optional.<ItemStack>absent());
+    }
+ 
+    public void func_70071_h_() {
+@@ -337,7 +337,7 @@
+    }
+ 
+    public void func_92058_a(@Nullable ItemStack p_92058_1_) {
+-      this.func_184212_Q().func_187227_b(field_184533_c, Optional.<T>fromNullable(p_92058_1_));
++      this.func_184212_Q().func_187227_b(field_184533_c, Optional.fromNullable(p_92058_1_));
+       this.func_184212_Q().func_187217_b(field_184533_c);
+    }
+ 

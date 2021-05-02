@@ -1,0 +1,12 @@
+diff -r -U 3 minecraft_server\net\minecraft\command\CommandTrigger.java minecraft_server_patched\net\minecraft\command\CommandTrigger.java
+--- minecraft_server\net\minecraft\command\CommandTrigger.java
++++ minecraft_server_patched\net\minecraft\command\CommandTrigger.java
+@@ -93,7 +93,7 @@
+ 
+          return func_71530_a(p_184883_3_, (String[])list.toArray(new String[list.size()]));
+       } else {
+-         return p_184883_3_.length == 2?func_71530_a(p_184883_3_, new String[]{"add", "set"}):Collections.emptyList();
++         return p_184883_3_.length == 2?func_71530_a(p_184883_3_, new String[]{"add", "set"}):Collections.<String>emptyList();
+       }
+    }
+ }

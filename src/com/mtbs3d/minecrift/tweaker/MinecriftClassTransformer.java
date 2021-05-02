@@ -15,6 +15,8 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import com.mtbs3d.minecrift.utils.Utils;
+
 import net.minecraft.launchwrapper.IClassTransformer;
 
 // With apologies to Optifine. Copyright sp614x, this is built on his work.
@@ -27,6 +29,7 @@ public class MinecriftClassTransformer implements IClassTransformer
 	private static final boolean DEBUG = Boolean.parseBoolean(System.getProperty("legacy.debugClassLoading", "false"));
 	
     private ZipFile mcZipFile = null;
+    private static URL mcZipURL = null;
     private final Stage stage;
     
     private final Map<String, byte[]> cache;
@@ -43,23 +46,7 @@ public class MinecriftClassTransformer implements IClassTransformer
     	if (stage == Stage.MAIN) {
 	        try
 	        {
-	            URLClassLoader e = (URLClassLoader)MinecriftClassTransformer.class.getClassLoader();
-	            URL[] urls = e.getURLs();
-	
-	            for (int i = 0; i < urls.length; ++i)
-	            {
-	                URL url = urls[i];
-	                ZipFile zipFile = getMinecriftZipFile(url);
-	
-	                if (zipFile != null)
-	                {
-	                    this.mcZipFile = zipFile;
-	                    debug("Minecrift ClassTransformer");
-	                    debug("Minecrift URL: " + url);
-	                    debug("Minecrift ZIP file: " + zipFile);
-	                    break;
-	                }
-	            }
+	            this.mcZipFile = findMinecriftZipFile();
 	        }
 	        catch (Exception var6)
 	        {
@@ -100,6 +87,36 @@ public class MinecriftClassTransformer implements IClassTransformer
         }
     }
    
+    public static ZipFile findMinecriftZipFile() {
+    	if (mcZipURL != null) {
+    		try {
+    			return new ZipFile(new File(mcZipURL.toURI()));
+    		} catch (Exception e) {
+    			e.printStackTrace();
+    			return null;
+    		}
+    	}
+    	
+    	URLClassLoader e = (URLClassLoader)MinecriftClassTransformer.class.getClassLoader();
+        URL[] urls = e.getURLs();
+
+        for (int i = 0; i < urls.length; ++i)
+        {
+            URL url = urls[i];
+            ZipFile zipFile = getMinecriftZipFile(url);
+
+            if (zipFile != null)
+            {
+                debug("Vivecraft ClassTransformer");
+                debug("Vivecraft URL: " + url);
+                debug("Vivecraft ZIP file: " + zipFile.getName());
+                mcZipURL = url;
+                return zipFile;
+            }
+        }
+        return null;
+    }
+   
     
     public byte[] transform(String name, String transformedName, byte[] bytes)
     {
@@ -108,7 +125,7 @@ public class MinecriftClassTransformer implements IClassTransformer
 		    	byte[] minecriftClass = this.getMinecriftClass(name);
 		
 		    	if (minecriftClass == null) {
-		    		if (DEBUG) debug(String.format("Minecrift: Passthrough %s %s", name, transformedName));
+		    		if (DEBUG) debug(String.format("Vivecraft: Passthrough %s %s", name, transformedName));
 		    		if (DEBUG) writeToFile("original", transformedName , "", bytes);
 		    	}
 		    	else {
@@ -118,7 +135,7 @@ public class MinecriftClassTransformer implements IClassTransformer
 		    		minecriftClass = performAsmModification(minecriftClass, transformedName);
 		    		
 		    		if(bytes.length != minecriftClass.length) {
-		    			debug(String.format("Minecrift: Overwrite %s %s (%d != %d)", name, transformedName, bytes.length, minecriftClass.length));
+		    			debug(String.format("Vivecraft: Overwrite %s %s (%d != %d)", name, transformedName, bytes.length, minecriftClass.length));
 		    			myClasses.add(transformedName);
 		    		}
 		    		if (DEBUG) writeToFile("original", transformedName, "", bytes);
@@ -181,6 +198,11 @@ public class MinecriftClassTransformer implements IClassTransformer
             String fullName = name + ".class";
             ZipEntry ze = this.mcZipFile.getEntry(fullName);
 
+            if (ze == null) {
+            	fullName = name + ".clazz";
+            	ze = this.mcZipFile.getEntry(fullName);
+            }
+            
             if (ze == null)
             {
                 return null;

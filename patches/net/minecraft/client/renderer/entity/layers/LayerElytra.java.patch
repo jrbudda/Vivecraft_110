@@ -8,26 +8,24 @@
  import net.minecraft.client.renderer.entity.RenderPlayer;
  import net.minecraft.entity.player.EnumPlayerModelParts;
  import net.minecraft.init.Items;
-@@ -18,14 +19,19 @@
+@@ -18,7 +19,7 @@
      private static final ResourceLocation TEXTURE_ELYTRA = new ResourceLocation("textures/entity/elytra.png");
  
      /** Instance of the player renderer. */
 -    private final RenderPlayer renderPlayer;
-+    private final RenderLivingBase<?>  renderPlayer;
++    private final RenderLivingBase<?> renderPlayer;
  
      /** The model used by the Elytra. */
      private final ModelElytra modelElytra = new ModelElytra();
- 
--    public LayerElytra(RenderPlayer renderPlayerIn)
-+    public LayerElytra(RenderLivingBase<?> p_i47185_1_)
+@@ -27,6 +28,11 @@
      {
--        this.renderPlayer = renderPlayerIn;
-+        this.renderPlayer = p_i47185_1_;
-+    }
-+
-+    public LayerElytra(RenderPlayer p_i47185_1_)
-+    {
-+        this.renderPlayer = p_i47185_1_;
+         this.renderPlayer = renderPlayerIn;
      }
++    
++    public LayerElytra(RenderLivingBase<?> renderPlayerIn)
++    {
++        this.renderPlayer = renderPlayerIn;
++    }
  
      public void doRenderLayer(AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
+     {

@@ -20,7 +20,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.src.Reflector;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -59,12 +58,6 @@ public class RenderPlayerVR extends RenderLivingBase<AbstractClientPlayer>
      */
     public void doRender(AbstractClientPlayer entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
-    	//Forge - should this be in this one?
-    	if(Reflector.forgeExists()){
-    		if(Reflector.postForgeBusEvent(Reflector.RenderPlayerEvent_Pre_Constructor, new Object[]{entity, this, partialTicks, x, y, z}))
-    			return;
-    	}
-    	//
         if (!entity.isUser() || this.renderManager.renderViewEntity == entity)
         {
             double d0 = y;
@@ -79,11 +72,6 @@ public class RenderPlayerVR extends RenderLivingBase<AbstractClientPlayer>
             super.doRender(entity, x, d0, z, entityYaw, partialTicks);
             GlStateManager.disableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
         }
-        //Forge
-    	if(Reflector.forgeExists()){
-    		Reflector.postForgeBusEvent(Reflector.RenderPlayerEvent_Post_Constructor, new Object[]{entity, this, partialTicks, x, y, z});
-    	}
-    	//
     }
 
     private void setModelVisibilities(AbstractClientPlayer clientPlayer)
@@ -130,7 +118,7 @@ public class RenderPlayerVR extends RenderLivingBase<AbstractClientPlayer>
                 }
             }
 
-            if (itemstack1 != null)
+            if (itemstack1 !=null )
             {
                 modelbiped$armpose1 = ModelBiped.ArmPose.ITEM;
 
@@ -142,12 +130,6 @@ public class RenderPlayerVR extends RenderLivingBase<AbstractClientPlayer>
                     {
                         modelbiped$armpose1 = ModelBiped.ArmPose.BLOCK;
                     }
-                    // FORGE: fix MC-88356 allow offhand to use bow and arrow animation
-                    else if (enumaction1 == EnumAction.BOW)
-                    {
-                        modelbiped$armpose1 = ModelBiped.ArmPose.BOW_AND_ARROW;
-                    }
-                    //
                 }
             }
 

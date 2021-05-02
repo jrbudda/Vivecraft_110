@@ -1,5 +1,6 @@
 *.DS_Store
 *~
+.directory
 .*.swp
 /logs/
 /*.pyc
@@ -13,7 +14,7 @@ releases/
 *install*.exe
 patches/Start.java.patch
 installer/out/
-lib/
+/lib
 patchsrc/
 
 src/JRift

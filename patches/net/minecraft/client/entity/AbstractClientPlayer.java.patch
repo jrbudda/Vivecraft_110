@@ -1,33 +1,34 @@
 --- a/net/minecraft/client/entity/AbstractClientPlayer.java
 +++ b/net/minecraft/client/entity/AbstractClientPlayer.java
-@@ -1,6 +1,8 @@
+@@ -1,6 +1,9 @@
  package net.minecraft.client.entity;
  
  import com.mojang.authlib.GameProfile;
 +import com.mtbs3d.minecrift.api.PatreonReceiver;
++import com.mtbs3d.minecrift.render.PlayerModelController;
 +
  import java.io.File;
  import javax.annotation.Nullable;
  import net.minecraft.client.Minecraft;
-@@ -16,6 +18,9 @@
+@@ -16,6 +19,7 @@
  import net.minecraft.init.Items;
  import net.minecraft.src.CapeUtils;
  import net.minecraft.src.Config;
 +import net.minecraft.src.FileDownloadThread;
-+import net.minecraft.src.PlayerConfiguration;
-+import net.minecraft.src.PlayerConfigurationReceiver;
  import net.minecraft.src.PlayerConfigurations;
  import net.minecraft.src.Reflector;
  import net.minecraft.util.ResourceLocation;
-@@ -45,6 +50,11 @@
+@@ -45,6 +49,13 @@
  
          CapeUtils.downloadCape(this);
          PlayerConfigurations.getPlayerConfiguration(this);
 +        
-+        PatreonReceiver pr = new PatreonReceiver(nameClear, this);
-+        String s = "http://www.vivecraft.org/patreon/current.txt";
-+        FileDownloadThread filedownloadthread = new FileDownloadThread(s, pr);
-+        filedownloadthread.start();
++        if(!PlayerModelController.getInstance().HMDCHecked(this.getUniqueID())){
++		    PatreonReceiver pr = new PatreonReceiver(nameClear, this);
++		    String s = "http://www.vivecraft.org/patreon/current.txt";
++		    FileDownloadThread filedownloadthread = new FileDownloadThread(s, pr);
++		    filedownloadthread.start();
++        }
      }
  
      /**

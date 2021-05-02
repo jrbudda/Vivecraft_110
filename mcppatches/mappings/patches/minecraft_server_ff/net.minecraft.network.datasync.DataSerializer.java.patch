@@ -1,0 +1,12 @@
+diff -r -U 3 minecraft_server\net\minecraft\network\datasync\DataSerializer.java minecraft_server_patched\net\minecraft\network\datasync\DataSerializer.java
+--- minecraft_server\net\minecraft\network\datasync\DataSerializer.java
++++ minecraft_server_patched\net\minecraft\network\datasync\DataSerializer.java
+@@ -6,7 +6,7 @@
+ public interface DataSerializer<T> {
+    void func_187160_a(PacketBuffer p_187160_1_, T p_187160_2_);
+ 
+-   T func_187159_a(PacketBuffer p_187159_1_);
++   T func_187159_a(PacketBuffer p_187159_1_) throws java.io.IOException;
+ 
+    DataParameter<T> func_187161_a(int p_187161_1_);
+ }

@@ -84,6 +84,7 @@ def download_file(url, target, md5=None):
             if not md5 == None and not md5 == "":
                 if not get_md5(target) == md5:
                     print 'Download of %s failed md5 check, deleting' % name
+                    print 'expected %s got %s' % (md5, get_md5(target))
                     os.remove(target)
                     return False
         except Exception as e:
@@ -134,37 +135,40 @@ def installAndPatchMcp( mcp_dir ):
         print "No %s directory or zip file found. Please copy the %s.zip file into %s and re-run the command." % (mcp_version, mcp_version, base_dir)
         exit(1)
     
-    # Patch mcp.cfg for additional mem
-    print("Patching mcp.cfg. Ignore \"FAILED\" hunks")
-    mcp_cfg_patch_file = os.path.join("mcppatches", "mcp.cfg.patch")
-    if os.path.exists(mcp_cfg_patch_file):
-        apply_patch( mcp_dir, mcp_cfg_patch_file, os.path.join(mcp_dir,"conf"))
-    
-    # Patch mcp.cfg with minecraft jar md5
-    mcp_cfg_file = os.path.join(mcp_dir,"conf","mcp.cfg")
-    if os.path.exists(mcp_cfg_file):
-        replacelineinfile( mcp_cfg_file, "MD5Client  =", "MD5Client  = %s\n" % mc_file_md5, True );   # Multiple 'MD5Client' entries - hack to get first one currently
-        #replacelineinfile( mcp_cfg_file, "MD5Server  =", "MD5Server  = %s\n" % mc_server_file_md5, True );
-
-    # patch joined.srg if necessary
-    mcp_joined_srg = os.path.join(mcp_dir,"conf","joined.srg")
-    patch_joined_srg = os.path.join(base_dir,"mcppatches","joined.srg")
-    if os.path.exists(patch_joined_srg):
-        print 'Updating joined.srg: copying %s to %s' % (patch_joined_srg, mcp_joined_srg)
-        shutil.copy(patch_joined_srg,mcp_joined_srg)
-
-    # Patch fffix.py
-    fffix_patch_path = os.path.join(base_dir, "mcppatches", "fffix.py.patch")
-    if os.path.exists(fffix_patch_path):
-        print("Patching fffix.py. Ignore \"FAILED\" hunks")
-        apply_patch( mcp_dir, os.path.join("mcppatches", "fffix.py.patch"), os.path.join(mcp_dir,"runtime","pylibs"))
-
     # Use fixed fernflower.jar
     ff_jar_source_path = os.path.join(base_dir, "mcppatches", "fernflower-opt-fix.jar")
     ff_jar_dest_path = os.path.join(mcp_dir,"runtime","bin","fernflower.jar")
     if os.path.exists(ff_jar_source_path):
         print 'Updating fernflower.jar: copying %s to %s' % (ff_jar_source_path, ff_jar_dest_path)
         shutil.copy(ff_jar_source_path,ff_jar_dest_path)
+    
+    # Setup the appropriate mcp file versions
+    mcp_version_cfg = os.path.join(mcp_dir,"conf","version.cfg")
+    replacelineinfile( mcp_version_cfg, "ClientVersion =", "ClientVersion = %s\n" % mc_version );
+    replacelineinfile( mcp_version_cfg, "ServerVersion =", "ServerVersion = %s\n" % mc_version );
+
+    # Patch in mcp mappings (if present)
+    mappingsdir = os.path.join(base_dir,"mcppatches","mappings")
+    mappingstarget = os.path.join(mcp_dir,"conf")
+    if os.path.exists(mappingsdir):
+        src_files = os.listdir(mappingsdir)
+        for file_name in src_files:
+            full_file_name = os.path.join(mappingsdir, file_name)
+            if (os.path.isfile(full_file_name)):
+                shutil.copy(full_file_name, os.path.join(mappingstarget, file_name))
+
+    mcppatches = os.path.join(base_dir,"mcppatches","mappings","patches")
+    mcppatchesmcp = os.path.join(mcp_dir,"conf","patches")
+    if os.path.exists(mcppatches):
+        if os.path.exists(mcppatchesmcp):
+            shutil.rmtree(mcppatchesmcp)
+        shutil.copytree(mcppatches,mcppatchesmcp)
+    
+    # Patch mcp.cfg with minecraft jar md5
+    mcp_cfg_file = os.path.join(mcp_dir,"conf","mcp.cfg")
+    if os.path.exists(mcp_cfg_file):
+        replacelineinfile( mcp_cfg_file, "MD5Client  =", "MD5Client  = %s\n" % mc_file_md5, True );   # Multiple 'MD5Client' entries - hack to get first one currently
+        #replacelineinfile( mcp_cfg_file, "MD5Server  =", "MD5Server  = %s\n" % mc_server_file_md5, True );
 
     # Patch Start.java with minecraft version
     start_java_file = os.path.join(base_dir,"mcppatches","Start.java")
@@ -174,26 +178,6 @@ def installAndPatchMcp( mcp_dir ):
         shutil.copy(start_java_file,target_start_java_file)
         replacelineinfile( target_start_java_file, "args = concat(new String[] {\"--version\", \"mcp\"", "        args = concat(new String[] {\"--version\", \"mcp\", \"--accessToken\", \"0\", \"--assetsDir\", \"assets\", \"--assetIndex\", \"%s\", \"--userProperties\", \"{}\"}, args);\n" % mc_version );
     
-    # Setup the appropriate mcp file versions
-    mcp_version_cfg = os.path.join(mcp_dir,"conf","version.cfg")
-    replacelineinfile( mcp_version_cfg, "ClientVersion =", "ClientVersion = %s\n" % mc_version );
-    replacelineinfile( mcp_version_cfg, "ServerVersion =", "ServerVersion = %s\n" % mc_version );
-
-    # Patch in mcp mappings (if present)
-    params_csv_source = os.path.join(base_dir,"mcppatches","mappings","params.csv")
-    params_csv_dest = os.path.join(mcp_dir,"conf","params.csv")
-    if os.path.exists(params_csv_source):
-        shutil.copy(params_csv_source,params_csv_dest)
-
-    methods_csv_source = os.path.join(base_dir,"mcppatches","mappings","methods.csv")
-    methods_csv_dest = os.path.join(mcp_dir,"conf","methods.csv")
-    if os.path.exists(methods_csv_source):
-        shutil.copy(methods_csv_source,methods_csv_dest)
-
-    fields_csv_source = os.path.join(base_dir,"mcppatches","mappings","fields.csv")
-    fields_csv_dest = os.path.join(mcp_dir,"conf","fields.csv")
-    if os.path.exists(fields_csv_source):
-        shutil.copy(fields_csv_source,fields_csv_dest)
 
 
 def download_deps( mcp_dir, download_mc, forgedep=False ):
@@ -242,6 +226,8 @@ def download_deps( mcp_dir, download_mc, forgedep=False ):
     download_optifine = False
     optifine_md5 = ''
     if not is_non_zero_file( optifine_dest_file ):
+        print 'Checking Optifine...'
+        print 'Optifine not Found at' + optifine_dest_file
         download_optifine = True
     else:
         optifine_md5 = get_md5( optifine_dest_file )
@@ -254,9 +240,9 @@ def download_deps( mcp_dir, download_mc, forgedep=False ):
     
     if download_optifine: 
         # Use optifine filename for URL
-        optifine_url = "http://optifine.net/download.php?f=OptiFine_"+of_file_name+of_file_extension
-        print 'Downloading Optifine...'
-        if not download_file( optifine_url, optifine_dest_file, of_file_md5 ):
+        optifine_url = "http://vivecraft.org/jar/build/OptiFine-"+of_file_name+of_file_extension
+        print 'Downloading Optifine from ' + optifine_url
+        if not download_file( optifine_url, optifine_dest_file):
             print 'FAILED to download Optifine!'
             sys.exit(1)
         else:
@@ -473,7 +459,7 @@ def main(mcp_dir):
     if includeForge:
         download_deps( mcp_dir, True, True ) # Forge libs
 
-    download_deps( mcp_dir, False, False ) # Vanilla libs
+    download_deps( mcp_dir, True, False ) # Vanilla libs
     if dependenciesOnly:
         sys.exit(1)
 

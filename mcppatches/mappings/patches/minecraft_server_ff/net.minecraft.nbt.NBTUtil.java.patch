@@ -1,0 +1,22 @@
+diff -r -U 3 minecraft_server\net\minecraft\nbt\NBTUtil.java minecraft_server_patched\net\minecraft\nbt\NBTUtil.java
+--- minecraft_server\net\minecraft\nbt\NBTUtil.java
++++ minecraft_server_patched\net\minecraft\nbt\NBTUtil.java
+@@ -195,7 +195,7 @@
+    }
+ 
+    private static <T extends Comparable<T>> IBlockState func_190007_a(IBlockState p_190007_0_, IProperty<T> p_190007_1_, String p_190007_2_) {
+-      return p_190007_0_.func_177226_a(p_190007_1_, (Comparable)p_190007_1_.func_185929_b(p_190007_2_).get());
++      return p_190007_0_.func_177226_a(p_190007_1_, p_190007_1_.func_185929_b(p_190007_2_).get());
+    }
+ 
+    public static NBTTagCompound func_190009_a(NBTTagCompound p_190009_0_, IBlockState p_190009_1_) {
+@@ -214,7 +214,8 @@
+       return p_190009_0_;
+    }
+ 
++   @SuppressWarnings("unchecked")
+    private static <T extends Comparable<T>> String func_190010_a(IProperty<T> p_190010_0_, Comparable<?> p_190010_1_) {
+-      return p_190010_0_.func_177702_a(p_190010_1_);
++      return p_190010_0_.func_177702_a((T)p_190010_1_);
+    }
+ }

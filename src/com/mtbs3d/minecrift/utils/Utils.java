@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -21,127 +20,15 @@ import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
 
-import jopenvr.HmdMatrix34_t;
-
 import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
 
 import net.minecraft.util.math.Vec3d;
 
 public class Utils
 {
-	public static Field getDeclaredField(Class clazz, String unObfuscatedName, String obfuscatedName, String srgName)
-	{
-		Field field = null;
-		String s = clazz.getName();
-
-		try
-		{
-			field = clazz.getDeclaredField(unObfuscatedName);
-		}
-		catch (NoSuchFieldException e)
-		{
-			try
-			{
-				field = clazz.getDeclaredField(obfuscatedName);
-			}
-			catch (NoSuchFieldException e1)
-			{
-				try
-				{
-					field = clazz.getDeclaredField(srgName);
-				}
-				catch (NoSuchFieldException e2)
-				{
-					System.out.println("[Vivecraft] WARNING: could not reflect field :" + unObfuscatedName + "," + srgName + "," + obfuscatedName + " in " + clazz.toString());
-				};
-			};
-		}
-
-		return field;
-	}
-	
-  	public static Vector3f convertVector(de.fruitfly.ovr.structs.Vector3f vector) {
-		return new Vector3f(vector.x, vector.y, vector.z);
-	}
-
-	public static de.fruitfly.ovr.structs.Vector3f convertToOVRVector(Vector3f vector) {
-		return new de.fruitfly.ovr.structs.Vector3f(vector.x, vector.y, vector.z);
-	}
-	
-	public static Matrix4f convertOVRMatrix(de.fruitfly.ovr.structs.Matrix4f matrix) {
-		Matrix4f mat = new Matrix4f();
-		mat.m00 = matrix.M[0][0];
-		mat.m01 = matrix.M[0][1];
-		mat.m02 = matrix.M[0][2];
-		mat.m03 = matrix.M[0][3];
-		mat.m10 = matrix.M[1][0];
-		mat.m11 = matrix.M[1][1];
-		mat.m12 = matrix.M[1][2];
-		mat.m13 = matrix.M[1][3];
-		mat.m20 = matrix.M[2][0];
-		mat.m21 = matrix.M[2][1];
-		mat.m22 = matrix.M[2][2];
-		mat.m23 = matrix.M[2][3];
-		mat.m30 = matrix.M[3][0];
-		mat.m31 = matrix.M[3][1];
-		mat.m32 = matrix.M[3][2];
-		mat.m33 = matrix.M[3][3];
-		mat.transpose(mat);
-		return mat;
-	}
-	
-	public static de.fruitfly.ovr.structs.Matrix4f convertToOVRMatrix(Matrix4f matrixIn) {
-		Matrix4f matrix = new Matrix4f();
-		matrixIn.transpose(matrix);
-		de.fruitfly.ovr.structs.Matrix4f mat = new de.fruitfly.ovr.structs.Matrix4f();
-		mat.M[0][0] = matrix.m00;
-		mat.M[0][1] = matrix.m01;
-		mat.M[0][2] = matrix.m02;
-		mat.M[0][3] = matrix.m03;
-		mat.M[1][0] = matrix.m10;
-		mat.M[1][1] = matrix.m11;
-		mat.M[1][2] = matrix.m12;
-		mat.M[1][3] = matrix.m13;
-		mat.M[2][0] = matrix.m20;
-		mat.M[2][1] = matrix.m21;
-		mat.M[2][2] = matrix.m22;
-		mat.M[2][3] = matrix.m23;
-		mat.M[3][0] = matrix.m30;
-		mat.M[3][1] = matrix.m31;
-		mat.M[3][2] = matrix.m32;
-		mat.M[3][3] = matrix.m33;
-		return mat;
-	}
-	
-	public static HmdMatrix34_t convertToMatrix34(Matrix4f matrix) {
-		HmdMatrix34_t mat = new HmdMatrix34_t();
-		mat.m[0 + 0 * 4] = matrix.m00;
-		mat.m[1 + 0 * 4] = matrix.m10;
-		mat.m[2 + 0 * 4] = matrix.m20;
-		mat.m[3 + 0 * 4] = matrix.m30;
-		mat.m[0 + 1 * 4] = matrix.m01;
-		mat.m[1 + 1 * 4] = matrix.m11;
-		mat.m[2 + 1 * 4] = matrix.m21;
-		mat.m[3 + 1 * 4] = matrix.m31;
-		mat.m[0 + 2 * 4] = matrix.m02;
-		mat.m[1 + 2 * 4] = matrix.m12;
-		mat.m[2 + 2 * 4] = matrix.m22;
-		mat.m[3 + 2 * 4] = matrix.m32;
-		return mat;
-	}
-
-	
-	public static Vector3f directionFromMatrix(Matrix4f matrix, float x, float y, float z) {
-		Vector4f vec = new Vector4f(x, y, z, 0);
-		Matrix4f.transform(matrix, vec, vec);
-		vec.normalise(vec);
-		return new Vector3f(vec.x, vec.y, vec.z);
-	}
-	
 	/* With thanks to http://ramblingsrobert.wordpress.com/2011/04/13/java-word-wrap-algorithm/ */
     public static void wordWrap(String in, int length, ArrayList<String> wrapped)
     {
@@ -211,6 +98,10 @@ public class Utils
 		return new Vector3f((float)vector.xCoord, (float)vector.yCoord, (float)vector.zCoord);
 	}
 
+	public static Vec3d convertToVec3d(Vector3 vector) {
+		return new Vec3d(vector.getX(), vector.getY(), vector.getZ());
+	}
+
 	public static Quaternion quatLerp(Quaternion start, Quaternion end, float fraction) {
 		Quaternion quat = new Quaternion();
 		quat.w = start.w + (end.w - start.w) * fraction;
@@ -218,6 +109,13 @@ public class Utils
 		quat.y = start.y + (end.y - start.y) * fraction;
 		quat.z = start.z + (end.z - start.z) * fraction;
 		return quat;
+	}
+	
+	public static Vec3d vecLerp(Vec3d start, Vec3d end, double fraction) {
+		double x = start.xCoord + (end.xCoord - start.xCoord) * fraction;
+		double y = start.yCoord + (end.yCoord - start.yCoord) * fraction;
+		double z = start.zCoord + (end.zCoord - start.zCoord) * fraction;
+		return new Vec3d(x, y, z);
 	}
 
 	public static Matrix4f matrix3to4(Matrix3f matrix) {
@@ -353,16 +251,5 @@ public class Utils
 		in.close();
 		return out.toByteArray();
 	}
-	
-	public static Vec3d convertToVec3d(Vector3 vector) {
-		return new Vec3d(vector.getX(), vector.getY(), vector.getZ());
-	}
-	
-	public static Vec3d vecLerp(Vec3d start, Vec3d end, double fraction) {
-		double x = start.xCoord + (end.xCoord - start.xCoord) * fraction;
-		double y = start.yCoord + (end.yCoord - start.yCoord) * fraction;
-		double z = start.zCoord + (end.zCoord - start.zCoord) * fraction;
-		return new Vec3d(x, y, z);
-	}
-
+    
 }

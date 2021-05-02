@@ -163,7 +163,7 @@
 		"url": "http://files.minecraftforge.net/maven/"
 	},
 	{
-		"url": "http://central.maven.org/maven2/", 
+		"url": "http://vivecraft.org/jar/", 
 		"name": "org.json:json:20140107"
 	}, 
 	{
@@ -173,14 +173,6 @@
 		"url": "http://vivecraft.org/jar/", 
 		"name": "com.sun:jna:4.2.1"
 	}, 
-	{
-		"url": "http://vivecraft.org/jar/", 
-		"name": "de.fruitfly.ovr:JRift:0.8.0.0.1"
-	}, 
-	{
-		"url": "http://vivecraft.org/jar/", 
-		"name": "net.aib42.mumblelink:JMumble:1.11"
-	},
 	{
 		"name": "optifine:OptiFine:1.10.2_HD_U_E3"
 	}

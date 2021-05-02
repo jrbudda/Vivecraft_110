@@ -1,5 +1,6 @@
 package net.minecraft.client.model;
 
+import java.util.Random;
 import java.util.UUID;
 
 import javax.swing.plaf.RootPaneUI;
@@ -15,10 +16,12 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
 import net.minecraft.client.renderer.entity.layers.LayerBipedArmorVR;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.EnumHandSide;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
@@ -38,9 +41,10 @@ public class ModelPlayerVR extends ModelBiped
 
     //VIVE START
     public Vec3d renderPos;
-    ResourceLocation DIAMOND_HMD = new ResourceLocation("/assets/vivecraft/textures/diamond_hmd.png");
-    ResourceLocation GOLD_HMD = new ResourceLocation("/assets/vivecraft/textures/gold_hmd.png");
-    ResourceLocation BLACK_HMD = new ResourceLocation("/assets/vivecraft/textures/black_hmd.png");
+   ResourceLocation DIAMOND_HMD = new ResourceLocation("/assets/vivecraft/textures/diamond_hmd.png");
+   ResourceLocation GOLD_HMD = new ResourceLocation("/assets/vivecraft/textures/gold_hmd.png");
+   ResourceLocation BLACK_HMD = new ResourceLocation("/assets/vivecraft/textures/black_hmd.png");
+
     //VIVE END
     
    public  LayerBipedArmorVR armor = null;
@@ -77,7 +81,6 @@ public class ModelPlayerVR extends ModelBiped
 		} catch (Exception e) {
 		}
 
-		
     		if (smallArmsIn)
     		{
     			this.bipedLeftArm = new ModelRenderer(this, 32, 48);
@@ -154,8 +157,6 @@ public class ModelPlayerVR extends ModelBiped
         this.leftshoulder.render(scale);
         this.rightShoulder.render(scale);
         
-       // this.vrHMD.setTextureLocation(new ResourceLocation(VRShaders.hmd_tex));
-        GlStateManager.color(.2f, .2f, .2f);
         this.vrHMD.render(scale);
         
         GlStateManager.popMatrix();
@@ -181,181 +182,138 @@ public class ModelPlayerVR extends ModelBiped
      */
     public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn)
     {
-        super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
-        
- //Lasciate ogne speranza, voi ch'intrate
-        	PlayerModelController.RotInfo rotInfo=PlayerModelController.getInstance().getRotationsForPlayer(((EntityPlayer)entityIn).getGameProfile().getId());
-        	if(rotInfo == null) {
+    	super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
+    	//Lasciate ogne speranza, voi ch'intrate
+    	PlayerModelController.RotInfo rotInfo=PlayerModelController.getInstance().getRotationsForPlayer(((EntityPlayer)entityIn).getGameProfile().getId());
+    	if(rotInfo == null) {
 
-        	} else {
+    	} else {
 
-        		double minecraftBullshit = -1.501F;
+    		double minecraftBullshit = -1.501F;
 
-            	Vec3d pos = this.renderPos;
-            	float eyaw = (float) Math.toRadians(entityIn.rotationYaw);
-        		float yaw1 = (float) Math.atan2(-rotInfo.headRot.xCoord, -rotInfo.headRot.zCoord); 
-        		float pitch1 = (float) Math.asin(rotInfo.headRot.yCoord/rotInfo.headRot.lengthVector()); 
+    		Vec3d pos = this.renderPos;
+    		float eyaw = (float) Math.toRadians(entityIn.rotationYaw);
+    		float yaw1 = (float) Math.atan2(-rotInfo.headRot.xCoord, -rotInfo.headRot.zCoord); 
+    		float pitch1 = (float) Math.asin(rotInfo.headRot.yCoord/rotInfo.headRot.lengthVector()); 
 
-        		float yaw3 = (float) Math.atan2(-rotInfo.leftArmRot.xCoord, -rotInfo.leftArmRot.zCoord); 
-        		float pitch3 = (float) Math.asin(rotInfo.leftArmRot.yCoord/rotInfo.leftArmRot.lengthVector());           	
-        		
-        		this.bipedHead.rotateAngleX = (float) -pitch1;
-        		
-        		Vec3d diff = rotInfo.leftArmPos.subtract(rotInfo.rightArmPos).rotateYaw((float)-Math.PI/2);
-        		if(rotInfo.reverse) diff = diff.scale(-1);
-        		if(rotInfo.seated) diff = rotInfo.rightArmRot;
-        		double ltor = Math.atan2(-diff.xCoord, diff.zCoord);     		
-        	
-//        		this.bipedHead.rotateAngleY = (float) (0);
-        		this.bipedHead.rotateAngleY = (float) (Math.PI -yaw1 - ltor);
-//        		this.bipedBody.rotateAngleY = (float) (ltor);
-//        		this.bipedRightLeg.rotateAngleY = (float) (ltor);
-//        		this.bipedLeftLeg.rotateAngleY = (float) (ltor);
-//        		this.bipedRightArm.rotateAngleY = (float) (ltor);
-//        		this.bipedLeftArm.rotateAngleY = (float) (ltor);
-        		
-        		ModelArmorVR armor = this.armor.getModelFromSlot(EntityEquipmentSlot.HEAD);
-        		
-        		armor.bipedHead.rotateAngleY = (float) (this.bipedHead.rotateAngleY);  				
-        		armor.bipedHead.rotateAngleX = this.bipedHead.rotateAngleX;
-//        		
-//        		this.armor.getModelFromSlot(EntityEquipmentSlot.CHEST).bipedBody.rotateAngleY = this.bipedBody.rotateAngleY;
-//        		this.armor.getModelFromSlot(EntityEquipmentSlot.CHEST).bipedBody.rotateAngleX = this.bipedBody.rotateAngleX;
-//
-//        		this.armor.getModelFromSlot(EntityEquipmentSlot.LEGS).bipedLeftLeg.rotateAngleY = this.bipedLeftLeg.rotateAngleY;
-//        		this.armor.getModelFromSlot(EntityEquipmentSlot.LEGS).bipedRightLeg.rotateAngleY = this.bipedRightLeg.rotateAngleY;
-//        		
-//        		this.armor.getModelFromSlot(EntityEquipmentSlot.LEGS).bipedLeftLeg.rotateAngleX = this.bipedLeftLeg.rotateAngleX;
-//        		this.armor.getModelFromSlot(EntityEquipmentSlot.LEGS).bipedRightLeg.rotateAngleX = this.bipedRightLeg.rotateAngleX;	       		
-//        		
-        		
-//                this.bipedRightLeg.setRotationPoint(-1.9F, 12.0F + 0, 0.0F);
-//        		Vec3d rotatedrleg = new Vec3d(bipedRightLeg.rotationPointX, bipedRightLeg.rotationPointY, bipedRightLeg.rotationPointZ)
-//        				.rotateYaw((float) ((float) ltor));
-//        		this.bipedRightLeg.setRotationPoint((float)rotatedrleg.xCoord, (float)rotatedrleg.yCoord, (float)rotatedrleg.zCoord);
-//        		
-//        		this.bipedLeftLeg.setRotationPoint(1.9F, 12.0F + 0, 0.0F);
-//        		Vec3d rotatedlleg = new Vec3d(bipedLeftLeg.rotationPointX, bipedLeftLeg.rotationPointY, bipedLeftLeg.rotationPointZ)
-//        				.rotateYaw((float) ((float)ltor));
-//        		this.bipedLeftLeg.setRotationPoint((float)rotatedlleg.xCoord, (float)rotatedlleg.yCoord, (float)rotatedlleg.zCoord);
-//        		
-                this.bipedLeftArm.setRotationPoint(5.0F, 2.0F , 0.0F);
-        		Vec3d rotatedlarm = new Vec3d(bipedLeftArm.rotationPointX, bipedLeftArm.rotationPointY, bipedLeftArm.rotationPointZ);
-        				
-        		this.bipedLeftArm.setRotationPoint((float)rotatedlarm.xCoord, (float)rotatedlarm.yCoord, (float)rotatedlarm.zCoord);
-      
-                this.bipedRightArm.setRotationPoint(-5.0F, 2.0F , 0.0F);
-        		Vec3d rotatedrarm = new Vec3d(bipedRightArm.rotationPointX, bipedRightArm.rotationPointY, bipedRightArm.rotationPointZ);
-        
-        		this.bipedRightArm.setRotationPoint((float)rotatedrarm.xCoord, (float)rotatedrarm.yCoord, (float)rotatedrarm.zCoord);
-        		
-				rightShoulder.isHidden = rotInfo.seated;
-				leftshoulder.isHidden = rotInfo.seated;
-        		
-        		if(!rotInfo.seated){
+    		float yaw3 = (float) Math.atan2(-rotInfo.leftArmRot.xCoord, -rotInfo.leftArmRot.zCoord); 
+    		float pitch3 = (float) Math.asin(rotInfo.leftArmRot.yCoord/rotInfo.leftArmRot.lengthVector());           	
 
-        			//Vec3d head = rotInfo.Headpos.subtract(pos).addVector(0,minecraftBullshit-0.18f,0);
-        			//head = head.scale(-1/scaleFactor);         
-        			//this.bipedHead.setRotationPoint((float)head.xCoord, (float)head.yCoord, -(float)head.zCoord);
-        			//this.bipedBody.setRotationPoint((float)head.xCoord, (float)head.yCoord, -(float)head.zCoord);
-        			//this.bipedBody.scaleY = (float) (rotInfo.Headpos.subtract(pos).yCoord / 1.62f);
+    		this.bipedHead.rotateAngleX = (float) -pitch1;
 
-        			//this.bipedRightLeg.scaleY = (float) (rotInfo.Headpos.subtract(pos).yCoord / 1.62f);
-        			//this.bipedLeftLeg.setRotationPoint((float)head.xCoord, (float)head.yCoord, -(float)head.zCoord);
-        			//this.bipedLeftLeg.scaleY = (float) (rotInfo.Headpos.subtract(pos).yCoord / 1.62f);         		
+    		Vec3d diff = (rotInfo.leftArmPos.subtract(rotInfo.rightArmPos)).rotateYaw((float)-Math.PI/2);
+    		if(rotInfo.reverse) diff = diff.scale(-1);
 
-        			float yaw2 = (float) Math.atan2(-rotInfo.rightArmRot.xCoord, -rotInfo.rightArmRot.zCoord); 
-        			float pitch2 = (float) Math.asin(rotInfo.rightArmRot.yCoord/rotInfo.rightArmRot.lengthVector()); 
-        			if(pos !=null){
-        				Vec3d larm = rotInfo.leftArmPos.subtract(pos).addVector(0,minecraftBullshit,0);
-        				larm = larm.rotateYaw((float)(-Math.PI + ltor)).add(rotInfo.leftArmRot.scale(-0.2)).scale(-1/scaleFactor);      		      		        		
-        				this.bipedLeftArm.setRotationPoint((float)larm.xCoord, (float)larm.yCoord, -(float)larm.zCoord);          
-        				this.bipedLeftArm.rotateAngleX=(float) (-pitch3+ 3*Math.PI/2);
-        				this.bipedLeftArm.rotateAngleY=(float) (Math.PI - yaw3 - ltor);
+    		if(rotInfo.seated) 
+    			diff = rotInfo.rightArmRot;
+    		double ltor =  Math.atan2(-diff.xCoord, diff.zCoord);     		
 
-        				Vec3d lsh = new Vec3d(leftshoulder.rotationPointX - larm.xCoord, 
-        						leftshoulder.rotationPointY - larm.yCoord,
-        						leftshoulder.rotationPointZ - larm.zCoord);
-        				
-            			float yawls = (float) Math.atan2(-lsh.xCoord, -lsh.zCoord); 
-            			float pitchls = (float) Math.asin(lsh.yCoord/lsh.lengthVector()); 		
-        				leftshoulder.rotateAngleY = (float) (-yawls);
-        				leftshoulder.rotateAngleX = (float) (-pitchls+ 3*Math.PI/2);
-            			
-        				Vec3d rarm = rotInfo.rightArmPos.subtract(pos).addVector(0,minecraftBullshit,0);
-        				rarm = rarm.rotateYaw((float)(-Math.PI + ltor)).add(rotInfo.rightArmRot.scale(-0.2)).scale(-1/scaleFactor);           
-        				this.bipedRightArm.setRotationPoint((float)rarm.xCoord, (float)rarm.yCoord, -(float)rarm.zCoord);   
-        				this.bipedRightArm.rotateAngleX=(float) (-pitch2+ 3*Math.PI/2);
-        				this.bipedRightArm.rotateAngleY=(float) (Math.PI-yaw2 - ltor);
-        				
-        				
-        				Vec3d rsh = new Vec3d(rightShoulder.rotationPointX - rarm.xCoord, 
-        						rightShoulder.rotationPointY - rarm.yCoord,
-        						rightShoulder.rotationPointZ - rarm.zCoord);
-        				
-            			float yawrs = (float) Math.atan2(-rsh.xCoord, -rsh.zCoord); 
-            			float pitchrs = (float) Math.asin(rsh.yCoord/rsh.lengthVector()); 		
-            			rightShoulder.rotateAngleY = (float) (-yawrs);
-            			rightShoulder.rotateAngleX = (float) (-pitchrs+ 3*Math.PI/2);
-        				
-            			
-                		armor.bipedLeftArm.rotateAngleY = this.leftshoulder.rotateAngleY;  				
-                		armor.bipedLeftArm.rotateAngleX = this.leftshoulder.rotateAngleX;
-                		armor.bipedRightArm.rotateAngleY = this.rightShoulder.rotateAngleY;  				
-                		armor.bipedRightArm.rotateAngleX = this.rightShoulder.rotateAngleX;
-            			this.bipedLeftArm.scaleY = 0.5f;
-            			this.bipedLeftArmwear.scaleY = 0.5f;
-            			this.bipedRightArm.scaleY = 0.5f;
-            			this.bipedRightArmwear.scaleY = 0.5f;	
-            			
-            			if(rotInfo.reverse){
-            		        this.rightShoulder.setRotationPoint(5.0F, 2.0F , 0.0F);
-            		        this.leftshoulder.setRotationPoint(-5.0F, 2.0F , 0.0F);
-            			} else {
-            		        this.rightShoulder.setRotationPoint(-5.0F, 2.0F , 0.0F);
-            		        this.leftshoulder.setRotationPoint(5.0F, 2.0F , 0.0F);
-            			}
-            			
-        			} 
-        		}else {
-        			this.bipedLeftArm.scaleY = 1;
-        			this.bipedLeftArmwear.scaleY = 1;
-        			this.bipedRightArm.scaleY =1;
-        			this.bipedRightArmwear.scaleY =1;
-        			this.bipedLeftArm.setRotationPoint(5.0F, 2.0F, 0.0F);
-        			this.bipedRightArm.setRotationPoint(-5.0F, 2.0F, 0.0F);
+    		this.bipedHead.rotateAngleY = (float) (Math.PI -yaw1 - ltor);
 
-    			}
-        	}
-        	
-        	this.vrHMD.isHidden = false;
-        	switch(rotInfo.hmd){
-        	case 0:
-        		this.vrHMD.isHidden = true;
-        		break;
-        	case 1:
-        		this.vrHMD.setTextureLocation(this.BLACK_HMD);
-        		break;
-        	case 2:
-        		this.vrHMD.setTextureLocation(this.GOLD_HMD);
-        		break;
-        	case 3:
-        		this.vrHMD.setTextureLocation(this.DIAMOND_HMD);	
-        		break;
-        	case 4:
-        		this.vrHMD.setTextureLocation(this.DIAMOND_HMD);	
-        		break;
-        	}
+    		ModelArmorVR armor = this.armor.getModelFromSlot(EntityEquipmentSlot.HEAD);
 
-        copyModelAngles(this.bipedHead, this.bipedHeadwear);
+    		armor.bipedHead.rotateAngleY = (float) (this.bipedHead.rotateAngleY);  				
+    		armor.bipedHead.rotateAngleX = this.bipedHead.rotateAngleX;
+      		
+    		rightShoulder.isHidden = rotInfo.seated;
+    		leftshoulder.isHidden = rotInfo.seated;
+
+    		if(!rotInfo.seated){
+
+    			float yaw2 = (float) Math.atan2(-rotInfo.rightArmRot.xCoord, -rotInfo.rightArmRot.zCoord); 
+    			float pitch2 = (float) Math.asin(rotInfo.rightArmRot.yCoord/rotInfo.rightArmRot.lengthVector()); 
+    			if(pos !=null){
+    				Vec3d larm = rotInfo.leftArmPos.subtract(pos).addVector(0,minecraftBullshit,0);
+    				larm = larm.rotateYaw((float)(-Math.PI + ltor)).add(rotInfo.leftArmRot.scale(-0.2)).scale(-1/scaleFactor);      		      		        		
+    				this.bipedLeftArm.setRotationPoint((float)larm.xCoord, (float)larm.yCoord, -(float)larm.zCoord);          
+    				this.bipedLeftArm.rotateAngleX=(float) (-pitch3+ 3*Math.PI/2);
+    				this.bipedLeftArm.rotateAngleY=(float) (Math.PI - yaw3 - ltor);
+
+    				Vec3d lsh = new Vec3d(leftshoulder.rotationPointX - larm.xCoord, 
+    						leftshoulder.rotationPointY - larm.yCoord,
+    						leftshoulder.rotationPointZ - larm.zCoord);
+
+    				float yawls = (float) Math.atan2(-lsh.xCoord, -lsh.zCoord); 
+    				float pitchls = (float) Math.asin(lsh.yCoord/lsh.lengthVector()); 		
+    				leftshoulder.rotateAngleY = (float) (-yawls);
+    				leftshoulder.rotateAngleX = (float) (-pitchls+ 3*Math.PI/2);
+
+    				Vec3d rarm = rotInfo.rightArmPos.subtract(pos).addVector(0,minecraftBullshit,0);
+    				rarm = rarm.rotateYaw((float)(-Math.PI + ltor)).add(rotInfo.rightArmRot.scale(-0.2)).scale(-1/scaleFactor);           
+    				this.bipedRightArm.setRotationPoint((float)rarm.xCoord, (float)rarm.yCoord, -(float)rarm.zCoord);   
+    				this.bipedRightArm.rotateAngleX=(float) (-pitch2+ 3*Math.PI/2);
+    				this.bipedRightArm.rotateAngleY=(float) (Math.PI-yaw2 - ltor);
+
+
+    				Vec3d rsh = new Vec3d(rightShoulder.rotationPointX - rarm.xCoord, 
+    						rightShoulder.rotationPointY - rarm.yCoord,
+    						rightShoulder.rotationPointZ - rarm.zCoord);
+
+    				float yawrs = (float) Math.atan2(-rsh.xCoord, -rsh.zCoord); 
+    				float pitchrs = (float) Math.asin(rsh.yCoord/rsh.lengthVector()); 		
+    				rightShoulder.rotateAngleY = (float) (-yawrs);
+    				rightShoulder.rotateAngleX = (float) (-pitchrs+ 3*Math.PI/2);
+
+
+    				armor.bipedLeftArm.rotateAngleY = this.leftshoulder.rotateAngleY;  				
+    				armor.bipedLeftArm.rotateAngleX = this.leftshoulder.rotateAngleX;
+    				armor.bipedRightArm.rotateAngleY = this.rightShoulder.rotateAngleY;  				
+    				armor.bipedRightArm.rotateAngleX = this.rightShoulder.rotateAngleX;
+    				this.bipedLeftArm.scaleY = 0.5f;
+    				this.bipedLeftArmwear.scaleY = 0.5f;
+    				this.bipedRightArm.scaleY = 0.5f;
+    				this.bipedRightArmwear.scaleY = 0.5f;	
+
+    				if(rotInfo.reverse){
+    					this.rightShoulder.setRotationPoint(5.0F, 2.0F , 0.0F);
+    					this.leftshoulder.setRotationPoint(-5.0F, 2.0F , 0.0F);
+    				} else {
+    					this.rightShoulder.setRotationPoint(-5.0F, 2.0F , 0.0F);
+    					this.leftshoulder.setRotationPoint(5.0F, 2.0F , 0.0F);
+    				}
+
+    			} 
+    		}else {
+    			this.bipedLeftArm.scaleY = 1;
+    			this.bipedLeftArmwear.scaleY = 1;
+    			this.bipedRightArm.scaleY =1;
+    			this.bipedRightArmwear.scaleY =1;
+    			this.bipedLeftArm.setRotationPoint(5.0F, 2.0F, 0.0F);
+    			this.bipedRightArm.setRotationPoint(-5.0F, 2.0F, 0.0F);
+
+    		}
+    	}
+    	
+    	this.vrHMD.isHidden = false;
+    	switch(rotInfo.hmd){
+    	case 0:
+    		this.vrHMD.isHidden = true;
+    		break;
+    	case 1:
+    		this.vrHMD.setTextureLocation(this.BLACK_HMD);
+    		break;
+    	case 2:
+    		this.vrHMD.setTextureLocation(this.GOLD_HMD);
+    		break;
+    	case 3:
+    		this.vrHMD.setTextureLocation(this.DIAMOND_HMD);	
+    		break;
+    	case 4:
+    		this.vrHMD.setTextureLocation(this.DIAMOND_HMD);	
+    		break;
+    	}
+
+    	copyModelAngles(this.bipedHead, this.bipedHeadwear);        
         copyModelAngles(this.bipedHead, this.vrHMD);        
-        copyModelAngles(this.bipedLeftLeg, this.bipedLeftLegwear);
-        copyModelAngles(this.bipedRightLeg, this.bipedRightLegwear);
-        copyModelAngles(this.bipedLeftArm, this.bipedLeftArmwear);
-        copyModelAngles(this.bipedRightArm, this.bipedRightArmwear);
-        copyModelAngles(this.bipedBody, this.bipedBodyWear);
+    	copyModelAngles(this.bipedLeftLeg, this.bipedLeftLegwear);
+    	copyModelAngles(this.bipedRightLeg, this.bipedRightLegwear);
+    	copyModelAngles(this.bipedLeftArm, this.bipedLeftArmwear);
+    	copyModelAngles(this.bipedRightArm, this.bipedRightArmwear);
+    	copyModelAngles(this.bipedBody, this.bipedBodyWear);
     }
 
+    private Random rand = new Random();
+    
     public void setInvisible(boolean invisible)
     {
         super.setInvisible(invisible);
@@ -367,6 +325,7 @@ public class ModelPlayerVR extends ModelBiped
         this.bipedCape.showModel = invisible;
         this.bipedDeadmau5Head.showModel = invisible;
         this.vrHMD.showModel = invisible;
+
     }
 
     public void postRenderArm(float scale, EnumHandSide side)

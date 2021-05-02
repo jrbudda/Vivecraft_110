@@ -1,0 +1,21 @@
+diff -r -U 3 minecraft\net\minecraft\entity\item\EntityItemFrame.java minecraft_patched\net\minecraft\entity\item\EntityItemFrame.java
+--- minecraft\net\minecraft\entity\item\EntityItemFrame.java
++++ minecraft_patched\net\minecraft\entity\item\EntityItemFrame.java
+@@ -41,7 +41,7 @@
+    }
+ 
+    protected void func_70088_a() {
+-      this.func_184212_Q().func_187214_a(field_184525_c, Optional.<T>absent());
++      this.func_184212_Q().func_187214_a(field_184525_c, Optional.<ItemStack>absent());
+       this.func_184212_Q().func_187214_a(field_184526_d, Integer.valueOf(0));
+    }
+ 
+@@ -140,7 +140,7 @@
+          p_174864_1_.func_82842_a(this);
+       }
+ 
+-      this.func_184212_Q().func_187227_b(field_184525_c, Optional.<T>fromNullable(p_174864_1_));
++      this.func_184212_Q().func_187227_b(field_184525_c, Optional.fromNullable(p_174864_1_));
+       this.func_184212_Q().func_187217_b(field_184525_c);
+       if(p_174864_1_ != null) {
+          this.func_184185_a(SoundEvents.field_187620_cL, 1.0F, 1.0F);

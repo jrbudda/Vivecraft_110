@@ -9,12 +9,12 @@
      private static final GlStateManager.DepthState depthState;
      private static final GlStateManager.FogState fogState;
      private static final GlStateManager.CullState cullState;
-@@ -1013,7 +1013,7 @@
+@@ -945,7 +945,7 @@
          }
      }
  
--    static class Color
-+    public static class Color
+-    static class BlendState
++    public static class BlendState
      {
-         public float red;
-         public float green;
+         public GlStateManager.BooleanState blend;
+         public int srcFactor;

@@ -7,7 +7,6 @@ package com.mtbs3d.minecrift.provider;
 
 import com.mtbs3d.minecrift.api.*;
 
-import com.mtbs3d.minecrift.settings.VRSettings;
 import de.fruitfly.ovr.*;
 import de.fruitfly.ovr.enums.*;
 import de.fruitfly.ovr.structs.*;

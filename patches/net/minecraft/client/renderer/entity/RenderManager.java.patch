@@ -9,7 +9,21 @@
  import java.util.Collections;
  import java.util.Map;
  import javax.annotation.Nullable;
-@@ -224,10 +226,12 @@
+@@ -115,10 +117,12 @@
+ import net.minecraft.util.math.Vec3d;
+ import net.minecraft.world.World;
+ import net.optifine.entity.model.CustomEntityModels;
++import net.minecraft.client.renderer.entity.RenderPlayerVR;
+ 
+ public class RenderManager
+ {
+-    private final Map <Class, Render> entityRenderMap = Maps. <Class, Render> newHashMap();
++	//Forge make public
++	public  final Map <Class, Render> entityRenderMap = Maps. <Class, Render> newHashMap();
+     private final Map<String, RenderPlayer> skinMap = Maps.<String, RenderPlayer>newHashMap();
+     private final RenderPlayer playerRenderer;
+ 
+@@ -224,10 +228,12 @@
          this.skinMap.put("slim", new RenderPlayer(this, true));
          PlayerItemsLayer.register(this.skinMap);
  
@@ -22,7 +36,7 @@
      }
  
      public void setRenderPosition(double renderPosXIn, double renderPosYIn, double renderPosZIn)
-@@ -250,19 +254,27 @@
+@@ -250,19 +256,27 @@
          return (Render<T>) render;
      }
  
@@ -60,19 +74,7 @@
      }
  
      public void cacheActiveRenderInfo(World worldIn, FontRenderer textRendererIn, Entity livingPlayerIn, Entity pointedEntityIn, GameSettings optionsIn, float partialTicks)
-@@ -346,7 +358,10 @@
- 
-     public void renderEntityStatic(Entity entityIn, float partialTicks, boolean p_188388_3_)
-     {
--        if (entityIn.ticksExisted == 0)
-+    	//pixelmon no 1st person model
-+    	if(entityIn == Minecraft.getMinecraft().player) return;
-+
-+    	if (entityIn.ticksExisted == 0)
-         {
-             entityIn.lastTickPosX = entityIn.posX;
-             entityIn.lastTickPosY = entityIn.posY;
-@@ -542,8 +557,10 @@
+@@ -542,8 +556,10 @@
          return this.entityRenderMap;
      }
  

@@ -1,0 +1,11 @@
+diff -r -U 3 minecraft_server\net\minecraft\command\CommandFill.java minecraft_server_patched\net\minecraft\command\CommandFill.java
+--- minecraft_server\net\minecraft\command\CommandFill.java
++++ minecraft_server_patched\net\minecraft\command\CommandFill.java
+@@ -161,6 +161,6 @@
+    }
+ 
+    public List<String> func_184883_a(MinecraftServer p_184883_1_, ICommandSender p_184883_2_, String[] p_184883_3_, @Nullable BlockPos p_184883_4_) {
+-      return p_184883_3_.length > 0 && p_184883_3_.length <= 3?func_175771_a(p_184883_3_, 0, p_184883_4_):(p_184883_3_.length > 3 && p_184883_3_.length <= 6?func_175771_a(p_184883_3_, 3, p_184883_4_):(p_184883_3_.length == 7?func_175762_a(p_184883_3_, Block.field_149771_c.func_148742_b()):(p_184883_3_.length == 9?func_71530_a(p_184883_3_, new String[]{"replace", "destroy", "keep", "hollow", "outline"}):(p_184883_3_.length == 10 && "replace".equals(p_184883_3_[8])?func_175762_a(p_184883_3_, Block.field_149771_c.func_148742_b()):Collections.emptyList()))));
++      return p_184883_3_.length > 0 && p_184883_3_.length <= 3?func_175771_a(p_184883_3_, 0, p_184883_4_):(p_184883_3_.length > 3 && p_184883_3_.length <= 6?func_175771_a(p_184883_3_, 3, p_184883_4_):(p_184883_3_.length == 7?func_175762_a(p_184883_3_, Block.field_149771_c.func_148742_b()):(p_184883_3_.length == 9?func_71530_a(p_184883_3_, new String[]{"replace", "destroy", "keep", "hollow", "outline"}):(p_184883_3_.length == 10 && "replace".equals(p_184883_3_[8])?func_175762_a(p_184883_3_, Block.field_149771_c.func_148742_b()):Collections.<String>emptyList()))));
+    }
+ }

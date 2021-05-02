@@ -1,6 +1,6 @@
 --- a/net/minecraft/client/network/NetHandlerPlayClient.java
 +++ b/net/minecraft/client/network/NetHandlerPlayClient.java
-@@ -1,21 +1,34 @@
+@@ -1,9 +1,14 @@
  package net.minecraft.client.network;
  
 +import com.google.common.base.Charsets;
@@ -10,76 +10,23 @@
  import com.mojang.authlib.GameProfile;
 +import com.mtbs3d.minecrift.api.NetworkHelper;
 +import com.mtbs3d.minecrift.api.NetworkHelper.PacketDiscriminators;
-+import com.mtbs3d.minecrift.provider.OpenVRPlayer;
 +import com.mtbs3d.minecrift.render.PlayerModelController;
-+import com.mtbs3d.minecrift.utils.BlockWithData;
 +
  import io.netty.buffer.Unpooled;
-+
-+import java.io.ByteArrayInputStream;
  import java.io.File;
  import java.io.IOException;
-+import java.io.ObjectInputStream;
- import java.net.URI;
- import java.net.URISyntaxException;
-+import java.util.ArrayList;
- import java.util.Collection;
- import java.util.List;
- import java.util.Map;
- import java.util.Random;
- import java.util.UUID;
- import java.util.Map.Entry;
-+
- import javax.annotation.Nullable;
-+
- import net.minecraft.block.Block;
- import net.minecraft.client.ClientBrandRetriever;
- import net.minecraft.client.Minecraft;
-@@ -96,6 +109,7 @@
- import net.minecraft.entity.projectile.EntitySpectralArrow;
- import net.minecraft.entity.projectile.EntityTippedArrow;
- import net.minecraft.entity.projectile.EntityWitherSkull;
-+import net.minecraft.init.Blocks;
- import net.minecraft.init.Items;
- import net.minecraft.init.SoundEvents;
- import net.minecraft.inventory.AnimalChest;
-@@ -202,6 +216,8 @@
+@@ -202,6 +207,7 @@
  import net.minecraft.scoreboard.ScorePlayerTeam;
  import net.minecraft.scoreboard.Scoreboard;
  import net.minecraft.scoreboard.Team;
 +import net.minecraft.src.Reflector;
-+import net.minecraft.src.ReflectorMethod;
  import net.minecraft.stats.Achievement;
  import net.minecraft.stats.AchievementList;
  import net.minecraft.stats.StatBase;
-@@ -234,6 +250,8 @@
- import net.minecraft.world.WorldSettings;
- import net.minecraft.world.chunk.Chunk;
- import net.minecraft.world.storage.MapData;
-+
-+import org.apache.commons.lang3.ArrayUtils;
- import org.apache.logging.log4j.LogManager;
- import org.apache.logging.log4j.Logger;
- 
-@@ -285,6 +303,12 @@
-         this.guiScreenServer = p_i46300_2_;
-         this.netManager = networkManagerIn;
-         this.profile = profileIn;
-+        
-+        //VIVECRAFT
-+        NetworkHelper.serverAllowsClimbey =false;
-+        NetworkHelper.serverWantsData = false;
-+        NetworkHelper.serverSupportsDirectTeleport = false;
-+        //
-     }
- 
-     /**
-@@ -303,7 +327,19 @@
+@@ -303,6 +309,17 @@
      {
          PacketThreadUtil.checkThreadAndEnqueue(packetIn, this, this.gameController);
          this.gameController.playerController = new PlayerControllerMP(this.gameController, this);
--        this.clientWorldController = new WorldClient(this, new WorldSettings(0L, packetIn.getGameType(), false, packetIn.isHardcoreMode(), packetIn.getWorldType()), packetIn.getDimension(), packetIn.getDifficulty(), this.gameController.mcProfiler);
-+        
 +        //Forge
 +        int dimension = packetIn.getDimension();
 +        if(Reflector.forgeExists())
@@ -91,17 +38,15 @@
 +        		dimension,
 +        		packetIn.getDifficulty(), this.gameController.mcProfiler);
 +        //
-+        
+         this.clientWorldController = new WorldClient(this, new WorldSettings(0L, packetIn.getGameType(), false, packetIn.isHardcoreMode(), packetIn.getWorldType()), packetIn.getDimension(), packetIn.getDifficulty(), this.gameController.mcProfiler);
          this.gameController.gameSettings.difficulty = packetIn.getDifficulty();
          this.gameController.loadWorld(this.clientWorldController);
-         this.gameController.player.dimension = packetIn.getDimension();
-@@ -314,6 +350,17 @@
+@@ -314,6 +331,16 @@
          this.gameController.playerController.setGameType(packetIn.getGameType());
          this.gameController.gameSettings.sendSettingsToServer();
          this.netManager.sendPacket(new CPacketCustomPayload("MC|Brand", (new PacketBuffer(Unpooled.buffer())).writeString(ClientBrandRetriever.getClientModName())));
 +        
 +        // VIVE START - ask server if it's running this mod
-+        this.gameController.vrPlayer.setFreeMove(true);
 +        byte[] version = Minecraft.getMinecraft().minecriftVerString.getBytes(Charsets.UTF_8);
 +        String s = "Vivecraft";
 +        PacketBuffer pb = new PacketBuffer(Unpooled.buffer());
@@ -113,7 +58,7 @@
      }
  
      /**
-@@ -805,10 +852,15 @@
+@@ -805,10 +832,15 @@
              BlockPos blockpos = new BlockPos(nbttagcompound.getInteger("x"), nbttagcompound.getInteger("y"), nbttagcompound.getInteger("z"));
              TileEntity tileentity = this.clientWorldController.getTileEntity(blockpos);
  
@@ -130,21 +75,21 @@
          }
      }
  
-@@ -833,6 +885,10 @@
-     public void handleDisconnect(SPacketDisconnect packetIn)
+@@ -896,16 +928,25 @@
+      */
+     public void handleChat(SPacketChat packetIn)
      {
-         this.netManager.closeChannel(packetIn.getReason());
-+        // VIVE START - no longer on a vanilla server, reset restricted state
-+    	this.gameController.vrPlayer.noTeleportClient = true;
-+        OpenVRPlayer.get().setFreeMove(true);
-+        // VIVE END - no longer on a vanilla server, reset restricted state
-     }
+-        PacketThreadUtil.checkThreadAndEnqueue(packetIn, this, this.gameController);
++    	PacketThreadUtil.checkThreadAndEnqueue(packetIn, this, this.gameController);
  
-     /**
-@@ -898,6 +954,15 @@
-     {
-         PacketThreadUtil.checkThreadAndEnqueue(packetIn, this, this.gameController);
- 
+-        if (packetIn.getType() == 2)
+-        {
+-            this.gameController.ingameGUI.setOverlayMessage(packetIn.getChatComponent(), false);
+-        }
+-        else
+-        {
+-            this.gameController.ingameGUI.getChatGUI().printChatMessage(packetIn.getChatComponent());
+-        }
 +    	ITextComponent message = packetIn.getChatComponent();
 +    	
 +    	//Forge
@@ -154,31 +99,51 @@
 +    	}
 +    	//
 +    	
-         if (packetIn.getType() == 2)
-         {
-             this.gameController.ingameGUI.setOverlayMessage(packetIn.getChatComponent(), false);
-@@ -1044,8 +1109,14 @@
++    	if (packetIn.getType() == 2)
++    	{
++    		this.gameController.ingameGUI.setOverlayMessage(message, false);
++    	}
++    	else
++    	{
++    		this.gameController.ingameGUI.getChatGUI().printChatMessage(message);
++    	}
+     }
+ 
+     /**
+@@ -1044,6 +1085,12 @@
  
                      if (entity1 == this.gameController.player && !flag)
                      {
--                        this.gameController.ingameGUI.setOverlayMessage(I18n.format("mount.onboard", new Object[] {GameSettings.getKeyDisplayString(this.gameController.gameSettings.keyBindSneak.getKeyCode())}), false);
--                    }
 +                    	//Forge
 +                    	String msg = GameSettings.getKeyDisplayString(this.gameController.gameSettings.keyBindSneak.getKeyCode());
 +                    	if (Reflector.forgeExists())
 +                    		msg = Reflector.callString(this.gameController.gameSettings.keyBindSneak,
 +                    				Reflector.ForgeKeyBinding_getDisplayName);
 +                    	//
-+
-+                    	this.gameController.ingameGUI.setOverlayMessage(I18n.format("mount.onboard", new Object[] {msg}), false);                    }
+                         this.gameController.ingameGUI.setOverlayMessage(I18n.format("mount.onboard", new Object[] {GameSettings.getKeyDisplayString(this.gameController.gameSettings.keyBindSneak.getKeyCode())}), false);
+                     }
                  }
-             }
+@@ -1116,10 +1163,16 @@
+         {
+             this.doneLoadingTerrain = false;
+             Scoreboard scoreboard = this.clientWorldController.getScoreboard();
++        
++            int dimId = packetIn.getDimensionID();
++            if (Reflector.forgeExists())
++            	Reflector.call(Reflector.call(Reflector.NetworkDispatcher_get, getNetworkManager()), Reflector.NetworkDispatcher_getOverrideDimension, packetIn);
++
+             this.clientWorldController = new WorldClient(this, new WorldSettings(0L, packetIn.getGameType(), false, this.gameController.world.getWorldInfo().isHardcoreModeEnabled(), packetIn.getWorldType()), packetIn.getDimensionID(), packetIn.getDifficulty(), this.gameController.mcProfiler);
+             this.clientWorldController.setWorldScoreboard(scoreboard);
+             this.gameController.loadWorld(this.clientWorldController);
+             this.gameController.player.dimension = packetIn.getDimensionID();
++
+             this.gameController.displayGuiScreen(new GuiDownloadTerrain(this));
          }
-@@ -1305,7 +1376,19 @@
+ 
+@@ -1305,6 +1358,18 @@
              {
                  tileentity.readFromNBT(packetIn.getNbtCompound());
              }
--
 +            //Forge
 +            else
 +            {
@@ -191,11 +156,10 @@
 +            		Reflector.call(tileentity, Reflector.ForgeTileEntity_onDataPacket, netManager, packetIn);
 +            }
 +            //
-+            
+ 
              if (flag && this.gameController.currentScreen instanceof GuiCommandBlock)
              {
-                 ((GuiCommandBlock)this.gameController.currentScreen).updateGui();
-@@ -1416,15 +1499,41 @@
+@@ -1416,15 +1481,41 @@
              }
              else if (f == 101.0F)
              {
@@ -240,7 +204,7 @@
              }
          }
          else if (i == 6)
-@@ -1525,7 +1634,7 @@
+@@ -1525,7 +1616,7 @@
  
          if (entity instanceof EntityLivingBase)
          {
@@ -249,95 +213,27 @@
  
              if (potion != null)
              {
-@@ -1928,6 +2037,115 @@
+@@ -1928,6 +2019,47 @@
              String s1 = packetbuffer2.readString(256);
              this.gameController.getSoundHandler().stop(s1, SoundCategory.getByName(s));
          }
 +        // VIVE START - server told us that it has this mod too, allow extended reach, etc.
 +        else if ("MC|ViveOK".equals(packetIn.getChannelName()))
 +        { //allowed, set to user preference.
-+        	this.gameController.vrPlayer.noTeleportClient = false;
-+            this.gameController.vrPlayer.setFreeMove(Minecraft.getMinecraft().vrPlayer.getFreeMove());
++
 +        } 
 +        else if ("Vivecraft".equals(packetIn.getChannelName()))
 +        { 
 +        	PacketBuffer packetbuffer = packetIn.getBufferData(); 	
-+        	byte db = packetbuffer.readByte();
-+        	PacketDiscriminators dis = PacketDiscriminators.values()[db];
++        	PacketDiscriminators dis = PacketDiscriminators.values()[packetbuffer.readByte()];
 +          			
 +        	switch (dis){
 +        	case VERSION:
 +        		String v = packetbuffer.readString(1024);
-+        		this.gameController.vrPlayer.noTeleportClient = false;
-+        		this.gameController.vrPlayer.setFreeMove(Minecraft.getMinecraft().vrSettings.vrFreeMove);
 +        		this.gameController.printChatMessage("Vivecraft server mod detected: " + v);
 +        		break;
 +        	case REQUESTDATA:
 +        		NetworkHelper.serverWantsData = true;
-+        		break;
-+        	case CLIMBING:
-+        		NetworkHelper.serverAllowsClimbey = true;
-+        		if(packetbuffer.readableBytes() > 0){
-+        			byte[] b = new byte[packetbuffer.readableBytes()];
-+        			packetbuffer.readBytes(b);
-+        			final ByteArrayInputStream byteArrayInputStream =
-+        					new ByteArrayInputStream(b);
-+        			ObjectInputStream objectInputStream = null;
-+        			try {
-+        				objectInputStream = new ObjectInputStream(byteArrayInputStream);
-+        				Minecraft.getMinecraft().climbTracker.serverblockmode = objectInputStream.readByte();
-+        				ArrayList<String> temp = (ArrayList<String>) objectInputStream.readObject();
-+        				objectInputStream.close();	
-+        				Minecraft.getMinecraft().climbTracker.blocklist.clear();
-+        				for (String string : temp) {
-+        					String id, data = null;
-+        					int colon = string.lastIndexOf(':'); //last colon is either data or part of block name
-+        					if (colon != -1) { //does that colon exist?
-+        						String str = string.substring(colon + 1); //get the data after the colon
-+    							id = string.substring(0, colon); //get the block name before the colon
-+        						if (tryParseInt(str)) { //is the data good?
-+        							data = str; //yup
-+        						} else { //nope
-+        							if (id.indexOf(':') != -1) { //does the block name still have a colon?
-+        								continue; //data was garbage
-+        							} else {
-+        								id = string; //data actually was just part of block name
-+        							}
-+        						}
-+        					} else { //just a block name
-+        						id = string;
-+        					}
-+
-+        					if(data != null && !tryParseInt(data)){
-+        						continue;
-+        					}
-+
-+        					Block test;
-+        					if(tryParseInt(id)){
-+        						test = Block.getBlockById(Integer.parseInt(id));
-+        					} else {
-+        						test = Block.getBlockFromName(id);
-+        					}
-+
-+        					if(test == null || test == Blocks.AIR){
-+        						continue;
-+        					}
-+        					BlockWithData bd = null;
-+
-+        					if(data == null)
-+        						bd = new BlockWithData(test);
-+        					else
-+        						bd = new BlockWithData(test, Integer.parseInt(data));
-+
-+        					Minecraft.getMinecraft().climbTracker.blocklist.add(bd);
-+        				}
-+        			} catch (Exception e) {
-+        				System.out.println("Something went amiss processing climbey blocks: " + e.getMessage());
-+					}
-+        		}
-+        		break;
-+        	case TELEPORT:
-+        		NetworkHelper.serverSupportsDirectTeleport = true;
 +        		break;
 +        	case UBERPACKET:
 +        		Long hi = packetbuffer.readLong();
@@ -365,16 +261,3 @@
      }
  
      /**
-@@ -2198,4 +2416,12 @@
-     {
-         return this.profile;
-     }
-+	boolean tryParseInt(String value) {  
-+	     try {  
-+	         Integer.parseInt(value);  
-+	         return true;  
-+	      } catch (NumberFormatException e) {  
-+	         return false;  
-+	      }  
-+	}
- }

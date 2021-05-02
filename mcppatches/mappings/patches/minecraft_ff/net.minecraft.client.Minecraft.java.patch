@@ -1,0 +1,56 @@
+diff -r -U 3 minecraft\net\minecraft\client\Minecraft.java minecraft_patched\net\minecraft\client\Minecraft.java
+--- minecraft\net\minecraft\client\Minecraft.java
++++ minecraft_patched\net\minecraft\client\Minecraft.java
+@@ -352,9 +352,7 @@
+ 
+       while(true) {
+          try {
+-            if(!this.field_71425_J) {
+-               break;
+-            }
++            while(this.field_71425_J) {
+ 
+             if(!this.field_71434_R || this.field_71433_S == null) {
+                try {
+@@ -364,10 +362,12 @@
+                   this.func_147108_a(new GuiMemoryErrorScreen());
+                   System.gc();
+                }
+-               continue;
+-            }
+-
++            }
++            else
++            {
+             this.func_71377_b(this.field_71433_S);
++            }
++            }
+          } catch (MinecraftError var12) {
+             break;
+          } catch (ReportedException reportedexception) {
+@@ -1230,6 +1230,7 @@
+       }
+    }
+ 
++   @SuppressWarnings("incomplete-switch")
+    private void func_147121_ag() {
+       if(!this.field_71442_b.func_181040_m()) {
+          this.field_71467_ac = 4;
+@@ -1498,7 +1499,7 @@
+       this.field_71423_H = func_71386_F();
+    }
+ 
+-   private void func_184118_az() {
++   private void func_184118_az() throws IOException {
+       while(Keyboard.next()) {
+          int i = Keyboard.getEventKey() == 0?Keyboard.getEventCharacter() + 256:Keyboard.getEventKey();
+          if(this.field_83002_am > 0L) {
+@@ -1741,7 +1742,7 @@
+       this.func_147115_a(this.field_71462_r == null && this.field_71474_y.field_74312_F.func_151470_d() && this.field_71415_G);
+    }
+ 
+-   private void func_184124_aB() {
++   private void func_184124_aB() throws IOException {
+       while(Mouse.next()) {
+          int i = Mouse.getEventButton();
+          KeyBinding.func_74510_a(i - 100, Mouse.getEventButtonState());

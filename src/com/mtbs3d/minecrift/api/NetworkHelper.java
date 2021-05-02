@@ -29,9 +29,7 @@ public class NetworkHelper {
 		WORLDSCALE,
 		DRAW,
 		MOVEMODE,
-		UBERPACKET,
-		TELEPORT,
-		CLIMBING
+		UBERPACKET
 	}
 	private final static String channel = "Vivecraft";
 	
@@ -60,79 +58,76 @@ public class NetworkHelper {
 	}
 	
 	
-	public static boolean serverWantsData = false;
-	public static boolean serverAllowsClimbey = false;
-	public static boolean serverSupportsDirectTeleport = false;
+public static boolean serverWantsData = false;
 	
 	private static float worldScallast = 0;
-
-	public static void sendVRPlayerPositions(IRoomscaleAdapter player) {
-		if(!serverWantsData) return;
-		float worldScale = Minecraft.getMinecraft().vrPlayer.worldScale;
-	
-		if (worldScale != worldScallast) {
-			ByteBuf payload = Unpooled.buffer();
-			payload.writeFloat(worldScale);
-			byte[] out = new byte[payload.readableBytes()];
-			payload.readBytes(out);
-			CPacketCustomPayload pack = getVivecraftClientPacket(PacketDiscriminators.WORLDSCALE,out);
-			Minecraft.getMinecraft().getConnection().sendPacket(pack);
-			
-			worldScallast = worldScale;
-		}
-		byte[] a=null, b = null, c=null;
-		{
-			FloatBuffer buffer = player.getHMDMatrix_World();
-			buffer.rewind();
-			Matrix4f matrix = new Matrix4f();
-			matrix.load(buffer);
-
-			Vec3d headPosition = player.getHMDPos_World();
-			Quaternion headRotation = new Quaternion(matrix);
-			
-			ByteBuf payload = Unpooled.buffer();
-			payload.writeBoolean(Minecraft.getMinecraft().vrSettings.seated);
-			payload.writeFloat((float)headPosition.xCoord);
-			payload.writeFloat((float)headPosition.yCoord);
-			payload.writeFloat((float)headPosition.zCoord);
-			payload.writeFloat((float)headRotation.w);
-			payload.writeFloat((float)headRotation.x);
-			payload.writeFloat((float)headRotation.y);
-			payload.writeFloat((float)headRotation.z);
-			byte[] out = new byte[payload.readableBytes()];
-			payload.readBytes(out);
-			a = out;
-			CPacketCustomPayload pack = getVivecraftClientPacket(PacketDiscriminators.HEADDATA,out);
-			Minecraft.getMinecraft().getConnection().sendPacket(pack);
-			
-		}	
-		
-		for (int i = 0; i < 2; i++) {
-			Vec3d controllerPosition = player.getControllerPos_World(i);
-			FloatBuffer buffer = player.getControllerMatrix_World(i);
-			buffer.rewind();
-			Matrix4f matrix = new Matrix4f();
-			matrix.load(buffer);
-			Quaternion controllerRotation = new Quaternion(matrix);
-		
-			ByteBuf payload = Unpooled.buffer();
-			payload.writeBoolean(Minecraft.getMinecraft().vrSettings.vrReverseHands);
-			payload.writeFloat((float)controllerPosition.xCoord);
-			payload.writeFloat((float)controllerPosition.yCoord);
-			payload.writeFloat((float)controllerPosition.zCoord);
-			payload.writeFloat((float)controllerRotation.w);
-			payload.writeFloat((float)controllerRotation.x);
-			payload.writeFloat((float)controllerRotation.y);
-			payload.writeFloat((float)controllerRotation.z);
-			byte[] out = new byte[payload.readableBytes()];
-			if(i == 0) b = out;
-			else c = out;
-			payload.readBytes(out);
-			CPacketCustomPayload pack  = getVivecraftClientPacket(i == 0? PacketDiscriminators.CONTROLLER0DATA : PacketDiscriminators.CONTROLLER1DATA,out);
-			Minecraft.getMinecraft().getConnection().sendPacket(pack);
-		}
-		
-		PlayerModelController.getInstance().Update(Minecraft.getMinecraft().player.getUniqueID(), a, b, c);
-		
-	}
+//	public static void sendVRPlayerPositions(IRoomscaleAdapter player) {
+//		if(!serverWantsData) return;
+//		float worldScale = Minecraft.getMinecraft().vrPlayer.worldScale;
+//	
+//		if (worldScale != worldScallast) {
+//			ByteBuf payload = Unpooled.buffer();
+//			payload.writeFloat(worldScale);
+//			byte[] out = new byte[payload.readableBytes()];
+//			payload.readBytes(out);
+//			CPacketCustomPayload pack = getVivecraftClientPacket(PacketDiscriminators.WORLDSCALE,out);
+//			Minecraft.getMinecraft().getConnection().sendPacket(pack);
+//			
+//			worldScallast = worldScale;
+//		}
+//		byte[] a=null, b = null, c=null;
+//		{
+//			FloatBuffer buffer = player.getHMDMatrix_World();
+//			buffer.rewind();
+//			Matrix4f matrix = new Matrix4f();
+//			matrix.load(buffer);
+//
+//			Vec3d headPosition = player.getHMDPos_World();
+//			Quaternion headRotation = new Quaternion(matrix);
+//			
+//			ByteBuf payload = Unpooled.buffer();
+//			payload.writeBoolean(Minecraft.getMinecraft().vrSettings.seated);
+//			payload.writeFloat((float)headPosition.xCoord);
+//			payload.writeFloat((float)headPosition.yCoord);
+//			payload.writeFloat((float)headPosition.zCoord);
+//			payload.writeFloat((float)headRotation.w);
+//			payload.writeFloat((float)headRotation.x);
+//			payload.writeFloat((float)headRotation.y);
+//			payload.writeFloat((float)headRotation.z);
+//			byte[] out = new byte[payload.readableBytes()];
+//			payload.readBytes(out);
+//			a = out;
+//			CPacketCustomPayload pack = getVivecraftClientPacket(PacketDiscriminators.HEADDATA,out);
+//			Minecraft.getMinecraft().getConnection().sendPacket(pack);
+//			
+//		}	
+//		
+//		for (int i = 0; i < 2; i++) {
+//			Vec3d controllerPosition = player.getControllerPos_World(i);
+//			FloatBuffer buffer = player.getControllerMatrix_World(i);
+//			buffer.rewind();
+//			Matrix4f matrix = new Matrix4f();
+//			matrix.load(buffer);
+//			Quaternion controllerRotation = new Quaternion(matrix);
+//		
+//			ByteBuf payload = Unpooled.buffer();
+//			payload.writeBoolean(Minecraft.getMinecraft().vrSettings.vrReverseHands);
+//			payload.writeFloat((float)controllerPosition.xCoord);
+//			payload.writeFloat((float)controllerPosition.yCoord);
+//			payload.writeFloat((float)controllerPosition.zCoord);
+//			payload.writeFloat((float)controllerRotation.w);
+//			payload.writeFloat((float)controllerRotation.x);
+//			payload.writeFloat((float)controllerRotation.y);
+//			payload.writeFloat((float)controllerRotation.z);
+//			byte[] out = new byte[payload.readableBytes()];
+//			if(i == 0) b = out;
+//			else c = out;
+//			payload.readBytes(out);
+//			CPacketCustomPayload pack  = getVivecraftClientPacket(i == 0? PacketDiscriminators.CONTROLLER0DATA : PacketDiscriminators.CONTROLLER1DATA,out);
+//			Minecraft.getMinecraft().getConnection().sendPacket(pack);
+//		}
+//		
+//		PlayerModelController.getInstance().Update(Minecraft.getMinecraft().player.getUniqueID(), a, b, c);
+//		
+//	}
 }

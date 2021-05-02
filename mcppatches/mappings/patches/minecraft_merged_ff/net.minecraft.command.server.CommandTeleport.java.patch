@@ -1,0 +1,12 @@
+diff -r -U 3 minecraft\net\minecraft\command\server\CommandTeleport.java minecraft_patched\net\minecraft\command\server\CommandTeleport.java
+--- minecraft\net\minecraft\command\server\CommandTeleport.java
++++ minecraft_patched\net\minecraft\command\server\CommandTeleport.java
+@@ -89,7 +89,7 @@
+    }
+ 
+    public List<String> func_184883_a(MinecraftServer p_184883_1_, ICommandSender p_184883_2_, String[] p_184883_3_, @Nullable BlockPos p_184883_4_) {
+-      return p_184883_3_.length == 1?func_71530_a(p_184883_3_, p_184883_1_.func_71213_z()):(p_184883_3_.length > 1 && p_184883_3_.length <= 4?func_175771_a(p_184883_3_, 1, p_184883_4_):Collections.emptyList());
++      return p_184883_3_.length == 1?func_71530_a(p_184883_3_, p_184883_1_.func_71213_z()):(p_184883_3_.length > 1 && p_184883_3_.length <= 4?func_175771_a(p_184883_3_, 1, p_184883_4_):Collections.<String>emptyList());
+    }
+ 
+    public boolean func_82358_a(String[] p_82358_1_, int p_82358_2_) {

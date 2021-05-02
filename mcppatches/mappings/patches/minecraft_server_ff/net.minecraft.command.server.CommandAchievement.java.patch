@@ -1,0 +1,12 @@
+diff -r -U 3 minecraft_server\net\minecraft\command\server\CommandAchievement.java minecraft_server_patched\net\minecraft\command\server\CommandAchievement.java
+--- minecraft_server\net\minecraft\command\server\CommandAchievement.java
++++ minecraft_server_patched\net\minecraft\command\server\CommandAchievement.java
+@@ -127,7 +127,7 @@
+       if(p_184883_3_.length == 1) {
+          return func_71530_a(p_184883_3_, new String[]{"give", "take"});
+       } else if(p_184883_3_.length != 2) {
+-         return p_184883_3_.length == 3?func_71530_a(p_184883_3_, p_184883_1_.func_71213_z()):Collections.emptyList();
++         return p_184883_3_.length == 3?func_71530_a(p_184883_3_, p_184883_1_.func_71213_z()):Collections.<String>emptyList();
+       } else {
+          List<String> list = Lists.<String>newArrayList();
+ 

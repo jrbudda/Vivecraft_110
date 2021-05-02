@@ -1,0 +1,12 @@
+--- a/net/minecraft/util/math/Vec2f.java
++++ b/net/minecraft/util/math/Vec2f.java
+@@ -18,4 +18,9 @@
+         this.x = xIn;
+         this.y = yIn;
+     }
++    
++    public String toString(){
++    	return this.x + " " + this.y;
++    }
++
+ }
