@@ -1348,7 +1348,7 @@ public class Installer extends JPanel  implements PropertyChangeListener
             } catch (InterruptedException e) {}
         }
 
-		private boolean updateLauncherJson(File mcBaseDirFile, String minecriftVer, String profileName, String profile))
+		private boolean updateLauncherJson(File mcBaseDirFile, String minecriftVer, String profileName, String profile)
         {
 			boolean result = false;
 
